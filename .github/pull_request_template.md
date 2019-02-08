@@ -1,4 +1,3 @@
-
 ### :pushpin: References
 
 * **Issue:** Closes #?
