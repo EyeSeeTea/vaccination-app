@@ -1,6 +1,4 @@
 
-### :notebook: Description
-
 ### :pushpin: References
 
 * **Issue:** Closes #?
