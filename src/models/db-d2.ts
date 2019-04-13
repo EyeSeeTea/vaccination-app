@@ -189,6 +189,31 @@ export default class DbD2 {
         return { pager: newPager, objects: organisationUnits };
     }
 
+    public async validateTeamsForOrganisationUnits(organisationUnits: OrganisationUnitPathOnly[]) {
+        const allAncestorsIds = _(organisationUnits)
+            .map("path")
+            .flatMap(path => path.split("/").slice(1))
+            .uniq()
+            .value()
+            .join(",");
+        
+            const { categoryOptions } = await this.api.get(
+                "/metadata",
+                {
+                    "categoryOptions:fields": "id,organisationUnits",
+                    "categoryOptions:filter": `organisationUnits.id:in:[${allAncestorsIds}]`, //Missing categoryTeamCode
+                }
+            );
+        
+        const hasTeams = (path: string) => {
+            if (!categoryOptions) return false;
+            const has = categoryOptions.some((cat: CategoryOption) => cat.organisationUnits.some((ou: OrganisationUnit) => path.includes(ou.id)));
+            return has;
+        }
+
+        return _(organisationUnits).map(ou => ({ id: ou.id, hasTeams: hasTeams(ou.path)})).value();
+    }
+
     public async getCategoryOptionsByCategoryCode(code: string): Promise<CategoryOption[]> {
         const { categories } = await this.api.get("/categories", {
             filter: [`code:in:[${code}]`],

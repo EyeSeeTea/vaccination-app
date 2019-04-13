@@ -138,6 +138,11 @@ export default class Campaign {
         return this.data.organisationUnits;
     }
 
+    public async validateTeamsForOrganisationUnits(organisationUnits: OrganisationUnitPathOnly[]) {
+        if (_.isEmpty(organisationUnits)) return;
+        return this.db.validateTeamsForOrganisationUnits(organisationUnits);
+    }
+
     /* Name */
 
     public setName(name: string): Campaign {

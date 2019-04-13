@@ -1,8 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { OrgUnitsSelector } from "d2-ui-components";
+import { OrgUnitsSelector, withSnackbar } from "d2-ui-components";
 import _ from "lodash";
 import "./OrganisationUnitsStep.css";
+import i18n from "../../../locales";
 
 /*
     HACK: Use css to hide all selector boxes in tree except for those of level 6.
@@ -15,6 +16,7 @@ class OrganisationUnitsStep extends React.Component {
         d2: PropTypes.object.isRequired,
         campaign: PropTypes.object.isRequired,
         onChange: PropTypes.func.isRequired,
+        snackbar: PropTypes.object.isRequired,
     };
 
     controls = {
@@ -23,7 +25,7 @@ class OrganisationUnitsStep extends React.Component {
         selectAll: false,
     };
 
-    setOrgUnits = orgUnitsPaths => {
+    setOrgUnits = async orgUnitsPaths => {
         const orgUnits = orgUnitsPaths.map(path => ({
             id: _.last(path.split("/")),
             level: path.split("/").length - 1,
@@ -32,6 +34,14 @@ class OrganisationUnitsStep extends React.Component {
         const orgUnitsForAcceptedLevels = orgUnits.filter(ou =>
             this.props.campaign.selectableLevels.includes(ou.level)
         );
+        const organisationUnitsTeams = await this.props.campaign.validateTeamsForOrganisationUnits(
+            orgUnitsForAcceptedLevels
+        );
+        if (organisationUnitsTeams && !_.last(organisationUnitsTeams).hasTeams) {
+            return this.props.snackbar.error(
+                i18n.t("This organisation unit has no teams associated")
+            );
+        }
         const newCampaign = this.props.campaign.setOrganisationUnits(orgUnitsForAcceptedLevels);
         this.props.onChange(newCampaign);
     };
@@ -51,4 +61,4 @@ class OrganisationUnitsStep extends React.Component {
     }
 }
 
-export default OrganisationUnitsStep;
+export default withSnackbar(OrganisationUnitsStep);

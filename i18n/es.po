@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: i18next-conv\n"
-"POT-Creation-Date: 2019-04-11T10:13:25.271Z\n"
+"POT-Creation-Date: 2019-04-13T12:17:15.119Z\n"
 "PO-Revision-Date: 2018-10-25T09:02:35.143Z\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -182,6 +182,9 @@ msgstr "Fecha de inicio"
 
 msgid "End Date"
 msgstr "Fecha de fin"
+
+msgid "This organisation unit has no teams associated"
+msgstr "Esta unidad organizativa no tiene equipos asociados"
 
 msgid "Error saving campaign"
 msgstr "Se produjo un error al guardar la campaña"

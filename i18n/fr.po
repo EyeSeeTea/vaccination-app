@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: i18next-conv\n"
-"POT-Creation-Date: 2019-04-11T10:13:25.271Z\n"
+"POT-Creation-Date: 2019-04-13T12:17:15.119Z\n"
 "PO-Revision-Date: 2018-11-15T11:18:10.896Z\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -165,6 +165,9 @@ msgid "Start date"
 msgstr ""
 
 msgid "End Date"
+msgstr ""
+
+msgid "This organisation unit has no teams associated"
 msgstr ""
 
 msgid "Error saving campaign"

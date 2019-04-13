@@ -48,6 +48,7 @@ export interface CategoryOption {
     id: string;
     code: string;
     displayName: string;
+    organisationUnits: OrganisationUnit[];
 }
 
 export interface CategoryOptionGroup {
