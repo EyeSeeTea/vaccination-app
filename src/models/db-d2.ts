@@ -189,7 +189,10 @@ export default class DbD2 {
         return { pager: newPager, objects: organisationUnits };
     }
 
-    public async validateTeamsForOrganisationUnits(organisationUnits: OrganisationUnitPathOnly[]) {
+    public async validateTeamsForOrganisationUnits(
+        organisationUnits: OrganisationUnitPathOnly[],
+        teamCategoryCode: string
+    ): Promise<{ id: string; hasTeams: boolean }[]> {
         const allAncestorsIds = _(organisationUnits)
             .map("path")
             .flatMap(path => path.split("/").slice(1))
@@ -197,17 +200,26 @@ export default class DbD2 {
             .value()
             .join(",");
 
-        const { categoryOptions } = await this.api.get("/metadata", {
-            "categoryOptions:fields": "id,organisationUnits",
-            "categoryOptions:filter": `organisationUnits.id:in:[${allAncestorsIds}]`, //Missing categoryTeamCode
+        const response = await this.api.get("/metadata", {
+            "categoryOptions:fields": "id,categories[code],organisationUnits[id]",
+            "categoryOptions:filter": `organisationUnits.id:in:[${allAncestorsIds}]`,
         });
+        const { categoryOptions } = response as {
+            categoryOptions?: Array<{
+                id: string;
+                categories: { code: string }[];
+                organisationUnits: { id: string }[];
+            }>;
+        };
 
         const hasTeams = (path: string) => {
-            if (!categoryOptions) return false;
-            const has = categoryOptions.some((cat: CategoryOption) =>
-                cat.organisationUnits.some((ou: OrganisationUnit) => path.includes(ou.id))
+            return (categoryOptions || []).some(
+                co =>
+                    _(co.categories)
+                        .map("code")
+                        .includes(teamCategoryCode) &&
+                    co.organisationUnits.some(ou => path.includes(ou.id))
             );
-            return has;
         };
 
         return _(organisationUnits)

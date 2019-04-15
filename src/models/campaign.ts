@@ -140,7 +140,10 @@ export default class Campaign {
 
     public async validateTeamsForOrganisationUnits(organisationUnits: OrganisationUnitPathOnly[]) {
         if (_.isEmpty(organisationUnits)) return;
-        return this.db.validateTeamsForOrganisationUnits(organisationUnits);
+        return this.db.validateTeamsForOrganisationUnits(
+            organisationUnits,
+            this.config.categoryCodeForTeams
+        );
     }
 
     /* Name */
