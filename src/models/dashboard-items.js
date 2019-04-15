@@ -126,10 +126,12 @@ export function buildDashboardItems(
 }
 
 const dataMapper = (dataList, filterList) =>
-    dataList.data.filter(({ code }) => _.includes(filterList, code)).map(({ id }) => ({
-        dataDimensionItemType: dataList.type,
-        [dataList.key]: { id },
-    }));
+    dataList.data
+        .filter(({ code }) => _.includes(filterList, code))
+        .map(({ id }) => ({
+            dataDimensionItemType: dataList.type,
+            [dataList.key]: { id },
+        }));
 
 export function itemsMetadataConstructor(dashboardItemsMetadata) {
     const {
@@ -141,21 +143,19 @@ export function itemsMetadataConstructor(dashboardItemsMetadata) {
     const { tables, charts } = dashboardItemsConfig;
 
     const tableElements = _(tables)
-        .map(
-            (item, key) =>
-                item.dataType === "INDICATOR"
-                    ? [key, dataMapper(indicators, item.elements)]
-                    : [key, dataMapper(dataElements, item.elements)]
+        .map((item, key) =>
+            item.dataType === "INDICATOR"
+                ? [key, dataMapper(indicators, item.elements)]
+                : [key, dataMapper(dataElements, item.elements)]
         )
         .fromPairs()
         .value();
 
     const chartElements = _(charts)
-        .map(
-            (item, key) =>
-                item.dataType === "INDICATOR"
-                    ? [key, dataMapper(indicators, item.elements)]
-                    : [key, dataMapper(dataElements, item.elements)]
+        .map((item, key) =>
+            item.dataType === "INDICATOR"
+                ? [key, dataMapper(indicators, item.elements)]
+                : [key, dataMapper(dataElements, item.elements)]
         )
         .fromPairs()
         .value();

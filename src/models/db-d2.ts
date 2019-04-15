@@ -196,22 +196,23 @@ export default class DbD2 {
             .uniq()
             .value()
             .join(",");
-        
-            const { categoryOptions } = await this.api.get(
-                "/metadata",
-                {
-                    "categoryOptions:fields": "id,organisationUnits",
-                    "categoryOptions:filter": `organisationUnits.id:in:[${allAncestorsIds}]`, //Missing categoryTeamCode
-                }
-            );
-        
+
+        const { categoryOptions } = await this.api.get("/metadata", {
+            "categoryOptions:fields": "id,organisationUnits",
+            "categoryOptions:filter": `organisationUnits.id:in:[${allAncestorsIds}]`, //Missing categoryTeamCode
+        });
+
         const hasTeams = (path: string) => {
             if (!categoryOptions) return false;
-            const has = categoryOptions.some((cat: CategoryOption) => cat.organisationUnits.some((ou: OrganisationUnit) => path.includes(ou.id)));
+            const has = categoryOptions.some((cat: CategoryOption) =>
+                cat.organisationUnits.some((ou: OrganisationUnit) => path.includes(ou.id))
+            );
             return has;
-        }
+        };
 
-        return _(organisationUnits).map(ou => ({ id: ou.id, hasTeams: hasTeams(ou.path)})).value();
+        return _(organisationUnits)
+            .map(ou => ({ id: ou.id, hasTeams: hasTeams(ou.path) }))
+            .value();
     }
 
     public async getCategoryOptionsByCategoryCode(code: string): Promise<CategoryOption[]> {
@@ -312,7 +313,7 @@ export default class DbD2 {
             .value()
             .join(",");
 
-        const orgUnitsId = _(organisationUnitsPathOnly).map('id');
+        const orgUnitsId = _(organisationUnitsPathOnly).map("id");
         const dashboardItems = [dashboardItemsConfig.charts, dashboardItemsConfig.tables];
         const elements = _(dashboardItems)
             .values()
@@ -324,21 +325,24 @@ export default class DbD2 {
         const allDataElementCodes = elements["DATA_ELEMENT"].join(",");
         const allIndicatorCodes = elements["INDICATOR"].join(",");
         const antigenCodes = antigens.map(an => an.code);
-        const { categories, dataElements, indicators, categoryOptions, organisationUnits: organisationUnitsWithName } = await this.api.get(
-            "/metadata",
-            {
-                "categories:fields": "id,categoryOptions[id,code,name]",
-                "categories:filter": `code:in:[${dashboardItemsConfig.antigenCategoryCode}]`,
-                "dataElements:fields": "id,code",
-                "dataElements:filter": `code:in:[${allDataElementCodes}]`,
-                "indicators:fields": "id,code",
-                "indicators:filter": `code:in:[${allIndicatorCodes}]`,
-                "categoryOptions:fields": "id,categories[id,code],organisationUnits",
-                "categoryOptions:filter": `organisationUnits.id:in:[${allAncestorsIds}]`, //Missing categoryTeamCode
-                "organisationUnits:fields": "id,displayName,path",
-                "organisationUnits:filter": `id:in:[${orgUnitsId}]`,
-            }
-        );
+        const {
+            categories,
+            dataElements,
+            indicators,
+            categoryOptions,
+            organisationUnits: organisationUnitsWithName,
+        } = await this.api.get("/metadata", {
+            "categories:fields": "id,categoryOptions[id,code,name]",
+            "categories:filter": `code:in:[${dashboardItemsConfig.antigenCategoryCode}]`,
+            "dataElements:fields": "id,code",
+            "dataElements:filter": `code:in:[${allDataElementCodes}]`,
+            "indicators:fields": "id,code",
+            "indicators:filter": `code:in:[${allIndicatorCodes}]`,
+            "categoryOptions:fields": "id,categories[id,code],organisationUnits",
+            "categoryOptions:filter": `organisationUnits.id:in:[${allAncestorsIds}]`, //Missing categoryTeamCode
+            "organisationUnits:fields": "id,displayName,path",
+            "organisationUnits:filter": `id:in:[${orgUnitsId}]`,
+        });
 
         const { id: antigenCategory } = categories[0];
         const antigensMeta = _.filter(categories[0].categoryOptions, op =>
