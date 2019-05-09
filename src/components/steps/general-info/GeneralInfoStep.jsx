@@ -87,6 +87,7 @@ class GeneralInfoStep extends React.Component {
                 props: {
                     label: i18n.t("Start Date"),
                     value: campaign.startDate,
+                    format: "DD/MM/YYYY",
                     onChange: value => this.onUpdateField("startDate", value),
                 },
             },
@@ -98,6 +99,7 @@ class GeneralInfoStep extends React.Component {
                     label: i18n.t("End Date"),
                     value: campaign.endDate,
                     onChange: value => this.onUpdateField("endDate", value),
+                    format: "DD/MM/YYYY",
                 },
             },
         ];
