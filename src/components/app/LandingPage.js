@@ -3,8 +3,10 @@ import PropTypes from "prop-types";
 import i18n from "@dhis2/d2-i18n";
 import Paper from "@material-ui/core/Paper";
 import FontIcon from "material-ui/FontIcon";
-import GridList from "@material-ui/core/GridList";
-import GridListTile from "@material-ui/core/GridListTile";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
 import { withStyles } from "@material-ui/core/styles";
 import { withRouter } from "react-router";
 import { goToDhis2Url } from "../../utils/routes";
@@ -19,7 +21,7 @@ const styles = _theme => ({
         width: "90%",
         padding: 10,
     },
-    gridTile: {
+    listItem: {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -29,16 +31,8 @@ const styles = _theme => ({
         },
         cursor: "pointer",
     },
-    tileContainer: {
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        height: "100%",
-        paddingTop: 40,
-        boxSizing: "border-box",
-        color: lightGray,
-    },
     title: {
+        color: lightGray,
         fontSize: 20,
     },
     icons: {
@@ -79,28 +73,25 @@ class LandingPage extends React.Component {
             ["campaign-configuration", i18n.t("Campaign Configuration"), "edit"],
             ["data-entry", i18n.t("Data Entry"), "library_books"],
             ["dashboard", i18n.t("Dashboard"), "dashboard"],
-            ["maintenance", i18n.t("Maintenance"), "settings"],
         ];
         const menuItems = items.map(([key, title, icon]) => (
-            <GridListTile
+            <ListItem
                 key={key}
                 data-test={`page-${key}`}
                 onClick={this.onClick.bind(this, key)}
-                className={classes.gridTile}
+                className={classes.listItem}
             >
-                <div className={classes.tileContainer}>
+                <ListItemIcon>
                     <FontIcon className={`material-icons ${classes.icons}`}>{icon}</FontIcon>
-                    <div className={classes.title}>{title}</div>
-                </div>
-            </GridListTile>
+                </ListItemIcon>
+                <ListItemText primary={title} classes={{ primary: classes.title }} />
+            </ListItem>
         ));
 
         return (
             <div className={classes.root}>
                 <Paper className={classes.paper}>
-                    <GridList data-test="pages" cols={2}>
-                        {menuItems}
-                    </GridList>
+                    <List data-test="pages">{menuItems}</List>
                 </Paper>
             </div>
         );
