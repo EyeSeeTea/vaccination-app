@@ -33,11 +33,14 @@ const styles = _theme => ({
     },
     title: {
         color: lightGray,
+        marginTop: 10,
+        marginBottom: 10,
         fontSize: 20,
     },
     icons: {
         fontSize: "60px !important",
-        marginBottom: 20,
+        marginTop: 10,
+        marginBottom: 10,
         color: `${lightGray} !important`,
     },
 });
