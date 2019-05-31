@@ -22,6 +22,14 @@ class GeneralInfoStep extends React.Component {
         onChange: PropTypes.func.isRequired,
     };
 
+    async validateCampaignName(name) {
+        const { campaign } = this.props;
+        const invalidName = await campaign.invalidCampaignName(name.trim());
+        if (invalidName) {
+            throw i18n.t("Campaign name requires a unique value");
+        }
+    }
+
     onUpdateField = (fieldName, newValue) => {
         const { campaign, onChange } = this.props;
         let newCampaign;
@@ -67,6 +75,7 @@ class GeneralInfoStep extends React.Component {
                         },
                     },
                 ],
+                asyncValidators: [name => this.validateCampaignName(name)],
             },
             {
                 name: "description",

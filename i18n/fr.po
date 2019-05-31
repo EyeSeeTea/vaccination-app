@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: i18next-conv\n"
-"POT-Creation-Date: 2019-05-29T10:04:37.693Z\n"
+"POT-Creation-Date: 2019-05-31T12:50:02.725Z\n"
 "PO-Revision-Date: 2018-11-15T11:18:10.896Z\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -102,6 +102,14 @@ msgstr ""
 msgid "Cannot load campaign"
 msgstr ""
 
+msgid "General info"
+msgstr ""
+
+msgid ""
+"Choose a name for the campaign and define the period for which data entry "
+"will be enabled"
+msgstr ""
+
 msgid "Organisation Units"
 msgstr ""
 
@@ -114,14 +122,6 @@ msgid ""
 "Select the health facilities or health areas which will implement the "
 "campaign. At least one must be selected. Only organisation units of level 5 "
 "(Health site) can be selected."
-msgstr ""
-
-msgid "General info"
-msgstr ""
-
-msgid ""
-"Choose a name for the campaign and define the period for which data entry "
-"will be enabled"
 msgstr ""
 
 msgid "Antigen selection"
@@ -197,6 +197,9 @@ msgid "Back"
 msgstr ""
 
 msgid "Disaggregation"
+msgstr ""
+
+msgid "Campaign name requires a unique value"
 msgstr ""
 
 msgid "Field cannot be blank"

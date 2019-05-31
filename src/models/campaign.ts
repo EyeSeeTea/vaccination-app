@@ -198,7 +198,6 @@ export default class Campaign {
 
     public async validate() {
         const {
-            name,
             startDate,
             endDate,
             antigens,
@@ -208,7 +207,7 @@ export default class Campaign {
         } = this.data;
 
         const validation = {
-            name: !name.trim() ? getError("cannot_be_blank", { field: "name" }) : [],
+            name: await this.validateName(),
 
             startDate: !startDate ? getError("cannot_be_blank", { field: "start date" }) : [],
 
@@ -286,6 +285,33 @@ export default class Campaign {
 
     public get name(): string {
         return this.data.name;
+    }
+
+    public async invalidCampaignName(name: string): Promise<boolean> {
+        const { id } = this.data;
+        const { dataSets } = await this.db.getMetadata<{
+            dataSets: Array<{ id: string; name: string }>;
+        }>({
+            dataSets: { fields: { id: true, name: true }, filters: [`name:$ilike:${name}`] },
+        });
+
+        const existsDataSetWithName = dataSets.some(
+            (ds: { id: string; name: string }) =>
+                ds.id !== id && ds.name.toLowerCase() === name.toLowerCase()
+        );
+
+        return existsDataSetWithName;
+    }
+
+    private async validateName() {
+        const { name } = this.data;
+        const trimmedName = name.trim();
+        if (!trimmedName) {
+            return getError("cannot_be_blank", { field: "name" });
+        } else {
+            const invalidName = await this.invalidCampaignName(trimmedName);
+            return invalidName ? getError("name_must_be_unique") : null;
+        }
     }
 
     /* Description */

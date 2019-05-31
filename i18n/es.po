@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: i18next-conv\n"
-"POT-Creation-Date: 2019-05-29T10:04:37.693Z\n"
+"POT-Creation-Date: 2019-05-31T12:50:02.725Z\n"
 "PO-Revision-Date: 2018-10-25T09:02:35.143Z\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -104,6 +104,16 @@ msgstr "Crear Campaña"
 msgid "Cannot load campaign"
 msgstr "No se puede cargar la campaña"
 
+msgid "General info"
+msgstr "Información general"
+
+msgid ""
+"Choose a name for the campaign and define the period for which data entry "
+"will be enabled"
+msgstr ""
+"Establezca el nombre de la campaña y el periodo de tiempo en el cual será "
+"posible añadir datos"
+
 msgid "Organisation Units"
 msgstr "Unidades organizativas"
 
@@ -121,16 +131,6 @@ msgstr ""
 "Seleccione los centros o áreas de salud asignadas a esta campaña. Debe "
 "seleccionar al menos uno. Únicamente centros o áreas de salud  de nivel 5 "
 "pueden seleccionarse"
-
-msgid "General info"
-msgstr "Información general"
-
-msgid ""
-"Choose a name for the campaign and define the period for which data entry "
-"will be enabled"
-msgstr ""
-"Establezca el nombre de la campaña y el periodo de tiempo en el cual será "
-"posible añadir datos"
 
 msgid "Antigen selection"
 msgstr "Antígenos"
@@ -229,6 +229,9 @@ msgstr "Atrás"
 
 msgid "Disaggregation"
 msgstr "Desagregación"
+
+msgid "Campaign name requires a unique value"
+msgstr "El nombre de la campaña debe ser único"
 
 msgid "Field cannot be blank"
 msgstr "El campo no puede estar vacío"

@@ -34,6 +34,7 @@ const translations = {
             namespace
         ),
     must_be_bigger_than_zero: () => i18n.t("Number of teams must be positive"),
+    name_must_be_unique: () => i18n.t("Campaign name requires a unique value"),
 };
 
 export async function getValidationMessages(campaign, validationKeys) {

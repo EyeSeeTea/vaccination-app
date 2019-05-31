@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2019-05-30T23:14:21.480Z\n"
-"PO-Revision-Date: 2019-05-30T23:14:21.480Z\n"
+"POT-Creation-Date: 2019-05-31T12:50:02.725Z\n"
+"PO-Revision-Date: 2019-05-31T12:50:02.725Z\n"
 
 msgid "Campaign Configuration"
 msgstr ""
@@ -196,6 +196,9 @@ msgid "Back"
 msgstr ""
 
 msgid "Disaggregation"
+msgstr ""
+
+msgid "Campaign name requires a unique value"
 msgstr ""
 
 msgid "Field cannot be blank"
