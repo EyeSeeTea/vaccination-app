@@ -37,7 +37,7 @@
         "husky": "^1.1.2",
         "immutability-helper": "^2.9.0",
         "jest": "^23.6.0",
-        "lodash": "^4.17.11",
+        "lodash": "^4.17.13",
         "material-ui": "^0.20.2",
         "moment": "^2.22.2",
         "nano-memoize": "^1.0.0",
