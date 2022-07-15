@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2022-03-23T10:31:50.107Z\n"
-"PO-Revision-Date: 2022-03-23T10:31:50.107Z\n"
+"POT-Creation-Date: 2022-07-15T10:33:36.402Z\n"
+"PO-Revision-Date: 2022-07-15T10:33:36.402Z\n"
 
 msgid "Campaigns"
 msgstr ""
@@ -268,6 +268,9 @@ msgstr ""
 msgid "Field cannot be blank"
 msgstr ""
 
+msgid "Type"
+msgstr ""
+
 msgid "This user has no Data output and analytic organisation units assigned"
 msgstr ""
 
@@ -363,6 +366,12 @@ msgstr ""
 msgid ""
 "Campaign teams (category options) could not be deleted, probably there are "
 "associated data values"
+msgstr ""
+
+msgid "Reactive"
+msgstr ""
+
+msgid "Preventive"
 msgstr ""
 
 msgid "Coverage by Site {{- period}} (do not edit this chart)"

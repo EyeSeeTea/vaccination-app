@@ -17,7 +17,10 @@ const expectedFields = [
     "organisationUnits[id,path]",
 ];
 
-const createdByAppFilters = ["attributeValues.attribute.id:eq:1", "categoryCombo.code:eq:RVC_TEAM"];
+const createdByAppFilters = [
+    "attributeValues.attribute.id:eq:1",
+    "categoryCombo.code:in:[RVC_TEAM,RVC_TEAM_REACTIVE,RVC_TEAM_PREVENTIVE]",
+];
 const emptyCollection = { pager: { page: 1, total: 0 }, toArray: () => [] };
 const listMock = jest.fn(() => Promise.resolve(emptyCollection));
 

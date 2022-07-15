@@ -16,6 +16,7 @@ import {
     Indicator,
 } from "./db.types";
 import { sortAgeGroups } from "../utils/age-groups";
+import { CampaignType } from "./campaign";
 
 export const baseConfig = {
     expirationDays: 8,
@@ -28,6 +29,8 @@ export const baseConfig = {
     dataElementGroupCodeForAntigens: "RVC_ANTIGEN",
     dataElementGroupCodeForPopulation: "RVC_POPULATION",
     categoryComboCodeForTeams: "RVC_TEAM",
+    categoryComboCodeForReactive: "RVC_TEAM_REACTIVE",
+    categoryComboCodeForPreventive: "RVC_TEAM_PREVENTIVE",
     categoryCodeForTeams: "RVC_TEAM",
     legendSetsCode: "RVC_LEGEND_ZERO",
     attributeCodeForApp: "RVC_CREATED_BY_VACCINATION_APP",
@@ -405,3 +408,13 @@ export async function getMetadataConfig(db: DbD2): Promise<MetadataConfig> {
 
     return metadataConfig;
 }
+
+export const typeCategoryComboMapping: Record<string, CampaignType> = {
+    [baseConfig.categoryComboCodeForReactive]: "reactive",
+    [baseConfig.categoryComboCodeForPreventive]: "preventive",
+};
+
+export const categoryComboTypeMapping: Record<CampaignType, string> = {
+    reactive: baseConfig.categoryComboCodeForReactive,
+    preventive: baseConfig.categoryComboCodeForPreventive,
+};

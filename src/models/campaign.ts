@@ -12,7 +12,7 @@ import moment from "moment";
 import { PaginatedObjects, OrganisationUnitPathOnly, Response } from "./db.types";
 import DbD2, { ApiResponse, toStatusResponse } from "./db-d2";
 import { AntigensDisaggregation, SectionForDisaggregation } from "./AntigensDisaggregation";
-import { MetadataConfig, getDashboardCode, getByIndex } from "./config";
+import { MetadataConfig, getDashboardCode, getByIndex, typeCategoryComboMapping } from "./config";
 import { AntigenDisaggregationEnabled } from "./AntigensDisaggregation";
 import {
     TargetPopulation,
@@ -34,7 +34,7 @@ export interface Antigen {
     doses: { id: string; name: string }[];
 }
 
-export interface Data {
+export interface CampaignData {
     id: Maybe<string>;
     name: string;
     description: string;
@@ -47,7 +47,10 @@ export interface Data {
     teams: Maybe<number>;
     teamsMetadata: TeamsMetadata;
     dashboardId: Maybe<string>;
+    type: CampaignType;
 }
+
+export type CampaignType = "reactive" | "preventive";
 
 type ValidationErrors = Array<{
     key: string;
@@ -88,14 +91,15 @@ export default class Campaign {
         antigensDisaggregation: this.validateAntigensDisaggregation,
     };
 
-    constructor(public db: DbD2, public config: MetadataConfig, private data: Data) {}
+    constructor(public db: DbD2, public config: MetadataConfig, private data: CampaignData) {}
 
     public static create(config: MetadataConfig, db: DbD2): Campaign {
         const antigens: Antigen[] = [];
         const organisationUnits: OrganisationUnit[] = [];
 
-        const initialData = {
+        const initialData: CampaignData = {
             id: undefined,
+            type: "reactive",
             name: "",
             description: "",
             organisationUnits: organisationUnits,
@@ -126,6 +130,7 @@ export default class Campaign {
             dataSets: Array<{
                 id: string;
                 name: string;
+                categoryCombo: { id: string; code: string };
                 description: string;
                 organisationUnits: Array<OrganisationUnitPathOnly>;
                 dataInputPeriods: Array<{ period: { id: string } }>;
@@ -140,6 +145,7 @@ export default class Campaign {
                 fields: {
                     id: true,
                     name: true,
+                    categoryCombo: { id: true, code: true },
                     description: true,
                     organisationUnits: { id: true, path: true },
                     dataInputPeriods: { period: { id: true } },
@@ -213,8 +219,12 @@ export default class Campaign {
         const teamsMetadata = await getTeamsForCampaign(db, ouIds, teamsCategoyId, name);
         const antigensDisaggregation = AntigensDisaggregation.build(config, antigens, sections);
 
+        const type: CampaignType =
+            typeCategoryComboMapping[dataSet.categoryCombo.code] || "reactive";
+
         const initialData = {
             id: dataSet.id,
+            type,
             name: dataSet.name,
             description: dataSet.description,
             organisationUnits: dataSet.organisationUnits,
@@ -231,7 +241,7 @@ export default class Campaign {
         return new Campaign(db, config, initialData);
     }
 
-    public update(newData: Data) {
+    public update(newData: CampaignData) {
         return new Campaign(this.db, this.config, newData);
     }
 
@@ -404,6 +414,16 @@ export default class Campaign {
 
     public get name(): string {
         return this.data.name;
+    }
+
+    /* Type */
+
+    public setType(type: CampaignType): Campaign {
+        return this.update({ ...this.data, type });
+    }
+
+    public get type(): CampaignType {
+        return this.data.type;
     }
 
     public async existsCampaignWithSameName(name: string): Promise<boolean> {
@@ -703,4 +723,13 @@ export default class Campaign {
             filteredTeams.map((team: Ref) => ({ model: "categoryOptions", id: team.id }))
         );
     }
+}
+
+export function getTranslations() {
+    return {
+        type: {
+            reactive: i18n.t("Reactive"),
+            preventive: i18n.t("Preventive"),
+        } as Record<CampaignType, string>,
+    };
 }

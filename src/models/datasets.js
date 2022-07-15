@@ -38,11 +38,17 @@ export async function list(config, d2, filters, pagination) {
     const [field, direction] = sorting || [];
     const order = field && direction ? `${field}:i${direction}` : undefined;
 
+    const categoryComboCodes = [
+        config.categoryCodeForTeams,
+        config.categoryComboCodeForReactive,
+        config.categoryComboCodeForPreventive,
+    ];
+
     const filter = _.compact([
         search ? `displayName:ilike:${search}` : null,
         // Preliminar filters (presence of attribute createdByApp and categoryCombo=TEAMS)
         `attributeValues.attribute.id:eq:${config.attributes.app.id}`,
-        `categoryCombo.code:eq:${config.categoryCodeForTeams}`,
+        `categoryCombo.code:in:[${categoryComboCodes.join(",")}]`,
     ]);
     const fields = (forcedFields || defaultListFields).concat(requiredFields).join(",");
     const listOptions = { fields, filter, pageSize: 1000, order };

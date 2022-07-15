@@ -23,7 +23,13 @@ import {
 } from "./AntigensDisaggregation";
 import { Dashboard, DashboardMetadata } from "./Dashboard";
 import { Teams, CategoryOptionTeam } from "./Teams";
-import { getDashboardCode, getByIndex, MetadataConfig } from "./config";
+import {
+    getDashboardCode,
+    getByIndex,
+    MetadataConfig,
+    baseConfig,
+    categoryComboTypeMapping,
+} from "./config";
 import { config } from "process";
 
 interface DataSetWithSections {
@@ -45,7 +51,6 @@ export default class CampaignDb {
     ageGroupCategoryId: string;
     teamsCategoryId: string;
     dosesCategoryId: string;
-    catComboIdForTeams: string;
 
     constructor(public campaign: Campaign) {
         const { categories, categoryCombos, categoryCodeForAgeGroup } = campaign.config;
@@ -54,14 +59,12 @@ export default class CampaignDb {
             categoryCodeForDoses,
             categoryCodeForAntigens,
         } = campaign.config;
-        const { categoryComboCodeForTeams } = campaign.config;
         const categoriesByCode = _(categories).keyBy("code");
 
         this.ageGroupCategoryId = categoriesByCode.getOrFail(categoryCodeForAgeGroup).id;
         this.teamsCategoryId = categoriesByCode.getOrFail(categoryCodeForTeams).id;
         this.dosesCategoryId = categoriesByCode.getOrFail(categoryCodeForDoses).id;
         this.antigenCategoryId = categoriesByCode.getOrFail(categoryCodeForAntigens).id;
-        this.catComboIdForTeams = getByIndex(categoryCombos, "code", categoryComboCodeForTeams).id;
     }
 
     public async createDashboard(): Promise<string> {
@@ -87,6 +90,7 @@ export default class CampaignDb {
 
     public async save(): Promise<Response<string>> {
         const { campaign } = this;
+        const { config } = campaign;
         const { db, config: metadataConfig, teamsMetadata } = campaign;
         const dataSetId = campaign.id || generateUid();
 
@@ -138,12 +142,16 @@ export default class CampaignDb {
         const sharing = await campaign.getDataSetSharing();
         const campaignDisaggregation = this.getCampaignDisaggregation(disaggregationData);
 
+        const categoryComboCode =
+            categoryComboTypeMapping[campaign.type] || config.categoryComboCodeForReactive;
+        const categoryComboId = getByIndex(config.categoryCombos, "code", categoryComboCode).id;
+
         const dataSet: DataSet = {
             id: dataSetId,
             name: campaign.name,
             description: campaign.description,
             periodType: "Daily",
-            categoryCombo: { id: this.catComboIdForTeams },
+            categoryCombo: { id: categoryComboId },
             dataElementDecoration: true,
             renderAsTabs: true,
             organisationUnits: campaign.organisationUnits.map(ou => ({ id: ou.id })),

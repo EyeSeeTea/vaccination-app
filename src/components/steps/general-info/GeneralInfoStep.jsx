@@ -12,6 +12,8 @@ import { Validators } from "@dhis2/d2-ui-forms";
 
 import { DatePicker } from "d2-ui-components";
 import { translateError } from "../../../utils/validations";
+import SimpleSelect from "../../forms/SimpleSelect";
+import { getTranslations } from "../../../models/campaign";
 
 class GeneralInfoStep extends React.Component {
     state = {
@@ -41,6 +43,9 @@ class GeneralInfoStep extends React.Component {
             case "name":
                 newCampaign = campaign.setName(newValue);
                 break;
+            case "type":
+                newCampaign = campaign.setType(newValue);
+                break;
             case "description":
                 newCampaign = campaign.setDescription(newValue);
                 break;
@@ -59,6 +64,8 @@ class GeneralInfoStep extends React.Component {
 
     render() {
         const { campaign } = this.props;
+        const translations = getTranslations();
+
         const fields = [
             {
                 name: "name",
@@ -77,6 +84,24 @@ class GeneralInfoStep extends React.Component {
                     },
                 ],
                 asyncValidators: [this.validateCampaignName],
+            },
+            {
+                name: "type",
+                value: campaign.type,
+                component: props => {
+                    return (
+                        <SimpleSelect
+                            {...props}
+                            onChange={value => props.onChange({ target: { value } })}
+                        />
+                    );
+                },
+                props: {
+                    "data-field": "type",
+                    floatingLabelText: i18n.t("Type"),
+                    options: _.map(translations.type, (text, value) => ({ value, text })),
+                    style: { marginTop: 20, width: "33%" },
+                },
             },
             {
                 name: "description",

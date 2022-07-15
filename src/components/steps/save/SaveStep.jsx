@@ -10,6 +10,7 @@ import { withSnackbar } from "d2-ui-components";
 
 import { getFullOrgUnitName } from "../../../models/organisation-units";
 import ExitWizardButton from "../../wizard/ExitWizardButton";
+import { getTranslations } from "../../../models/campaign";
 
 const styles = _theme => ({
     wrapper: {
@@ -160,6 +161,7 @@ class SaveStep extends React.Component {
 
         const LiEntry = this.renderLiEntry;
         const disaggregation = campaign.getEnabledAntigensDisaggregation();
+        const translations = getTranslations();
 
         return (
             <React.Fragment>
@@ -171,6 +173,10 @@ class SaveStep extends React.Component {
                 <div className={classes.wrapper}>
                     <ul>
                         <LiEntry label={i18n.t("Name")} value={campaign.name} />
+                        <LiEntry
+                            label={i18n.t("Type")}
+                            value={translations.type[campaign.type] || "-"}
+                        />
 
                         <LiEntry
                             label={i18n.t("Period dates")}
