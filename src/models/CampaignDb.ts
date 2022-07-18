@@ -28,7 +28,7 @@ import {
     getByIndex,
     MetadataConfig,
     baseConfig,
-    categoryComboTypeMapping,
+    categoryComboTeamTypeMapping,
 } from "./config";
 import { config } from "process";
 
@@ -143,7 +143,7 @@ export default class CampaignDb {
         const campaignDisaggregation = this.getCampaignDisaggregation(disaggregationData);
 
         const categoryComboCode =
-            categoryComboTypeMapping[campaign.type] || config.categoryComboCodeForReactive;
+            categoryComboTeamTypeMapping[campaign.type] || config.categoryComboCodeForTeamReactive;
         const categoryComboId = getByIndex(config.categoryCombos, "code", categoryComboCode).id;
 
         const dataSet: DataSet = {
@@ -398,7 +398,7 @@ export default class CampaignDb {
     ): Promise<DashboardMetadata> {
         const { campaign } = this;
         const { db, config: metadataConfig } = campaign;
-        const dashboardGenerator = Dashboard.build(db);
+        const dashboardGenerator = Dashboard.build(db, metadataConfig);
 
         if (!campaign.startDate || !campaign.endDate) {
             throw new Error("Campaign Dates not set");
@@ -410,6 +410,7 @@ export default class CampaignDb {
         const sharing = await campaign.getDashboardSharing();
 
         return dashboardGenerator.create({
+            campaign,
             dashboardId: campaign.dashboardId,
             datasetName: campaign.name,
             organisationUnits: campaign.organisationUnits,

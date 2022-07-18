@@ -96,6 +96,7 @@ export interface GetDataValuesParams {
     period?: string[];
     includeDeleted?: boolean;
     lastUpdated?: string;
+    attributeOptionCombo?: string;
     limit?: number;
     startDate?: Date;
     endDate?: Date;

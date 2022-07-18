@@ -7,7 +7,7 @@ import {
     buildDashboardItems,
 } from "./dashboard-items";
 import { Ref, OrganisationUnitPathOnly, OrganisationUnitWithName, Sharing } from "./db.types";
-import { Antigen } from "./campaign";
+import Campaign, { Antigen } from "./campaign";
 import { Moment } from "moment";
 import { getDaysRange } from "../utils/date";
 import { AntigenDisaggregationEnabled } from "./AntigensDisaggregation";
@@ -41,10 +41,10 @@ export type DashboardMetadata = {
 };
 
 export class Dashboard {
-    constructor(private db: DbD2) {}
+    constructor(private db: DbD2, private metadataConfig: MetadataConfig) {}
 
-    static build(db: DbD2) {
-        return new Dashboard(db);
+    static build(db: DbD2, metadataConfig: MetadataConfig) {
+        return new Dashboard(db, metadataConfig);
     }
 
     private async getMetadataForDashboardItems(
@@ -139,6 +139,7 @@ export class Dashboard {
     }
 
     public async create({
+        campaign,
         dashboardId,
         datasetName,
         organisationUnits,
@@ -152,6 +153,7 @@ export class Dashboard {
         sharing,
         allCategoryIds,
     }: {
+        campaign: Campaign;
         dashboardId?: string;
         datasetName: string;
         organisationUnits: OrganisationUnitPathOnly[];
@@ -175,6 +177,7 @@ export class Dashboard {
         );
 
         const dashboardItems = this.createDashboardItems(
+            campaign,
             datasetName,
             startDate,
             endDate,
@@ -202,6 +205,7 @@ export class Dashboard {
     }
 
     createDashboardItems(
+        campaign: Campaign,
         datasetName: String,
         startDate: Moment,
         endDate: Moment,
@@ -234,6 +238,8 @@ export class Dashboard {
             .value();
 
         const dashboardItems = buildDashboardItems(
+            campaign,
+            this.metadataConfig,
             antigensMeta,
             datasetName,
             organisationUnitsMetadata,

@@ -40,8 +40,8 @@ export async function list(config, d2, filters, pagination) {
 
     const categoryComboCodes = [
         config.categoryCodeForTeams,
-        config.categoryComboCodeForReactive,
-        config.categoryComboCodeForPreventive,
+        config.categoryComboCodeForTeamReactive,
+        config.categoryComboCodeForTeamPreventive,
     ];
 
     const filter = _.compact([

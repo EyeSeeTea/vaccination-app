@@ -29,9 +29,14 @@ export const baseConfig = {
     dataElementGroupCodeForAntigens: "RVC_ANTIGEN",
     dataElementGroupCodeForPopulation: "RVC_POPULATION",
     categoryComboCodeForTeams: "RVC_TEAM",
-    categoryComboCodeForReactive: "RVC_TEAM_REACTIVE",
-    categoryComboCodeForPreventive: "RVC_TEAM_PREVENTIVE",
+    categoryComboCodeForTeamReactive: "RVC_TEAM_REACTIVE",
+    categoryComboCodeForTeamPreventive: "RVC_TEAM_PREVENTIVE",
+    categoryComboCodeForReactive: "RVC_REACTIVE",
+    categoryComboCodeForPreventive: "RVC_PREVENTIVE",
+    categoryCodeForCampaignType: "RVC_CAMPAIGN_TYPE",
     categoryCodeForTeams: "RVC_TEAM",
+    categoryOptionCodeForReactive: "RVC_REACTIVE",
+    categoryOptionCodeForPreventive: "RVC_PREVENTIVE",
     legendSetsCode: "RVC_LEGEND_ZERO",
     attributeCodeForApp: "RVC_CREATED_BY_VACCINATION_APP",
     attributeNameForHideInTallySheet: "hideInTallySheet",
@@ -410,11 +415,21 @@ export async function getMetadataConfig(db: DbD2): Promise<MetadataConfig> {
 }
 
 export const typeCategoryComboMapping: Record<string, CampaignType> = {
-    [baseConfig.categoryComboCodeForReactive]: "reactive",
-    [baseConfig.categoryComboCodeForPreventive]: "preventive",
+    [baseConfig.categoryComboCodeForTeamReactive]: "reactive",
+    [baseConfig.categoryComboCodeForTeamPreventive]: "preventive",
+};
+
+export const categoryComboTeamTypeMapping: Record<CampaignType, string> = {
+    reactive: baseConfig.categoryComboCodeForTeamReactive,
+    preventive: baseConfig.categoryComboCodeForTeamPreventive,
 };
 
 export const categoryComboTypeMapping: Record<CampaignType, string> = {
     reactive: baseConfig.categoryComboCodeForReactive,
     preventive: baseConfig.categoryComboCodeForPreventive,
+};
+
+export const categoryOptionMapping: Record<CampaignType, string> = {
+    reactive: baseConfig.categoryOptionCodeForReactive,
+    preventive: baseConfig.categoryOptionCodeForPreventive,
 };

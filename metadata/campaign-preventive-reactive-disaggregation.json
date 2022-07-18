@@ -1,0 +1,1137 @@
+{
+    "categories": [
+        {
+            "allItems": false,
+            "attributeValues": [],
+            "code": "RVC_PREVENTIVE_CAMPAIGN",
+            "created": "2022-07-15T08:40:45.060",
+            "createdBy": {
+                "displayName": "admin admin",
+                "id": "Q7lEw9NnaKS",
+                "name": "admin admin",
+                "username": "admin"
+            },
+            "dataDimension": false,
+            "dataDimensionType": "ATTRIBUTE",
+            "dimension": "hiZHZ3Nqt8f",
+            "dimensionType": "CATEGORY",
+            "displayFormName": "Preventive Campaign",
+            "displayName": "Preventive Campaign",
+            "displayShortName": "Preventive Campaign",
+            "externalAccess": false,
+            "favorite": false,
+            "favorites": [],
+            "id": "hiZHZ3Nqt8f",
+            "items": [
+                {
+                    "id": "p5Sd5DIKYHy"
+                }
+            ],
+            "lastUpdated": "2022-07-18T10:52:03.298",
+            "lastUpdatedBy": {
+                "displayName": "admin admin",
+                "id": "Q7lEw9NnaKS",
+                "name": "admin admin",
+                "username": "admin"
+            },
+            "name": "Preventive Campaign",
+            "publicAccess": "rw------",
+            "sharing": {
+                "external": false,
+                "owner": "Q7lEw9NnaKS",
+                "public": "rw------",
+                "userGroups": {},
+                "users": {}
+            },
+            "shortName": "Preventive Campaign",
+            "translations": [],
+            "user": {
+                "displayName": "admin admin",
+                "id": "Q7lEw9NnaKS",
+                "name": "admin admin",
+                "username": "admin"
+            },
+            "userAccesses": [],
+            "userGroupAccesses": []
+        },
+        {
+            "allItems": false,
+            "attributeValues": [],
+            "code": "RVC_REACTIVE_CAMPAIGN",
+            "created": "2022-07-15T08:41:04.095",
+            "createdBy": {
+                "displayName": "admin admin",
+                "id": "Q7lEw9NnaKS",
+                "name": "admin admin",
+                "username": "admin"
+            },
+            "dataDimension": false,
+            "dataDimensionType": "ATTRIBUTE",
+            "dimension": "ABCiCnIufIF",
+            "dimensionType": "CATEGORY",
+            "displayFormName": "Reactive Campaign",
+            "displayName": "Reactive Campaign",
+            "displayShortName": "Reactive Campaign",
+            "externalAccess": false,
+            "favorite": false,
+            "favorites": [],
+            "id": "ABCiCnIufIF",
+            "items": [
+                {
+                    "id": "IhLAod6GvkU"
+                }
+            ],
+            "lastUpdated": "2022-07-18T10:52:03.298",
+            "lastUpdatedBy": {
+                "displayName": "admin admin",
+                "id": "Q7lEw9NnaKS",
+                "name": "admin admin",
+                "username": "admin"
+            },
+            "name": "Reactive Campaign",
+            "publicAccess": "rw------",
+            "sharing": {
+                "external": false,
+                "owner": "Q7lEw9NnaKS",
+                "public": "rw------",
+                "userGroups": {},
+                "users": {}
+            },
+            "shortName": "Reactive Campaign",
+            "translations": [],
+            "user": {
+                "displayName": "admin admin",
+                "id": "Q7lEw9NnaKS",
+                "name": "admin admin",
+                "username": "admin"
+            },
+            "userAccesses": [],
+            "userGroupAccesses": []
+        },
+        {
+            "allItems": false,
+            "attributeValues": [],
+            "code": "RVC_CAMPAIGN_TYPE",
+            "created": "2022-07-15T08:43:00.137",
+            "createdBy": {
+                "displayName": "admin admin",
+                "id": "Q7lEw9NnaKS",
+                "name": "admin admin",
+                "username": "admin"
+            },
+            "dataDimension": true,
+            "dataDimensionType": "ATTRIBUTE",
+            "dimension": "J66G0eA8MGR",
+            "dimensionType": "CATEGORY",
+            "displayFormName": "_23.7 RVC Campaign",
+            "displayName": "_23.7 RVC Campaign",
+            "displayShortName": "_23.7 RVC Campaign",
+            "externalAccess": false,
+            "favorite": false,
+            "favorites": [],
+            "id": "J66G0eA8MGR",
+            "items": [
+                {
+                    "id": "p5Sd5DIKYHy"
+                },
+                {
+                    "id": "IhLAod6GvkU"
+                }
+            ],
+            "lastUpdated": "2022-07-18T10:52:03.298",
+            "lastUpdatedBy": {
+                "displayName": "admin admin",
+                "id": "Q7lEw9NnaKS",
+                "name": "admin admin",
+                "username": "admin"
+            },
+            "name": "_23.7 RVC Campaign",
+            "publicAccess": "rw------",
+            "sharing": {
+                "external": false,
+                "owner": "Q7lEw9NnaKS",
+                "public": "rw------",
+                "userGroups": {},
+                "users": {}
+            },
+            "shortName": "_23.7 RVC Campaign",
+            "translations": [],
+            "user": {
+                "displayName": "admin admin",
+                "id": "Q7lEw9NnaKS",
+                "name": "admin admin",
+                "username": "admin"
+            },
+            "userAccesses": [],
+            "userGroupAccesses": []
+        }
+    ],
+    "categoryCombos": [
+        {
+            "attributeValues": [],
+            "code": "RVC_PREVENTIVE",
+            "created": "2022-07-18T10:22:58.623",
+            "createdBy": {
+                "displayName": "admin admin",
+                "id": "Q7lEw9NnaKS",
+                "name": "admin admin",
+                "username": "admin"
+            },
+            "dataDimensionType": "ATTRIBUTE",
+            "displayName": "Preventive",
+            "externalAccess": false,
+            "favorite": false,
+            "favorites": [],
+            "id": "nYyO6QGI9WN",
+            "isDefault": false,
+            "lastUpdated": "2022-07-18T10:52:03.306",
+            "lastUpdatedBy": {
+                "displayName": "admin admin",
+                "id": "Q7lEw9NnaKS",
+                "name": "admin admin",
+                "username": "admin"
+            },
+            "name": "Preventive",
+            "publicAccess": "rw------",
+            "sharing": {
+                "external": false,
+                "owner": "Q7lEw9NnaKS",
+                "public": "rw------",
+                "userGroups": {},
+                "users": {}
+            },
+            "skipTotal": false,
+            "translations": [],
+            "user": {
+                "displayName": "admin admin",
+                "id": "Q7lEw9NnaKS",
+                "name": "admin admin",
+                "username": "admin"
+            },
+            "userAccesses": [],
+            "userGroupAccesses": []
+        },
+        {
+            "attributeValues": [],
+            "code": "RVC_REACTIVE",
+            "created": "2022-07-18T10:23:16.193",
+            "createdBy": {
+                "displayName": "admin admin",
+                "id": "Q7lEw9NnaKS",
+                "name": "admin admin",
+                "username": "admin"
+            },
+            "dataDimensionType": "ATTRIBUTE",
+            "displayName": "Reactive",
+            "externalAccess": false,
+            "favorite": false,
+            "favorites": [],
+            "id": "bhj5vhgcm8E",
+            "isDefault": false,
+            "lastUpdated": "2022-07-18T10:52:03.306",
+            "lastUpdatedBy": {
+                "displayName": "admin admin",
+                "id": "Q7lEw9NnaKS",
+                "name": "admin admin",
+                "username": "admin"
+            },
+            "name": "Reactive",
+            "publicAccess": "rw------",
+            "sharing": {
+                "external": false,
+                "owner": "Q7lEw9NnaKS",
+                "public": "rw------",
+                "userGroups": {},
+                "users": {}
+            },
+            "skipTotal": false,
+            "translations": [],
+            "user": {
+                "displayName": "admin admin",
+                "id": "Q7lEw9NnaKS",
+                "name": "admin admin",
+                "username": "admin"
+            },
+            "userAccesses": [],
+            "userGroupAccesses": []
+        },
+        {
+            "attributeValues": [],
+            "code": "RVC_TEAM_PREVENTIVE",
+            "created": "2022-07-15T08:43:35.430",
+            "createdBy": {
+                "displayName": "admin admin",
+                "id": "Q7lEw9NnaKS",
+                "name": "admin admin",
+                "username": "admin"
+            },
+            "dataDimensionType": "ATTRIBUTE",
+            "displayName": "Team / Preventive",
+            "externalAccess": false,
+            "favorite": false,
+            "favorites": [],
+            "id": "uxkKXEwurKu",
+            "isDefault": false,
+            "lastUpdated": "2022-07-18T10:52:03.306",
+            "lastUpdatedBy": {
+                "displayName": "admin admin",
+                "id": "Q7lEw9NnaKS",
+                "name": "admin admin",
+                "username": "admin"
+            },
+            "name": "Team / Preventive",
+            "publicAccess": "rw------",
+            "sharing": {
+                "external": false,
+                "owner": "Q7lEw9NnaKS",
+                "public": "rw------",
+                "userGroups": {},
+                "users": {}
+            },
+            "skipTotal": false,
+            "translations": [],
+            "user": {
+                "displayName": "admin admin",
+                "id": "Q7lEw9NnaKS",
+                "name": "admin admin",
+                "username": "admin"
+            },
+            "userAccesses": [],
+            "userGroupAccesses": []
+        },
+        {
+            "attributeValues": [],
+            "code": "RVC_TEAM_REACTIVE",
+            "created": "2022-07-15T08:43:47.830",
+            "createdBy": {
+                "displayName": "admin admin",
+                "id": "Q7lEw9NnaKS",
+                "name": "admin admin",
+                "username": "admin"
+            },
+            "dataDimensionType": "ATTRIBUTE",
+            "displayName": "Team / Reactive",
+            "externalAccess": false,
+            "favorite": false,
+            "favorites": [],
+            "id": "yVdUAuXp8Ly",
+            "isDefault": false,
+            "lastUpdated": "2022-07-18T10:52:03.306",
+            "lastUpdatedBy": {
+                "displayName": "admin admin",
+                "id": "Q7lEw9NnaKS",
+                "name": "admin admin",
+                "username": "admin"
+            },
+            "name": "Team / Reactive",
+            "publicAccess": "rw------",
+            "sharing": {
+                "external": false,
+                "owner": "Q7lEw9NnaKS",
+                "public": "rw------",
+                "userGroups": {},
+                "users": {}
+            },
+            "skipTotal": false,
+            "translations": [],
+            "user": {
+                "displayName": "admin admin",
+                "id": "Q7lEw9NnaKS",
+                "name": "admin admin",
+                "username": "admin"
+            },
+            "userAccesses": [],
+            "userGroupAccesses": []
+        }
+    ],
+    "categoryOptionCombos": [
+        {
+            "created": "2022-07-18T10:22:58.662",
+            "dimensionItem": "z5ONfWrqp6b",
+            "displayFormName": "Preventive",
+            "displayName": "Preventive",
+            "displayShortName": "Preventive",
+            "externalAccess": false,
+            "favorite": false,
+            "favorites": [],
+            "id": "z5ONfWrqp6b",
+            "ignoreApproval": false,
+            "lastUpdated": "2022-07-18T10:52:03.313",
+            "lastUpdatedBy": {
+                "displayName": "admin admin",
+                "id": "Q7lEw9NnaKS",
+                "name": "admin admin",
+                "username": "admin"
+            },
+            "legendSets": [],
+            "name": "Preventive",
+            "periodOffset": 0,
+            "sharing": {
+                "external": false,
+                "userGroups": {},
+                "users": {}
+            },
+            "shortName": "Preventive",
+            "translations": [],
+            "userAccesses": [],
+            "userGroupAccesses": []
+        },
+        {
+            "created": "2022-07-18T10:23:16.216",
+            "dimensionItem": "CjUzGG0Q01j",
+            "displayFormName": "Reactive",
+            "displayName": "Reactive",
+            "displayShortName": "Reactive",
+            "externalAccess": false,
+            "favorite": false,
+            "favorites": [],
+            "id": "CjUzGG0Q01j",
+            "ignoreApproval": false,
+            "lastUpdated": "2022-07-18T10:52:03.313",
+            "lastUpdatedBy": {
+                "displayName": "admin admin",
+                "id": "Q7lEw9NnaKS",
+                "name": "admin admin",
+                "username": "admin"
+            },
+            "legendSets": [],
+            "name": "Reactive",
+            "periodOffset": 0,
+            "sharing": {
+                "external": false,
+                "userGroups": {},
+                "users": {}
+            },
+            "shortName": "Reactive",
+            "translations": [],
+            "userAccesses": [],
+            "userGroupAccesses": []
+        }
+    ],
+    "categoryOptions": [
+        {
+            "attributeValues": [],
+            "categoryOptionCombos": [
+                {
+                    "id": "z5ONfWrqp6b"
+                },
+                {
+                    "id": "LqfxjR4ecz9"
+                },
+                {
+                    "id": "CLs8u2AW4r0"
+                },
+                {
+                    "id": "kzm5l6ZcDGT"
+                },
+                {
+                    "id": "NUi2EJ87vRU"
+                },
+                {
+                    "id": "XKXgoZRFKTQ"
+                },
+                {
+                    "id": "h1gIYT50vpI"
+                },
+                {
+                    "id": "BgWoyXE50ni"
+                },
+                {
+                    "id": "PPwi5nDp2zp"
+                },
+                {
+                    "id": "CD5jWoPebq8"
+                },
+                {
+                    "id": "ia4R1auQs0i"
+                },
+                {
+                    "id": "SCRsNtccKzS"
+                },
+                {
+                    "id": "c6mwqYpaPJt"
+                },
+                {
+                    "id": "MsbCpaXETUK"
+                },
+                {
+                    "id": "QUtJmVRa3Gj"
+                },
+                {
+                    "id": "YsFRsZIK5bS"
+                },
+                {
+                    "id": "mZh4AiB2Opo"
+                },
+                {
+                    "id": "zdRI34TWG65"
+                },
+                {
+                    "id": "dojFaCY7TBr"
+                },
+                {
+                    "id": "a8eQhWlrU2l"
+                },
+                {
+                    "id": "TwrCeGW47fZ"
+                },
+                {
+                    "id": "OJz7dUErOmv"
+                },
+                {
+                    "id": "kqQBBqpIbv2"
+                },
+                {
+                    "id": "CK8odP6J4Ue"
+                },
+                {
+                    "id": "YZuKcQFMERt"
+                },
+                {
+                    "id": "V0T1AtjbQYg"
+                },
+                {
+                    "id": "YcoxTv1DjXr"
+                },
+                {
+                    "id": "RF6Ua7BoXCC"
+                },
+                {
+                    "id": "IpeRHEuI2kM"
+                },
+                {
+                    "id": "X0557d1NQZu"
+                },
+                {
+                    "id": "KGlezBkVsEa"
+                },
+                {
+                    "id": "FOpGSN4FGZf"
+                },
+                {
+                    "id": "ubORMXHLIgc"
+                },
+                {
+                    "id": "F8VhiqZLL70"
+                },
+                {
+                    "id": "h1Jp25YCZfo"
+                },
+                {
+                    "id": "X5oVLABwvmO"
+                },
+                {
+                    "id": "DsiLmkGNOJD"
+                },
+                {
+                    "id": "k5hQn1He0bh"
+                },
+                {
+                    "id": "nF0aWtk9V4t"
+                },
+                {
+                    "id": "TwqxUWZl2gs"
+                },
+                {
+                    "id": "VS6plyrzfjz"
+                },
+                {
+                    "id": "zxWNllbVlwh"
+                },
+                {
+                    "id": "D0IjWRP1JjW"
+                },
+                {
+                    "id": "SgcKXgnac6H"
+                },
+                {
+                    "id": "PQdbfvD7l86"
+                },
+                {
+                    "id": "OrMrc07soqV"
+                },
+                {
+                    "id": "UQxGiZZbBid"
+                },
+                {
+                    "id": "vzu9spDJnOT"
+                },
+                {
+                    "id": "nXw4esiSZ6E"
+                },
+                {
+                    "id": "YxEjiBOzodp"
+                },
+                {
+                    "id": "gtKZ76nPqwU"
+                },
+                {
+                    "id": "NQL78EWZi0M"
+                },
+                {
+                    "id": "clPOHHqARC9"
+                },
+                {
+                    "id": "MJEc5GM9ebZ"
+                },
+                {
+                    "id": "x5Ll3MU3Pmv"
+                },
+                {
+                    "id": "BC9jIo6nXYK"
+                },
+                {
+                    "id": "FffDhySAnjk"
+                },
+                {
+                    "id": "ahxc8hezY2h"
+                },
+                {
+                    "id": "hNMccgHkdhW"
+                },
+                {
+                    "id": "Jk3e3qiO8sH"
+                },
+                {
+                    "id": "OUKBHfAPiuC"
+                },
+                {
+                    "id": "nCXZbLoaroS"
+                },
+                {
+                    "id": "WPx6ZgACaLq"
+                },
+                {
+                    "id": "RgHq78WUoHk"
+                },
+                {
+                    "id": "YHfbPgbEM9M"
+                },
+                {
+                    "id": "ogfoKkPDDCS"
+                },
+                {
+                    "id": "YZ6BYJ8TrZ9"
+                },
+                {
+                    "id": "lpTMeJOWCa7"
+                },
+                {
+                    "id": "VFT6qg8b2Yg"
+                },
+                {
+                    "id": "S3DXWIBIxrb"
+                },
+                {
+                    "id": "j59X0Wd7paT"
+                },
+                {
+                    "id": "l0Sts0o2bdB"
+                },
+                {
+                    "id": "TPXu4bLe2AW"
+                },
+                {
+                    "id": "L673BMO61rf"
+                },
+                {
+                    "id": "wj8403zfOOq"
+                },
+                {
+                    "id": "zklDL6kePpe"
+                },
+                {
+                    "id": "hUPhgTuHSI0"
+                },
+                {
+                    "id": "HPMpGczr0U4"
+                },
+                {
+                    "id": "zQ7GWrrL9Gr"
+                },
+                {
+                    "id": "DpqkjhtdwaC"
+                },
+                {
+                    "id": "TMWYhy2MmFl"
+                },
+                {
+                    "id": "Du31CSrLIXD"
+                },
+                {
+                    "id": "DXbgdnt3WtG"
+                },
+                {
+                    "id": "ouSoMu1qG3u"
+                },
+                {
+                    "id": "INxUusEpgw0"
+                },
+                {
+                    "id": "pk1O7fmoupI"
+                },
+                {
+                    "id": "MWAMwf12VlV"
+                },
+                {
+                    "id": "RAiPr6OYCyQ"
+                },
+                {
+                    "id": "l0OjU6cmfAp"
+                },
+                {
+                    "id": "agBsUMhmo8H"
+                },
+                {
+                    "id": "eKZR1hSgPG1"
+                },
+                {
+                    "id": "Oq31kQzdpN4"
+                },
+                {
+                    "id": "sUmJ9C2JzPL"
+                },
+                {
+                    "id": "w1AiCjvwqfn"
+                },
+                {
+                    "id": "GOzDa6Ndrra"
+                },
+                {
+                    "id": "y2U8KBjEYUz"
+                },
+                {
+                    "id": "qgHs1NmBz9X"
+                },
+                {
+                    "id": "QxEKmYKd9d7"
+                },
+                {
+                    "id": "grzjvra3sji"
+                },
+                {
+                    "id": "gRBYiMSXRbS"
+                },
+                {
+                    "id": "t4SRAOe4VFs"
+                },
+                {
+                    "id": "EuDT0ywuT1Q"
+                },
+                {
+                    "id": "oMcwQxe9egp"
+                },
+                {
+                    "id": "Q9b8KeEGh6r"
+                }
+            ],
+            "code": "RVC_PREVENTIVE",
+            "created": "2022-07-15T08:39:58.813",
+            "createdBy": {
+                "displayName": "admin admin",
+                "id": "Q7lEw9NnaKS",
+                "name": "admin admin",
+                "username": "admin"
+            },
+            "dimensionItem": "p5Sd5DIKYHy",
+            "dimensionItemType": "CATEGORY_OPTION",
+            "displayFormName": "Preventive",
+            "displayName": "Preventive",
+            "externalAccess": false,
+            "favorite": false,
+            "favorites": [],
+            "id": "p5Sd5DIKYHy",
+            "isDefault": false,
+            "lastUpdated": "2022-07-18T10:52:03.287",
+            "lastUpdatedBy": {
+                "displayName": "admin admin",
+                "id": "Q7lEw9NnaKS",
+                "name": "admin admin",
+                "username": "admin"
+            },
+            "legendSets": [],
+            "name": "Preventive",
+            "organisationUnits": [],
+            "periodOffset": 0,
+            "publicAccess": "rwrw----",
+            "sharing": {
+                "external": false,
+                "owner": "Q7lEw9NnaKS",
+                "public": "rwrw----",
+                "userGroups": {},
+                "users": {}
+            },
+            "translations": [],
+            "user": {
+                "displayName": "admin admin",
+                "id": "Q7lEw9NnaKS",
+                "name": "admin admin",
+                "username": "admin"
+            },
+            "userAccesses": [],
+            "userGroupAccesses": []
+        },
+        {
+            "attributeValues": [],
+            "categoryOptionCombos": [
+                {
+                    "id": "Z71VUCLq6px"
+                },
+                {
+                    "id": "p1A4X8Wrjpo"
+                },
+                {
+                    "id": "yZH1z8prDVZ"
+                },
+                {
+                    "id": "hzRgsMBe9mj"
+                },
+                {
+                    "id": "QljiNRsyvuG"
+                },
+                {
+                    "id": "fceyA8t6oT8"
+                },
+                {
+                    "id": "s8YmqOllqJZ"
+                },
+                {
+                    "id": "UAJ1JnLjt1a"
+                },
+                {
+                    "id": "XYATw8rpqnf"
+                },
+                {
+                    "id": "Hx0ridkJ1MN"
+                },
+                {
+                    "id": "P1kcNNDqU2Q"
+                },
+                {
+                    "id": "m1DpaMSy8f6"
+                },
+                {
+                    "id": "iKzcLBksTBN"
+                },
+                {
+                    "id": "z81H86NSCwq"
+                },
+                {
+                    "id": "qTpBStzsQpn"
+                },
+                {
+                    "id": "xvlI8CIjKbN"
+                },
+                {
+                    "id": "MD4X2yqUH1q"
+                },
+                {
+                    "id": "EPVqzCZTg7a"
+                },
+                {
+                    "id": "G61tcVneIXJ"
+                },
+                {
+                    "id": "bWRuiIXSbAO"
+                },
+                {
+                    "id": "tTPlK93HY0L"
+                },
+                {
+                    "id": "k5rSduXudwk"
+                },
+                {
+                    "id": "ZPGNXxrI91x"
+                },
+                {
+                    "id": "GKfwcQscEZv"
+                },
+                {
+                    "id": "cSJYD8cA2HK"
+                },
+                {
+                    "id": "PK6zZ5CQnk5"
+                },
+                {
+                    "id": "yhHv0ag4J7h"
+                },
+                {
+                    "id": "Mcrlpq1aTTk"
+                },
+                {
+                    "id": "ADRyCcGqM7T"
+                },
+                {
+                    "id": "XVCSKEknbGp"
+                },
+                {
+                    "id": "XCo1lRdcU0Q"
+                },
+                {
+                    "id": "svbhLIfmbpT"
+                },
+                {
+                    "id": "AQxtA4ioqbD"
+                },
+                {
+                    "id": "JuTI7osAcnZ"
+                },
+                {
+                    "id": "RT9JGVuoc71"
+                },
+                {
+                    "id": "OX8TlKPMLI0"
+                },
+                {
+                    "id": "HH8vlzq1uKf"
+                },
+                {
+                    "id": "YZBi1G2yJ25"
+                },
+                {
+                    "id": "WOcfCwXVXgb"
+                },
+                {
+                    "id": "Ph0QN5acqsR"
+                },
+                {
+                    "id": "Eyzc7alLSHA"
+                },
+                {
+                    "id": "fePcr7nSAd6"
+                },
+                {
+                    "id": "twO1ZZt25wV"
+                },
+                {
+                    "id": "cSJ1gRiWrde"
+                },
+                {
+                    "id": "aok82tv9ciz"
+                },
+                {
+                    "id": "d9l5UvrOKqw"
+                },
+                {
+                    "id": "uvVCdPmcXfq"
+                },
+                {
+                    "id": "lPAOoZKRUNt"
+                },
+                {
+                    "id": "Gi65PoT0gGN"
+                },
+                {
+                    "id": "H0yRbZpCOaK"
+                },
+                {
+                    "id": "yuevFAX8JPy"
+                },
+                {
+                    "id": "YzLVqOHbDfr"
+                },
+                {
+                    "id": "YBtgVLvQw3q"
+                },
+                {
+                    "id": "KAe6MTtj8SK"
+                },
+                {
+                    "id": "x8Td55DQ6fc"
+                },
+                {
+                    "id": "PoAC4cDCTAJ"
+                },
+                {
+                    "id": "SvqczA24EBF"
+                },
+                {
+                    "id": "rOjueLPNlxk"
+                },
+                {
+                    "id": "DDxQPI7rkqc"
+                },
+                {
+                    "id": "i6LX8Wv6UBG"
+                },
+                {
+                    "id": "zI6xP1nLiGG"
+                },
+                {
+                    "id": "lgJ4m5dWs2R"
+                },
+                {
+                    "id": "ZRvpY7N2t1G"
+                },
+                {
+                    "id": "qf98ppDGxwB"
+                },
+                {
+                    "id": "UiPbSpsOAfC"
+                },
+                {
+                    "id": "rFfEX144NmR"
+                },
+                {
+                    "id": "phu8leew1vW"
+                },
+                {
+                    "id": "iRG6J5hh0lA"
+                },
+                {
+                    "id": "wzgwXCBh9LH"
+                },
+                {
+                    "id": "NJvvbYUXfuB"
+                },
+                {
+                    "id": "ESYXKpgsH3b"
+                },
+                {
+                    "id": "qqMaIsUIEW4"
+                },
+                {
+                    "id": "j6bqbtRz6Af"
+                },
+                {
+                    "id": "iDo77qMSVci"
+                },
+                {
+                    "id": "VgAsxyq7krg"
+                },
+                {
+                    "id": "bnv4qGJGiP6"
+                },
+                {
+                    "id": "xznRg2ms62A"
+                },
+                {
+                    "id": "nqKhN1DKRpN"
+                },
+                {
+                    "id": "JkZYMYcsNsT"
+                },
+                {
+                    "id": "TPlvf9AxxtQ"
+                },
+                {
+                    "id": "bbGqalcImkm"
+                },
+                {
+                    "id": "I3VLgKRy4Iz"
+                },
+                {
+                    "id": "o6QeVqZ9LZT"
+                },
+                {
+                    "id": "ZUf1SDndcYD"
+                },
+                {
+                    "id": "h5CDE28IKfy"
+                },
+                {
+                    "id": "m0qcAyddGWb"
+                },
+                {
+                    "id": "Z3GjwqGO9K8"
+                },
+                {
+                    "id": "zY3k8woQqRJ"
+                },
+                {
+                    "id": "V5ITTM9jIK3"
+                },
+                {
+                    "id": "KQ4DDJS94WM"
+                },
+                {
+                    "id": "U8OjammT44m"
+                },
+                {
+                    "id": "cRltFoURpHo"
+                },
+                {
+                    "id": "WcIB9o8QKz8"
+                },
+                {
+                    "id": "u600juThIE1"
+                },
+                {
+                    "id": "iGFIv5MHhrd"
+                },
+                {
+                    "id": "xycwJg6wsln"
+                },
+                {
+                    "id": "aTdpePCIMXt"
+                },
+                {
+                    "id": "wRBF7LCCUvU"
+                },
+                {
+                    "id": "CjUzGG0Q01j"
+                },
+                {
+                    "id": "f93OUrettAp"
+                },
+                {
+                    "id": "vLPO8a7XeBn"
+                },
+                {
+                    "id": "Z5bY612ORYd"
+                },
+                {
+                    "id": "FnxbyefbiCY"
+                },
+                {
+                    "id": "qjF3IYvX9Fm"
+                }
+            ],
+            "code": "RVC_REACTIVE",
+            "created": "2022-07-15T08:39:53.295",
+            "createdBy": {
+                "displayName": "admin admin",
+                "id": "Q7lEw9NnaKS",
+                "name": "admin admin",
+                "username": "admin"
+            },
+            "dimensionItem": "IhLAod6GvkU",
+            "dimensionItemType": "CATEGORY_OPTION",
+            "displayFormName": "Reactive",
+            "displayName": "Reactive",
+            "externalAccess": false,
+            "favorite": false,
+            "favorites": [],
+            "id": "IhLAod6GvkU",
+            "isDefault": false,
+            "lastUpdated": "2022-07-18T10:52:03.287",
+            "lastUpdatedBy": {
+                "displayName": "admin admin",
+                "id": "Q7lEw9NnaKS",
+                "name": "admin admin",
+                "username": "admin"
+            },
+            "legendSets": [],
+            "name": "Reactive",
+            "organisationUnits": [],
+            "periodOffset": 0,
+            "publicAccess": "rwrw----",
+            "sharing": {
+                "external": false,
+                "owner": "Q7lEw9NnaKS",
+                "public": "rwrw----",
+                "userGroups": {},
+                "users": {}
+            },
+            "translations": [],
+            "user": {
+                "displayName": "admin admin",
+                "id": "Q7lEw9NnaKS",
+                "name": "admin admin",
+                "username": "admin"
+            },
+            "userAccesses": [],
+            "userGroupAccesses": []
+        }
+    ]
+}
