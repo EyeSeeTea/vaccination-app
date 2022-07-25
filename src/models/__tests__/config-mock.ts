@@ -2,6 +2,12 @@ import { MetadataConfig, baseConfig } from "../config";
 
 const metadataConfig: MetadataConfig = {
     ...baseConfig,
+    disaggregations: {
+        campaignType: {
+            preventive: "id1",
+            reactive: "id2",
+        },
+    },
     userRoles: [],
     organisationUnitLevels: [],
     categoryCombos: [],

@@ -17,6 +17,7 @@ import {
 } from "./db.types";
 import { sortAgeGroups } from "../utils/age-groups";
 import { CampaignType } from "./campaign";
+import { Id } from "@eyeseetea/d2-api";
 
 export const baseConfig = {
     expirationDays: 8,
@@ -31,8 +32,6 @@ export const baseConfig = {
     categoryComboCodeForTeams: "RVC_TEAM",
     categoryComboCodeForTeamReactive: "RVC_TEAM_REACTIVE",
     categoryComboCodeForTeamPreventive: "RVC_TEAM_PREVENTIVE",
-    categoryComboCodeForReactive: "RVC_REACTIVE",
-    categoryComboCodeForPreventive: "RVC_PREVENTIVE",
     categoryCodeForCampaignType: "RVC_CAMPAIGN_TYPE",
     categoryCodeForTeams: "RVC_TEAM",
     categoryOptionCodeForReactive: "RVC_REACTIVE",
@@ -76,6 +75,9 @@ export interface MetadataConfig extends BaseConfig {
     }>;
     defaults: {
         categoryOptionCombo: CategoryOptionCombo;
+    };
+    disaggregations: {
+        campaignType: Record<CampaignType, CategoryOptionComboId>;
     };
     categoryOptions: CategoryOption[];
     categoryCombos: CategoryCombo[];
@@ -362,6 +364,8 @@ export async function getMetadataConfig(db: DbD2): Promise<MetadataConfig> {
     const codeFilter = "code:startsWith:RVC_";
     const modelParams = { filters: [codeFilter] };
 
+    const campaignType = await getCampaignTypeDisaggregation(db);
+
     const metadataParams = {
         attributes: {},
         categories: modelParams,
@@ -381,8 +385,9 @@ export async function getMetadataConfig(db: DbD2): Promise<MetadataConfig> {
 
     const metadata = await db.getMetadata<RawMetadataConfig>(metadataParams);
 
-    const metadataConfig = {
+    const metadataConfig: MetadataConfig = {
         ...baseConfig,
+        disaggregations: { campaignType },
         attributes: getAttributes(metadata.attributes),
         organisationUnitLevels: metadata.organisationUnitLevels,
         categories: metadata.categories,
@@ -424,12 +429,50 @@ export const categoryComboTeamTypeMapping: Record<CampaignType, string> = {
     preventive: baseConfig.categoryComboCodeForTeamPreventive,
 };
 
-export const categoryComboTypeMapping: Record<CampaignType, string> = {
-    reactive: baseConfig.categoryComboCodeForReactive,
-    preventive: baseConfig.categoryComboCodeForPreventive,
-};
-
 export const categoryOptionMapping: Record<CampaignType, string> = {
     reactive: baseConfig.categoryOptionCodeForReactive,
     preventive: baseConfig.categoryOptionCodeForPreventive,
 };
+
+export const categoryOptionMapping2: Record<string, CampaignType> = {
+    [baseConfig.categoryOptionCodeForReactive]: "reactive",
+    [baseConfig.categoryOptionCodeForPreventive]: "preventive",
+};
+
+type CategoryOptionComboId = Id & {};
+
+async function getCampaignTypeDisaggregation(
+    db: DbD2
+): Promise<MetadataConfig["disaggregations"]["campaignType"]> {
+    const metadata = await db.getMetadata<{
+        categoryCombos: Array<{
+            id: string;
+            code: string;
+            categoryOptionCombos: Array<{
+                id: string;
+                categoryOptions: Array<{ code: string }>;
+            }>;
+        }>;
+    }>({
+        categoryCombos: {
+            fields: {
+                id: true,
+                code: true,
+                "categoryOptionCombos[id,categoryOptions[code]": true,
+            },
+            filters: [`code:eq:${baseConfig.categoryCodeForCampaignType}`],
+        },
+    });
+
+    const campaignTypeCategoryCombo = _(metadata.categoryCombos).getOrFail(0);
+
+    const getCocIdForCategoryOption = (categoryOptionId: Id) =>
+        _(campaignTypeCategoryCombo.categoryOptionCombos)
+            .filter(coc => _(coc.categoryOptions).getOrFail(0).code === categoryOptionId)
+            .getOrFail(0).id;
+
+    return {
+        preventive: getCocIdForCategoryOption(categoryOptionMapping.preventive),
+        reactive: getCocIdForCategoryOption(categoryOptionMapping.reactive),
+    };
+}

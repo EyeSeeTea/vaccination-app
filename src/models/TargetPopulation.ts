@@ -3,12 +3,7 @@ const fp = require("lodash/fp");
 import moment from "moment";
 
 import DbD2 from "./db-d2";
-import {
-    categoryComboTeamTypeMapping,
-    categoryComboTypeMapping,
-    categoryOptionMapping,
-    MetadataConfig,
-} from "./config";
+import { categoryOptionMapping, MetadataConfig } from "./config";
 import { Maybe, DataValue } from "./db.types";
 import { OrganisationUnit, OrganisationUnitPathOnly, OrganisationUnitLevel } from "./db.types";
 import { AntigenDisaggregationEnabled } from "./AntigensDisaggregation";
@@ -65,20 +60,18 @@ export interface AgeGroupSelector {
 export class TargetPopulation {
     private config: MetadataConfig;
     private db: DbD2;
-    private attributeOptionCombo: string;
+    private attributeOptionComboId: string;
 
     constructor(public campaign: Campaign, public data: TargetPopulationData) {
-        this.db = campaign.db;
-        this.config = campaign.config;
+        const { db, config } = campaign;
+        this.db = db;
+        this.config = config;
 
-        const catComboCode = categoryComboTypeMapping[campaign.type];
-        const categoryCombo = _(this.config.categoryCombos)
+        const categoryCombo = _(config.categoryCombos)
             .keyBy(category => category.code)
-            .getOrFail(catComboCode);
-        const coc = _.first(categoryCombo.categoryOptionCombos);
-        if (!coc) throw new Error("Cannot find categoryOptionCombo for campaign type");
+            .getOrFail(config.categoryCodeForCampaignType);
 
-        this.attributeOptionCombo = coc.id;
+        this.attributeOptionComboId = config.disaggregations.campaignType[campaign.type];
     }
 
     static build(campaign: Campaign): TargetPopulation {
@@ -262,7 +255,7 @@ export class TargetPopulation {
         const expectedDataValues = await this.getDataValues().catch(_err => [] as DataValue[]);
 
         const actualDataValues = await this.db.getDataValues({
-            attributeOptionCombo: this.attributeOptionCombo,
+            attributeOptionCombo: this.attributeOptionComboId,
             dataElementGroup: [config.population.dataElementGroup.id],
             orgUnit: campaign.organisationUnits.map(ou => ou.id),
             startDate: campaign.startDate || undefined,
@@ -396,7 +389,7 @@ export class TargetPopulation {
             // Use the campaign type disaggregation (preventive/reactive) as attributeOptionCombo
             return dataValues.map(dataValue => ({
                 ...dataValue,
-                attributeOptionCombo: this.attributeOptionCombo,
+                attributeOptionCombo: this.attributeOptionComboId,
             }));
         });
     }
@@ -429,7 +422,7 @@ export class TargetPopulation {
 
         const dataValues = getLatestDataValueWithValue(
             await this.db.getDataValues({
-                attributeOptionCombo: this.attributeOptionCombo,
+                attributeOptionCombo: this.attributeOptionComboId,
                 dataElementGroup: [this.config.population.dataElementGroup.id],
                 orgUnit: orgUnitIds,
                 ...(startDate && endDate ? { startDate, endDate } : { period: [period] }),
@@ -518,7 +511,7 @@ export class TargetPopulation {
 
         const dataValues = getLatestDataValueWithValue(
             await this.db.getDataValues({
-                attributeOptionCombo: this.attributeOptionCombo,
+                attributeOptionCombo: this.attributeOptionComboId,
                 dataElementGroup: [this.config.population.dataElementGroup.id],
                 orgUnit: orgUnitIds,
                 period: [period],
