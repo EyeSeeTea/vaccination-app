@@ -3,7 +3,7 @@ const fp = require("lodash/fp");
 import moment from "moment";
 
 import DbD2 from "./db-d2";
-import { categoryOptionMapping, MetadataConfig } from "./config";
+import { MetadataConfig } from "./config";
 import { Maybe, DataValue } from "./db.types";
 import { OrganisationUnit, OrganisationUnitPathOnly, OrganisationUnitLevel } from "./db.types";
 import { AntigenDisaggregationEnabled } from "./AntigensDisaggregation";

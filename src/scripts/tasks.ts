@@ -35,7 +35,7 @@ function main() {
             }),
             postDryRun: flag({
                 long: "post-dry-run",
-                description: "Post data values with dryRun enabled",
+                description: "Post data values with dryRun flag (validate, but don't commit)",
             }),
         },
         handler: async args => {
@@ -82,30 +82,41 @@ class UpdateCampaignsDisaggregation {
         const metadata = await api.metadata.get(metadataQuery).getData();
         const aocMapping = this.getAttributeOptionComboMapping(metadata);
         const dataValues = await this.getDataValues(metadata);
-        const data = this.getMappedDataValues(metadata, dataValues, aocMapping);
-        const dataValuesMapped = _.compact(data.map(o => o.dataValue));
-        await this.persistDataValues(dataValuesMapped, options, api);
-        await this.saveReport(data.map(o => o.row));
+        const mappedData = this.getMappedDataValues(metadata, dataValues, aocMapping);
+        const dataValuesMapped = _.compact(mappedData.map(o => o.dataValue));
+        await this.persistDataValues(mappedData, options, api);
+        await this.saveReport(mappedData.map(o => o.row));
         debug(`Data values: original=${dataValues.length}, mapped=${dataValuesMapped.length}`);
+        if (!options.post && !options.postDryRun)
+            debug(`Add option --post | --post-dry-run to delete/create data values`);
     }
 
-    private async persistDataValues(
-        dataValuesWithAocMapped: DataValueSetsDataValue[],
-        options: Options,
-        api: D2Api
-    ) {
-        const groups = _.chunk(dataValuesWithAocMapped, 100_000);
+    private async persistDataValues(allMappedData: MappedData[], options: Options, api: D2Api) {
+        const mappedDataGroups = _.chunk(allMappedData, 50_000);
 
-        for (const [index, dataValuesGroup] of groups.entries()) {
-            const payload = { dataValues: dataValuesGroup };
+        for (const [index, mappedDataGroup] of mappedDataGroups.entries()) {
+            const dataValues = _(mappedDataGroup)
+                .flatMap(mappedData => {
+                    if (!mappedData.newAttributeOptionComboId) return [];
+                    const deletedDataValue = { ...mappedData.dataValue, deleted: true };
+                    const newDataValue = {
+                        ...mappedData.dataValue,
+                        attributeOptionCombo: mappedData.newAttributeOptionComboId,
+                    };
+                    return [deletedDataValue, newDataValue];
+                })
+                .compact()
+                .value();
+
+            const payload = { dataValues: dataValues };
             const json = JSON.stringify(payload, null, 4);
-            const paddedIndex = padDigits(index, 4);
+            const paddedIndex = padDigits(index + 1, 4);
             const outputPath = options.outputPath.replace(/\.json$/, `-${paddedIndex}.json`);
             fs.writeFileSync(outputPath, json);
-            debug(`Payload [${index + 1}/${groups.length}]: ${outputPath}`);
+            debug(`Payload [${index + 1}/${mappedDataGroups.length}]: ${outputPath}`);
 
-            if (options.post) {
-                debug(`Post data values: ${dataValuesGroup.length}`);
+            if (options.post || options.postDryRun) {
+                debug(`Post data values: ${payload.dataValues.length}`);
                 const res = await api.dataValues
                     .postSet({ skipAudit: true, force: true, dryRun: options.postDryRun }, payload)
                     .getData();
@@ -119,57 +130,65 @@ class UpdateCampaignsDisaggregation {
         dataValues: DataValueSetsDataValue[],
         aocMapping: CampaignCocMapping
     ) {
-        const dataSetsByName = _.keyBy(metadata.dataSets, ds => ds.name.trim());
-        const names = this.preventiveDataSets.join(", ");
-        debug(`All data sets will be considered reactive, except for: ${names}`);
-
-        const preventiveOrgUnitIds = new Set(
-            _(this.preventiveDataSets)
-                .map(dataSetName => _(dataSetsByName).getOrFail(dataSetName))
-                .flatMap(dataSet => dataSet.organisationUnits)
-                .value()
-                .map(ou => ou.id)
-        );
-
+        const preventiveOrgUnitIds = this.getPreventiveOrgUnitIds(metadata);
         const orgUnitsById = byId(metadata.organisationUnits);
         const dataElementsById = byId(metadata.dataElements);
         const cocsById = byId(_.flatMap(metadata.categoryCombos, cc => cc.categoryOptionCombos));
 
+        function getMappedDataFromDataValue(dv: DataValue): MappedData {
+            const isPreventiveOrgUnit = preventiveOrgUnitIds.has(dv.orgUnit);
+            const campaignType = isPreventiveOrgUnit ? "preventive" : "reactive";
+            const mapping = aocMapping[campaignType];
+            const aocIdMapped = mapping[dv.attributeOptionCombo];
+
+            const base: Omit<ReportRow, "toAoc"> = {
+                orgUnit: formatObj(orgUnitsById[dv.orgUnit]),
+                orgUnitLevel: orgUnitsById[dv.orgUnit]?.level.toString(),
+                dataElement: formatObj(dataElementsById[dv.dataElement]),
+                period: dv.period,
+                value: dv.value,
+                type: campaignType,
+                fromAoc: formatObj(cocsById[dv.attributeOptionCombo]),
+            };
+
+            if (!aocIdMapped) {
+                const row: ReportRow = { ...base, toAoc: "NOT FOUND" };
+                debug(`Cannot map: ${row.orgUnit} - ${row.fromAoc}`);
+                return { row, dataValue: dv, newAttributeOptionComboId: undefined };
+            } else {
+                const row: ReportRow = { ...base, toAoc: formatObj(cocsById[aocIdMapped]) };
+                return { row, dataValue: dv, newAttributeOptionComboId: aocIdMapped };
+            }
+        }
+
         return _(dataValues)
-            .map(
-                (dv): { row: ReportRow; dataValue: DataValueSetsDataValue | undefined } => {
-                    const isPreventiveOrgUnit = preventiveOrgUnitIds.has(dv.orgUnit);
-                    const campaignType = isPreventiveOrgUnit ? "preventive" : "reactive";
-                    const mapping = aocMapping[campaignType];
-                    const aocMapped = mapping[dv.attributeOptionCombo];
-
-                    const base: Omit<ReportRow, "toAoc"> = {
-                        orgUnit: formatObj(orgUnitsById[dv.orgUnit]),
-                        dataElement: formatObj(dataElementsById[dv.dataElement]),
-                        period: dv.period,
-                        value: dv.value,
-                        type: campaignType,
-                        fromAoc: formatObj(cocsById[dv.attributeOptionCombo]),
-                    };
-
-                    if (!aocMapped) {
-                        const row: ReportRow = { ...base, toAoc: "NOT FOUND" };
-                        debug(`Cannot map: ${row.orgUnit} - ${row.fromAoc}`);
-                        return { row, dataValue: undefined };
-                    } else {
-                        const row: ReportRow = { ...base, toAoc: formatObj(cocsById[aocMapped]) };
-                        const dataValueUpdated = { ...dv, attributeOptionCombo: aocMapped };
-                        return { row, dataValue: dataValueUpdated };
-                    }
-                }
-            )
+            .map(getMappedDataFromDataValue)
             .compact()
             .value();
+    }
+
+    private getPreventiveOrgUnitIds(metadata: Metadata): Set<Id> {
+        const dataSetsByName = _.keyBy(metadata.dataSets, ds => ds.name.trim());
+        const names = this.preventiveDataSets
+            .map(name => formatObj(dataSetsByName[name]))
+            .join(", ");
+
+        debug(`All data sets will be considered reactive, except for: ${names}`);
+
+        return new Set(
+            _(this.preventiveDataSets)
+                .map(dataSetName => _(dataSetsByName).getOrFail(dataSetName))
+                .flatMap(dataSet => dataSet.organisationUnits)
+                // Add also areas (level 4) org units, as there are age distribution values there.
+                .flatMap(ou => _.compact([ou.id, ou.level === 5 ? ou.parent.id : null]))
+                .value()
+        );
     }
 
     private async saveReport(rows: ReportRow[]) {
         const header: Array<{ id: Attr; title: string }> = [
             { id: "orgUnit", title: "Org Unit" },
+            { id: "orgUnitLevel", title: "Level" },
             { id: "dataElement", title: "Data element" },
             { id: "period", title: "Period" },
             { id: "value", title: "Value" },
@@ -280,18 +299,26 @@ class UpdateCampaignsDisaggregation {
                 const teamCategoryOption = coc.categoryOptions.find(co =>
                     teamCategoryOptionIds.has(co.id)
                 );
-                if (!teamCategoryOption) throw new Error();
+                if (!teamCategoryOption) throw new Error("Cannot find category option");
                 return [teamCategoryOption.id, coc.id] as [CategoryOptionId, CocId];
             })
             .fromPairs()
             .value();
 
+        const categoryOptionsById = byId(metadata.categoryOptions);
+
         const categoryComboMapping = _(teamCategoryCombo.categoryOptionCombos)
             .map(coc => {
                 const categoryOption = _.first(coc.categoryOptions);
                 if (!categoryOption) throw new Error("Category options empty");
-                const teamReactiveCocId = _(categoryOptionMapping).getOrFail(categoryOption.id);
-                return [coc.id, teamReactiveCocId] as [CocId, CocId];
+                const teamReactiveCocId = _(categoryOptionMapping).get(categoryOption.id, null);
+                if (!teamReactiveCocId)
+                    debug(
+                        `No mapping found for categoryOption=${formatObj(
+                            categoryOptionsById[categoryOption.id]
+                        )}, not assigned to the teams category.`
+                    );
+                return teamReactiveCocId ? ([coc.id, teamReactiveCocId] as [CocId, CocId]) : null;
             })
             .compact()
             .fromPairs()
@@ -303,19 +330,22 @@ class UpdateCampaignsDisaggregation {
 
 const metadataQuery = {
     dataSets: {
-        fields: { id: true, name: true, organisationUnits: { id: true } },
+        fields: { id: true, name: true, organisationUnits: { id: true, level: true, parent: {id: true} } },
     },
     dataElements: {
         fields: { id: true, name: true },
     },
     organisationUnits: {
-        fields: { id: true, name: true },
+        fields: { id: true, name: true, level: true },
     },
     dataElementGroups: {
         fields: { id: true, code: true },
     },
     categories: {
-        fields: { id: true, code: true, categoryOptions: true },
+        fields: { id: true, code: true, categoryOptions: { id: true, name: true } },
+    },
+    categoryOptions: {
+        fields: { id: true, name: true },
     },
     categoryCombos: {
         fields: {
@@ -333,17 +363,32 @@ const metadataQuery = {
 
 type Metadata = MetadataPick<typeof metadataQuery>;
 
+type DataValue = DataValueSetsDataValue;
 type CocId = Id;
 type CategoryOptionId = Id;
 type CocMapping = Record<CocId, CocId>;
 type CampaignCocMapping = { reactive: CocMapping; preventive: CocMapping };
 
-type Attr = "orgUnit" | "dataElement" | "period" | "value" | "type" | "fromAoc" | "toAoc";
+type Attr =
+    | "orgUnit"
+    | "orgUnitLevel"
+    | "dataElement"
+    | "period"
+    | "value"
+    | "type"
+    | "fromAoc"
+    | "toAoc";
 type ReportRow = Record<Attr, string>;
+
+interface MappedData {
+    row: ReportRow;
+    dataValue: DataValueSetsDataValue;
+    newAttributeOptionComboId: Id | undefined;
+}
 
 const byId = <T extends NamedRef>(objs: T[]) => _.fromPairs(objs.map(o => [o.id, o] as [Id, T]));
 
-const formatObj = (obj: NamedRef) => `${obj.name.trim()} [${obj.id}]`;
+const formatObj = (obj: NamedRef | undefined) => (obj ? `${obj.name.trim()} [${obj.id}]` : "-");
 
 function debug(msg: string) {
     console.debug(msg);
