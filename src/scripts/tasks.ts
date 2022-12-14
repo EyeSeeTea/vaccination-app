@@ -5,8 +5,9 @@ import path from "path";
 import { command, run, string, option, subcommands, Type, flag } from "cmd-ts";
 import { D2Api, DataValueSetsDataValue, Id, MetadataPick } from "@eyeseetea/d2-api/2.36";
 import { baseConfig } from "../models/config";
-import { NamedRef } from "../models/db.types";
 import { promiseMap } from "../utils/promises";
+
+type NamedRef = { id: string; name: string };
 
 function main() {
     const updateDataValuesDisaggregation = command({
@@ -140,10 +141,11 @@ class UpdateCampaignsDisaggregation {
             const campaignType = isPreventiveOrgUnit ? "preventive" : "reactive";
             const mapping = aocMapping[campaignType];
             const aocIdMapped = mapping[dv.attributeOptionCombo];
+            const orgUnit = orgUnitsById[dv.orgUnit];
 
             const base: Omit<ReportRow, "toAoc"> = {
                 orgUnit: formatObj(orgUnitsById[dv.orgUnit]),
-                orgUnitLevel: orgUnitsById[dv.orgUnit]?.level.toString(),
+                orgUnitLevel: orgUnit ? orgUnit.level.toString() : "",
                 dataElement: formatObj(dataElementsById[dv.dataElement]),
                 period: dv.period,
                 value: dv.value,
@@ -330,7 +332,11 @@ class UpdateCampaignsDisaggregation {
 
 const metadataQuery = {
     dataSets: {
-        fields: { id: true, name: true, organisationUnits: { id: true, level: true, parent: {id: true} } },
+        fields: {
+            id: true,
+            name: true,
+            organisationUnits: { id: true, level: true, parent: { id: true } },
+        },
     },
     dataElements: {
         fields: { id: true, name: true },
