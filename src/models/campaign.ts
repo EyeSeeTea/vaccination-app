@@ -1,11 +1,4 @@
-import {
-    OrganisationUnit,
-    Maybe,
-    Ref,
-    MetadataResponse,
-    Sharing,
-    CampaignDisaggregation,
-} from "./db.types";
+import { OrganisationUnit, Maybe, Ref, MetadataResponse, Sharing } from "./db.types";
 import _, { Dictionary } from "lodash";
 import moment from "moment";
 
@@ -134,8 +127,7 @@ export default class Campaign {
                 description: string;
                 organisationUnits: Array<OrganisationUnitPathOnly>;
                 dataInputPeriods: Array<{ period: { id: string } }>;
-                sections: SectionForDisaggregation[];
-                attributeValues: Array<{ attribute: { code: string }; value: string }>;
+                sections: Array<SectionForDisaggregation>;
             }>;
             dashboards: Array<{
                 id: string;
@@ -149,7 +141,6 @@ export default class Campaign {
                     description: true,
                     organisationUnits: { id: true, path: true },
                     dataInputPeriods: { period: { id: true } },
-                    attributeValues: { attribute: { code: true }, value: true },
                     sections: {
                         id: true,
                         name: true,
@@ -190,30 +181,7 @@ export default class Campaign {
         );
 
         const { categoryComboCodeForTeams } = config;
-        const { name, attributeValues } = dataSet;
-        const attributeValue = _(attributeValues)
-            .keyBy(av => av.attribute.code)
-            .get(config.attributeCodeForDataSetsCampaignDisaggregation, null);
-
-        const campaignConfiguration: CampaignDisaggregation =
-            attributeValue && attributeValue.value ? JSON.parse(attributeValue.value) : undefined;
-
-        const sections = _(dataSet.sections)
-            .map(
-                (section): SectionForDisaggregation | undefined => {
-                    const antigen = antigensByCode[section.name];
-                    if (!antigen) return;
-
-                    const disaggregation = campaignConfiguration
-                        ? campaignConfiguration.filter(o => o.antigen === antigen.id)
-                        : undefined;
-
-                    return { ...section, disaggregation };
-                }
-            )
-            .compact()
-            .value();
-
+        const { name, sections } = dataSet;
         const ouIds = dataSet.organisationUnits.map(ou => ou.id);
         const teamsCategoyId = getByIndex(config.categories, "code", categoryComboCodeForTeams).id;
         const teamsMetadata = await getTeamsForCampaign(db, ouIds, teamsCategoyId, name);
@@ -552,7 +520,7 @@ export default class Campaign {
         const targetPopulationForCampaign = await targetPopulation.update(
             this.organisationUnits,
             this.getEnabledAntigensDisaggregation(),
-            moment(this.startDate || undefined).format("YYYYMMDD")
+            this.startDate ? moment(this.startDate).format("YYYYMMDD") : "TODAY"
         );
 
         return this.update({

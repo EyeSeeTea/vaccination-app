@@ -39,7 +39,6 @@ export const baseConfig = {
     legendSetsCode: "RVC_LEGEND_ZERO",
     attributeCodeForApp: "RVC_CREATED_BY_VACCINATION_APP",
     attributeNameForHideInTallySheet: "hideInTallySheet",
-    attributeCodeForDataSetsCampaignDisaggregation: "RVC_CAMPAIGN_DISAGGREGATION",
     dataElementCodeForTotalPopulation: "RVC_TOTAL_POPULATION",
     dataElementCodeForAgeDistribution: "RVC_AGE_DISTRIBUTION",
     dataElementCodeForPopulationByAge: "RVC_POPULATION_BY_AGE",
@@ -58,7 +57,6 @@ export interface MetadataConfig extends BaseConfig {
     attributes: {
         app: Attribute;
         hideInTallySheet: Attribute;
-        dataSetCampaignDisaggregation: Attribute;
     };
     organisationUnitLevels: OrganisationUnitLevel[];
     categories: Category[];
@@ -87,7 +85,6 @@ export interface MetadataConfig extends BaseConfig {
         ageDistributionDataElement: DataElement;
         populationByAgeDataElement: DataElement;
         ageGroupCategory: Category;
-        ageGroupCocByName: Record<string, { id: string }>;
     };
     dataElements: DataElement[];
     dataElementsDisaggregation: Array<{
@@ -277,8 +274,11 @@ function getAntigens(
     return antigensMetadata;
 }
 
-function getPopulationMetadata(metadata: RawMetadataConfig): MetadataConfig["population"] {
-    const { dataElements, dataElementGroups, categories } = metadata;
+function getPopulationMetadata(
+    dataElements: DataElement[],
+    dataElementGroups: DataElementGroup[],
+    categories: Category[]
+): MetadataConfig["population"] {
     const codes = [
         baseConfig.dataElementCodeForTotalPopulation,
         baseConfig.dataElementCodeForAgeDistribution,
@@ -299,22 +299,12 @@ function getPopulationMetadata(metadata: RawMetadataConfig): MetadataConfig["pop
         .keyBy("code")
         .getOrFail(baseConfig.dataElementGroupCodeForPopulation);
 
-    const ageGroupCategoryCombo = _(metadata.categoryCombos)
-        .keyBy("code")
-        .getOrFail(baseConfig.categoryComboCodeForAgeGroup);
-
-    const ageGroupCocByName = _(ageGroupCategoryCombo.categoryOptionCombos)
-        .map(coc => [coc.name, { id: coc.id }] as [string, { id: string }])
-        .fromPairs()
-        .value();
-
     return {
         totalPopulationDataElement,
         ageDistributionDataElement,
         populationByAgeDataElement,
         ageGroupCategory,
         dataElementGroup: populationGroup,
-        ageGroupCocByName,
     };
 }
 
@@ -325,9 +315,6 @@ function getAttributes(attributes: Attribute[]) {
     return {
         app: attributesByCode.getOrFail(baseConfig.attributeCodeForApp),
         hideInTallySheet: attributesByName.getOrFail(baseConfig.attributeNameForHideInTallySheet),
-        dataSetCampaignDisaggregation: attributesByCode.getOrFail(
-            baseConfig.attributeCodeForDataSetsCampaignDisaggregation
-        ),
     };
 }
 
@@ -369,10 +356,7 @@ export async function getMetadataConfig(db: DbD2): Promise<MetadataConfig> {
     const metadataParams = {
         attributes: {},
         categories: modelParams,
-        categoryCombos: {
-            fields: { ":owner": true, "categoryOptionCombos[id,name]": true },
-            filters: [codeFilter],
-        },
+        categoryCombos: modelParams,
         categoryOptionGroups: modelParams,
         categoryOptionCombos: { filters: ["name:eq:default"] },
         dataElementGroups: modelParams,
@@ -410,7 +394,11 @@ export async function getMetadataConfig(db: DbD2): Promise<MetadataConfig> {
             metadata.categories,
             metadata.categoryOptionGroups
         ),
-        population: getPopulationMetadata(metadata),
+        population: getPopulationMetadata(
+            metadata.dataElements,
+            metadata.dataElementGroups,
+            metadata.categories
+        ),
         userRoles: metadata.userRoles,
         legendSets: metadata.legendSets,
         indicators: metadata.indicators,
