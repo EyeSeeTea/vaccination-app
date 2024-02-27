@@ -5,13 +5,13 @@ import moment from "moment";
 import { PaginatedObjects, OrganisationUnitPathOnly, Response } from "./db.types";
 import DbD2, { ApiResponse, toStatusResponse } from "./db-d2";
 import { AntigensDisaggregation, SectionForDisaggregation } from "./AntigensDisaggregation";
-import { MetadataConfig, getDashboardCode, getByIndex } from "./config";
+import { MetadataConfig, getDashboardCode, getByIndex, baseConfig } from "./config";
 import { AntigenDisaggregationEnabled } from "./AntigensDisaggregation";
 import {
     TargetPopulation,
     TargetPopulationData as TargetPopulationData_,
 } from "./TargetPopulation";
-import CampaignDb from "./CampaignDb";
+import CampaignDb, { getCampaignPeriods } from "./CampaignDb";
 import { promiseMap } from "../utils/promises";
 import i18n from "../locales";
 import { TeamsMetadata, getTeamsForCampaign, filterTeamsByNames } from "./Teams";
@@ -123,6 +123,7 @@ export default class Campaign {
                 organisationUnits: Array<OrganisationUnitPathOnly>;
                 dataInputPeriods: Array<{ period: { id: string } }>;
                 sections: Array<SectionForDisaggregation>;
+                attributeValues: Array<{ attribute: { code: string }; value: string }>;
             }>;
             dashboards: Array<{
                 id: string;
@@ -135,6 +136,7 @@ export default class Campaign {
                     description: true,
                     organisationUnits: { id: true, path: true },
                     dataInputPeriods: { period: { id: true } },
+                    attributeValues: { attribute: { code: true }, value: true },
                     sections: {
                         id: true,
                         name: true,
@@ -169,10 +171,8 @@ export default class Campaign {
             .map(section => antigensByCode[section.name])
             .compact()
             .value();
-        const periods = dataSet.dataInputPeriods.map(dip => dip.period.id);
-        const [startDate, endDate] = [_.min(periods), _.max(periods)].map(period =>
-            period ? moment(period).toDate() : null
-        );
+
+        const periods = getCampaignPeriods(dataSet);
 
         const { categoryComboCodeForTeams } = config;
         const { name, sections } = dataSet;
@@ -181,13 +181,13 @@ export default class Campaign {
         const teamsMetadata = await getTeamsForCampaign(db, ouIds, teamsCategoyId, name);
         const antigensDisaggregation = AntigensDisaggregation.build(config, antigens, sections);
 
-        const initialData = {
+        const initialData: Data = {
             id: dataSet.id,
             name: dataSet.name,
             description: dataSet.description,
             organisationUnits: dataSet.organisationUnits,
-            startDate,
-            endDate,
+            startDate: periods ? periods.startDate : null,
+            endDate: periods ? periods.endDate : null,
             antigens: antigens,
             antigensDisaggregation,
             targetPopulation: undefined,

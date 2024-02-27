@@ -29,6 +29,12 @@ const metadataConfig: MetadataConfig = {
             displayName: "hideInTallySheet",
             valueType: "BOOLEAN",
         },
+        dataInputPeriods: {
+            id: "3",
+            code: "RVC_DATA_INPUT_PERIODS",
+            displayName: "Data Input Periods",
+            valueType: "TEXT",
+        },
     },
     categories: [],
     categoriesDisaggregation: [

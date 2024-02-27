@@ -8,16 +8,30 @@ import Campaign from "./campaign";
 import { DataSetCustomForm } from "./DataSetCustomForm";
 import { Maybe, MetadataResponse, DataEntryForm, Section } from "./db.types";
 import { Metadata, DataSet, Response } from "./db.types";
-import { getDaysRange, toISOStringNoTZ } from "../utils/date";
+import { formatDay } from "../utils/date";
 import { getDataElements, CocMetadata } from "./AntigensDisaggregation";
 import { Dashboard, DashboardMetadata } from "./Dashboard";
 import { Teams, CategoryOptionTeam } from "./Teams";
-import { getDashboardCode, getByIndex } from "./config";
+import { getDashboardCode, getByIndex, baseConfig, MetadataConfig } from "./config";
 
 interface DataSetWithSections {
     sections: Array<{ id: string; name: string; dataSet: { id: string } }>;
     dataEntryForm: { id: string };
 }
+
+/*
+Problem: When syncing data from field servers to HQ, data cannot usually be imported
+because the current time is after the closing date of the data input periods.
+
+Solution: Use a custom attribute to store the data input periods
+*/
+
+export type DataInput = {
+    periodStart: string;
+    periodEnd: string;
+    openingDate: string;
+    closingDate: string;
+};
 
 interface PostSaveMetadata {
     visualizations: object[];
@@ -105,20 +119,8 @@ export default class CampaignDb {
             dataElement: { id: dataElement.id },
             categoryCombo: { id: dataElement.categoryCombo.id },
         }));
-        /* Problem: When syncing data from field servers to HQ, data cannot usually be imported
-           because the current time is after the closing date of the data input periods. 
 
-           Workaround: Remove the closing date.
-        */
-
-        //const closingDate = endDate.clone().add(metadataConfig.expirationDays, "days");
-
-        const dataInputPeriods = getDaysRange(startDate, endDate).map(date => ({
-            period: { id: date.format("YYYYMMDD") },
-            openingDate: toISOStringNoTZ(startDate),
-            //closingDate: toISOStringNoTZ(closingDate),
-        }));
-
+        const dataInput = getDataInputFromCampaign(campaign);
         const existingDataSet = await this.getExistingDataSet();
         const metadataCoc = await campaign.antigensDisaggregation.getCocMetadata(db);
         const dataEntryForm = await this.getDataEntryForm(existingDataSet, metadataCoc);
@@ -139,10 +141,14 @@ export default class CampaignDb {
             timelyDays: 0,
             expiryDays: 0,
             formType: "CUSTOM",
-            dataInputPeriods,
+            dataInputPeriods: [],
             attributeValues: [
                 { value: "true", attribute: { id: metadataConfig.attributes.app.id } },
                 { value: "true", attribute: { id: metadataConfig.attributes.hideInTallySheet.id } },
+                {
+                    value: dataInput ? JSON.stringify(dataInput) : "",
+                    attribute: { id: metadataConfig.attributes.dataInputPeriods.id },
+                },
             ],
             dataEntryForm: { id: dataEntryForm.id },
             sections: sections.map(section => ({ id: section.id })),
@@ -387,4 +393,67 @@ export default class CampaignDb {
             sharing,
         });
     }
+}
+
+type ModelWithAttributes = {
+    attributeValues: Array<{
+        attribute: { code: string };
+        value: string;
+    }>;
+};
+
+type DataSetWithDataInputPeriods = {
+    dataInputPeriods: Array<{ period: { id: string } }>;
+};
+
+type CampaignPeriods = { startDate: Date; endDate: Date };
+
+export function getDataInputFromCampaign(campaign: Campaign): Maybe<DataInput> {
+    if (!campaign.startDate || !campaign.endDate) return;
+
+    return {
+        periodStart: formatDay(campaign.startDate),
+        periodEnd: formatDay(campaign.endDate),
+        openingDate: formatDay(campaign.startDate),
+        closingDate: formatDay(campaign.endDate, { daysToAdd: campaign.config.expirationDays }),
+    };
+}
+
+export function getCampaignPeriods<
+    DataSet extends ModelWithAttributes & DataSetWithDataInputPeriods
+>(dataSet: DataSet): Maybe<CampaignPeriods> {
+    return getPeriodDatesFromAttributes(dataSet) || getPeriodDatesFromDataInputPeriods(dataSet);
+}
+
+function getPeriodDatesFromAttributes<DataSetWithAttributes extends ModelWithAttributes>(
+    dataSet: DataSetWithAttributes
+): Maybe<CampaignPeriods> {
+    const dataInputAttribute = dataSet.attributeValues.find(
+        av => av.attribute.code === baseConfig.attributeCodeForDataInputPeriods
+    );
+    if (!dataInputAttribute || !dataInputAttribute.value) return;
+
+    const dataInput = JSON.parse(dataInputAttribute.value) as DataInput;
+
+    return {
+        startDate: new Date(dataInput.periodStart),
+        endDate: new Date(dataInput.periodEnd),
+    };
+}
+
+function getPeriodDatesFromDataInputPeriods(
+    dataSet: DataSetWithDataInputPeriods
+): Maybe<CampaignPeriods> {
+    const { dataInputPeriods } = dataSet;
+    if (!dataInputPeriods) return;
+
+    const getDateFromPeriodId = (periodId: string) => moment(periodId, "YYYYMMDD").toDate();
+    const periods = dataInputPeriods.map(dip => dip.period.id);
+    const [min, max] = [_.min(periods), _.max(periods)];
+    if (!min || !max) return;
+
+    return {
+        startDate: getDateFromPeriodId(min),
+        endDate: getDateFromPeriodId(max),
+    };
 }

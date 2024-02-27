@@ -6,6 +6,7 @@ import Campaign, { Antigen } from "./campaign";
 import { AntigenDisaggregationEnabled, CocMetadata } from "./AntigensDisaggregation";
 import i18n from "../locales";
 import "../utils/lodash-mixins";
+import { DataInput, getDataInputFromCampaign } from "./CampaignDb";
 
 const contentScript = require("!raw-loader!./custom-form-resources/content-script.js").default;
 const cssContents = require("!raw-loader!./custom-form-resources/form.css").default;
@@ -454,21 +455,39 @@ export class DataSetCustomForm {
         campaign: Campaign,
         disaggregations: Disaggregations
     ): Promise<Translations> {
-        const i18nTranslations = [
+        const locales = Object.keys(i18n.store.data);
+
+        const generalTranslations = _([
             "Subtotal",
             "Total",
             "Value",
             "Doses administered",
             "Quality and safety indicators",
             "General Q&S",
-        ];
+        ])
+            .map(text => [i18n.t(text), i18n.t(text, { lng: "en" })] as [string, string])
+            .fromPairs()
+            .value();
 
-        const locales = Object.keys(i18n.store.data);
-        const i18nTranslations_ = _(i18nTranslations)
-            .map(text => [
-                i18n.t(text),
+        const validationTranslations = {
+            selectedPeriodNotInCampaignRange: i18n.t(
+                "Selected period ({selectedPeriod}) is not in the campaign period range ({periodStart} -> {periodEnd})",
+                { lng: "en" }
+            ),
+            currentDateNotInCampaignEntryRange: i18n.t(
+                "Current date ({currentDate}) is not in the campaign entry range ({openingDate} -> {closingDate})",
+                { lng: "en" }
+            ),
+        };
+
+        const interfaceTranslations = { ...generalTranslations, ...validationTranslations };
+
+        const interfaceTranslationsByLocale = _(interfaceTranslations)
+            .toPairs()
+            .map(([key, text]) => [
+                key,
                 _(locales)
-                    .map(locale => [locale, i18n.t(i18n.t(text, { lng: "en" }), { lng: locale })])
+                    .map(locale => [locale, i18n.t(text, { lng: locale })])
                     .fromPairs()
                     .value(),
             ])
@@ -476,10 +495,13 @@ export class DataSetCustomForm {
             .value();
 
         const categoryOptionsIdByName = _.keyBy(campaign.config.categoryOptions, "displayName");
-        const ids = [
+        const ids = _.uniq([
             ..._(disaggregations)
                 .flatMap(dis => dis.dataElements)
                 .map("id")
+                .value(),
+            ..._(disaggregations)
+                .map(dis => dis.antigen.id)
                 .value(),
             ..._(disaggregations)
                 .flatMap(dis => dis.dataElements)
@@ -488,7 +510,7 @@ export class DataSetCustomForm {
                 .map(co => _(categoryOptionsIdByName).get(co).id)
                 .uniq()
                 .value(),
-        ];
+        ]);
 
         const { categoryOptions, dataElements } = await campaign.db.getMetadata<{
             categoryOptions: ObjectWithTranslation[];
@@ -500,7 +522,7 @@ export class DataSetCustomForm {
             },
         });
 
-        const metadataTranslations = _(categoryOptions)
+        const metadataTranslationsByLocale = _(categoryOptions)
             .concat(dataElements)
             .map(object => [
                 object.displayName,
@@ -518,13 +540,14 @@ export class DataSetCustomForm {
             .fromPairs()
             .value();
 
-        return { ...i18nTranslations_, ...metadataTranslations };
+        return { ...metadataTranslationsByLocale, ...interfaceTranslationsByLocale };
     }
 
     generate(): string {
-        const options = {
+        const options: CustomFormOptions = {
             translations: this.translations,
             dataElements: _.fromPairs(this.config.dataElements.map(de => [de.id, de.code])),
+            dataInput: getDataInputFromCampaign(this.campaign),
         };
         const toJSON = (obj: any) => JSON.stringify(obj, null, 2);
         // Remove the empty export (it's required by the linter, but does not work on a browser)
@@ -544,4 +567,13 @@ export class DataSetCustomForm {
             ]
         );
     }
+}
+
+type Id = string;
+type Code = string;
+
+interface CustomFormOptions {
+    translations: object;
+    dataElements: Record<Id, Code>;
+    dataInput: Maybe<DataInput>;
 }

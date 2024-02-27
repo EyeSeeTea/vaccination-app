@@ -62,7 +62,7 @@
         "eject": "react-scripts eject",
         "prettify": "prettier \"{src,config,cypress}/**/*.{js,jsx,ts,tsx,json,css}\" --write",
         "extract-pot": "d2-i18n-extract -p src/ -o i18n/",
-        "localize": "yarn extract-pot && d2-i18n-generate -n vaccination-app -p ./i18n/ -o ./src/locales/",
+        "localize": "yarn extract-pot && yarn update-po && d2-i18n-generate -n vaccination-app -p ./i18n/ -o ./src/locales/",
         "update-po": "yarn extract-pot && for pofile in i18n/*.po; do msgmerge --backup=off -U $pofile i18n/en.pot; done",
         "manifest": "d2-manifest package.json build/manifest.webapp",
         "cy:verify": "cypress verify",

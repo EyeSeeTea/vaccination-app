@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2022-03-23T10:31:50.107Z\n"
-"PO-Revision-Date: 2022-03-23T10:31:50.107Z\n"
+"POT-Creation-Date: 2024-02-26T13:26:07.242Z\n"
+"PO-Revision-Date: 2024-02-26T13:26:07.242Z\n"
 
 msgid "Campaigns"
 msgstr ""
@@ -358,6 +358,16 @@ msgid "Quality and safety indicators"
 msgstr ""
 
 msgid "General Q&S"
+msgstr ""
+
+msgid ""
+"Selected period ({selectedPeriod}) is not in the campaign period range "
+"({periodStart} -> {periodEnd})"
+msgstr ""
+
+msgid ""
+"Current date ({currentDate}) is not in the campaign entry range "
+"({openingDate} -> {closingDate})"
 msgstr ""
 
 msgid ""

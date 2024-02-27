@@ -1,6 +1,6 @@
 import _ from "lodash";
-import moment from "moment";
 import { getCurrentUserDataViewOrganisationUnits } from "../utils/dhis2";
+import { getCampaignPeriods } from "./CampaignDb";
 
 const requiredFields = ["attributeValues[value, attribute[code]]", "organisationUnits[id,path]"];
 
@@ -98,23 +98,13 @@ export async function getOrganisationUnitsById(id, d2) {
 }
 
 export async function getPeriodDatesFromDataSetId(id, d2) {
-    const fields = "dataInputPeriods";
+    const fields = "attributeValues[value, attribute[code]]";
     const dataSet = await d2.models.dataSets.get(id, { fields }).catch(() => undefined);
     return dataSet ? getPeriodDatesFromDataSet(dataSet) : null;
 }
 
 export function getPeriodDatesFromDataSet(dataSet) {
-    const dataInputPeriods = dataSet.dataInputPeriods;
-
-    if (_(dataInputPeriods).isEmpty()) {
-        return null;
-    } else {
-        const periodIdToDate = periodId => moment(periodId, "YYYYMMDD");
-        const periods = dataInputPeriods.map(dip => dip.period.id);
-        const startDate = periodIdToDate(_.min(periods));
-        const endDate = periodIdToDate(_.max(periods));
-        return { startDate, endDate };
-    }
+    return getCampaignPeriods(dataSet);
 }
 
 export async function getDatasetById(id, d2) {
