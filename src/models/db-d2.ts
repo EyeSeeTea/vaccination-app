@@ -24,6 +24,7 @@ import {
 } from "./db.types";
 import "../utils/lodash-mixins";
 import { promiseMap } from "../utils/promises";
+import { User } from "./config";
 
 function getDbFields(modelFields: ModelFields): string[] {
     return _(modelFields)
@@ -305,6 +306,10 @@ export default class DbD2 {
             fields: ["id,code,displayName"],
         });
         return categoryCombos;
+    }
+
+    public async getCurrentUser(): Promise<User> {
+        return this.api.get<User>("/me", { paging: false, fields: ["id", "name"] });
     }
 
     public async getCocsByCategoryComboCode(

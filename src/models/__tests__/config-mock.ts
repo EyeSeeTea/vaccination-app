@@ -2,6 +2,7 @@ import { MetadataConfig, baseConfig } from "../config";
 
 const metadataConfig: MetadataConfig = {
     ...baseConfig,
+    currentUser: { id: "u1", name: "Current User" },
     userRoles: [],
     organisationUnitLevels: [],
     categoryCombos: [],
