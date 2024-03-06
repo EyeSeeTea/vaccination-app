@@ -17,6 +17,7 @@ import DisaggregationStep from "../steps/disaggregation/DisaggregationStep";
 import { memoize } from "../../utils/memoize";
 import ExitWizardButton from "../wizard/ExitWizardButton";
 import { getVisitedAndUpdate } from "../utils/page-visited";
+import { redirectToLandingPageIfLegacy } from "../campaign-configuration/validations";
 
 class CampaignWizard extends React.Component {
     static propTypes = {
@@ -39,12 +40,14 @@ class CampaignWizard extends React.Component {
     }
 
     async componentDidMount() {
-        const { db, config, match } = this.props;
+        const { db, config, match, snackbar, history } = this.props;
 
         try {
             const campaign = this.isEdit()
                 ? await Campaign.get(config, db, match.params.id)
                 : Campaign.create(config, db);
+
+            if (redirectToLandingPageIfLegacy(campaign, snackbar, history)) return;
 
             const campaignHasDataValues = await campaign.hasDataValues().catch(err => {
                 console.error(err);

@@ -67,7 +67,7 @@ interface DashboardWithResources {
 }
 
 export default class Campaign {
-    public selectableLevels: number[] = [5];
+    public selectableLevels: number[] = [6];
     private maxNameLength = 140;
 
     validations: _.Dictionary<() => ValidationErrors | Promise<ValidationErrors>> = {
@@ -197,6 +197,14 @@ export default class Campaign {
         };
 
         return new Campaign(db, config, initialData);
+    }
+
+    isLegacy(): boolean {
+        const getLevel = (ou: OrganisationUnitPathOnly) => ou.path.split("/").length - 1;
+
+        return _(this.organisationUnits).some(
+            ou => !_(this.selectableLevels).includes(getLevel(ou))
+        );
     }
 
     public update(newData: Data) {

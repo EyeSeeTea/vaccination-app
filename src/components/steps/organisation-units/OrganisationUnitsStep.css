@@ -1,26 +1,31 @@
 /* Hide level 6 org units and arrow icon on level 5 */
-.ou-root-1 .orgunit .orgunit .orgunit .orgunit .orgunit .orgunit,
-.ou-root-1 .orgunit .orgunit .orgunit .orgunit .orgunit .arrow {
+.ou-root-1 .orgunit .orgunit .orgunit .orgunit .orgunit .orgunit .arrow,
+.ou-root-1 .orgunit .orgunit .orgunit .orgunit .orgunit .orgunit .arrow {
     display: none !important;
 }
 
-.ou-root-2 .orgunit .orgunit .orgunit .orgunit .orgunit,
-.ou-root-2 .orgunit .orgunit .orgunit .orgunit .arrow {
+.ou-root-2 .orgunit .orgunit .orgunit .orgunit .orgunit .orgunit,
+.ou-root-2 .orgunit .orgunit .orgunit .orgunit .orgunit .arrow {
     display: none !important;
 }
 
-.ou-root-3 .orgunit .orgunit .orgunit .orgunit,
-.ou-root-3 .orgunit .orgunit .orgunit .arrow {
+.ou-root-3 .orgunit .orgunit .orgunit .orgunit .orgunit,
+.ou-root-3 .orgunit .orgunit .orgunit .orgunit .arrow {
     display: none !important;
 }
 
-.ou-root-4 .orgunit .orgunit .orgunit,
-.ou-root-4 .orgunit .orgunit .arrow {
+.ou-root-4 .orgunit .orgunit .orgunit .orgunit,
+.ou-root-4 .orgunit .orgunit .orgunit .arrow {
     display: none !important;
 }
 
-.ou-root-5 .orgunit .orgunit,
-.ou-root-5 .orgunit .arrow {
+.ou-root-5 .orgunit .orgunit .orgunit,
+.ou-root-5 .orgunit .orgunit .arrow {
+    display: none !important;
+}
+
+.ou-root-6 .orgunit .orgunit,
+.ou-root-6 .orgunit .arrow {
     display: none !important;
 }
 
@@ -30,23 +35,27 @@
     display: none;
 }
 
-.ou-root-1 .orgunit .orgunit .orgunit .orgunit .orgunit svg {
+.ou-root-1 .orgunit .orgunit .orgunit .orgunit .orgunit .orgunit svg {
     display: inline;
     color: #000000 !important;
 }
 
-.ou-root-2 .orgunit .orgunit .orgunit .orgunit svg {
+.ou-root-2 .orgunit .orgunit .orgunit .orgunit .orgunit svg {
     display: inline;
 }
 
-.ou-root-3 .orgunit .orgunit .orgunit svg {
+.ou-root-3 .orgunit .orgunit .orgunit .orgunit svg {
     display: inline;
 }
 
-.ou-root-4 .orgunit .orgunit svg {
+.ou-root-4 .orgunit .orgunit .orgunit svg {
     display: inline;
 }
 
-.ou-root-5 .orgunit svg {
+.ou-root-5 .orgunit .orgunit svg {
+    display: inline;
+}
+
+.ou-root-6 .orgunit svg {
     display: inline;
 }

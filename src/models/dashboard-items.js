@@ -3,6 +3,46 @@ import { generateUid } from "d2/uid";
 import moment from "moment";
 import i18n from "@dhis2/d2-i18n";
 
+const definitions = {
+    coverageByDosesAndPeriod: {
+        elements: ["RVC_CAMPAIGN_COVERAGE"],
+        disaggregatedBy: ["doses"],
+        type: "COLUMN",
+        rows: ["ou"],
+        filterDataBy: ["pe"],
+    },
+    coverageByAgeGroupAndPeriod: {
+        elements: ["RVC_DOSES_ADMINISTERED", "RVC_CAMPAIGN_COVERAGE"],
+        rows: ["ou"],
+        filterDataBy: ["pe"],
+        disaggregatedBy: ["ageGroup"],
+        showColumnTotals: false,
+        showRowSubTotals: true,
+        showColumnSubTotals: false,
+    },
+    administeredAndCoverageByDosesAndPeriod: {
+        elements: ["RVC_DOSES_ADMINISTERED", "RVC_CAMPAIGN_COVERAGE"],
+        rows: ["ou"],
+        filterDataBy: ["pe"],
+        disaggregatedBy: ["doses"],
+        showRowSubTotals: false,
+        showColumnSubTotals: false,
+        showColumnTotals: false,
+    },
+    vaccinesPerPeriod: {
+        elements: ["RVC_DOSES_ADMINISTERED", "RVC_DOSES_USED", "RVC_VACCINE_UTILIZATION"],
+        rows: ["ou"],
+        filterDataBy: ["pe"],
+        disaggregatedBy: [],
+    },
+    globalQsIndicators: {
+        elements: ["RVC_ADS_WASTAGE", "RVC_SAFETY_BOXES"],
+        rows: ["ou"],
+        filterDataBy: ["pe"],
+        disaggregatedBy: [],
+    },
+};
+
 export const dashboardItemsConfig = {
     metadataToFetch: {
         INDICATOR: [
@@ -17,42 +57,37 @@ export const dashboardItemsConfig = {
     },
     chartsByAntigen: {
         coverageBySite: {
-            elements: ["RVC_CAMPAIGN_COVERAGE"],
-            disaggregatedBy: ["doses"],
-            type: "COLUMN",
-            rows: ["ou"],
-            filterDataBy: ["pe"],
-            area: false,
+            ...definitions.coverageByDosesAndPeriod,
+            area: "site",
             title: ns => i18n.t("Coverage by Site {{- period}} (do not edit this chart)", ns),
-            appendCode: "Coverage by site", //coverageBySiteChart
+            appendCode: "Coverage by site",
         },
         coverageByArea: {
-            elements: ["RVC_CAMPAIGN_COVERAGE"],
-            disaggregatedBy: ["doses"],
-            type: "COLUMN",
-            rows: ["ou"],
-            filterDataBy: ["pe"],
-            area: true,
+            ...definitions.coverageByDosesAndPeriod,
+            area: "area",
             title: ns => i18n.t("Coverage by Area {{- period}} (do not edit this chart)", ns),
-            appendCode: "Coverage by area", //coverageByAreaChart
+            appendCode: "Coverage by area",
+        },
+        coverageByCampaign: {
+            ...definitions.coverageByDosesAndPeriod,
+            area: "campaign",
+            title: ns => i18n.t("Coverage by Campaign {{- period}} (do not edit this chart)", ns),
+            appendCode: "Coverage by campaign",
         },
     },
     globalTables: {
         globalQsIndicators: {
-            elements: ["RVC_ADS_WASTAGE", "RVC_SAFETY_BOXES"],
-            rows: ["ou"],
-            filterDataBy: ["pe"],
-            disaggregatedBy: [],
-            area: true,
+            ...definitions.globalQsIndicators,
+            area: "campaign",
             title: ns => i18n.t("Global QS Indicators {{- period}}", ns),
-            appendCode: "Global quality indicators", //globalQsTable
+            appendCode: "Global quality indicators",
         },
         aefiAEB: {
             elements: ["RVC_AEB", "RVC_AEFI"],
             rows: ["pe"],
             filterDataBy: ["ou"],
             disaggregatedBy: [],
-            area: false,
+            area: "site",
             title: ns => i18n.t("AEFI and AEB indicators {{- period}}", ns),
             appendCode: "AEFI and AEB indicators", //adverseEvents
             //legendCode: "RVC_LEGEND_ZERO",
@@ -60,60 +95,68 @@ export const dashboardItemsConfig = {
     },
     tablesByAntigenAndDose: {
         coverageByAreaTable: {
-            elements: ["RVC_DOSES_ADMINISTERED", "RVC_CAMPAIGN_COVERAGE"],
-            rows: ["ou"],
-            filterDataBy: ["pe"],
-            disaggregatedBy: ["ageGroup"],
-            area: true,
+            ...definitions.coverageByAgeGroupAndPeriod,
+            area: "area",
             title: ns =>
                 i18n.t(
                     "Campaign Coverage by area and dose {{- period}} (do not edit this table)",
                     ns
                 ),
-            appendCode: "Coverage by area and dose", //coverageByAreaTable
-            showColumnTotals: false,
-            showRowSubTotals: true,
-            showColumnSubTotals: false,
+            appendCode: "Coverage by area and dose",
+        },
+        coverageByCampaignTable: {
+            ...definitions.coverageByAgeGroupAndPeriod,
+            area: "campaign",
+            title: ns =>
+                i18n.t(
+                    "Campaign Coverage by campaign and dose {{- period}} (do not edit this table)",
+                    ns
+                ),
+            appendCode: "Coverage by campaign and dose",
         },
     },
     tablesByAntigen: {
         coverageByAreaTotal: {
-            elements: ["RVC_DOSES_ADMINISTERED", "RVC_CAMPAIGN_COVERAGE"],
-            rows: ["ou"],
-            filterDataBy: ["pe"],
-            disaggregatedBy: ["doses"],
-            area: true,
+            ...definitions.administeredAndCoverageByDosesAndPeriod,
+            area: "area",
             title: ns =>
                 i18n.t("Cumulative Campaign Coverage by area (do not edit this table)", ns),
-            appendCode: "Coverage by area total", //coverageByAreaTotal
-            showRowSubTotals: false,
-            showColumnSubTotals: false,
-            showColumnTotals: false,
+            appendCode: "Coverage by area total",
+        },
+        coverageByCampaignTotal: {
+            ...definitions.administeredAndCoverageByDosesAndPeriod,
+            area: "campaign",
+            title: ns =>
+                i18n.t("Cumulative Campaign Coverage by campaign (do not edit this table)", ns),
+            appendCode: "Coverage by campaign total",
         },
         qsPerAntigen: {
             elements: ["RVC_DILUTION_SYRINGES_RATIO", "RVC_CAMPAIGN_NEEDLES_RATIO"],
             rows: ["pe", "team"],
             filterDataBy: ["ou"],
             disaggregatedBy: [],
-            area: false,
+            area: "site",
             title: ns => i18n.t("QS Indicators", ns),
             appendCode: "Quality indicators", //qsIndicatorsTable
         },
         vaccinesPerArea: {
-            elements: ["RVC_DOSES_ADMINISTERED", "RVC_DOSES_USED", "RVC_VACCINE_UTILIZATION"],
-            rows: ["ou"],
-            filterDataBy: ["pe"],
-            disaggregatedBy: [],
-            area: true,
+            ...definitions.vaccinesPerPeriod,
+            area: "area",
             title: ns => i18n.t("Vaccines Per Area", ns),
-            appendCode: "Vaccines per area", //vaccinesPerArea
+            appendCode: "Vaccines per area",
+        },
+        vaccinesPerCampaign: {
+            ...definitions.vaccinesPerPeriod,
+            area: "campaign",
+            title: ns => i18n.t("Vaccines Per Campaign", ns),
+            appendCode: "Vaccines per campaign",
         },
         vaccinesPerDateTeam: {
             elements: ["RVC_DOSES_ADMINISTERED", "RVC_DOSES_USED", "RVC_VACCINE_UTILIZATION"],
             rows: ["pe", "team"],
             filterDataBy: ["ou"],
             disaggregatedBy: [],
-            area: false,
+            area: "site",
             title: ns => i18n.t("Vaccines Per Team", ns),
             appendCode: "Vaccines per date and team", //vaccinesPerDateTeam
         },
@@ -122,7 +165,7 @@ export const dashboardItemsConfig = {
             rows: [],
             filterDataBy: ["pe", "ou"],
             disaggregatedBy: ["ageGroup", "doses"],
-            area: false,
+            area: "site",
             title: ns =>
                 i18n.t("Campaign Coverage by age range and dose (do not edit this table)", ns),
             appendCode: "Coverage by age range and dose ", //coverageByCampaignAgeRangeAndDose
@@ -136,7 +179,7 @@ export const dashboardItemsConfig = {
             rows: ["pe"],
             filterDataBy: ["ou"],
             disaggregatedBy: ["ageGroup", "doses"],
-            area: false,
+            area: "site",
             title: ns => i18n.t("Campaign Coverage by day (do not edit this table)", ns),
             appendCode: "Coverage by period", //coverageByPeriod
             showRowSubTotals: false,
@@ -207,7 +250,7 @@ function getCharts({
                 appendCode: chart.appendCode,
                 organisationUnits,
                 title: chart.title,
-                area: !!chart.area,
+                area: chart.area,
                 rows: chart.rows,
                 filterDataBy: chart.filterDataBy,
                 ...itemsMetadata,
@@ -244,7 +287,7 @@ function getTables({
                 filterDataBy: c.filterDataBy,
                 organisationUnits,
                 title: c.title,
-                area: !!c.area,
+                area: c.area,
                 legendId,
                 teamRowRawDimension,
                 ...itemsMetadata,
@@ -530,7 +573,6 @@ const chartConstructor = ({
         _.isEmpty(disaggregations) ? null : "dx",
     ]);
 
-    let organisationUnitElements;
     let organisationUnitNames;
 
     if (organisationUnits.length > 1) {
@@ -538,14 +580,7 @@ const chartConstructor = ({
     } else {
         organisationUnitNames = organisationUnits.map(ou => ou.name).join("-");
     }
-    if (area) {
-        const organisationUnitParents = organisationUnits.map(ou => ou.parents[ou.id].split("/"));
-        organisationUnitElements = organisationUnitParents.map(pArray => ({
-            id: pArray[pArray.length - 2],
-        }));
-    } else {
-        organisationUnitElements = organisationUnits.map(ou => ({ id: ou.id }));
-    }
+    const organisationUnitElements = getOrganisationUnitElements(organisationUnits, area);
 
     return {
         id,
@@ -678,6 +713,25 @@ const chartConstructor = ({
     };
 };
 
+const pathRightOffsetByType = {
+    site: 0,
+    area: 1,
+    campaign: 2,
+};
+
+function getOrganisationUnitElements(organisationUnits, area) {
+    const pathRightOffset = pathRightOffsetByType[area] || 0;
+
+    return _(organisationUnits)
+        .map(orgUnit => {
+            const path_ids = orgUnit.parents[orgUnit.id].split("/");
+            return path_ids[path_ids.length - 1 - pathRightOffset];
+        })
+        .uniq()
+        .map(orgUnitId => ({ id: orgUnitId }))
+        .value();
+}
+
 const tableConstructor = ({
     id,
     datasetName,
@@ -732,7 +786,6 @@ const tableConstructor = ({
           ]
         : categoryDimensionsWithTeams;
 
-    let organisationUnitElements;
     let organisationUnitNames;
     if (organisationUnits.length > 1) {
         organisationUnitNames = "";
@@ -740,14 +793,7 @@ const tableConstructor = ({
         organisationUnitNames = organisationUnits.map(ou => ou.name).join("-");
     }
     // Converts selected OrganisationUnits into their parents (Sites => Areas)
-    if (area) {
-        const organisationUnitParents = organisationUnits.map(ou => ou.parents[ou.id].split("/"));
-        organisationUnitElements = organisationUnitParents.map(pArray => ({
-            id: pArray[pArray.length - 2],
-        }));
-    } else {
-        organisationUnitElements = organisationUnits.map(ou => ({ id: ou.id }));
-    }
+    const organisationUnitElements = getOrganisationUnitElements(organisationUnits, area);
 
     const subName = antigen ? antigen.name : "Global";
     const filters = filterDataBy.map(f => ({ id: f }));

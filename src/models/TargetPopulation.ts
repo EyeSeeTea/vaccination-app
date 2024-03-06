@@ -15,8 +15,8 @@ const dailyPeriodFormat = "YYYYMMDD";
 
 const levelsConfig = {
     areaLevel: 4,
-    levelForPopulation: 5,
-    levelsForAgeDistribution: [{ level: 4, isEditable: true }, { level: 5, isEditable: true }],
+    levelForPopulation: 6,
+    levelsForAgeDistribution: [{ level: 4, isEditable: true }, { level: 6, isEditable: true }],
 };
 
 export type PopulationItems = { [id: string]: TargetPopulationItem };

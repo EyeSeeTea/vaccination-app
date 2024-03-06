@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: i18next-conv\n"
-"POT-Creation-Date: 2019-10-07T15:11:15.076Z\n"
+"POT-Creation-Date: 2024-03-06T08:52:06.116Z\n"
 "PO-Revision-Date: 2018-11-15T11:18:10.896Z\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -171,6 +171,11 @@ msgstr "Enregistrement..."
 msgid "Save"
 msgstr "Enregistrer"
 
+msgid "This campaign is not editable, please contact the administrator."
+msgstr ""
+"Cette campagne contient des données. L'édition d'une campagne avec des "
+"données peut créer plusieurs problèmes, veuillez contacter l'administrateur."
+
 msgid "General info"
 msgstr "Informations générales"
 
@@ -321,8 +326,11 @@ msgid ""
 "Once cells turn into green, all information is saved and you can leave the "
 "Data Entry Section"
 msgstr ""
-"Assurez-vous de remplir toutes les informations et de ne pas laisser de champs vides. Les champs vides seront interprétés comme des informations manquantes, contrairement à des 0.\n"
-"Une fois que tous les champs deviennent vert, toutes les informations ont été enregistrées et vous pouvez quitter la section Saisie de données."
+"Assurez-vous de remplir toutes les informations et de ne pas laisser de "
+"champs vides. Les champs vides seront interprétés comme des informations "
+"manquantes, contrairement à des 0.\n"
+"Une fois que tous les champs deviennent vert, toutes les informations ont "
+"été enregistrées et vous pouvez quitter la section Saisie de données."
 
 msgid "Help"
 msgstr "Aide"
@@ -338,7 +346,8 @@ msgstr "Le champ ne peut pas être vide"
 
 msgid "This user has no Data output and analytic organisation units assigned"
 msgstr ""
-"Cet utilisateur n'a pas d'unité d'organisation de configurée dans l'option de résultat et d'analyse"
+"Cet utilisateur n'a pas d'unité d'organisation de configurée dans l'option "
+"de résultat et d'analyse"
 
 msgid "Number of Teams"
 msgstr "Nombre d'équipes"
@@ -437,7 +446,8 @@ msgid ""
 "Campaign teams (category options) could not be deleted, probably there are "
 "associated data values"
 msgstr ""
-"Les équipes de campagne n'ont pas pu être supprimées, il y a probablement des données associées"
+"Les équipes de campagne n'ont pas pu être supprimées, il y a probablement "
+"des données associées"
 
 msgid "Coverage by Site {{- period}} (do not edit this chart)"
 msgstr "Couverture Vaccinale par Site de Santé (ne modifiez pas ce graphique)"
@@ -447,25 +457,44 @@ msgstr ""
 "Couverture Vaccinale par Zone de Santé {{- period}} (ne modifiez pas ce "
 "graphique)"
 
-msgid "Global QS Indicators"
-msgstr "Indicateurs globaux de Qualité et de Sécurité"
-
-msgid "AEFI and AEB indicators"
-msgstr "MAPI et AES"
-
-msgid "Campaign Coverage by area and dose (do not edit this table)"
+msgid "Coverage by Campaign {{- period}} (do not edit this chart)"
 msgstr ""
-"Couverture Vaccinale par Zone de Santé et Dose (ne modifiez pas ce tableau)"
+"Couverture Vaccinale par Campagne {{- period}} (ne modifiez pas ce graphique)"
+
+msgid "Global QS Indicators {{- period}}"
+msgstr "Indicateurs globaux de Qualité et de Sécurité {{- period}}"
+
+msgid "AEFI and AEB indicators {{- period}}"
+msgstr "MAPI et AES {{- period}}"
+
+msgid ""
+"Campaign Coverage by area and dose {{- period}} (do not edit this table)"
+msgstr ""
+"Couverture Vaccinale par Zone de Santé et Dose {{- period}} (ne modifiez pas "
+"ce tableau)"
+
+msgid ""
+"Campaign Coverage by campaign and dose {{- period}} (do not edit this table)"
+msgstr ""
+"Couverture Vaccinale par Campagne et Dose {{- period}} (ne modifiez pas ce "
+"tableau)"
 
 msgid "Cumulative Campaign Coverage by area (do not edit this table)"
 msgstr ""
 "Couverture Vaccinale Cumulatif par Zone de Santé (ne modifiez pas ce tableau)"
+
+msgid "Cumulative Campaign Coverage by campaign (do not edit this table)"
+msgstr ""
+"Couverture Vaccinale Cumulatif par Campagne (ne modifiez pas ce tableau)"
 
 msgid "QS Indicators"
 msgstr "Indicateurs de Qualité et de Sécurité"
 
 msgid "Vaccines Per Area"
 msgstr "Vaccination par Zone de Santé"
+
+msgid "Vaccines Per Campaign"
+msgstr "Vaccination par Campagne"
 
 msgid "Vaccines Per Team"
 msgstr "Vaccination par équipe"

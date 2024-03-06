@@ -24,7 +24,7 @@ class OrganisationUnitsStep extends React.Component {
         snackbar: PropTypes.object.isRequired,
     };
 
-    listParams = { maxLevel: 5 };
+    listParams = { maxLevel: 6 };
 
     controls = {
         filterByLevel: false,

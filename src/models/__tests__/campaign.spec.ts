@@ -47,40 +47,39 @@ describe("Campaign", () => {
                 "vB9T3dc2fqY",
                 "qgmBzwyBhcq",
             ];
-            _(1)
-                .range(10)
-                .forEach(async level => {
-                    const path =
-                        "/" +
-                        _(ids)
-                            .take(level)
-                            .join("/");
-                    const campaignWithOrgUnit = campaign.setOrganisationUnits([
-                        {
-                            id:
-                                _(path)
-                                    .split("/")
-                                    .last() || "",
-                            path: path,
-                        },
-                    ]);
-                    const messages = await campaignWithOrgUnit.validate();
 
-                    if (level == 5) {
-                        expect(messages).toEqual(expect.objectContaining({}));
-                    } else {
-                        expect(messages).toEqual(
-                            expect.objectContaining({
-                                organisationUnits: [
-                                    {
-                                        key: "organisation_units_only_of_levels",
-                                        namespace: { levels: "5" },
-                                    },
-                                ],
-                            })
-                        );
-                    }
-                });
+            for (const level of _.range(1, 10)) {
+                const path =
+                    "/" +
+                    _(ids)
+                        .take(level)
+                        .join("/");
+                const campaignWithOrgUnit = campaign.setOrganisationUnits([
+                    {
+                        id:
+                            _(path)
+                                .split("/")
+                                .last() || "",
+                        path: path,
+                    },
+                ]);
+                const messages = await campaignWithOrgUnit.validate();
+
+                if (level == 6) {
+                    expect(messages).toEqual(expect.objectContaining({}));
+                } else {
+                    expect(messages).toEqual(
+                        expect.objectContaining({
+                            organisationUnits: [
+                                {
+                                    key: "organisation_units_only_of_levels",
+                                    namespace: { levels: "6" },
+                                },
+                            ],
+                        })
+                    );
+                }
+            }
         });
     });
 });

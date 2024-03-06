@@ -22,6 +22,8 @@ import DbD2 from "../../models/db-d2";
 import Campaign from "../../models/campaign";
 import { MetadataConfig } from "../../models/config";
 import { getValidationMessages } from "../../utils/validations";
+import { redirectToLandingPageIfLegacy } from "./validations";
+import { withRouter } from "react-router-dom";
 
 interface Props extends WithStyles<typeof styles> {
     dataSet: { id: string };
@@ -29,6 +31,7 @@ interface Props extends WithStyles<typeof styles> {
     onClose: () => void;
     db: DbD2;
     snackbar: any;
+    history: any;
 }
 
 interface State {
@@ -53,10 +56,15 @@ class TargetPopulationDialog extends React.Component<Props, State> {
     };
 
     async componentDidMount() {
-        const { dataSet, db, config, onClose, snackbar } = this.props;
+        const { dataSet, db, config, onClose, snackbar, history } = this.props;
 
         try {
             const campaign = await Campaign.get(config, db, dataSet.id);
+            if (redirectToLandingPageIfLegacy(campaign, snackbar, history)) {
+                onClose();
+                return;
+            }
+
             const campaignWithTargetPopulation = await campaign.withTargetPopulation();
             const { targetPopulation } = campaignWithTargetPopulation;
             const areValuesUpdated = targetPopulation
@@ -224,4 +232,4 @@ const styles = (_theme: Theme) =>
         },
     });
 
-export default withSnackbar(withStyles(styles)(TargetPopulationDialog));
+export default withRouter(withSnackbar(withStyles(styles)(TargetPopulationDialog)));

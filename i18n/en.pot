@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2022-03-23T10:31:50.107Z\n"
-"PO-Revision-Date: 2022-03-23T10:31:50.107Z\n"
+"POT-Creation-Date: 2024-03-06T08:52:06.116Z\n"
+"PO-Revision-Date: 2024-03-06T08:52:06.116Z\n"
 
 msgid "Campaigns"
 msgstr ""
@@ -144,6 +144,9 @@ msgid "Saving..."
 msgstr ""
 
 msgid "Save"
+msgstr ""
+
+msgid "This campaign is not editable, please contact the administrator."
 msgstr ""
 
 msgid "General info"
@@ -371,6 +374,9 @@ msgstr ""
 msgid "Coverage by Area {{- period}} (do not edit this chart)"
 msgstr ""
 
+msgid "Coverage by Campaign {{- period}} (do not edit this chart)"
+msgstr ""
+
 msgid "Global QS Indicators {{- period}}"
 msgstr ""
 
@@ -380,13 +386,22 @@ msgstr ""
 msgid "Campaign Coverage by area and dose {{- period}} (do not edit this table)"
 msgstr ""
 
+msgid "Campaign Coverage by campaign and dose {{- period}} (do not edit this table)"
+msgstr ""
+
 msgid "Cumulative Campaign Coverage by area (do not edit this table)"
+msgstr ""
+
+msgid "Cumulative Campaign Coverage by campaign (do not edit this table)"
 msgstr ""
 
 msgid "QS Indicators"
 msgstr ""
 
 msgid "Vaccines Per Area"
+msgstr ""
+
+msgid "Vaccines Per Campaign"
 msgstr ""
 
 msgid "Vaccines Per Team"
