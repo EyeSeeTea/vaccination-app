@@ -401,7 +401,14 @@ export default class DbD2 {
                 DataValueResponse
             >;
         });
-        const errorResponses = responses.filter(response => response.status !== "SUCCESS");
+
+        const errorResponses = responses.filter(response => {
+            if ("httpStatus" in response) {
+                return response.response.status !== "SUCCESS";
+            } else {
+                return response.status !== "SUCCESS";
+            }
+        });
 
         if (_(errorResponses).isEmpty()) {
             return { status: true };

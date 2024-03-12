@@ -128,6 +128,7 @@ export default class CampaignDb {
         const dataSet: DataSet = {
             id: dataSetId,
             name: campaign.name,
+            shortName: campaign.name.slice(0, 50),
             description: campaign.description,
             periodType: "Daily",
             categoryCombo: { id: this.catComboIdForTeams },
