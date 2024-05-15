@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: i18next-conv\n"
-"POT-Creation-Date: 2024-05-15T11:45:24.684Z\n"
+"POT-Creation-Date: 2024-05-15T11:54:29.321Z\n"
 "PO-Revision-Date: 2018-11-15T11:18:10.896Z\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -340,6 +340,12 @@ msgstr "Aide"
 msgid "Back"
 msgstr "Retour"
 
+msgid "Reactive"
+msgstr ""
+
+msgid "Preventive"
+msgstr ""
+
 msgid "Disaggregation"
 msgstr "Désagrégation"
 
@@ -371,6 +377,9 @@ msgstr "[{{total}}] {{names}} et {{othersCount}} autre (s)"
 
 msgid "doses"
 msgstr "doses"
+
+msgid "type"
+msgstr ""
 
 msgid "age groups"
 msgstr "groupes d'âge"
