@@ -16,7 +16,7 @@ const dhis2UrlVar = "REACT_APP_DHIS2_BASE_URL";
 const dhis2AuthVar = "REACT_APP_DHIS2_AUTH";
 const proxyLogLevel = "REACT_APP_PROXY_LOG_LEVEL";
 
-module.exports = function(app) {
+module.exports = function (app) {
     const targetUrl = process.env[dhis2UrlVar];
     const auth = process.env[dhis2AuthVar];
     const logLevel = process.env[proxyLogLevel] || "error";
@@ -32,7 +32,7 @@ module.exports = function(app) {
         logLevel,
         changeOrigin: true,
         pathRewrite: { "^/dhis2/": "/" },
-        onProxyReq: function(proxyReq, _req, res) {
+        onProxyReq: function (proxyReq, _req, res) {
             const { path } = proxyReq;
             const shouldRedirect = redirectPaths.some(redirectPath =>
                 path.startsWith(redirectPath)

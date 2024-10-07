@@ -88,7 +88,7 @@ class TargetPopulationComponent extends React.Component<
 
     getAntigenEditing(ouId: string): string | undefined {
         const { editAgeGroupRow } = this.state;
-        return editAgeGroupRow && editAgeGroupRow.ouId == ouId
+        return editAgeGroupRow && editAgeGroupRow.ouId === ouId
             ? editAgeGroupRow.antigenId
             : undefined;
     }
@@ -174,7 +174,7 @@ class TargetPopulationComponent extends React.Component<
     }
 }
 
-const styles = (theme: Theme) =>
+const styles = (_theme: Theme) =>
     createStyles({
         card: {
             margin: "15px 0px",

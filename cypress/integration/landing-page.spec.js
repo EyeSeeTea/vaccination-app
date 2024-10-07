@@ -17,9 +17,7 @@ context("Landing page", () => {
         });
 
         it("shows 3 pages of the application", () => {
-            cy.get('[data-test="pages"]')
-                .should("have.length", 1)
-                .should("be.visible");
+            cy.get('[data-test="pages"]').should("have.length", 1).should("be.visible");
 
             cy.contains("Campaigns");
             cy.contains("Data Entry");

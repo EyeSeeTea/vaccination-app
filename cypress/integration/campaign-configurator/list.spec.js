@@ -76,9 +76,7 @@ describe("Campaigns - List page", () => {
     });
 
     it("can filter datasets by name (case insensitive)", () => {
-        cy.get("[data-test='search']")
-            .clear()
-            .type("cypress");
+        cy.get("[data-test='search']").clear().type("cypress");
 
         cy.get(".data-table__rows__row").should("have.length", 3);
 
@@ -94,9 +92,7 @@ describe("Campaigns - List page", () => {
     });
 
     it("deletes a dataset when clicked on the Delete context action", () => {
-        cy.get("[data-test='search']")
-            .clear()
-            .type("cypressC");
+        cy.get("[data-test='search']").clear().type("cypressC");
         cy.wait(3000); // eslint-disable-line cypress/no-unnecessary-waiting
 
         cy.get(".data-table__rows > :nth-child(1) > :nth-child(2) span")

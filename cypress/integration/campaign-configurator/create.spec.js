@@ -83,33 +83,21 @@ describe("Campaigns - Create", () => {
         cy.contains("Organisation Units");
         cy.contains("MSF -> OCBA -> ETHIOPIA -> ETHIOPIA, MERT -> Cholera Intervention Addis 2016");
 
-        cy.get("[data-wizard-contents] button")
-            .contains("Save")
-            .click();
+        cy.get("[data-wizard-contents] button").contains("Save").click();
 
         cy.contains("Campaign created", { timeout: 60000 });
     });
 });
 
 function expandOrgUnit(label) {
-    cy.server()
-        .route("GET", "/api/organisationUnits/*")
-        .as("getChildrenOrgUnits");
-    cy.get("[data-wizard-contents]")
-        .contains(label)
-        .parents(".label")
-        .prev()
-        .click();
+    cy.server().route("GET", "/api/organisationUnits/*").as("getChildrenOrgUnits");
+    cy.get("[data-wizard-contents]").contains(label).parents(".label").prev().click();
     cy.wait("@getChildrenOrgUnits");
 }
 
 function selectOrgUnit(label) {
-    cy.contains(label)
-        .prev()
-        .click();
-    cy.contains(label)
-        .should("have.css", "color")
-        .and("not.equal", "rgba(0, 0, 0, 0.87)");
+    cy.contains(label).prev().click();
+    cy.contains(label).should("have.css", "color").and("not.equal", "rgba(0, 0, 0, 0.87)");
 }
 
 function clickDay(dayOfMonth) {
@@ -125,9 +113,7 @@ function clickDay(dayOfMonth) {
 
 function selectAntigen(label) {
     cy.get("[data-multi-selector] > div > div > div select:first").select(label);
-    cy.get("[data-multi-selector] > div > div > div:nth-child(2)")
-        .contains("→")
-        .click();
+    cy.get("[data-multi-selector] > div > div > div:nth-child(2)").contains("→").click();
 }
 
 function waitForStepChange(stepName) {
@@ -147,33 +133,39 @@ function deleteAllTestResources() {
             method: "GET",
             url: getApiUrl(`/dashboards?filter=code:eq:RVC_CAMPAIGN_${dataSet.id}&fields=:owner`),
             failOnStatusCode: false,
-        }).then(({ body: { dashboards: [dashboard] } }) => {
-            cy.request({
-                method: "GET",
-                url: getApiUrl(
-                    "/categoryOptions?filter=name:like:Test_vaccination_campaign_cypress"
-                ),
-            }).then(({ body: { categoryOptions } }) => {
-                const resources = _(dashboard.dashboardItems)
-                    .flatMap(item => [
-                        { model: "charts", ref: item.chart },
-                        { model: "reportTables", ref: item.reportTable },
-                        { model: "maps", ref: item.map },
-                    ])
-                    .map(({ model, ref }) => (ref ? { model, id: ref.id } : null))
-                    .compact()
-                    .value();
-                // Teams (categoryOptions) must be deleted last
-                const allResources = _.concat(
-                    [{ model: "dataSets", id: dataSets[0].id }],
-                    dashboard ? [{ model: "dashboards", id: dashboard.id }] : [],
-                    resources,
-                    [{ model: "categoryOptions", id: categoryOptions[0].id }]
-                );
+        }).then(
+            ({
+                body: {
+                    dashboards: [dashboard],
+                },
+            }) => {
+                cy.request({
+                    method: "GET",
+                    url: getApiUrl(
+                        "/categoryOptions?filter=name:like:Test_vaccination_campaign_cypress"
+                    ),
+                }).then(({ body: { categoryOptions } }) => {
+                    const resources = _(dashboard.dashboardItems)
+                        .flatMap(item => [
+                            { model: "charts", ref: item.chart },
+                            { model: "reportTables", ref: item.reportTable },
+                            { model: "maps", ref: item.map },
+                        ])
+                        .map(({ model, ref }) => (ref ? { model, id: ref.id } : null))
+                        .compact()
+                        .value();
+                    // Teams (categoryOptions) must be deleted last
+                    const allResources = _.concat(
+                        [{ model: "dataSets", id: dataSets[0].id }],
+                        dashboard ? [{ model: "dashboards", id: dashboard.id }] : [],
+                        resources,
+                        [{ model: "categoryOptions", id: categoryOptions[0].id }]
+                    );
 
-                deleteMany(allResources);
-            });
-        });
+                    deleteMany(allResources);
+                });
+            }
+        );
     });
 }
 

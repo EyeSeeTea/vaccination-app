@@ -23,6 +23,11 @@ interface ObjectPermission {
     data?: Permission;
 }
 
+interface CurrentUserSharingFilter {
+    type: "currentUser";
+    permission: ObjectPermission;
+}
+
 interface UserGroupsSharingFilter {
     type: "userGroups";
     userGroups: string[];
@@ -45,6 +50,7 @@ interface UsersByOrgUnitsInGroupSetSharingFilter {
 }
 
 export type SharingFilter =
+    | CurrentUserSharingFilter
     | UserGroupsSharingFilter
     | UsersByOrgUnitsSharingFilter
     | UsersByOrgUnitsInGroupSetSharingFilter;
@@ -101,6 +107,10 @@ export default class CampaignSharing {
             publicPermission: { metadata: "none" },
             filters: [
                 {
+                    type: "currentUser",
+                    permission: { metadata: "edit" },
+                },
+                {
                     type: "userGroups",
                     userGroups: ["Vaccination Referents", "HMIS Officers"],
                     permission: { metadata: "edit" },
@@ -150,6 +160,8 @@ export default class CampaignSharing {
     private async getSharing(sharingDefinition: SharingDefinition): Promise<Sharing> {
         const userAccessesList = await promiseMap(sharingDefinition.filters, filter => {
             switch (filter.type) {
+                case "currentUser":
+                    return this.getCurrentUserAccess(filter);
                 case "userGroups":
                     return this.getUserGroupAccesses(filter);
                 case "usersByOrgUnits":
@@ -172,6 +184,22 @@ export default class CampaignSharing {
             .map(ou => ou.path.split("/")[level])
             .compact()
             .value();
+    }
+
+    private async getCurrentUserAccess(
+        filter: CurrentUserSharingFilter
+    ): Promise<UserAndGroupAccesses> {
+        const { currentUser } = this.campaign.config;
+
+        return {
+            userAccesses: [
+                {
+                    id: currentUser.id,
+                    access: getAccessValue(filter.permission),
+                    displayName: currentUser.name,
+                },
+            ],
+        };
     }
 
     private async getUserGroupAccesses(

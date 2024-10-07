@@ -1,10 +1,9 @@
 import React from "react";
-const { Store } = require("@dhis2/d2-ui-core");
-
 import { D2 } from "../../models/d2.types";
 import { DataStore } from "../../models/DataStore";
 import { Maybe } from "../../models/db.types";
 import { isTestEnv } from "../../utils/dhis2";
+const { Store } = require("@dhis2/d2-ui-core");
 
 type SetComplement<A, A1 extends A> = A extends A1 ? never : A;
 type Subtract<T extends T1, T1 extends object> = Pick<T, SetComplement<keyof T, keyof T1>>;
@@ -45,7 +44,7 @@ export function withPageVisited<T extends PageVisitedProps>(
         }
 
         public render() {
-            return <Component {...this.props as T} pageVisited={this.state.pageVisited} />;
+            return <Component {...(this.props as T)} pageVisited={this.state.pageVisited} />;
         }
     };
 }

@@ -1,19 +1,18 @@
 module.exports = {
-    setupTestFrameworkScriptFile: "<rootDir>/config/testSetup.js",
     collectCoverageFrom: ["src/**/*.js"],
-    testPathIgnorePatterns: ["/node_modules/", "/cypress", "mock"],
-    transformIgnorePatterns: [],
+    testPathIgnorePatterns: ["/node_modules/", "/cypress"],
+    transformIgnorePatterns: ["/node_modules/(?!@eyeseetea/d2-ui-components)"],
     modulePaths: ["src"],
+    moduleDirectories: ["node_modules"],
     moduleNameMapper: {
-        "raw-loader!": "<rootDir>/config/fileMock.js",
         "\\.(css|scss)$": "<rootDir>/config/styleMock.js",
         "\\.(jpg|jpeg|png|svg)$": "<rootDir>/config/fileMock.js",
+        "^!raw-loader!(.*)$": "jest-transform-stub",
     },
     transform: {
-        "^.+\\.jsx?$": "babel-jest",
-        "^.+\\.tsx?$": "ts-jest",
+        "^.+\\.[t|j]sx?$": "babel-jest",
     },
-    testRegex: "/src/.*(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    testRegex: "((\\.|/)(test|spec))\\.(jsx?|tsx?)$",
     moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
     testEnvironment: "jsdom",
     globals: {
@@ -22,5 +21,5 @@ module.exports = {
         navigator: true,
         Element: true,
     },
-    snapshotSerializers: ["enzyme-to-json/serializer"],
+    roots: ["src"],
 };

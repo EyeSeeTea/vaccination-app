@@ -27,7 +27,7 @@ export function getDaysRange(startDate: Moment | null, endDate: Moment | null): 
         return [];
     } else {
         const currentDate = startDate.clone();
-        let outputDates: Moment[] = [];
+        const outputDates: Moment[] = [];
 
         while (currentDate <= endDate) {
             outputDates.push(currentDate.clone());
@@ -35,4 +35,10 @@ export function getDaysRange(startDate: Moment | null, endDate: Moment | null): 
         }
         return outputDates;
     }
+}
+
+export function formatDay(date: Date, options: { daysToAdd: number } = { daysToAdd: 0 }): string {
+    const date2 = new Date(date);
+    date2.setDate(date2.getDate() + options.daysToAdd);
+    return date2.toISOString().split("T")[0] || "";
 }

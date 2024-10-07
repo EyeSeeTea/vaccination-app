@@ -2,12 +2,11 @@ import React from "react";
 import PropTypes from "prop-types";
 import _ from "lodash";
 import i18n from "@dhis2/d2-i18n";
-import { OrgUnitsSelector, withSnackbar } from "d2-ui-components";
+import { OrgUnitsSelector, withSnackbar } from "@eyeseetea/d2-ui-components";
 import { FormBuilder } from "@dhis2/d2-ui-forms";
 import { TextField } from "@dhis2/d2-ui-core";
 import { Validators } from "@dhis2/d2-ui-forms";
 
-import "./OrganisationUnitsStep.css";
 import { getCurrentUserDataViewOrganisationUnits } from "../../../utils/dhis2";
 
 /*
@@ -19,12 +18,13 @@ import { getCurrentUserDataViewOrganisationUnits } from "../../../utils/dhis2";
 class OrganisationUnitsStep extends React.Component {
     static propTypes = {
         d2: PropTypes.object.isRequired,
+        api: PropTypes.object.isRequired,
         campaign: PropTypes.object.isRequired,
         onChange: PropTypes.func.isRequired,
         snackbar: PropTypes.object.isRequired,
     };
 
-    listParams = { maxLevel: 5 };
+    listParams = { maxLevel: 6 };
 
     controls = {
         filterByLevel: false,
@@ -108,9 +108,10 @@ class OrganisationUnitsStep extends React.Component {
                 />
                 <OrgUnitsSelector
                     d2={d2}
+                    api={this.props.api}
                     onChange={this.setOrgUnits}
                     selected={campaign.organisationUnits.map(ou => ou.path)}
-                    levels={campaign.selectableLevels}
+                    selectableLevels={campaign.selectableLevels}
                     controls={this.controls}
                     rootIds={this.rootIds}
                     listParams={this.listParams}

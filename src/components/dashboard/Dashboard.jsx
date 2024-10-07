@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import i18n from "@dhis2/d2-i18n";
-import { withSnackbar, withLoading } from "d2-ui-components";
+import { withSnackbar, withLoading } from "@eyeseetea/d2-ui-components";
 import ReactDOM from "react-dom";
 
 import PageHeader from "../shared/PageHeader";

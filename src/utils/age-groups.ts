@@ -1,15 +1,18 @@
 import _ from "lodash";
 import "./lodash-mixins";
-import { Category } from "../models/db.types";
+import { Category, CategoryOption } from "../models/db.types";
 
 interface SortConfig {
     categoryComboCodeForAgeGroup: string;
     categories: Category[];
 }
 
-export function sortAgeGroups(config: SortConfig, names: string[]): string[] {
+export function sortAgeGroups(
+    config: SortConfig,
+    categoryOptions: CategoryOption[]
+): CategoryOption[] {
     const ageGroupCategory = _(config.categories)
-        .keyBy("code")
+        .keyBy(category => category.code)
         .getOrFail(config.categoryComboCodeForAgeGroup);
 
     const indexByName: _.Dictionary<number> = _(ageGroupCategory.categoryOptions)
@@ -17,5 +20,8 @@ export function sortAgeGroups(config: SortConfig, names: string[]): string[] {
         .fromPairs()
         .value();
 
-    return _.sortBy(names, name => indexByName[name] || 0);
+    return _.sortBy(
+        categoryOptions,
+        categoryOption => indexByName[categoryOption.displayName] || 0
+    );
 }

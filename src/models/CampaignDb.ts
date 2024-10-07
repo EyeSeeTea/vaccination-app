@@ -6,18 +6,32 @@ import "../utils/lodash-mixins";
 
 import Campaign from "./campaign";
 import { DataSetCustomForm } from "./DataSetCustomForm";
-import { Maybe, MetadataResponse, DataEntryForm, Section } from "./db.types";
+import { Maybe, MetadataResponse, DataEntryForm, Section, CategoryOption } from "./db.types";
 import { Metadata, DataSet, Response } from "./db.types";
-import { getDaysRange, toISOStringNoTZ } from "../utils/date";
+import { formatDay } from "../utils/date";
 import { getDataElements, CocMetadata } from "./AntigensDisaggregation";
 import { Dashboard, DashboardMetadata } from "./Dashboard";
 import { Teams, CategoryOptionTeam } from "./Teams";
-import { getDashboardCode, getByIndex } from "./config";
+import { getDashboardCode, getByIndex, baseConfig } from "./config";
 
 interface DataSetWithSections {
     sections: Array<{ id: string; name: string; dataSet: { id: string } }>;
     dataEntryForm: { id: string };
 }
+
+/*
+Problem: When syncing data from field servers to HQ, data cannot usually be imported
+because the current time is after the closing date of the data input periods.
+
+Solution: Use a custom attribute to store the data input periods
+*/
+
+export type DataInput = {
+    periodStart: string;
+    periodEnd: string;
+    openingDate: string;
+    closingDate: string;
+};
 
 interface PostSaveMetadata {
     visualizations: object[];
@@ -37,11 +51,8 @@ export default class CampaignDb {
 
     constructor(public campaign: Campaign) {
         const { categories, categoryCombos, categoryCodeForAgeGroup } = campaign.config;
-        const {
-            categoryCodeForTeams,
-            categoryCodeForDoses,
-            categoryCodeForAntigens,
-        } = campaign.config;
+        const { categoryCodeForTeams, categoryCodeForDoses, categoryCodeForAntigens } =
+            campaign.config;
         const { categoryComboCodeForTeams } = campaign.config;
         const categoriesByCode = _(categories).keyBy("code");
 
@@ -105,25 +116,14 @@ export default class CampaignDb {
             dataElement: { id: dataElement.id },
             categoryCombo: { id: dataElement.categoryCombo.id },
         }));
-        /* Problem: When syncing data from field servers to HQ, data cannot usually be imported
-           because the current time is after the closing date of the data input periods. 
 
-           Workaround: Remove the closing date.
-        */
-
-        //const closingDate = endDate.clone().add(metadataConfig.expirationDays, "days");
-
-        const dataInputPeriods = getDaysRange(startDate, endDate).map(date => ({
-            period: { id: date.format("YYYYMMDD") },
-            openingDate: toISOStringNoTZ(startDate),
-            //closingDate: toISOStringNoTZ(closingDate),
-        }));
-
+        const dataInput = getDataInputFromCampaign(campaign);
         const existingDataSet = await this.getExistingDataSet();
         const metadataCoc = await campaign.antigensDisaggregation.getCocMetadata(db);
         const dataEntryForm = await this.getDataEntryForm(existingDataSet, metadataCoc);
         const sections = await this.getSections(db, dataSetId, existingDataSet, metadataCoc);
         const sharing = await campaign.getDataSetSharing();
+        const campaignOrgUnitRefs = campaign.organisationUnits.map(ou => ({ id: ou.id }));
 
         const dataSet: DataSet = {
             id: dataSetId,
@@ -134,35 +134,70 @@ export default class CampaignDb {
             categoryCombo: { id: this.catComboIdForTeams },
             dataElementDecoration: true,
             renderAsTabs: true,
-            organisationUnits: campaign.organisationUnits.map(ou => ({ id: ou.id })),
+            organisationUnits: campaignOrgUnitRefs,
             dataSetElements,
             openFuturePeriods: 1,
             timelyDays: 0,
             expiryDays: 0,
             formType: "CUSTOM",
-            dataInputPeriods,
+            dataInputPeriods: [],
             attributeValues: [
                 { value: "true", attribute: { id: metadataConfig.attributes.app.id } },
                 { value: "true", attribute: { id: metadataConfig.attributes.hideInTallySheet.id } },
+                {
+                    value: dataInput ? JSON.stringify(dataInput) : "",
+                    attribute: { id: metadataConfig.attributes.dataInputPeriods.id },
+                },
             ],
             dataEntryForm: { id: dataEntryForm.id },
             sections: sections.map(section => ({ id: section.id })),
             ...sharing,
         };
 
-        const teamIds = newTeams.map(t => t.id);
+        const teamIds = newTeams.map(team => team.id);
         const dashboardMetadata = await this.getDashboardMetadata(dataSetId, teamIds);
+        const extraDataSets = await this.getExtraDataSets();
 
         return this.postSave(
             {
                 ...dashboardMetadata,
-                dataSets: [dataSet],
+                dataSets: [dataSet, ...extraDataSets],
                 dataEntryForms: [dataEntryForm],
                 sections,
                 categoryOptions: newTeams,
             },
             teamsToDelete
         );
+    }
+
+    private async getExtraDataSets(): Promise<DataSet[]> {
+        const { campaign } = this;
+        const dataSetIds = this.campaign.config.dataSets.extraActivities.map(ds => ds.id);
+        const campaignOrgUnitRefs = campaign.organisationUnits.map(ou => ({ id: ou.id }));
+
+        const res = await this.campaign.db.getMetadata<{
+            dataSets: Array<DataSet>;
+        }>({
+            dataSets: {
+                filters: [`id:in:[${dataSetIds.join(",")}]`],
+                fields: { ":owner": true },
+            },
+        });
+
+        const extraDataSets = res.dataSets;
+        const campaignOrgUnitIds = new Set(campaignOrgUnitRefs.map(ou => ou.id));
+
+        return extraDataSets.map(dataSet => {
+            const isExtraDataSetSelected = campaign.extraDataSets.some(ds => ds.id === dataSet.id);
+
+            return {
+                ...dataSet,
+                organisationUnits: _(dataSet.organisationUnits)
+                    .reject(orgUnit => campaignOrgUnitIds.has(orgUnit.id))
+                    .concat(isExtraDataSetSelected ? campaignOrgUnitRefs : [])
+                    .value(),
+            };
+        });
     }
 
     public async saveTargetPopulation(): Promise<Response<string>> {
@@ -270,13 +305,14 @@ export default class CampaignDb {
 
             const greyedFields = _(disaggregationData.dataElements)
                 .flatMap(dataElementDis => {
-                    const groups: string[][] = _.cartesianProduct(
+                    const groups: CategoryOption[][] = _.cartesianProduct(
                         dataElementDis.categories.map(category => category.categoryOptions)
                     );
 
-                    return groups.map(group => {
-                        const cocName = group.join(", ");
-                        const cocId = _(cocMetadata.cocIdByName).getOrFail(cocName);
+                    return groups.map(disaggregation => {
+                        const cocId = cocMetadata.getByOptions(disaggregation);
+                        if (!cocId)
+                            throw new Error(`coc not found: ${JSON.stringify(disaggregation)} `);
 
                         return {
                             dataElement: { id: dataElementDis.id },
@@ -388,4 +424,67 @@ export default class CampaignDb {
             sharing,
         });
     }
+}
+
+type ModelWithAttributes = {
+    attributeValues: Array<{
+        attribute: { code: string };
+        value: string;
+    }>;
+};
+
+type DataSetWithDataInputPeriods = {
+    dataInputPeriods: Array<{ period: { id: string } }>;
+};
+
+type CampaignPeriods = { startDate: Date; endDate: Date };
+
+export function getDataInputFromCampaign(campaign: Campaign): Maybe<DataInput> {
+    if (!campaign.startDate || !campaign.endDate) return;
+
+    return {
+        periodStart: formatDay(campaign.startDate),
+        periodEnd: formatDay(campaign.endDate),
+        openingDate: formatDay(campaign.startDate),
+        closingDate: formatDay(campaign.endDate, { daysToAdd: campaign.config.expirationDays }),
+    };
+}
+
+export function getCampaignPeriods<
+    DataSet extends ModelWithAttributes & DataSetWithDataInputPeriods
+>(dataSet: DataSet): Maybe<CampaignPeriods> {
+    return getPeriodDatesFromAttributes(dataSet) || getPeriodDatesFromDataInputPeriods(dataSet);
+}
+
+function getPeriodDatesFromAttributes<DataSetWithAttributes extends ModelWithAttributes>(
+    dataSet: DataSetWithAttributes
+): Maybe<CampaignPeriods> {
+    const dataInputAttribute = dataSet.attributeValues.find(
+        av => av.attribute.code === baseConfig.attributeCodeForDataInputPeriods
+    );
+    if (!dataInputAttribute || !dataInputAttribute.value) return;
+
+    const dataInput = JSON.parse(dataInputAttribute.value) as DataInput;
+
+    return {
+        startDate: new Date(dataInput.periodStart),
+        endDate: new Date(dataInput.periodEnd),
+    };
+}
+
+function getPeriodDatesFromDataInputPeriods(
+    dataSet: DataSetWithDataInputPeriods
+): Maybe<CampaignPeriods> {
+    const { dataInputPeriods } = dataSet;
+    if (!dataInputPeriods) return;
+
+    const getDateFromPeriodId = (periodId: string) => moment(periodId, "YYYYMMDD").toDate();
+    const periods = dataInputPeriods.map(dip => dip.period.id);
+    const [min, max] = [_.min(periods), _.max(periods)];
+    if (!min || !max) return;
+
+    return {
+        startDate: getDateFromPeriodId(min),
+        endDate: getDateFromPeriodId(max),
+    };
 }

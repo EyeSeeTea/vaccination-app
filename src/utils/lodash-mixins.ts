@@ -18,6 +18,8 @@ declare module "lodash" {
         ): TObject[TKey];
 
         isNotEmpty(): boolean;
+
+        _placeholder: TValue;
     }
 }
 

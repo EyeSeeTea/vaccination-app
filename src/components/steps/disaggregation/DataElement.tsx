@@ -23,15 +23,8 @@ interface DataElementProps extends WithStyles<typeof styles> {
 }
 
 const DataElement: SFC<DataElementProps> = props => {
-    const {
-        antigenCode,
-        dataElementIdx,
-        categories,
-        classes,
-        update,
-        isEditing,
-        toggleEdit,
-    } = props;
+    const { antigenCode, dataElementIdx, categories, classes, update, isEditing, toggleEdit } =
+        props;
 
     const isEditingCategory = (categoryIdx: number) =>
         isEditing([antigenCode, dataElementIdx, categoryIdx]);

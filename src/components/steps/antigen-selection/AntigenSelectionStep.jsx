@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import _ from "lodash";
-import { MultiSelector } from "d2-ui-components";
+import { MultiSelector } from "@eyeseetea/d2-ui-components";
 
 class AntigenSelectionStep extends React.Component {
     state = { antigens: null };
@@ -19,10 +19,7 @@ class AntigenSelectionStep extends React.Component {
     }
 
     onChange = selected => {
-        const antigens = _(this.state.antigens)
-            .keyBy("code")
-            .at(selected)
-            .value();
+        const antigens = _(this.state.antigens).keyBy("code").at(selected).value();
         const newCampaign = this.props.campaign.setAntigens(antigens);
         this.props.onChange(newCampaign);
     };

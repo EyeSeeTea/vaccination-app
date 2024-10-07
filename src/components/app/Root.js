@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Switch, Route } from "react-router-dom";
+import i18n from "@dhis2/d2-i18n";
 
 import CampaignConfiguration from "../campaign-configuration/CampaignConfiguration";
 import DataEntry from "../data-entry/DataEntry";
@@ -15,36 +16,36 @@ class Root extends React.Component {
     };
 
     render() {
-        const { d2, config, db } = this.props;
+        const { d2, config, db, api } = this.props;
+        const base = { d2, config, db, api };
+        i18n.setDefaultNamespace("vaccination-app");
         if (!config) return null;
 
         return (
             <Switch>
                 <Route
                     path="/campaign-configuration/new"
-                    render={props => <CampaignWizard d2={d2} db={db} config={config} {...props} />}
+                    render={props => <CampaignWizard {...base} {...props} />}
                 />
 
                 <Route
                     path="/campaign-configuration/edit/:id"
-                    render={props => <CampaignWizard d2={d2} db={db} config={config} {...props} />}
+                    render={props => <CampaignWizard {...base} {...props} />}
                 />
 
                 <Route
                     path="/campaign-configuration"
-                    render={props => (
-                        <CampaignConfiguration d2={d2} db={db} config={config} {...props} />
-                    )}
+                    render={props => <CampaignConfiguration {...base} {...props} />}
                 />
 
                 <Route
                     path="/data-entry/:id?"
-                    render={props => <DataEntry d2={d2} config={config} {...props} />}
+                    render={props => <DataEntry {...base} {...props} />}
                 />
 
                 <Route
                     path="/dashboard/:id?"
-                    render={props => <Dashboard d2={d2} db={db} config={config} {...props} />}
+                    render={props => <Dashboard {...base} {...props} />}
                 />
 
                 <Route render={() => <LandingPage d2={d2} />} />

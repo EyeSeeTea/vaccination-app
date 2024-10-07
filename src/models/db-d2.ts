@@ -14,16 +14,17 @@ import {
     MetadataFields,
     Attribute,
     DataEntryForm,
-    DataValueRequest,
     DataValueResponse,
     Response,
     DataValue,
     MetadataOptions,
     Message,
     DataValueToPost,
+    Ref,
 } from "./db.types";
 import "../utils/lodash-mixins";
 import { promiseMap } from "../utils/promises";
+import { User } from "./config";
 
 function getDbFields(modelFields: ModelFields): string[] {
     return _(modelFields)
@@ -272,11 +273,7 @@ export default class DbD2 {
         const { pager, organisationUnits } = await this.api.get("/organisationUnits", {
             paging: true,
             pageSize: options.pageSize || 10,
-            filter: [
-                `id:in:[${_(ids)
-                    .take(options.pageSize)
-                    .join(",")}]`,
-            ],
+            filter: [`id:in:[${_(ids).take(options.pageSize).join(",")}]`],
             fields: ["id", "displayName", "path", "level", "ancestors[id,displayName,path,level]"],
         });
         const newPager = { ...pager, total: ids.length };
@@ -292,9 +289,7 @@ export default class DbD2 {
         if (_(categories).isEmpty()) {
             return [];
         } else {
-            return _(categories[0].categoryOptions)
-                .sortBy("displayName")
-                .value();
+            return _(categories[0].categoryOptions).sortBy("displayName").value();
         }
     }
 
@@ -307,43 +302,50 @@ export default class DbD2 {
         return categoryCombos;
     }
 
+    public async getCurrentUser(): Promise<User> {
+        return this.api.get<User>("/me", { paging: false, fields: ["id", "name"] });
+    }
+
     public async getCocsByCategoryComboCode(
         codes: string[]
-    ): Promise<Array<{ id: string; categoryOptionNames: string[] }>> {
+    ): Promise<Array<{ id: string; categoryOptions: Ref[] }>> {
         const filter = `code:in:[${codes.join(",")}]`;
 
-        const { categoryOptionCombos, categoryCombos } = await this.getMetadata<{
-            categoryOptionCombos: Array<{
-                id: string;
-                categoryCombo: { id: string };
-                categoryOptions: Array<{ id: string }>;
-            }>;
+        const { categoryCombos } = await this.getMetadata<{
             categoryCombos: Array<{
-                id: string;
-                categories: Array<{ categoryOptions: Array<{ id: string; name: string }> }>;
+                code: string;
+                categoryOptionCombos: Array<{
+                    id: string;
+                    categoryOptions: Array<{ id: string }>;
+                }>;
             }>;
         }>({
-            categoryOptionCombos: {
-                fields: {
-                    id: true,
-                    categoryCombo: { id: true },
-                    categoryOptions: { id: true },
-                },
-                filters: [`categoryCombo.${filter}`],
-            },
             categoryCombos: {
                 fields: {
-                    id: true,
-                    categories: { categoryOptions: { id: true, name: true } },
+                    code: true,
+                    categoryOptionCombos: {
+                        id: true,
+                        categoryOptions: { id: true },
+                    },
                 },
                 filters: [filter],
             },
         });
 
-        return getCocsWithUntranslatedOptionNames(categoryCombos, categoryOptionCombos);
+        const missingCodes = _(codes)
+            .difference(categoryCombos.map(cc => cc.code))
+            .value();
+
+        if (!_(missingCodes).isEmpty()) {
+            console.error(`categoryCombo codes not found: ${missingCodes.join(", ")}`);
+        }
+
+        return _(categoryCombos)
+            .flatMap(categoryCombo => categoryCombo.categoryOptionCombos)
+            .value();
     }
 
-    public async postMetadata<Metadata>(
+    public async postMetadata<Metadata extends object>(
         metadata: Metadata,
         options: MetadataOptions = {}
     ): Promise<ApiResponse<MetadataResponse>> {
@@ -397,9 +399,9 @@ export default class DbD2 {
         const dataValuesChunks = _.chunk(dataValuesToPost, 200);
 
         const responses = await promiseMap(dataValuesChunks, dataValuesChunk => {
-            return this.api.post("dataValueSets", { dataValues: dataValuesChunk }) as Promise<
-                DataValueResponse
-            >;
+            return this.api.post("dataValueSets", {
+                dataValues: dataValuesChunk,
+            }) as Promise<DataValueResponse>;
         });
 
         const errorResponses = responses.filter(response => {
@@ -473,12 +475,8 @@ export default class DbD2 {
     }
 
     public async getDataValues(params: GetDataValuesParams): Promise<DataValue[]> {
-        const parseDate = (date: Date | undefined, daysOffset: number = 0) =>
-            date
-                ? moment(date)
-                      .add(daysOffset, "days")
-                      .format("YYYY-MM-DD")
-                : undefined;
+        const parseDate = (date: Date | undefined, daysOffset = 0) =>
+            date ? moment(date).add(daysOffset, "days").format("YYYY-MM-DD") : undefined;
         const apiParams = {
             ...params,
             startDate: parseDate(params.startDate),
@@ -491,47 +489,6 @@ export default class DbD2 {
 
         return response.dataValues || [];
     }
-}
-
-/* DHIS2 uses the locale of the user that generates a category option combo to set its
-   name (that's a bug, names should be untranslated), so we will use coc.categoryOptions instead.
-   Note that coc.categoryOptions does not keep the original categories order, so we need
-   the associated category combos to perform that sorting.
-*/
-
-function getCocsWithUntranslatedOptionNames(
-    categoryCombos: {
-        id: string;
-        categories: { categoryOptions: { id: string; name: string }[] }[];
-    }[],
-    categoryOptionCombos: {
-        id: string;
-        categoryCombo: { id: string };
-        categoryOptions: { id: string }[];
-    }[]
-) {
-    const categoryOptionNameById = _(categoryCombos)
-        .flatMap(categoryCombo => categoryCombo.categories)
-        .flatMap(category => category.categoryOptions)
-        .uniqBy(categoryOption => categoryOption.id)
-        .map(categoryOption => [categoryOption.id, categoryOption.name] as [string, string])
-        .fromPairs()
-        .value();
-
-    const categoryCombosById = _.keyBy(categoryCombos, categoryCombo => categoryCombo.id);
-
-    return categoryOptionCombos.map(coc => {
-        const categoryOptions = _.sortBy(coc.categoryOptions, categoryOption => {
-            const categoryCombo = _(categoryCombosById).getOrFail(coc.categoryCombo.id);
-            const categoryOptionIndex = _(categoryCombo.categories).findIndex(category =>
-                _(category.categoryOptions).some(co => co.id === categoryOption.id)
-            );
-            if (categoryOptionIndex < 0) throw new Error("Cannot find index of category option");
-            return categoryOptionIndex;
-        });
-        const names = categoryOptions.map(co => _(categoryOptionNameById).getOrFail(co.id));
-        return { id: coc.id, categoryOptionNames: names };
-    });
 }
 
 export function toStatusResponse(response: ApiResponse<MetadataResponse>): Response<string> {

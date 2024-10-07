@@ -1,7 +1,16 @@
 import React from "react";
 import PropTypes from "prop-types";
-import i18n from "@dhis2/d2-i18n";
-import { ConfirmationDialog, ObjectsTable, withSnackbar, withLoading } from "d2-ui-components";
+import {
+    ConfirmationDialog,
+    ObjectsTable,
+    withSnackbar,
+    withLoading,
+    TableAction,
+    TablePagination,
+    TableState,
+    TableSorting,
+    TableColumn,
+} from "@eyeseetea/d2-ui-components";
 import _ from "lodash";
 
 import PageHeader from "../shared/PageHeader";
@@ -12,8 +21,40 @@ import TargetPopulationDialog from "./TargetPopulationDialog";
 import { hasCurrentUserRoles } from "../../utils/permissions";
 import { withPageVisited } from "../utils/page-visited-app";
 import "./CampaignConfiguration.css";
+import { Button } from "@material-ui/core";
+import { Dashboard, Delete, Details, Edit, LibraryBooks, People } from "@material-ui/icons";
+import i18n from "../../locales";
 
-class CampaignConfiguration extends React.Component {
+type DataSetRow = any;
+
+type Filters = {
+    search: string;
+};
+
+type CampaignConfigurationProps = {
+    d2: any;
+    db: any;
+    config: any;
+    snackbar: any;
+    loading: any;
+    pageVisited: boolean;
+    history: any;
+};
+
+type CampaignConfigurationState = {
+    rows: DataSetRow[];
+    pagination: TablePagination;
+    sorting: TableSorting<DataSetRow>;
+    dataSetsToDelete: any;
+    targetPopulationDataSet: any;
+    objectsTableKey: any;
+    filters: any;
+};
+
+class CampaignConfiguration extends React.Component<
+    CampaignConfigurationProps,
+    CampaignConfigurationState
+> {
     static propTypes = {
         d2: PropTypes.object.isRequired,
         db: PropTypes.object.isRequired,
@@ -23,7 +64,7 @@ class CampaignConfiguration extends React.Component {
         pageVisited: PropTypes.bool,
     };
 
-    constructor(props) {
+    constructor(props: CampaignConfigurationProps) {
         super(props);
 
         this.state = {
@@ -31,10 +72,13 @@ class CampaignConfiguration extends React.Component {
             targetPopulationDataSet: null,
             objectsTableKey: new Date(),
             filters: {},
+            rows: [],
+            pagination: { ...initialPagination, total: 0 },
+            sorting: this.initialSorting,
         };
     }
 
-    hasCurrentUserRoles(userRoleNames) {
+    hasCurrentUserRoles(userRoleNames: any) {
         return hasCurrentUserRoles(this.props.d2, this.props.config.userRoles, userRoleNames);
     }
 
@@ -42,13 +86,18 @@ class CampaignConfiguration extends React.Component {
     isCurrentUserManager = this.hasCurrentUserRoles(this.roles.manager);
     canCurrentUserSetTargetPopulation = this.hasCurrentUserRoles(this.roles.targetPopulation);
 
-    columns = [
+    columns: TableColumn<DataSetRow>[] = [
         { name: "displayName", text: i18n.t("Name"), sortable: true },
-        { name: "publicAccess", text: i18n.t("Public access"), sortable: true },
+        {
+            name: "publicAccess",
+            text: i18n.t("Public access"),
+            sortable: true,
+            getValue: row => getValueForAccess(row.publicAccess),
+        },
         { name: "lastUpdated", text: i18n.t("Last updated"), sortable: true },
     ];
 
-    initialSorting = ["displayName", "asc"];
+    initialSorting = { field: "displayName" as "displayName", order: "asc" as "asc" };
 
     detailsFields = [
         { name: "displayName", text: i18n.t("Name") },
@@ -56,12 +105,12 @@ class CampaignConfiguration extends React.Component {
         {
             name: "startDate",
             text: i18n.t("Start Date"),
-            getValue: dataSet => this.getDateValue("startDate", dataSet),
+            getValue: (dataSet: DataSetRow) => this.getDateValue("startDate", dataSet),
         },
         {
             name: "endDate",
             text: i18n.t("End Date"),
-            getValue: dataSet => this.getDateValue("endDate", dataSet),
+            getValue: (dataSet: DataSetRow) => this.getDateValue("endDate", dataSet),
         },
         { name: "created", text: i18n.t("Created") },
         { name: "lastUpdated", text: i18n.t("Last update") },
@@ -69,51 +118,61 @@ class CampaignConfiguration extends React.Component {
         { name: "href", text: i18n.t("API link") },
     ];
 
-    _actions = [
+    _actions: TableAction<DataSetRow>[] = [
         {
             name: "details",
             text: i18n.t("Details"),
             multiple: false,
-            type: "details",
-            isPrimary: true,
+            primary: true,
+            icon: <Details />,
         },
         {
             name: "edit",
             text: i18n.t("Edit"),
             multiple: false,
-            isActive: (_d2, _dataSet) => this.isCurrentUserManager,
-            onClick: dataSet =>
-                this.props.history.push(`/campaign-configuration/edit/${dataSet.id}`),
+            icon: <Edit />,
+            isActive: () => this.isCurrentUserManager,
+            onClick: ids => this.props.history.push(`/campaign-configuration/edit/${getId(ids)}`),
         },
         {
             name: "delete",
             text: i18n.t("Delete"),
             multiple: true,
-            isActive: (_d2, _dataSet) => this.isCurrentUserManager,
-            onClick: dataSets => this.openDeleteConfirmation(dataSets),
+            icon: <Delete />,
+            isActive: () => this.isCurrentUserManager,
+            onClick: ids => this.openDeleteConfirmation(this.getDataSets(ids)),
         },
         {
             name: "data-entry",
-            icon: "library_books",
+            icon: <LibraryBooks />,
             text: i18n.t("Go to Data Entry"),
             multiple: false,
-            onClick: dataSet => this.props.history.push(`/data-entry/${dataSet.id}`),
+            onClick: ids => this.props.history.push(`/data-entry/${getId(ids)}`),
         },
         {
             name: "dashboard",
             text: i18n.t("Go to Dashboard"),
             multiple: false,
-            onClick: dataSet => this.props.history.push(`/dashboard/${dataSet.id}`),
+            icon: <Dashboard />,
+            onClick: ids => this.props.history.push(`/dashboard/${getId(ids)}`),
         },
         {
             name: "target-population",
             text: i18n.t("Set Target Population"),
-            icon: "people",
+            icon: <People />,
             multiple: false,
             isActive: () => this.canCurrentUserSetTargetPopulation,
-            onClick: dataSet => this.openTargetPopulation(dataSet),
+            onClick: ids => this.openTargetPopulation(this.getDataSet(ids)),
         },
     ];
+
+    getDataSets = (ids: string[]): DataSetRow[] => {
+        return this.state.rows.filter(row => ids.includes(row.id));
+    };
+
+    getDataSet = (ids: string[]): DataSetRow | undefined => {
+        return this.state.rows.find(row => row.id === ids[0]);
+    };
 
     actions = _(this._actions)
         .keyBy("name")
@@ -121,7 +180,7 @@ class CampaignConfiguration extends React.Component {
         .compact()
         .value();
 
-    openTargetPopulation = dataSet => {
+    openTargetPopulation = (dataSet: DataSetRow) => {
         this.setState({ targetPopulationDataSet: dataSet });
     };
 
@@ -129,7 +188,7 @@ class CampaignConfiguration extends React.Component {
         this.setState({ targetPopulationDataSet: null });
     };
 
-    openDeleteConfirmation = dataSets => {
+    openDeleteConfirmation = (dataSets: any) => {
         this.setState({ dataSetsToDelete: dataSets });
     };
 
@@ -162,7 +221,7 @@ class CampaignConfiguration extends React.Component {
         }
     };
 
-    getDateValue = (dateType, dataSet) => {
+    getDateValue = (dateType: "startDate" | "endDate", dataSet: DataSetRow) => {
         const periodDates = getPeriodDatesFromDataSet(dataSet);
         if (!periodDates) return;
 
@@ -181,16 +240,46 @@ class CampaignConfiguration extends React.Component {
         this.props.history.push("/campaign-configuration/new");
     };
 
-    list = (...listArgs) => {
-        const { config } = this.props;
-        return list(config, ...listArgs);
+    async componentDidMount() {
+        await this.list(this.state.filters, this.state.pagination, this.state.sorting);
+    }
+
+    list = async (
+        filters: Filters,
+        pagination: TablePagination,
+        sorting: TableSorting<DataSetRow>
+    ) => {
+        const res = await list(this.props.config, this.props.d2, filters, {
+            ...pagination,
+            sorting: [sorting.field, sorting.order],
+        });
+
+        this.setState({
+            rows: res.objects,
+            pagination: { ...res.pager, pageSize: pagination.pageSize },
+            sorting: sorting,
+            filters: filters,
+        });
+    };
+
+    setTextSearch = async (search: string) => {
+        const filters = { ...this.state.filters, search: search };
+        this.list(filters, { ...this.state.pagination, page: 1 }, this.state.sorting);
+    };
+
+    listFromChange = async (state: TableState<DataSetRow>) => {
+        this.list(this.state.filters, state.pagination, state.sorting);
     };
 
     backHome = () => {
         this.props.history.push("/");
     };
 
-    renderDeleteConfirmationDialog = ({ dataSets }) => {
+    renderDeleteConfirmationDialog = ({
+        dataSets,
+    }: {
+        dataSets: Array<{ displayName: string }>;
+    }) => {
         const description =
             i18n.t(
                 "Are you sure you want to delete those campaign(s) (datasets and dashboards)? If you proceed, the associated datasets and dashboards will be removed from this server, but any data already registered will continue in the system"
@@ -211,7 +300,7 @@ class CampaignConfiguration extends React.Component {
     };
 
     render() {
-        const { d2, db, config, pageVisited } = this.props;
+        const { db, config, pageVisited } = this.props;
         const { dataSetsToDelete, targetPopulationDataSet, objectsTableKey } = this.state;
         const DeleteConfirmationDialog = this.renderDeleteConfirmationDialog;
         const help = i18n.t(
@@ -228,19 +317,34 @@ Click the three dots on the right side of the screen if you wish to perform any 
                     pageVisited={pageVisited}
                 />
 
-                <ObjectsTable
+                <ObjectsTable<DataSetRow>
+                    details={this.detailsFields}
                     key={objectsTableKey}
-                    model={d2.models.dataSet}
                     columns={this.columns}
-                    d2={d2}
-                    detailsFields={this.detailsFields}
-                    pageSize={20}
-                    initialSorting={this.initialSorting}
+                    paginationOptions={{ pageSizeInitialValue: initialPagination.pageSize }}
+                    initialState={{
+                        pagination: this.state.pagination,
+                        sorting: this.state.sorting,
+                    }}
+                    rows={this.state.rows}
                     actions={this.actions}
-                    onButtonClick={this.isCurrentUserManager ? this.onCreate : null}
-                    list={this.list}
-                    buttonLabel={i18n.t("Create Campaign")}
-                    customFilters={this.state.filters}
+                    onChange={this.listFromChange}
+                    pagination={this.state.pagination}
+                    sorting={this.state.sorting}
+                    onChangeSearch={this.setTextSearch}
+                    filterComponents={
+                        this.isCurrentUserManager ? (
+                            <div>
+                                <Button
+                                    variant="contained"
+                                    onClick={this.onCreate}
+                                    style={styles.button}
+                                >
+                                    {i18n.t("Create Campaign")}
+                                </Button>
+                            </div>
+                        ) : null
+                    }
                 />
 
                 {dataSetsToDelete && <DeleteConfirmationDialog dataSets={dataSetsToDelete} />}
@@ -257,4 +361,39 @@ Click the three dots on the right side of the screen if you wish to perform any 
     }
 }
 
-export default withLoading(withSnackbar(withPageVisited(CampaignConfiguration, "config")));
+function getId(ids: string[]): string {
+    const id = ids[0];
+    if (!id) {
+        throw new Error("No id found");
+    }
+    return id;
+}
+
+const initialPagination = { pageSize: 25, page: 1 };
+
+const styles = {
+    button: {
+        position: "absolute" as "absolute",
+        top: 0,
+        right: 400,
+    },
+};
+
+const textByAccess: Record<string, string> = {
+    rw: i18n.t("R/W"),
+    "r-": i18n.t("Read"),
+    "--": i18n.t("Private"),
+};
+
+function getValueForAccess(value: string): string {
+    const metadataAccess = value.slice(0, 2);
+    const dataAccess = value.slice(2, 4);
+
+    return [
+        `${i18n.t("Metadata")}: ${textByAccess[metadataAccess]}`,
+        " - ",
+        `${i18n.t("Data")}: ${textByAccess[dataAccess]}`,
+    ].join("");
+}
+
+export default withLoading(withSnackbar(withPageVisited(CampaignConfiguration as any, "config")));

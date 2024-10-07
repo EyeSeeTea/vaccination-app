@@ -5,13 +5,13 @@ import moment from "moment";
 import { PaginatedObjects, OrganisationUnitPathOnly, Response } from "./db.types";
 import DbD2, { ApiResponse, toStatusResponse } from "./db-d2";
 import { AntigensDisaggregation, SectionForDisaggregation } from "./AntigensDisaggregation";
-import { MetadataConfig, getDashboardCode, getByIndex } from "./config";
+import { MetadataConfig, getDashboardCode, getByIndex, DataSet } from "./config";
 import { AntigenDisaggregationEnabled } from "./AntigensDisaggregation";
 import {
     TargetPopulation,
     TargetPopulationData as TargetPopulationData_,
 } from "./TargetPopulation";
-import CampaignDb from "./CampaignDb";
+import CampaignDb, { getCampaignPeriods } from "./CampaignDb";
 import { promiseMap } from "../utils/promises";
 import i18n from "../locales";
 import { TeamsMetadata, getTeamsForCampaign, filterTeamsByNames } from "./Teams";
@@ -22,6 +22,7 @@ export type TargetPopulationData = TargetPopulationData_;
 
 export interface Antigen {
     id: string;
+    displayName: string;
     name: string;
     code: string;
     doses: { id: string; name: string }[];
@@ -35,6 +36,7 @@ export interface Data {
     startDate: Date | null;
     endDate: Date | null;
     antigens: Antigen[];
+    extraDataSets: DataSet[];
     antigensDisaggregation: AntigensDisaggregation;
     targetPopulation: Maybe<TargetPopulation>;
     teams: Maybe<number>;
@@ -67,7 +69,7 @@ interface DashboardWithResources {
 }
 
 export default class Campaign {
-    public selectableLevels: number[] = [5];
+    public selectableLevels: number[] = [6];
     private maxNameLength = 140;
 
     validations: _.Dictionary<() => ValidationErrors | Promise<ValidationErrors>> = {
@@ -82,6 +84,19 @@ export default class Campaign {
     };
 
     constructor(public db: DbD2, public config: MetadataConfig, private data: Data) {}
+
+    public get extraDataSets() {
+        return this.data.extraDataSets;
+    }
+
+    public setExtraDataSet(dataSet: DataSet, options: { isEnabled: boolean }): Campaign {
+        const newDataSets = _(this.data.extraDataSets)
+            .reject(ds => ds.id === dataSet.id)
+            .concat(options.isEnabled ? [dataSet] : [])
+            .value();
+
+        return this.update({ extraDataSets: newDataSets });
+    }
 
     public static create(config: MetadataConfig, db: DbD2): Campaign {
         const antigens: Antigen[] = [];
@@ -102,6 +117,7 @@ export default class Campaign {
                 elements: [],
             },
             dashboardId: undefined,
+            extraDataSets: [],
         };
 
         return new Campaign(db, config, initialData);
@@ -112,17 +128,21 @@ export default class Campaign {
         db: DbD2,
         dataSetId: string
     ): Promise<Campaign> {
+        const extraDataSetIds = config.dataSets.extraActivities.map(ds => ds.id);
+
         const {
-            dataSets: [dataSet],
+            dataSets,
             dashboards: [dashboard],
         } = await db.getMetadata<{
             dataSets: Array<{
                 id: string;
                 name: string;
+                code: string;
                 description: string;
                 organisationUnits: Array<OrganisationUnitPathOnly>;
                 dataInputPeriods: Array<{ period: { id: string } }>;
                 sections: Array<SectionForDisaggregation>;
+                attributeValues: Array<{ attribute: { code: string }; value: string }>;
             }>;
             dashboards: Array<{
                 id: string;
@@ -132,9 +152,11 @@ export default class Campaign {
                 fields: {
                     id: true,
                     name: true,
+                    code: true,
                     description: true,
                     organisationUnits: { id: true, path: true },
                     dataInputPeriods: { period: { id: true } },
+                    attributeValues: { attribute: { code: true }, value: true },
                     sections: {
                         id: true,
                         name: true,
@@ -155,13 +177,20 @@ export default class Campaign {
                         },
                     },
                 },
-                filters: [`id:eq:${dataSetId}`],
+                filters: [`id:in:[${[dataSetId, ...extraDataSetIds].join(",")}]`],
             },
             dashboards: {
                 fields: { id: true },
                 filters: [`code:eq:${getDashboardCode(config, dataSetId)}`],
             },
         });
+
+        const [campaignDataSets, extraDataSets = []] = _.partition(
+            dataSets,
+            ds => ds.id === dataSetId
+        );
+        const dataSet = campaignDataSets?.[0];
+
         if (!dataSet) throw new Error(`Dataset id=${dataSetId} not found`);
 
         const antigensByCode = _.keyBy(config.antigens, "code");
@@ -169,10 +198,8 @@ export default class Campaign {
             .map(section => antigensByCode[section.name])
             .compact()
             .value();
-        const periods = dataSet.dataInputPeriods.map(dip => dip.period.id);
-        const [startDate, endDate] = [_.min(periods), _.max(periods)].map(period =>
-            period ? moment(period).toDate() : null
-        );
+
+        const periods = getCampaignPeriods(dataSet);
 
         const { categoryComboCodeForTeams } = config;
         const { name, sections } = dataSet;
@@ -181,26 +208,35 @@ export default class Campaign {
         const teamsMetadata = await getTeamsForCampaign(db, ouIds, teamsCategoyId, name);
         const antigensDisaggregation = AntigensDisaggregation.build(config, antigens, sections);
 
-        const initialData = {
+        const initialData: Data = {
             id: dataSet.id,
             name: dataSet.name,
             description: dataSet.description,
             organisationUnits: dataSet.organisationUnits,
-            startDate,
-            endDate,
+            startDate: periods ? periods.startDate : null,
+            endDate: periods ? periods.endDate : null,
             antigens: antigens,
             antigensDisaggregation,
             targetPopulation: undefined,
             teams: _.size(teamsMetadata),
             teamsMetadata: { elements: teamsMetadata },
             dashboardId: dashboard ? dashboard.id : undefined,
+            extraDataSets: getExtraDataSetsIntersectingWithCampaignOrgUnits(extraDataSets, dataSet),
         };
 
         return new Campaign(db, config, initialData);
     }
 
-    public update(newData: Data) {
-        return new Campaign(this.db, this.config, newData);
+    public update(newData: Partial<Data>): Campaign {
+        return new Campaign(this.db, this.config, { ...this.data, ...newData });
+    }
+
+    isLegacy(): boolean {
+        const getLevel = (ou: OrganisationUnitPathOnly) => ou.path.split("/").length - 1;
+
+        return _(this.organisationUnits).some(
+            ou => !_(this.selectableLevels).includes(getLevel(ou))
+        );
     }
 
     public async notifyOnUpdateIfData(): Promise<boolean> {
@@ -260,7 +296,7 @@ export default class Campaign {
             }
         );
 
-        const [keysWithErrors, errors] = _(results)
+        const [keysWithErrors, errors = []] = _(results)
             .map(([key, result]) => (result.status ? null : [key, result.error]))
             .compact()
             .unzip()
@@ -325,11 +361,7 @@ export default class Campaign {
         const { organisationUnits } = this.data;
 
         const allOrgUnitsInAcceptedLevels = _(organisationUnits).every(ou =>
-            _(this.selectableLevels).includes(
-                _(ou.path)
-                    .countBy()
-                    .get("/") || 0
-            )
+            _(this.selectableLevels).includes(_(ou.path).countBy().get("/") || 0)
         );
         const levels = this.selectableLevels.join("/");
 
@@ -340,10 +372,7 @@ export default class Campaign {
             _(organisationUnits).isEmpty() ? getError("no_organisation_units_selected") : [],
         ];
 
-        return _(errorsList)
-            .flatten()
-            .compact()
-            .value();
+        return _(errorsList).flatten().compact().value();
     }
 
     public async getOrganisationUnitsWithName(): Promise<PaginatedObjects<OrganisationUnit>> {
@@ -671,4 +700,15 @@ export default class Campaign {
             filteredTeams.map((team: Ref) => ({ model: "categoryOptions", id: team.id }))
         );
     }
+}
+
+function getExtraDataSetsIntersectingWithCampaignOrgUnits<
+    DataSet extends { organisationUnits: Ref[] }
+>(extraDataSets: DataSet[], campaignDataSet: DataSet): DataSet[] {
+    return extraDataSets.filter(
+        extraDataSet =>
+            _(extraDataSet.organisationUnits)
+                .intersectionBy(campaignDataSet.organisationUnits, ou => ou.id)
+                .size() > 0
+    );
 }

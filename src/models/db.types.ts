@@ -398,3 +398,11 @@ export interface DashboardMetadataRequest {
     categoryOptions: CategoryOptionsCustom[];
     organisationUnits: OrganisationUnitWithName[];
 }
+
+export function getId<T extends { id: string }>(obj: T): string {
+    return obj.id;
+}
+
+export function getCode<T extends { code: string }>(obj: T): string {
+    return obj.code;
+}

@@ -3,12 +3,12 @@ import i18n from "../../locales";
 
 import { Icon, IconButton } from "@material-ui/core";
 
-interface EditButtonProps<T> {
+interface EditButtonProps {
     onClick: () => void;
     active: boolean;
 }
 
-class EditButton<T> extends React.Component<EditButtonProps<T>> {
+class EditButton extends React.Component<EditButtonProps> {
     notifyOnClick = () => {
         this.props.onClick();
     };

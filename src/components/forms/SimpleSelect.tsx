@@ -1,5 +1,5 @@
-import React, { SFC } from "react";
-import { Select, MenuItem } from "@material-ui/core";
+import React from "react";
+import { Select, MenuItem, SelectProps } from "@material-ui/core";
 
 interface SimpleSelectProps {
     value: string;
@@ -7,9 +7,11 @@ interface SimpleSelectProps {
     onChange: (value: string) => void;
 }
 
-const SimpleSelect: SFC<SimpleSelectProps> = ({ value, options, onChange }) => {
-    const _onChange = (ev: React.ChangeEvent<HTMLSelectElement>) => {
-        onChange(ev.target.value);
+type SelectOnChange = NonNullable<SelectProps["onChange"]>;
+
+const SimpleSelect: React.FC<SimpleSelectProps> = ({ value, options, onChange }) => {
+    const _onChange: SelectOnChange = ev => {
+        onChange(String(ev.target.value));
     };
 
     return (

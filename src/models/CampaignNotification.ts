@@ -49,7 +49,7 @@ export class CampaignNotification {
                 i18n.t("Action") + ": " + actionName,
                 i18n.t("Campaigns") +
                     ": " +
-                    (campaignNames.length == 1
+                    (campaignNames.length === 1
                         ? campaignNames[0]
                         : "\n" + campaignNames.map(name => `  - ${name}`).join("\n")),
             ].join("\n"),

@@ -55,10 +55,5 @@ export async function getValidationMessages(campaign, validationKeys) {
 
     const validationObj = await campaign.validate(validationKeys);
 
-    return _(validationObj)
-        .at(validationKeys)
-        .flatten()
-        .compact()
-        .map(translateError)
-        .value();
+    return _(validationObj).at(validationKeys).flatten().compact().map(translateError).value();
 }

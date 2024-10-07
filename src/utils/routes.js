@@ -6,5 +6,9 @@ export function goToDhis2Url(d2, path) {
 
 export function getDhis2Url(d2, path) {
     const baseUrl = d2.system.systemInfo.contextPath;
-    return [baseUrl.replace(/\/$/, ""), path.replace(/^\//, "")].join("/");
+    const isDev = process.env.NODE_ENV === "development";
+    const pathWithoutLeadingSlash = path.replace(/^\//, "");
+    return isDev
+        ? `/dhis2/` + pathWithoutLeadingSlash
+        : [baseUrl.replace(/\/$/, ""), pathWithoutLeadingSlash].join("/");
 }

@@ -10,7 +10,7 @@ import { TextField } from "@dhis2/d2-ui-core";
 import { FormBuilder } from "@dhis2/d2-ui-forms";
 import { Validators } from "@dhis2/d2-ui-forms";
 
-import { DatePicker } from "d2-ui-components";
+import { DatePicker } from "@eyeseetea/d2-ui-components";
 import { translateError } from "../../../utils/validations";
 
 class GeneralInfoStep extends React.Component {

@@ -6,7 +6,13 @@ import {
     itemsMetadataConstructor,
     buildDashboardItems,
 } from "./dashboard-items";
-import { Ref, OrganisationUnitPathOnly, OrganisationUnitWithName, Sharing } from "./db.types";
+import {
+    Ref,
+    OrganisationUnitPathOnly,
+    OrganisationUnitWithName,
+    Sharing,
+    CategoryOption,
+} from "./db.types";
 import { Antigen } from "./campaign";
 import { Moment } from "moment";
 import { getDaysRange } from "../utils/date";
@@ -84,8 +90,8 @@ export class Dashboard {
             .fromPairs()
             .value();
 
-        const ageGroupsToId = (ageGroups: string[]): string[] =>
-            _.map(ageGroups, ag => categoryOptionsByName[ag]);
+        const ageGroupsToId = (ageGroups: CategoryOption[]): string[] =>
+            _.compact(_.map(ageGroups, ag => categoryOptionsByName[ag.displayName]));
 
         const ageGroupsByAntigen: _.Dictionary<string[]> = _(antigensDisaggregation)
             .map(d => [d.antigen.id, ageGroupsToId(d.ageGroups)])
@@ -115,9 +121,7 @@ export class Dashboard {
             organisationUnitsWithName,
             legendMetadata: {
                 get: (code: string) =>
-                    _(metadataConfig.legendSets)
-                        .keyBy("code")
-                        .getOrFail(code).id,
+                    _(metadataConfig.legendSets).keyBy("code").getOrFail(code).id,
             },
             disaggregationMetadata: {
                 teams: () => ({
@@ -221,13 +225,18 @@ export class Dashboard {
         const antigensMeta = _(dashboardItemsMetadata).getOrFail("antigensMeta");
         const dashboardItemsElements = itemsMetadataConstructor(dashboardItemsMetadata);
 
-        const { metadataToFetch, ...itemsConfig } = dashboardItemsConfig;
+        const { metadataToFetch: _metadataToFetch, ...itemsConfig } = dashboardItemsConfig;
         const expectedCharts = _.flatMap(itemsConfig, _.keys);
 
         const keys = ["antigenCategory", "disaggregationMetadata", ...expectedCharts] as Array<
             keyof typeof dashboardItemsElements
         >;
-        const { antigenCategory, disaggregationMetadata, legendsMetadata, ...elements } = _(keys)
+        const {
+            antigenCategory,
+            disaggregationMetadata,
+            legendsMetadata: _legendsMetadata,
+            ...elements
+        } = _(keys)
             .map(key => [key, _(dashboardItemsElements).get(key, null)])
             .fromPairs()
             .pickBy()

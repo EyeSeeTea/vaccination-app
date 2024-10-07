@@ -86,9 +86,7 @@ export class Teams {
                 ),
             ];
         } else if (teamDifference < 0) {
-            return _(allTeams)
-                .take(teams)
-                .value();
+            return _(allTeams).take(teams).value();
         } else {
             return allTeams;
         }
@@ -101,12 +99,12 @@ export class Teams {
         categoryIdForTeams: string,
         startDate: Moment,
         endDate: Moment,
-        nameOffset: number = 0
+        nameOffset = 0
     ): CategoryOptionTeam[] {
         const teamsData: CategoryOptionTeam[] = _.range(1, teams + 1).map(i => {
             const name = getTeamName(campaignName, nameOffset + i, teams);
             const id = generateUid();
-            const categoryOption = {
+            const categoryOption: CategoryOptionTeam = {
                 id,
                 name,
                 shortName: `Team ${nameOffset + i}_${id}`,
@@ -115,7 +113,7 @@ export class Teams {
                 displayShortName: name,
                 startDate,
                 endDate,
-                dimensionItemType: "CATEGORY_OPTION" as "CATEGORY_OPTION",
+                dimensionItemType: "CATEGORY_OPTION",
                 categories: [
                     {
                         id: categoryIdForTeams,
@@ -202,10 +200,7 @@ export function filterTeamsByNames(
     if (_.isEmpty(teams)) return [];
     const nameMatches = (teamName: string, campaignName: string) => {
         const splitStr = " - ";
-        const campaignNameFromTeam = teamName
-            .split(splitStr)
-            .slice(1)
-            .join(splitStr);
+        const campaignNameFromTeam = teamName.split(splitStr).slice(1).join(splitStr);
         const prefixRegexp = new RegExp("^Team \\d+" + splitStr);
         return Boolean(teamName.match(prefixRegexp) && campaignName === campaignNameFromTeam);
     };
@@ -229,7 +224,7 @@ function leftZeroPad(num: number, size: number): string {
     return "0".repeat(padSize) + numString;
 }
 
-function getTeamName(campaignName: string, teamNumber: number, teamsCount: number): string {
+function getTeamName(campaignName: string, teamNumber: number, _teamsCount: number): string {
     const paddedTeamNumber = leftZeroPad(teamNumber, 3);
     return `Team ${paddedTeamNumber} - ${campaignName}`;
 }

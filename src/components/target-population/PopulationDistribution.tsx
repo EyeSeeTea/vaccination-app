@@ -25,7 +25,7 @@ export interface PopulationDistributionProps extends WithStyles<typeof styles> {
     organisationUnitLevels: OrganisationUnitLevel[];
     antigenEditing: Maybe<string>;
     targetPopulation: TargetPopulation;
-    populationItem: TargetPopulationItem;
+    populationItem: TargetPopulationItem | undefined;
     orgUnitLevel: number;
     onChange: (ageGroup: string, value: number) => void;
     onToggle: (antigenId: string) => void;
@@ -85,7 +85,7 @@ class PopulationDistributionComponent extends React.Component<PopulationDistribu
                                     maxDecimals={2}
                                 />
                             ) : (
-                                <span>{getShowValue(ageDistribution[ageGroup]) || "-"}</span>
+                                <span>{getShowValue(value) || "-"}</span>
                             )}
                         </TableCell>
                     );
@@ -103,6 +103,8 @@ class PopulationDistributionComponent extends React.Component<PopulationDistribu
     public render() {
         const { classes, targetPopulation, populationItem, orgUnitLevel } = this.props;
         const Row = this.renderRow;
+        if (!populationItem) return null;
+
         const populationDistribution = populationItem.populationDistributions.find(
             distribution => distribution.organisationUnit.level === orgUnitLevel
         );
@@ -120,8 +122,8 @@ class PopulationDistributionComponent extends React.Component<PopulationDistribu
                             <TableCell className={classes.orgUnitColumn} />
 
                             {ageGroups.map(ageGroup => (
-                                <TableCell key={ageGroup} className={classes.tableHead}>
-                                    {ageGroup}
+                                <TableCell key={ageGroup.id} className={classes.tableHead}>
+                                    {ageGroup.displayName}
                                 </TableCell>
                             ))}
                             <TableCell className={classes.tableActions}>{/* Actions */}</TableCell>
@@ -134,7 +136,7 @@ class PopulationDistributionComponent extends React.Component<PopulationDistribu
                             antigen={antigen}
                             key={antigen.id}
                             distribution={populationDistribution}
-                            ageGroups={ageGroups}
+                            ageGroups={ageGroups.map(group => group.displayName)}
                         />
 
                         <TableRow className={classes.separatorRow}>

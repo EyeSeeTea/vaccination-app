@@ -35,6 +35,7 @@ const styles = _theme => ({
         color: lightGray,
         marginTop: 10,
         marginBottom: 10,
+        marginLeft: 20,
         fontSize: 20,
     },
     icons: {

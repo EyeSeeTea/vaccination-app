@@ -1,11 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import HeaderBar from "@dhis2/d2-ui-header-bar";
+import { HeaderBar } from "@dhis2/ui";
 import { MuiThemeProvider } from "@material-ui/core/styles";
-import JssProvider from "react-jss/lib/JssProvider";
-import { createGenerateClassName } from "@material-ui/core/styles";
 import OldMuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import { SnackbarProvider, LoadingProvider } from "d2-ui-components";
+import { SnackbarProvider, LoadingProvider } from "@eyeseetea/d2-ui-components";
 import _ from "lodash";
 
 import { muiTheme } from "../../themes/dhis2.theme";
@@ -18,15 +16,11 @@ import { getMetadataConfig } from "../../models/config";
 import { hasCurrentUserRoles } from "../../utils/permissions";
 import { isTestEnv } from "../../utils/dhis2";
 
-const generateClassName = createGenerateClassName({
-    dangerouslyUseGlobalCSS: false,
-    productionPrefix: "c",
-});
-
 class App extends Component {
     static propTypes = {
         d2: PropTypes.object.isRequired,
         appConfig: PropTypes.object.isRequired,
+        api: PropTypes.object.isRequired,
     };
 
     state = {
@@ -58,30 +52,30 @@ class App extends Component {
     }
 
     render() {
-        const { d2, appConfig } = this.props;
+        const { d2, appConfig, api } = this.props;
         const { config, db } = this.state;
         const showShareButton = _(appConfig).get("appearance.showShareButton") || false;
         const showHeader = !isTestEnv();
 
         return (
             <React.Fragment>
-                <JssProvider generateClassName={generateClassName}>
-                    <MuiThemeProvider theme={muiTheme}>
-                        <OldMuiThemeProvider muiTheme={muiThemeLegacy}>
-                            <LoadingProvider>
-                                {showHeader && <HeaderBar d2={d2} />}
+                <MuiThemeProvider theme={muiTheme}>
+                    <OldMuiThemeProvider muiTheme={muiThemeLegacy}>
+                        <LoadingProvider>
+                            {showHeader && <HeaderBar appName="" email="aa@a.com" />}
 
-                                <div id="app" className="content">
-                                    <SnackbarProvider>
-                                        {config && db && <Root d2={d2} db={db} config={config} />}
-                                    </SnackbarProvider>
-                                </div>
+                            <div id="app" className="content">
+                                <SnackbarProvider>
+                                    {config && db && (
+                                        <Root d2={d2} db={db} config={config} api={api} />
+                                    )}
+                                </SnackbarProvider>
+                            </div>
 
-                                <Share visible={showShareButton} />
-                            </LoadingProvider>
-                        </OldMuiThemeProvider>
-                    </MuiThemeProvider>
-                </JssProvider>
+                            <Share visible={showShareButton} />
+                        </LoadingProvider>
+                    </OldMuiThemeProvider>
+                </MuiThemeProvider>
             </React.Fragment>
         );
     }

@@ -6,7 +6,7 @@ import moment from "moment";
 import { withRouter } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
 import { Button, LinearProgress } from "@material-ui/core";
-import { withSnackbar } from "d2-ui-components";
+import { withSnackbar } from "@eyeseetea/d2-ui-components";
 
 import { getFullOrgUnitName } from "../../../models/organisation-units";
 import ExitWizardButton from "../../wizard/ExitWizardButton";
@@ -87,10 +87,7 @@ class SaveStep extends React.Component {
         } else {
             const { pager, objects } = paginatedObjects;
             const othersCount = pager.total - objects.length;
-            const names =
-                _(objects)
-                    .sortBy()
-                    .join(", ") || i18n.t("[None]");
+            const names = _(objects).sortBy().join(", ") || i18n.t("[None]");
             if (othersCount > 0) {
                 return i18n.t("[{{total}}] {{names}} and {{othersCount}} other(s)", {
                     total: pager.total,
@@ -143,13 +140,17 @@ class SaveStep extends React.Component {
         return <LiEntry key={orgUnit.id} label={getFullOrgUnitName(orgUnit)} />;
     };
 
-    renderAntigenInfo(antigen, ageGroups) {
+    renderAntigenInfo(antigen, type, ageGroups) {
         return [
             antigen.name + " ",
             "(",
             `${i18n.t("doses")}: ${antigen.doses.length}`,
             ", ",
-            `${i18n.t("age groups")}: ${ageGroups.join(", ")}`,
+            `${i18n.t("type")}: ${type}`,
+            ", ",
+            `${i18n.t("age groups")}: ${ageGroups
+                .map(ageGroup => ageGroup.displayName)
+                .join(", ")}`,
             ")",
         ].join("");
     }
@@ -185,17 +186,28 @@ class SaveStep extends React.Component {
                             )}
                         </LiEntry>
 
+                        <LiEntry label={i18n.t("Extra Activities")}>
+                            [{campaign.extraDataSets.length}]
+                            <ul>
+                                {campaign.extraDataSets.map(dataSet => (
+                                    <LiEntry key={dataSet.id} label={dataSet.name} />
+                                ))}
+                            </ul>
+                        </LiEntry>
+
                         <LiEntry label={i18n.t("Antigens")}>
                             [{disaggregation.length}]
                             <ul>
-                                {disaggregation.map(({ antigen, dataElements, ageGroups }) => (
-                                    <LiEntry
-                                        key={antigen.code}
-                                        label={this.renderAntigenInfo(antigen, ageGroups)}
-                                    >
-                                        <ul>{this.renderDataElements(dataElements)}</ul>
-                                    </LiEntry>
-                                ))}
+                                {disaggregation.map(
+                                    ({ antigen, type, dataElements, ageGroups }) => (
+                                        <LiEntry
+                                            key={antigen.code}
+                                            label={this.renderAntigenInfo(antigen, type, ageGroups)}
+                                        >
+                                            <ul>{this.renderDataElements(dataElements)}</ul>
+                                        </LiEntry>
+                                    )
+                                )}
                             </ul>
                         </LiEntry>
                     </ul>

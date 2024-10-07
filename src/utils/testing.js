@@ -6,7 +6,7 @@ import sinon from "sinon";
 import { generateUid } from "d2/uid";
 import OldMuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import { MuiThemeProvider } from "@material-ui/core/styles";
-import { SnackbarProvider } from "d2-ui-components";
+import { SnackbarProvider } from "@eyeseetea/d2-ui-components";
 import { muiTheme } from "../themes/dhis2.theme";
 
 // DHIS2 expects a browser environment, add some required keys to the global node namespace
@@ -38,7 +38,7 @@ const mocks = {
 };
 
 function deepMerge(object, source) {
-    return _.mergeWith(object, source, function(objValue, srcValue) {
+    return _.mergeWith(object, source, function (objValue, srcValue) {
         if (_.isObject(objValue) && !_.isFunction(objValue) && srcValue) {
             return deepMerge(objValue, srcValue);
         } else if (_.isFunction(objValue) && _.isFunction(srcValue)) {
@@ -99,10 +99,12 @@ export async function getTestUser(d2, { auth, userAttributes }) {
         userAttributes
     );
     const user = getNewUser(partialUser);
-    const existingTestUser = (await api.get("/users", {
-        fields: ":owner",
-        filter: "userCredentials.username:eq:" + auth.username,
-    })).users[0];
+    const existingTestUser = (
+        await api.get("/users", {
+            fields: ":owner",
+            filter: "userCredentials.username:eq:" + auth.username,
+        })
+    ).users[0];
 
     let response, returnUser;
 
