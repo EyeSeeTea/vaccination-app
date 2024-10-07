@@ -2,7 +2,15 @@ import _ from "lodash";
 import DbD2, { ApiResponse } from "./db-d2";
 import { generateUid } from "d2/uid";
 import { Moment } from "moment";
-import { OrganisationUnitPathOnly, Response, MetadataResponse, Ref } from "./db.types";
+import {
+    OrganisationUnitPathOnly,
+    Response,
+    MetadataResponse,
+    Ref,
+    getId,
+    NamedRef,
+    getRef,
+} from "./db.types";
 import { MetadataConfig } from "./config";
 
 export interface CategoryOptionTeam {
@@ -132,41 +140,73 @@ export class Teams {
 
     static async updateTeamCategory(
         db: DbD2,
-        newTeams: Array<object>,
+        newTeams: NamedRef[],
         teamsToDelete: Ref[],
         config: MetadataConfig
     ): Promise<Response<string>> {
-        const categoryIdForTeams = _(config.categories)
-            .keyBy("code")
-            .getOrFail(config.categoryComboCodeForTeams).id;
+        type TeamMetadata = {
+            categories: Array<{
+                categoryOptions: Array<{ id: string; name: string }>;
+            }>;
+            categoryCombos: Array<{
+                id: string;
+                categoryOptionCombos: Array<{
+                    id: string;
+                    categoryOptions: Ref[];
+                }>;
+            }>;
+        };
 
-        const { categories } = await db.api.get("/metadata", {
+        const { categories, categoryCombos } = await db.api.get<TeamMetadata>("/metadata", {
             "categories:fields": ":owner",
-            "categories:filter": `id:eq:${categoryIdForTeams}`,
+            "categories:filter": `code:eq:${config.categoryCodeForTeams}`,
+            "categoryCombos:fields": "id,categoryOptionCombos[id,categoryOptions[id]]",
+            "categoryCombos:filter": `code:eq:${config.categoryComboCodeForTeams}`,
         });
 
-        const previousTeams = categories[0].categoryOptions;
-        const teamsToDeleteIds = _.map(teamsToDelete, "id");
+        const teamCategory = categories[0];
+        const teamCategoryCombo = categoryCombos[0];
+        if (!teamCategory || !teamCategoryCombo)
+            throw new Error("Teams category/categoryCombo not found");
+
+        const previousTeams = teamCategory?.categoryOptions || [];
+        const teamsToDeleteIds = _.map(teamsToDelete, getId);
         const filteredPreviousTeams = previousTeams.filter(
-            (pt: { id: string }) => !_.includes(teamsToDeleteIds, pt.id)
+            team => !_.includes(teamsToDeleteIds, team.id)
         );
 
-        const previousTeamsIds = _.map(previousTeams, "id");
-        const filteredNewTeams = _.map(newTeams, (t: { id: string }) => {
-            return _.includes(previousTeamsIds, t.id) ? null : { id: t.id };
-        });
+        const previousTeamsIds = _.map(previousTeams, getId);
+        const filteredNewTeams = _(newTeams)
+            .reject(team => _.includes(previousTeamsIds, team.id))
+            .value();
 
-        const allTeams = [...filteredPreviousTeams, ..._.compact(filteredNewTeams)];
-        const teamsCategoryUpdated = { ...categories[0], categoryOptions: allTeams };
+        const allTeams = [...filteredPreviousTeams, ...filteredNewTeams];
+        const teamsCategoryUpdated = { ...teamCategory, categoryOptions: allTeams.map(getRef) };
+
+        const existingTeamIdsInCocs = new Set(
+            _(teamCategoryCombo?.categoryOptionCombos)
+                .flatMap(coc => coc.categoryOptions)
+                .map(getId)
+                .value()
+        );
+        const cocsToPost = _(allTeams)
+            .reject(team => existingTeamIdsInCocs.has(team.id))
+            .map(team => ({
+                id: generateUid(),
+                categoryCombo: { id: teamCategoryCombo.id },
+                name: team.name,
+                categoryOptions: [getRef(team)],
+            }))
+            .value();
 
         const teamsResponse: ApiResponse<MetadataResponse> = await db.postMetadata({
             categories: [teamsCategoryUpdated],
+            categoryOptionCombos: cocsToPost,
         });
 
         if (!teamsResponse.status) {
             return { status: false, error: "Cannot update teams category" };
         } else {
-            db.api.post("/maintenance/categoryOptionComboUpdate", {});
             return { status: true };
         }
     }

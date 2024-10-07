@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2024-05-28T08:31:26.574Z\n"
-"PO-Revision-Date: 2024-05-28T08:31:26.574Z\n"
+"POT-Creation-Date: 2024-07-03T09:01:39.856Z\n"
+"PO-Revision-Date: 2024-07-03T09:01:39.856Z\n"
 
 msgid "Campaigns"
 msgstr ""
@@ -332,6 +332,9 @@ msgid "Antigens"
 msgstr ""
 
 msgid "Cancel"
+msgstr ""
+
+msgid "Return to Listing"
 msgstr ""
 
 msgid "Population distribution (%)"

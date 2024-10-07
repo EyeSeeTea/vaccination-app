@@ -17,7 +17,6 @@ import DisaggregationStep from "../steps/disaggregation/DisaggregationStep";
 import { memoize } from "../../utils/memoize";
 import ExitWizardButton from "../wizard/ExitWizardButton";
 import { getVisitedAndUpdate } from "../utils/page-visited";
-import { redirectToLandingPageIfLegacy } from "../campaign-configuration/validations";
 
 class CampaignWizard extends React.Component {
     static propTypes = {
@@ -41,14 +40,12 @@ class CampaignWizard extends React.Component {
     }
 
     async componentDidMount() {
-        const { db, config, match, snackbar, history } = this.props;
+        const { db, config, match } = this.props;
 
         try {
             const campaign = this.isEdit()
                 ? await Campaign.get(config, db, match.params.id)
                 : Campaign.create(config, db);
-
-            if (redirectToLandingPageIfLegacy(campaign, snackbar, history)) return;
 
             const campaignHasDataValues = await campaign.hasDataValues().catch(err => {
                 console.error(err);
@@ -68,7 +65,7 @@ class CampaignWizard extends React.Component {
         return !!this.props.match.params.id;
     }
 
-    getStepsBaseInfo() {
+    getStepsBaseInfo(campaign) {
         return [
             {
                 key: "general-info",
@@ -89,7 +86,10 @@ class CampaignWizard extends React.Component {
                 key: "organisation-units",
                 label: i18n.t("Organisation Units"),
                 component: OrganisationUnitsStep,
-                validationKeys: ["organisationUnits", "teams"],
+                validationKeys: _.compact([
+                    campaign && !campaign.isLegacy() ? "organisationUnits" : null,
+                    "teams",
+                ]),
                 description: i18n.t(
                     `Select the health facilities or vaccination areas which will implement the campaign. At least one must be selected.`
                 ),
@@ -173,7 +173,7 @@ class CampaignWizard extends React.Component {
         const { campaign, dialogOpen, pagesVisited, campaignHasDataValues } = this.state;
         window.campaign = campaign;
 
-        const steps = this.getStepsBaseInfo().map(step => ({
+        const steps = this.getStepsBaseInfo(campaign).map(step => ({
             ...step,
             warning: campaignHasDataValues
                 ? i18n.t(

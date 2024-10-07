@@ -155,12 +155,17 @@ class SaveStep extends React.Component {
         ].join("");
     }
 
+    returnToListing = () => {
+        this.props.history.push("/campaign-configuration");
+    };
+
     render() {
         const { classes, campaign } = this.props;
         const { orgUnits, errorMessage, isSaving, dialogOpen } = this.state;
 
         const LiEntry = this.renderLiEntry;
         const disaggregation = campaign.getEnabledAntigensDisaggregation();
+        const isLegacyCampaign = campaign.isLegacy();
 
         return (
             <React.Fragment>
@@ -212,12 +217,35 @@ class SaveStep extends React.Component {
                         </LiEntry>
                     </ul>
 
+                    {isLegacyCampaign && (
+                        <div style={{ marginBottom: 20, color: "#FAA" }}>
+                            {i18n.t(
+                                "This campaign is not editable, please contact the administrator."
+                            )}
+                        </div>
+                    )}
+
                     <Button onClick={this.cancel} variant="contained">
                         {i18n.t("Cancel")}
                     </Button>
-                    <Button className={classes.saveButton} onClick={this.save} variant="contained">
-                        {i18n.t("Save")}
-                    </Button>
+
+                    {!isLegacyCampaign ? (
+                        <Button
+                            className={classes.saveButton}
+                            onClick={this.save}
+                            variant="contained"
+                        >
+                            {i18n.t("Save")}
+                        </Button>
+                    ) : (
+                        <Button
+                            className={classes.saveButton}
+                            onClick={this.returnToListing}
+                            variant="contained"
+                        >
+                            {i18n.t("Return to Listing")}
+                        </Button>
+                    )}
 
                     {isSaving && <LinearProgress />}
 

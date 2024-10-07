@@ -119,7 +119,7 @@ export interface Attribute {
     id: string;
     code: string;
     valueType: "TEXT" | "BOOLEAN";
-    displayName: string;
+    name: string;
 }
 
 export interface AttributeValue {
@@ -149,6 +149,10 @@ export interface DataElementGroup {
 
 export interface Ref {
     id: string;
+}
+
+export interface NamedRef extends Ref {
+    name: string;
 }
 
 export interface Metadata {
@@ -401,6 +405,10 @@ export interface DashboardMetadataRequest {
 
 export function getId<T extends { id: string }>(obj: T): string {
     return obj.id;
+}
+
+export function getRef<T extends { id: string }>(obj: T): Ref {
+    return { id: obj.id };
 }
 
 export function getCode<T extends { code: string }>(obj: T): string {

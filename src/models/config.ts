@@ -16,6 +16,7 @@ import {
     Indicator,
     getId,
     getCode,
+    NamedRef,
 } from "./db.types";
 import { sortAgeGroups } from "../utils/age-groups";
 
@@ -37,7 +38,7 @@ export const baseConfig = {
     categoryComboCodeForAgeGroup: "RVC_AGE_GROUP",
     categoryComboCodeForAntigenAgeGroup: "RVC_ANTIGEN_AGE_GROUP",
     categoryComboCodeForAntigenDosesAgeGroup: "RVC_ANTIGEN_DOSE_AGE_GROUP",
-    categoryComboCodeForAntigenDosesAgeGroupType: "RVC_ANTIGEN_DOSE_AGE_GROUP_TYPE",
+    categoryComboCodeForAntigenDosesAgeGroupType: "RVC_ANTIGEN_DOSE_TYPE_AGE_GROUP",
     dataElementGroupCodeForAntigens: "RVC_ANTIGEN",
     dataElementGroupCodeForPopulation: "RVC_POPULATION",
     categoryComboCodeForTeams: "RVC_TEAM",
@@ -53,7 +54,7 @@ export const baseConfig = {
     dataElementCodeForAgeDistribution: "RVC_AGE_DISTRIBUTION",
     dataElementCodeForPopulationByAge: "RVC_POPULATION_BY_AGE",
     dataSetDashboardCodePrefix: "RVC_CAMPAIGN",
-    dataSetExtraCodes: ["DS_NSd_3"],
+    dataSetExtraIdentifiables: ["DS_NSd_3", "SrPi5dzhNcD"],
     userRoleNames: {
         manager: [userRoles.campaignManager],
         feedback: [userRoles.feedback],
@@ -114,6 +115,7 @@ export interface MetadataConfig extends BaseConfig {
         displayName: string;
         code: string;
         dataElements: { id: string; code: string; optional: boolean; order: number }[];
+        categoriesOverride: Record<Code, { options: NamedRef[] }>;
         ageGroups: Array<CategoryOption[][]>;
         doses: Array<{ id: string; code: string; name: string; displayName: string }>;
         isTypeSelectable: boolean;
@@ -125,6 +127,8 @@ export interface MetadataConfig extends BaseConfig {
         extraActivities: DataSet[];
     };
 }
+
+type Code = string;
 
 export type DataSet = { id: string; name: string; code: string };
 
@@ -298,7 +302,7 @@ function getAntigens(
                 getDataElements("OPTIONAL")
             );
 
-            const dataElementSorted = _.orderBy(dataElementsForAntigens, "order");
+            const dataElementSorted = _.orderBy(dataElementsForAntigens, de => de.order);
 
             const mainAgeGroups = _(categoryOptionGroupsByCode).getOrFail(
                 getRvcCode([categoryOption.code, "AGE_GROUP"])
@@ -311,7 +315,7 @@ function getAntigens(
                 const codePrefix = getRvcCode([
                     categoryOption.code,
                     "AGE_GROUP",
-                    mainAgeGroup.displayName,
+                    mainAgeGroup.name,
                 ]);
                 const disaggregatedAgeGroups = _(categoryOptionGroups)
                     .filter(cog => cog.code.startsWith(codePrefix))
@@ -347,6 +351,7 @@ function getAntigens(
                 displayName: categoryOption.displayName,
                 code: categoryOption.code,
                 dataElements: dataElementSorted,
+                categoriesOverride: getCategoriesOverride(categoryOption, categoryOptionGroups),
                 ageGroups: ageGroups,
                 doses: doses,
                 isTypeSelectable: antigenIdsSelectable.has(categoryOption.id),
@@ -355,6 +360,28 @@ function getAntigens(
     );
 
     return antigensMetadata;
+}
+
+function getCategoriesOverride(
+    antigen: CategoryOption,
+    categoryOptionGroups: CategoryOptionGroup[]
+): MetadataConfig["antigens"][0]["categoriesOverride"] {
+    const overridesPrefix = getRvcCode([antigen.code, "CATEGORY_OVERRIDE"]);
+
+    return _(categoryOptionGroups)
+        .filter(cog => cog.code.startsWith(overridesPrefix))
+        .map(cog => {
+            const categoryCode = cog.code.match(/CATEGORY_OVERRIDE_(.*)$/)?.[1];
+            if (!categoryCode) return;
+
+            return [categoryCode, { options: cog.categoryOptions }] as [
+                Code,
+                { options: typeof cog.categoryOptions }
+            ];
+        })
+        .compact()
+        .fromPairs()
+        .value();
 }
 
 function getPopulationMetadata(
@@ -393,7 +420,7 @@ function getPopulationMetadata(
 
 function getAttributes(attributes: Attribute[]) {
     const attributesByCode = _(attributes).keyBy(attribute => attribute.code);
-    const attributesByName = _(attributes).keyBy(attribute => attribute.displayName);
+    const attributesByName = _(attributes).keyBy(attribute => attribute.name);
 
     return {
         app: attributesByCode.getOrFail(baseConfig.attributeCodeForApp),
@@ -405,7 +432,7 @@ function getAttributes(attributes: Attribute[]) {
 function getDefaults(metadata: RawMetadataConfig): MetadataConfig["defaults"] {
     return {
         categoryOptionCombo: _(metadata.categoryOptionCombos)
-            .keyBy("displayName")
+            .keyBy(coc => coc.displayName)
             .getOrFail("default"),
     };
 }
@@ -447,7 +474,7 @@ export async function getMetadataConfig(db: DbD2): Promise<MetadataConfig> {
         indicators: { fields: { id: true, code: true }, filters: [codeFilter] },
         dataSets: {
             fields: { id: true, name: true, code: true },
-            filters: [`code:in:[${baseConfig.dataSetExtraCodes.join(",")}]`],
+            filters: [`identifiable:in:[${baseConfig.dataSetExtraIdentifiables.join(",")}]`],
         },
         legendSets: { fields: { id: true, code: true }, filters: [codeFilter] },
         organisationUnitLevels: {},
@@ -491,11 +518,7 @@ export async function getMetadataConfig(db: DbD2): Promise<MetadataConfig> {
         userRoles: metadata.userRoles,
         legendSets: metadata.legendSets,
         indicators: metadata.indicators,
-        dataSets: {
-            extraActivities: metadata.dataSets.filter(dataSet =>
-                _(baseConfig.dataSetExtraCodes).includes(dataSet.code)
-            ),
-        },
+        dataSets: { extraActivities: metadata.dataSets },
     };
 
     return metadataConfig;

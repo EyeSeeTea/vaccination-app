@@ -392,13 +392,13 @@ export class DataSetCustomForm {
 
     getGeneralDataElements(disaggregations: Disaggregations): DataElement[] {
         const hasAntigensDisaggregation = (dataElement: DataElement) =>
-            !_(dataElement.categories)
+            _(dataElement.categories)
                 .map(getCode)
                 .includes(this.config.dataElementGroupCodeForAntigens);
 
         return _(disaggregations)
-            .flatMap("dataElements")
-            .filter(hasAntigensDisaggregation)
+            .flatMap(disaggregation => disaggregation.dataElements)
+            .reject(hasAntigensDisaggregation)
             .uniqBy(getId)
             .value();
     }

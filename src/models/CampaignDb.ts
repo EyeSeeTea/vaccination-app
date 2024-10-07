@@ -6,7 +6,14 @@ import "../utils/lodash-mixins";
 
 import Campaign from "./campaign";
 import { DataSetCustomForm } from "./DataSetCustomForm";
-import { Maybe, MetadataResponse, DataEntryForm, Section, CategoryOption } from "./db.types";
+import {
+    Maybe,
+    MetadataResponse,
+    DataEntryForm,
+    Section,
+    CategoryOption,
+    NamedRef,
+} from "./db.types";
 import { Metadata, DataSet, Response } from "./db.types";
 import { formatDay } from "../utils/date";
 import { getDataElements, CocMetadata } from "./AntigensDisaggregation";
@@ -39,7 +46,7 @@ interface PostSaveMetadata {
     dataSets: DataSet[];
     dataEntryForms: DataEntryForm[];
     sections: Section[];
-    categoryOptions: object[];
+    categoryOptions: NamedRef[];
 }
 
 export default class CampaignDb {
@@ -261,7 +268,7 @@ export default class CampaignDb {
             }
         }
         // Update Team Category with new categoryOptions (teams)
-        Teams.updateTeamCategory(db, allMetadata.categoryOptions, teamsToDelete, config);
+        await Teams.updateTeamCategory(db, allMetadata.categoryOptions, teamsToDelete, config);
 
         if (!result.status) {
             return { status: false, error: result.error };

@@ -87,7 +87,7 @@ function isDataSetInUserOrgUnits(d2, dataSet) {
     );
 }
 
-export async function getOrganisationUnitsById(id, d2) {
+export async function getOrganisationUnitsByDataSetId(id, d2) {
     const fields = "organisationUnits[id,name]";
     const dataSet = await d2.models.dataSets.get(id, { fields }).catch(() => undefined);
     const organisationUnits = dataSet ? dataSet.organisationUnits.toArray() : null;

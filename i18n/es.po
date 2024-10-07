@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: i18next-conv\n"
-"POT-Creation-Date: 2024-05-28T08:31:26.574Z\n"
+"POT-Creation-Date: 2024-07-03T09:01:39.856Z\n"
 "PO-Revision-Date: 2018-10-25T09:02:35.143Z\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -403,6 +403,9 @@ msgstr "Antígenos"
 
 msgid "Cancel"
 msgstr "Cancelar"
+
+msgid "Return to Listing"
+msgstr "Volver al listado"
 
 msgid "Population distribution (%)"
 msgstr "Distribución por edad (%)"

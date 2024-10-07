@@ -6,7 +6,10 @@ import ReactDOM from "react-dom";
 import moment from "moment";
 
 import PageHeader from "../shared/PageHeader";
-import { getOrganisationUnitsById, getPeriodDatesFromDataSetId } from "../../models/datasets";
+import {
+    getOrganisationUnitsByDataSetId,
+    getPeriodDatesFromDataSetId,
+} from "../../models/datasets";
 import { getDhis2Url } from "../../utils/routes";
 import { LinearProgress } from "@material-ui/core";
 import { withPageVisited } from "../utils/page-visited-app";
@@ -32,7 +35,9 @@ class DataEntry extends React.Component {
             match: { params },
         } = this.props;
         const dataSetId = params.id;
-        const organisationUnits = dataSetId ? await getOrganisationUnitsById(dataSetId, d2) : null;
+        const organisationUnits = dataSetId
+            ? await getOrganisationUnitsByDataSetId(dataSetId, d2)
+            : null;
 
         if (!dataSetId || (dataSetId && organisationUnits)) {
             this.setState({ isDataEntryIdValid: true }, () => {
