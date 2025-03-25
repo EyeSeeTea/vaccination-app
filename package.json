@@ -1,7 +1,7 @@
 {
     "name": "vaccination-app",
     "description": "DHIS2 MSF Reactive Vaccination App",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "license": "GPL-3.0",
     "author": "EyeSeeTea team",
     "homepage": ".",
@@ -101,7 +101,7 @@
         "wait-on": "^3.2.0"
     },
     "manifest.webapp": {
-        "name": "Reactive Vaccination",
+        "name": "Reactive Vaccination (Deprecated)",
         "description": "DHIS2 MSF Reactive Vaccination App",
         "icons": {
             "48": "icon.png"
