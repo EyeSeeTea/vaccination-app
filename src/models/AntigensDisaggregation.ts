@@ -122,7 +122,7 @@ export type AntigenDisaggregationCategoriesData =
 export type AntigenDisaggregationOptionGroup = AntigenDisaggregationCategoriesData[0]["options"][0];
 
 export type AntigenDisaggregationEnabled = Array<{
-    type: CampaignType;
+    type: Maybe<CampaignType>;
     antigen: Antigen;
     ageGroups: Array<CategoryOption>;
     dataElements: Array<{
@@ -210,7 +210,9 @@ export class AntigensDisaggregation {
     }
 
     public validate(): Array<{ key: string; namespace: _.Dictionary<string> }> {
-        const errors = _(this.getEnabled())
+        const enabled = this.getEnabled();
+
+        const errors1 = _(enabled)
             .flatMap(antigen => antigen.dataElements)
             .flatMap(dataElement => dataElement.categories)
             .map(category =>
@@ -221,7 +223,20 @@ export class AntigensDisaggregation {
             .compact()
             .value();
 
-        return errors;
+        const errors2 = _(enabled)
+            .filter(antigen => !antigen.type)
+            .map(antigen =>
+                antigen.type
+                    ? null
+                    : {
+                          key: "antigen_has_no_selected_type",
+                          namespace: { antigen: antigen.antigen.displayName },
+                      }
+            )
+            .compact()
+            .value();
+
+        return _.concat(errors1, errors2);
     }
 
     static getCategories(
@@ -343,7 +358,7 @@ export class AntigensDisaggregation {
 
                 return {
                     ageGroups: ageGroups,
-                    type: antigenDisaggregation.type || defaultCampaignType,
+                    type: antigenDisaggregation.type,
                     antigen: {
                         code: antigenDisaggregation.code,
                         name: antigenDisaggregation.name,
@@ -403,7 +418,7 @@ export class AntigensDisaggregation {
             isTypeSelectable: antigenConfig.isTypeSelectable,
         });
 
-        if (!disaggregation.isTypeSelectable || !disaggregation.type) {
+        if (!disaggregation.isTypeSelectable && !disaggregation.type) {
             return disaggregation.updateCampaignType(defaultCampaignType);
         } else {
             return disaggregation;
@@ -419,6 +434,7 @@ export class AntigensDisaggregation {
             .value();
 
         // Add age groups required by target population data values
+
         const allCategoryComboCodes = [
             ...categoryComboCodes,
             this.config.categoryCodeForAgeGroup,
