@@ -3,7 +3,11 @@ import _ from "lodash";
 import i18n from "@dhis2/d2-i18n";
 
 import Campaign, { Antigen } from "./campaign";
-import { AntigenDisaggregationEnabled, CocMetadata } from "./AntigensDisaggregation";
+import {
+    AntigenDisaggregationEnabled,
+    AntigenDisaggregationEnabledDataElement,
+    CocMetadata,
+} from "./AntigensDisaggregation";
 import "../utils/lodash-mixins";
 import { CategoryOption, getCode, getId } from "./db.types";
 import { DataInput, getDataInputFromCampaign } from "./CampaignDb";
@@ -167,7 +171,9 @@ export class DataSetCustomForm {
         const doses: Array<CategoryOption | undefined> = categoryDoses
             ? categoryDoses.categoryOptions
             : [undefined];
-        const showDoseName = doses.length > 1;
+
+        const isFirstDoseOfTheAntigen = doses[0]?.id === antigen?.doses[0]?.id;
+        const hideDoseName = !categoryDoses || (doses.length === 1 && isFirstDoseOfTheAntigen);
 
         return doses.map(dose => {
             const combinations = this.getDisaggregationCombinations({
@@ -183,7 +189,7 @@ export class DataSetCustomForm {
             return h("tr", { class: trClass }, [
                 h("td", { class: "data-element", "data-translate": true }, [
                     h("span", { "data-translate": true }, dataElement.name),
-                    showDoseName
+                    !hideDoseName
                         ? h("span", {}, " - ") +
                           h("span", { "data-translate": true }, dose ? dose.name : "-")
                         : null,
@@ -197,11 +203,10 @@ export class DataSetCustomForm {
     getDataElementByCategoryOptionsLists(dataElements: DataElement[]) {
         const { categoryCodeForAntigens, categoryCodeForDoses } = this.config;
         const outerCategories = [categoryCodeForAntigens, categoryCodeForDoses];
+        const dataElementsSplit = splitCategoriesForDataElements(dataElements);
 
-        return _(dataElements)
-            .groupBy(({ categories }) =>
-                categories.map(category => [category.code, ...category.categoryOptions])
-            )
+        return _(dataElementsSplit)
+            .groupBy(({ categories }) => categories.flatMap(category => getCategoryKey(category)))
             .values()
             .map(dataElementsGroup => {
                 const categoryOptionGroups = _(dataElementsGroup[0]?.categories)
@@ -586,6 +591,42 @@ export class DataSetCustomForm {
     }
 }
 
+// Generate the final data elements with their disaggregation by filtering out
+// irrelevant categoryOptions. For instance, in the case of Malaria, where age
+// groups depend on the dose, non-relevant dose options are excluded.
+
+function splitCategoriesForDataElements(
+    dataElements: AntigenDisaggregationEnabledDataElement[]
+): AntigenDisaggregationEnabledDataElement[] {
+    return dataElements.flatMap((dataElement): AntigenDisaggregationEnabledDataElement[] => {
+        const categoriesProduct = _.cartesianProduct(
+            groupConsecutivesBy(dataElement.categories, category => category.code)
+        );
+
+        return categoriesProduct.map(categories => {
+            const restrictedOptionIds = categories.flatMap(
+                category => category.onlyForCategoryOptionIds
+            );
+
+            const categoriesWithOptionsFiltered = categories.map(category => {
+                const needsFiltering =
+                    _(category.categoryOptions.map(categoryOption => categoryOption.id))
+                        .intersection(restrictedOptionIds)
+                        .size() > 0;
+
+                return {
+                    ...category,
+                    categoryOptions: needsFiltering
+                        ? category.categoryOptions.filter(co => restrictedOptionIds.includes(co.id))
+                        : category.categoryOptions,
+                };
+            });
+
+            return { ...dataElement, categories: categoriesWithOptionsFiltered };
+        });
+    });
+}
+
 function removeCampaignTypeCategory(categoryOptionGroups: CategoryOption[][]) {
     return _(categoryOptionGroups)
         .reject(categoryOptions => {
@@ -629,7 +670,7 @@ export function renderHeaderForGroup(
 
             return h("tr", {}, [
                 h("td", { class: "header-first-column" }),
-                groupConsecutives(categoryOptionsForRow).map(groups => {
+                groupConsecutivesBy(categoryOptionsForRow, JSON.stringify).map(groups => {
                     const categoryOptions = groups.map(group => _.last(group));
                     const categoryOption = _.first(categoryOptions);
                     if (!categoryOption) throw new Error("categoryOption is undefined");
@@ -651,17 +692,17 @@ export function renderHeaderForGroup(
         .value();
 }
 
-function groupConsecutives<T>(items: T[]): T[][] {
+function groupConsecutivesBy<T>(items: T[], mapper: (value: T) => string): T[][] {
     return _.reduce(
         items,
-        (result, values) => {
+        (result, value) => {
             const lastGroup = _.last(result);
             const lastInLastGroup = _.last(lastGroup);
 
-            if (lastGroup && lastInLastGroup && _.isEqual(lastInLastGroup, values)) {
-                lastGroup.push(values);
+            if (lastGroup && lastInLastGroup && _.isEqual(mapper(lastInLastGroup), mapper(value))) {
+                lastGroup.push(value);
             } else {
-                result.push([values]);
+                result.push([value]);
             }
             return result;
         },
@@ -677,4 +718,8 @@ interface CustomFormOptions {
     dataElements: Record<Id, Code>;
     dataInput: Maybe<DataInput>;
     attributeCodeForDataInputPeriods: string;
+}
+
+function getCategoryKey(category: Category): string {
+    return [category.code, ...category.categoryOptions.map(co => co.id)].join(".");
 }

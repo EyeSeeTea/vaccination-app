@@ -109,17 +109,7 @@ export interface MetadataConfig extends BaseConfig {
         categories: Record<AntigenCode, Array<{ code: string; optional: boolean }>>;
     }>;
     indicators: Indicator[];
-    antigens: Array<{
-        id: string;
-        name: string;
-        displayName: string;
-        code: string;
-        dataElements: { id: string; code: string; optional: boolean; order: number }[];
-        categoriesOverride: Record<Code, { options: NamedRef[] }>;
-        ageGroups: Array<CategoryOption[][]>;
-        doses: Array<{ id: string; code: string; name: string; displayName: string }>;
-        isTypeSelectable: boolean;
-    }>;
+    antigens: Array<AntigenConfig>;
     legendSets: Array<{
         id: string;
     }>;
@@ -127,6 +117,29 @@ export interface MetadataConfig extends BaseConfig {
         extraActivities: DataSet[];
     };
 }
+
+export type AntigenConfig = {
+    id: string;
+    name: string;
+    displayName: string;
+    code: string;
+    dataElements: { id: string; code: string; optional: boolean; order: number }[];
+    categoriesOverride: Record<Code, { options: NamedRef[] }>;
+    ageGroups: AgeGroups;
+    doses: Dose[];
+    isTypeSelectable: boolean;
+};
+
+type AgeGroups = Array<CategoryOption[][]>;
+
+type Dose = {
+    id: string;
+    code: string;
+    name: string;
+    displayName: string;
+    // Some antigens (i.e Malaria) have different age groups for specific doses
+    ageGroups: AgeGroups;
+};
 
 type Code = string;
 
@@ -190,8 +203,6 @@ function getFromRefs<T>(refs: Ref[], objects: T[]): T[] {
     return refs.map(ref => _(objectsById).getOrFail(ref.id));
 }
 
-type Antigen = MetadataConfig["antigens"][number];
-
 function getConfigDataElementsDisaggregation(
     antigens: MetadataConfig["antigens"],
     dataElementGroups: DataElementGroup[],
@@ -210,7 +221,7 @@ function getConfigDataElementsDisaggregation(
         (dataElement): MetadataConfig["dataElementsDisaggregation"][0] => {
             const getCategories = (
                 typeString: string,
-                options: { antigen?: Antigen } = {}
+                options: { antigen?: AntigenConfig } = {}
             ): Category[] | undefined => {
                 const { antigen } = options;
                 const code = getRvcCode([
@@ -328,21 +339,29 @@ function getAntigens(
             const dosesIds = _(categoryOptionGroupsByCode)
                 .getOrFail(getRvcCode([categoryOption.code, "DOSES"]))
                 .categoryOptions.map(co => co.id);
+
             const allDoses = _(categoriesByCode).getOrFail(
                 baseConfig.categoryCodeForDoses
             ).categoryOptions;
+
             const doses = _(allDoses)
-                .map(co =>
-                    _(dosesIds).includes(co.id)
-                        ? {
-                              id: co.id,
-                              code: co.code,
-                              name: co.displayName,
-                              displayName: co.displayName,
-                          }
-                        : null
-                )
-                .compact()
+                .filter(doseOption => dosesIds.includes(doseOption.id))
+                .map((doseOption): Dose => {
+                    const ageGroupsForDose = getAgeGroupsForDose(
+                        doseOption,
+                        categoryOption,
+                        categoryOptionGroupsByCode,
+                        ageGroups
+                    );
+
+                    return {
+                        id: doseOption.id,
+                        code: doseOption.code,
+                        name: doseOption.displayName,
+                        displayName: doseOption.displayName,
+                        ageGroups: ageGroupsForDose,
+                    };
+                })
                 .value();
 
             return {
@@ -360,6 +379,25 @@ function getAntigens(
     );
 
     return antigensMetadata;
+}
+
+function getAgeGroupsForDose(
+    doseCategoryOption: CategoryOption,
+    antigenCategoryOption: CategoryOption,
+    categoryOptionGroupsByCode: _.Dictionary<CategoryOptionGroup>,
+    antigenAgeGroups: AgeGroups
+) {
+    const doseIndex = doseCategoryOption.name.match(/(\d+)/)?.[1];
+
+    if (doseIndex === undefined) {
+        console.error(`Dose index not found for ${doseCategoryOption.name}`);
+        return antigenAgeGroups;
+    } else {
+        const antigenCode = antigenCategoryOption.code;
+        const key = `${antigenCode}_DOSE_${doseIndex}_AGE_GROUP`;
+        const optionsGroup = categoryOptionGroupsByCode[key];
+        return optionsGroup ? [[optionsGroup.categoryOptions]] : antigenAgeGroups;
+    }
 }
 
 function getCategoriesOverride(
@@ -467,7 +505,15 @@ export async function getMetadataConfig(db: DbD2): Promise<MetadataConfig> {
         attributes: {},
         categories: modelParams,
         categoryCombos: modelParams,
-        categoryOptionGroups: modelParams,
+        categoryOptionGroups: {
+            ...modelParams,
+            fields: {
+                id: true,
+                code: true,
+                name: true,
+                categoryOptions: { id: true, code: true, name: true, displayName: true },
+            },
+        },
         categoryOptionCombos: { filters: ["name:eq:default"] },
         dataElementGroups: modelParams,
         dataElements: modelParams,
