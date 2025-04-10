@@ -35,7 +35,7 @@ const DataElement: SFC<DataElementProps> = props => {
             <div className={classes.categoriesTitle}>{i18n.t("Disaggregation")}</div>
             {categories.map((category, categoryIdx) => (
                 <div
-                    key={category.code}
+                    key={categoryIdx}
                     className={classes.categoriesWrapper}
                     style={{ display: category.visible ? "" : "none" }}
                 >
@@ -110,7 +110,7 @@ const styles = (_theme: Theme) =>
             display: "flex",
         },
         categoriesInnerWrapper: {
-            width: "200px",
+            width: "250px",
         },
         optionGroupWrapper: {
             textAlign: "center",

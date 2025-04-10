@@ -1,10 +1,11 @@
 import { Category, CategoryOption, DataElement, getCode, Maybe, Ref } from "./db.types";
 import _ from "lodash";
-import { MetadataConfig, getRvcCode, baseConfig } from "./config";
+import { MetadataConfig, getRvcCode, baseConfig, AntigenConfig } from "./config";
 import { Antigen } from "./campaign";
 import "../utils/lodash-mixins";
 import DbD2 from "./db-d2";
 import { Struct } from "./Struct";
+import i18n from "../locales";
 
 const fp = require("lodash/fp");
 
@@ -30,6 +31,7 @@ interface AntigenDisaggregationData {
             optional: boolean;
             selected: boolean;
             visible: boolean;
+            restrictForOptionIds: string[] | undefined;
 
             options: Array<{
                 indexSelected: number;
@@ -125,13 +127,22 @@ export type AntigenDisaggregationEnabled = Array<{
     type: Maybe<CampaignType>;
     antigen: Antigen;
     ageGroups: Array<CategoryOption>;
-    dataElements: Array<{
-        id: string;
-        name: string;
-        code: string;
-        categories: Array<{ code: string; categoryOptions: CategoryOption[] }>;
-    }>;
+    dataElements: AntigenDisaggregationEnabledDataElement[];
 }>;
+
+export type AntigenDisaggregationEnabledDataElement = {
+    id: string;
+    name: string;
+    code: string;
+    categories: Array<{
+        code: string;
+        categoryOptions: CategoryOption[];
+        onlyForCategoryOptionIds: string[] | undefined;
+    }>;
+};
+
+export type AntigenDisaggregationEnabledDataElementCategory =
+    AntigenDisaggregationEnabledDataElement["categories"][0];
 
 export type CocMetadata = {
     getByOptions(categoryOptions: Ref[]): Maybe<string>;
@@ -251,7 +262,9 @@ export class AntigensDisaggregation {
         if (!categoriesForAntigen)
             throw new Error(`No categories defined for antigen: ${antigenConfig.code}`);
 
-        return categoriesForAntigen.map((categoryRef): AntigenDisaggregationCategoriesData[0] => {
+        type CategoryData = AntigenDisaggregationCategoriesData[0];
+
+        return categoriesForAntigen.flatMap((categoryRef): CategoryData[] => {
             const optional = categoryRef.optional;
             const category = _(categoriesByCode).getOrFail(categoryRef.code);
             const isDosesCategory = category.code === config.categoryCodeForDoses;
@@ -263,55 +276,61 @@ export class AntigensDisaggregation {
                 ...categoryAttributes
             } = _(config.categoriesDisaggregation).keyBy(getCode).getOrFail(categoryRef.code);
 
-            let groups: CategoryOption[][][];
+            let groups: Group[];
+
             if ($categoryOptions.kind === "fromAgeGroups") {
-                groups = antigenConfig.ageGroups;
+                groups = getGroupsForAgeGroups(antigenConfig);
             } else if ($categoryOptions.kind === "fromAntigens") {
-                groups = config.antigens.map(antigen => [[antigen]]);
+                groups = [{ categoryOptions: config.antigens.map(antigen => [[antigen]]) }];
             } else if ($categoryOptions.kind === "fromDoses") {
-                groups = antigenConfig.doses.map(dose => [[dose]]);
+                groups = [{ categoryOptions: antigenConfig.doses.map(dose => [[dose]]) }];
             } else {
-                groups = $categoryOptions.values.map(option => [[option]]);
+                groups = [{ categoryOptions: $categoryOptions.values.map(option => [[option]]) }];
             }
 
-            const categoryOptionsEnabled = _(section ? section.greyedFields : [])
-                .flatMap(greyedField => {
-                    return greyedField.categoryOptionCombo.categoryOptions.filter(
-                        categoryOption => {
-                            return categoryOption.categories.some(
-                                greyedFieldCategory => greyedFieldCategory.id === category.id
-                            );
-                        }
-                    );
-                })
-                .uniq()
-                .value();
+            // Create a category for each group of category options
+            // Example: Malaria will have separate dose categories by age groups
+            return groups.map((group): CategoryData => {
+                const categoryOptionsEnabled = _(section ? section.greyedFields : [])
+                    .flatMap(greyedField => {
+                        return greyedField.categoryOptionCombo.categoryOptions.filter(
+                            categoryOption => {
+                                return categoryOption.categories.some(
+                                    greyedFieldCategory => greyedFieldCategory.id === category.id
+                                );
+                            }
+                        );
+                    })
+                    .uniq()
+                    .value();
 
-            const wasCategorySelected = !_(categoryOptionsEnabled).isEmpty();
+                const wasCategorySelected = !_(categoryOptionsEnabled).isEmpty();
 
-            const options = getCategoryOptions(
-                antigenConfig,
-                category,
-                groups,
-                categoryOptionsEnabled
-            );
+                const options = getCategoryOptions(
+                    antigenConfig,
+                    category,
+                    group.categoryOptions,
+                    categoryOptionsEnabled
+                );
 
-            const selected = wasCategorySelected ? true : !optional;
+                const selected = wasCategorySelected ? true : !optional;
 
-            // Example: _23.6 Displacement Status
-            const cleanCategoryName = categoryName
-                .replace(/^[_\d.\s]+/, "")
-                .replace("RVC", "")
-                .trim();
+                // Example: _23.6 Displacement Status
+                const cleanCategoryName = categoryName
+                    .replace(/^[_\d.\s]+/, "")
+                    .replace("RVC", "")
+                    .trim();
 
-            return {
-                ...categoryAttributes,
-                name: cleanCategoryName,
-                optional: optional,
-                selected: selected,
-                options: options,
-                visible: !(isDosesCategory || isAntigensCategory || isCampaignTypeCategory),
-            };
+                return {
+                    ...categoryAttributes,
+                    name: cleanCategoryName + (group.name ? ` (${group.name})` : ""),
+                    optional: optional,
+                    selected: selected,
+                    options: options,
+                    visible: !(isDosesCategory || isAntigensCategory || isCampaignTypeCategory),
+                    restrictForOptionIds: group.onlyForCategoryOptionIds,
+                };
+            });
         });
     }
 
@@ -328,15 +347,17 @@ export class AntigensDisaggregation {
                     .map(dataElement => {
                         const categories = _(dataElement.categories)
                             .filter(category => category.selected)
-                            .map(category => {
+                            .map((category): AntigenDisaggregationEnabledDataElementCategory => {
                                 const categoryOptions = _(category.options)
                                     .flatMap(({ values, indexSelected }) => values[indexSelected])
                                     .compact()
                                     .filter(categoryOption => categoryOption.selected)
                                     .value();
+
                                 return {
                                     code: category.code,
                                     categoryOptions: categoryOptions.map(obj => obj.option),
+                                    onlyForCategoryOptionIds: category.restrictForOptionIds,
                                 };
                             })
                             .value();
@@ -459,6 +480,30 @@ export class AntigensDisaggregation {
 
         return { getByOptions: getCocIdByCategoryOptions };
     }
+}
+
+type Group = {
+    categoryOptions: CategoryOption[][][];
+    name?: string;
+    onlyForCategoryOptionIds?: string[];
+};
+
+function getGroupsForAgeGroups(antigenConfig: AntigenConfig): Group[] {
+    return _(antigenConfig.doses)
+        .groupBy(dose => JSON.stringify(dose.ageGroups))
+        .values()
+        .map(doses => {
+            const dose = doses[0];
+            if (!dose) throw new Error();
+            const dosesIndexes = doses.map(dose => dose.name.match(/\d+/)?.[0]).join("/");
+
+            return {
+                name: i18n.t("Dose {{-indexes}}", { indexes: dosesIndexes }),
+                categoryOptions: dose.ageGroups,
+                onlyForCategoryOptionIds: doses.map(dose => dose.id),
+            };
+        })
+        .value();
 }
 
 function getCategoryOptions(

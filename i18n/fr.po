@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: i18next-conv\n"
-"POT-Creation-Date: 2025-04-01T08:49:03.846Z\n"
+"POT-Creation-Date: 2025-04-10T08:19:34.809Z\n"
 "PO-Revision-Date: 2018-11-15T11:18:10.896Z\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -437,6 +437,9 @@ msgid ""
 msgstr ""
 "Vous êtes sur le point de quitter l'assistant de création de campagne. "
 "Toutes vos modifications seront perdues. Êtes-vous sûr de vouloir continuer?"
+
+msgid "Dose {{indexes}}"
+msgstr "Dose {{indexes}}"
 
 msgid "update"
 msgstr "mettre à jour"
