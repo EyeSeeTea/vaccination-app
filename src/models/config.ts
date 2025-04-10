@@ -41,6 +41,7 @@ export const baseConfig = {
     categoryComboCodeForAntigenDosesAgeGroupType: "RVC_ANTIGEN_DOSE_TYPE_AGE_GROUP",
     dataElementGroupCodeForAntigens: "RVC_ANTIGEN",
     dataElementGroupCodeForPopulation: "RVC_POPULATION",
+    dataElementDosesAdministeredCode: "RVC_DOSES_ADMINISTERED",
     categoryComboCodeForTeams: "RVC_TEAM",
     categoryCodeForTeams: "RVC_TEAM",
     categoryOptionCodeReactive: "RVC_REACTIVE",
@@ -132,7 +133,7 @@ export type AntigenConfig = {
 
 type AgeGroups = Array<CategoryOption[][]>;
 
-type Dose = {
+export type Dose = {
     id: string;
     code: string;
     name: string;
@@ -364,6 +365,8 @@ function getAntigens(
                 })
                 .value();
 
+            const allAgeGroupsFromDoses = doses.flatMap(dose => dose.ageGroups);
+
             return {
                 id: categoryOption.id,
                 name: categoryOption.displayName,
@@ -371,7 +374,7 @@ function getAntigens(
                 code: categoryOption.code,
                 dataElements: dataElementSorted,
                 categoriesOverride: getCategoriesOverride(categoryOption, categoryOptionGroups),
-                ageGroups: ageGroups,
+                ageGroups: allAgeGroupsFromDoses,
                 doses: doses,
                 isTypeSelectable: antigenIdsSelectable.has(categoryOption.id),
             };
@@ -386,8 +389,9 @@ function getAgeGroupsForDose(
     antigenCategoryOption: CategoryOption,
     categoryOptionGroupsByCode: _.Dictionary<CategoryOptionGroup>,
     antigenAgeGroups: AgeGroups
-) {
+): AgeGroups {
     const doseIndex = doseCategoryOption.name.match(/(\d+)/)?.[1];
+    console.log(antigenAgeGroups);
 
     if (doseIndex === undefined) {
         console.error(`Dose index not found for ${doseCategoryOption.name}`);
@@ -396,6 +400,7 @@ function getAgeGroupsForDose(
         const antigenCode = antigenCategoryOption.code;
         const key = `${antigenCode}_DOSE_${doseIndex}_AGE_GROUP`;
         const optionsGroup = categoryOptionGroupsByCode[key];
+        // For simplicity, assume specific ageGroups by dose are not nested
         return optionsGroup ? [[optionsGroup.categoryOptions]] : antigenAgeGroups;
     }
 }

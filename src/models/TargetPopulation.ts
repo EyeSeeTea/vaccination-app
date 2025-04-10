@@ -2,7 +2,7 @@ import _ from "lodash";
 import moment from "moment";
 
 import DbD2 from "./db-d2";
-import { MetadataConfig } from "./config";
+import { baseConfig, Dose, MetadataConfig } from "./config";
 import { Maybe, DataValue, CategoryOption } from "./db.types";
 import { OrganisationUnit, OrganisationUnitPathOnly, OrganisationUnitLevel } from "./db.types";
 import { AntigenDisaggregationEnabled } from "./AntigensDisaggregation";
@@ -312,7 +312,7 @@ export class TargetPopulation {
 
                         const ageGroupInPopulation =
                             antigenDisaggregation &&
-                            _(antigenDisaggregation.ageGroups).includes(ageGroup);
+                            this.isAgeGroupIncluded(ageGroup, antigenDisaggregation, dose);
 
                         let populationForAgeRange: number;
                         if (ageGroupInPopulation) {
@@ -370,6 +370,34 @@ export class TargetPopulation {
         });
 
         return dataValues;
+    }
+
+    private isAgeGroupIncluded(
+        ageGroup: CategoryOption,
+        disaggregation: AntigenDisaggregationEnabled[0],
+        dose: Dose
+    ): boolean {
+        const dosesAdminiteredDataElement = disaggregation.dataElements.find(dataElement => {
+            return dataElement.code === baseConfig.dataElementDosesAdministeredCode;
+        });
+
+        if (!dosesAdminiteredDataElement) {
+            console.error(`Data element not found: ${baseConfig.dataElementDosesAdministeredCode}`);
+            return false;
+        }
+
+        const ageGroupIds = dosesAdminiteredDataElement.categories
+            .filter(category => category.code === baseConfig.categoryCodeForAgeGroup)
+            .filter(ageGroupCategory => {
+                return (
+                    !ageGroupCategory.onlyForCategoryOptionIds ||
+                    ageGroupCategory.onlyForCategoryOptionIds.includes(dose.id)
+                );
+            })
+            .flatMap(item => item.categoryOptions)
+            .map(categoryOption => categoryOption.id);
+
+        return ageGroupIds.includes(ageGroup.id);
     }
 
     private async getTotalPopulation(

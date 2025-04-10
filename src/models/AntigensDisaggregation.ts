@@ -51,7 +51,7 @@ export class AntigenDisaggregation extends Struct<AntigenDisaggregationData>() {
 
     get type(): Maybe<CampaignType> {
         const selectedList = _(this.dataElements)
-            .filter(de => de.code === "RVC_DOSES_ADMINISTERED")
+            .filter(de => de.code === baseConfig.dataElementDosesAdministeredCode)
             .flatMap(de => de.categories.filter(category => category.code === "RVC_TYPE"))
             .flatMap(category => category.options)
             .flatMap(options => options.values)
