@@ -1,6 +1,6 @@
 import { Category, CategoryOption, DataElement, getCode, Maybe, Ref } from "./db.types";
 import _ from "lodash";
-import { MetadataConfig, getRvcCode, baseConfig, AntigenConfig } from "./config";
+import { MetadataConfig, getRvcCode, baseConfig, AntigenConfig, Dose } from "./config";
 import { Antigen } from "./campaign";
 import "../utils/lodash-mixins";
 import DbD2 from "./db-d2";
@@ -485,6 +485,7 @@ export class AntigensDisaggregation {
 type Group = {
     categoryOptions: CategoryOption[][][];
     name?: string;
+    // Currently, this is used only to model age groups by doses
     onlyForCategoryOptionIds?: string[];
 };
 
@@ -492,7 +493,7 @@ function getGroupsForAgeGroups(antigenConfig: AntigenConfig): Group[] {
     return _(antigenConfig.doses)
         .groupBy(dose => JSON.stringify(dose.ageGroups))
         .values()
-        .map(doses => {
+        .map((doses): Group => {
             const dose = doses[0];
             if (!dose) throw new Error();
             const dosesIndexes = doses.map(dose => dose.name.match(/\d+/)?.[0]).join("/");
@@ -569,4 +570,32 @@ export function getDataElements(
         .uniq()
         .map(deCode => dataElementsByCode.getOrFail(deCode))
         .value();
+}
+
+export function isAgeGroupIncluded(
+    ageGroup: Ref,
+    disaggregation: AntigenDisaggregationEnabled[0],
+    dose: Dose
+): boolean {
+    const dosesAdministeredDataElement = disaggregation.dataElements.find(dataElement => {
+        return dataElement.code === baseConfig.dataElementDosesAdministeredCode;
+    });
+
+    if (!dosesAdministeredDataElement) {
+        console.error(`Data element not found: ${baseConfig.dataElementDosesAdministeredCode}`);
+        return false;
+    }
+
+    const ageGroupIds = dosesAdministeredDataElement.categories
+        .filter(category => category.code === baseConfig.categoryCodeForAgeGroup)
+        .filter(ageGroupCategory => {
+            return (
+                !ageGroupCategory.onlyForCategoryOptionIds ||
+                ageGroupCategory.onlyForCategoryOptionIds.includes(dose.id)
+            );
+        })
+        .flatMap(item => item.categoryOptions)
+        .map(categoryOption => categoryOption.id);
+
+    return ageGroupIds.includes(ageGroup.id);
 }

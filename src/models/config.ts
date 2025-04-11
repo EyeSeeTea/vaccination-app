@@ -391,7 +391,6 @@ function getAgeGroupsForDose(
     antigenAgeGroups: AgeGroups
 ): AgeGroups {
     const doseIndex = doseCategoryOption.name.match(/(\d+)/)?.[1];
-    console.log(antigenAgeGroups);
 
     if (doseIndex === undefined) {
         console.error(`Dose index not found for ${doseCategoryOption.name}`);

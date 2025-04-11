@@ -2,10 +2,10 @@ import _ from "lodash";
 import moment from "moment";
 
 import DbD2 from "./db-d2";
-import { baseConfig, Dose, MetadataConfig } from "./config";
+import { MetadataConfig } from "./config";
 import { Maybe, DataValue, CategoryOption } from "./db.types";
 import { OrganisationUnit, OrganisationUnitPathOnly, OrganisationUnitLevel } from "./db.types";
-import { AntigenDisaggregationEnabled } from "./AntigensDisaggregation";
+import { AntigenDisaggregationEnabled, isAgeGroupIncluded } from "./AntigensDisaggregation";
 import { sortAgeGroups } from "../utils/age-groups";
 import Campaign from "./campaign";
 import { getDaysRange } from "../utils/date";
@@ -312,7 +312,7 @@ export class TargetPopulation {
 
                         const ageGroupInPopulation =
                             antigenDisaggregation &&
-                            this.isAgeGroupIncluded(ageGroup, antigenDisaggregation, dose);
+                            isAgeGroupIncluded(ageGroup, antigenDisaggregation, dose);
 
                         let populationForAgeRange: number;
                         if (ageGroupInPopulation) {
@@ -370,34 +370,6 @@ export class TargetPopulation {
         });
 
         return dataValues;
-    }
-
-    private isAgeGroupIncluded(
-        ageGroup: CategoryOption,
-        disaggregation: AntigenDisaggregationEnabled[0],
-        dose: Dose
-    ): boolean {
-        const dosesAdminiteredDataElement = disaggregation.dataElements.find(dataElement => {
-            return dataElement.code === baseConfig.dataElementDosesAdministeredCode;
-        });
-
-        if (!dosesAdminiteredDataElement) {
-            console.error(`Data element not found: ${baseConfig.dataElementDosesAdministeredCode}`);
-            return false;
-        }
-
-        const ageGroupIds = dosesAdminiteredDataElement.categories
-            .filter(category => category.code === baseConfig.categoryCodeForAgeGroup)
-            .filter(ageGroupCategory => {
-                return (
-                    !ageGroupCategory.onlyForCategoryOptionIds ||
-                    ageGroupCategory.onlyForCategoryOptionIds.includes(dose.id)
-                );
-            })
-            .flatMap(item => item.categoryOptions)
-            .map(categoryOption => categoryOption.id);
-
-        return ageGroupIds.includes(ageGroup.id);
     }
 
     private async getTotalPopulation(
