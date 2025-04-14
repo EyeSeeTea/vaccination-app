@@ -375,6 +375,7 @@ export class AntigensDisaggregation {
                     .flatMap(dataElement => dataElement.categories)
                     .filter(category => category.code === this.config.categoryCodeForAgeGroup)
                     .flatMap(category => category.categoryOptions)
+                    .uniqBy(ageGroup => ageGroup.id)
                     .value();
 
                 return {
