@@ -399,9 +399,29 @@ function getAgeGroupsForDose(
         const antigenCode = antigenCategoryOption.code;
         const key = `${antigenCode}_DOSE_${doseIndex}_AGE_GROUP`;
         const optionsGroup = categoryOptionGroupsByCode[key];
-        // For simplicity, assume specific ageGroups by dose are not nested
-        return optionsGroup ? [[optionsGroup.categoryOptions]] : antigenAgeGroups;
+
+        if (optionsGroup) {
+            // Filter the base age groups nested structure and keep only those present for the specific dose
+            const ageGroupsForDose = optionsGroup.categoryOptions;
+            return filterAgeGroups(antigenAgeGroups, ageGroupsForDose);
+        } else {
+            return antigenAgeGroups;
+        }
     }
+}
+
+function filterAgeGroups(antigenAgeGroups: AgeGroups, ageGroupsToKeep: Ref[]): AgeGroups {
+    return antigenAgeGroups
+        .map(ageGroupsList =>
+            ageGroupsList
+                .map(ageGroups =>
+                    ageGroups.filter(ageGroup =>
+                        ageGroupsToKeep.some(ageGroupForDose => ageGroupForDose.id === ageGroup.id)
+                    )
+                )
+                .filter(xs => xs.length > 0)
+        )
+        .filter(xs => xs.length > 0);
 }
 
 function getCategoriesOverride(
