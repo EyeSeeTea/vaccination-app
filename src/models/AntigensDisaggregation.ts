@@ -121,6 +121,8 @@ export type AntigenDisaggregationDataElement = AntigenDisaggregation["dataElemen
 export type AntigenDisaggregationCategoriesData =
     AntigenDisaggregation["dataElements"][0]["categories"];
 
+type CategoryData = AntigenDisaggregationCategoriesData[0];
+
 export type AntigenDisaggregationOptionGroup = AntigenDisaggregationCategoriesData[0]["options"][0];
 
 export type AntigenDisaggregationEnabled = Array<{
@@ -262,8 +264,6 @@ export class AntigensDisaggregation {
         if (!categoriesForAntigen)
             throw new Error(`No categories defined for antigen: ${antigenConfig.code}`);
 
-        type CategoryData = AntigenDisaggregationCategoriesData[0];
-
         return categoriesForAntigen.flatMap((categoryRef): CategoryData[] => {
             const optional = categoryRef.optional;
             const category = _(categoriesByCode).getOrFail(categoryRef.code);
@@ -348,15 +348,14 @@ export class AntigensDisaggregation {
                         const categories = _(dataElement.categories)
                             .filter(category => category.selected)
                             .map((category): AntigenDisaggregationEnabledDataElementCategory => {
-                                const categoryOptions = _(category.options)
-                                    .flatMap(({ values, indexSelected }) => values[indexSelected])
-                                    .compact()
-                                    .filter(categoryOption => categoryOption.selected)
-                                    .value();
+                                const categoryOptions = this.getCategoryOptions(
+                                    category,
+                                    antigenDisaggregation
+                                );
 
                                 return {
                                     code: category.code,
-                                    categoryOptions: categoryOptions.map(obj => obj.option),
+                                    categoryOptions: categoryOptions,
                                     onlyForCategoryOptionIds: category.restrictForOptionIds,
                                 };
                             })
@@ -394,6 +393,25 @@ export class AntigensDisaggregation {
         );
 
         return enabled;
+    }
+
+    private getCategoryOptions(
+        category: CategoryData,
+        antigenDisaggregation: AntigenDisaggregation
+    ) {
+        const categoryOptionsList = _(category.options)
+            .flatMap(({ values, indexSelected }) => values[indexSelected])
+            .compact()
+            .filter(categoryOption => categoryOption.selected)
+            .value();
+
+        const isAntigen = category.code === this.config.categoryCodeForAntigens;
+
+        const categoryOptions = categoryOptionsList.map(obj => obj.option);
+
+        return isAntigen
+            ? categoryOptions.filter(co => co.code === antigenDisaggregation.code)
+            : categoryOptions;
     }
 
     static buildForAntigen(
