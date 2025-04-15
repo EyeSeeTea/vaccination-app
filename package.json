@@ -1,7 +1,7 @@
 {
     "name": "vaccination-app",
     "description": "DHIS2 MSF Vaccination Campaign App",
-    "version": "2.2.1",
+    "version": "2.3.1",
     "license": "GPL-3.0",
     "author": "EyeSeeTea team",
     "homepage": ".",
@@ -50,7 +50,7 @@
         "_prebuild": "yarn localize && yarn test",
         "code-quality": "yarn lint && yarn prettify && yarn test",
         "build": "rm -rf build/ && d2-manifest package.json manifest.webapp && react-scripts build && yarn run manifest && cp -r i18n icon.png build",
-        "build-webapp": "yarn build && rm -f $npm_package_name.zip && cd build && zip -r ../$npm_package_name.zip *",
+        "build-webapp": "yarn build && rm -f $npm_package_name.zip && cd build && zip -r ../$npm_package_name-$npm_package_version.zip *",
         "test": "jest",
         "lint": "eslint src cypress",
         "eject": "react-scripts eject",
