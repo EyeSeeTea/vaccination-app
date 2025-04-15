@@ -320,8 +320,10 @@ export default class CampaignDb {
 
                     return disaggregations.map(disaggregation => {
                         const cocId = cocMetadata.getByOptions(disaggregation);
-                        if (!cocId)
-                            throw new Error(`coc not found: ${JSON.stringify(disaggregation)} `);
+                        if (!cocId) {
+                            const cocInfo = disaggregation.map(coc => coc.name).join(", ");
+                            throw new Error(`coc not found: ${cocInfo}`);
+                        }
 
                         return {
                             dataElement: { id: dataElementDis.id },
