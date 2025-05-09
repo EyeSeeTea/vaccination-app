@@ -469,7 +469,9 @@ export class AntigensDisaggregation {
         const categoryComboCodes = _(this.getEnabled())
             .flatMap(disaggregation => disaggregation.dataElements)
             .filter(dataElement => !_(dataElement.categories).isEmpty())
-            .map(dataElement => getRvcCode(dataElement.categories.map(category => category.code)))
+            .map(dataElement =>
+                getRvcCode(_.uniq(dataElement.categories.map(category => category.code)))
+            )
             .uniq()
             .value();
 
