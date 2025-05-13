@@ -20,7 +20,7 @@ import SimpleCheckbox from "../../forms/SimpleCheckBox";
 import DataElement from "./DataElement";
 import { memoize } from "../../../utils/memoize";
 
-type Path = (number | string)[];
+type Path = Array<number | string>;
 
 interface AntigenSectionProps extends WithStyles<typeof styles> {
     antigen: AntigenDisaggregation;
