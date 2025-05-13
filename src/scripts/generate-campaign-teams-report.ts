@@ -46,11 +46,11 @@ export class UnusedTeamsReport {
         console.debug(`Get metadata`);
 
         const metadata = await this.getMetadata();
-        const dataValuesCountByOrgUnit = await this.getDataValuesByOrgUnit();
+        const dataValuesByTeamId = await this.getDataValuesByTeamId(metadata);
         const teamsByOrgUnitId = this.getTeamsByOrgUnitId(metadata);
 
         const rows = metadata.dataSets.flatMap((dataSet): Row[] => {
-            return this.getRowsFromDataSet(dataSet, dataValuesCountByOrgUnit, teamsByOrgUnitId);
+            return this.getRowsFromDataSet(dataSet, dataValuesByTeamId, teamsByOrgUnitId);
         });
         console.debug(`Rows: ${rows.length}`);
 
@@ -75,7 +75,7 @@ export class UnusedTeamsReport {
 
     private getRowsFromDataSet(
         dataSet: DataSet,
-        dataValuesCountByOrgUnit: Record<string, number>,
+        dataValuesByTeamId: Record<Id, number>,
         teamsByOrgUnitId: Record<string, CategoryOption[]>
     ): Row[] {
         const isCampaign = dataSet.attributeValues.some(av => {
@@ -101,9 +101,7 @@ export class UnusedTeamsReport {
         };
 
         return teams.map((team): Row => {
-            const dosesAdministeredCount = _(team.organisationUnits)
-                .map(ou => dataValuesCountByOrgUnit[ou.id] || 0)
-                .sum();
+            const dosesAdministeredCount = dataValuesByTeamId[team.id] || 0;
 
             return {
                 campaignName: campaign.name,
@@ -125,7 +123,7 @@ export class UnusedTeamsReport {
             .value();
     }
 
-    private async getDataValuesByOrgUnit() {
+    private async getDataValuesByTeamId(metadata: Metadata) {
         const { dataValues } = await this.api.dataValues
             .getSet({
                 dataSet: [],
@@ -141,17 +139,23 @@ export class UnusedTeamsReport {
 
         console.debug(`DataValues: ${dataValues.length}`);
 
-        const dataValuesCountByOrgUnit = _(dataValues)
-            .filter(dv => dv.value !== "0")
-            .countBy(dv => dv.orgUnit)
+        const categoryCombo = _(metadata.categoryCombos).getOrFail(0);
+
+        const categoryOptionByCocId = _(categoryCombo.categoryOptionCombos)
+            .map(coc => [coc.id, coc.categoryOptions.map(co => co.id).join(".")] as [Id, Id])
+            .fromPairs()
             .value();
-        return dataValuesCountByOrgUnit;
+
+        return _(dataValues)
+            .filter(dv => dv.value !== "0")
+            .countBy(dv => _(categoryOptionByCocId).getOrFail(dv.attributeOptionCombo))
+            .value();
     }
 
     private async getMetadata(): Promise<Metadata> {
         const metadata = await this.api.metadata.get(query).getData();
         console.debug(`DataSets: ${metadata.dataSets.length}`);
-        console.debug(`Teams: ${metadata.categoryOptions.length}`);
+        console.debug(`Teams: ${metadata.categoryCombos.length}`);
         return metadata;
     }
 }
@@ -191,6 +195,16 @@ const query = {
             organisationUnits: true,
         } as const,
         order: "name:asc",
+    },
+    categoryCombos: {
+        fields: {
+            id: true,
+            name: true,
+            categoryOptionCombos: { id: true, categoryOptions: { id: true } },
+        },
+        filter: {
+            code: { eq: baseConfig.categoryComboCodeForTeams },
+        },
     },
     categoryOptions: {
         fields: {
