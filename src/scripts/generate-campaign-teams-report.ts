@@ -155,7 +155,7 @@ export class UnusedTeamsReport {
     private async getMetadata(): Promise<Metadata> {
         const metadata = await this.api.metadata.get(query).getData();
         console.debug(`DataSets: ${metadata.dataSets.length}`);
-        console.debug(`Teams: ${metadata.categoryCombos.length}`);
+        console.debug(`Teams: ${metadata.categoryOptions.length}`);
         return metadata;
     }
 }
