@@ -1,5 +1,4 @@
 import DbD2, { ApiResponse, ModelReference } from "./db-d2";
-import { generateUid } from "d2/uid";
 import moment from "moment";
 import _ from "lodash";
 import "../utils/lodash-mixins";
@@ -19,7 +18,9 @@ import { formatDay } from "../utils/date";
 import { getDataElements, CocMetadata } from "./AntigensDisaggregation";
 import { Dashboard, DashboardMetadata } from "./Dashboard";
 import { Teams, CategoryOptionTeam } from "./Teams";
-import { getDashboardCode, getByIndex, baseConfig } from "./config";
+import { getDashboardCode, getByIndex } from "./config";
+import { generateUid } from "../utils/dhis2";
+import { DataInput } from "./periods";
 
 interface DataSetWithSections {
     sections: Array<{ id: string; name: string; dataSet: { id: string } }>;
@@ -32,13 +33,6 @@ because the current time is after the closing date of the data input periods.
 
 Solution: Use a custom attribute to store the data input periods
 */
-
-export type DataInput = {
-    periodStart: string;
-    periodEnd: string;
-    openingDate: string;
-    closingDate: string;
-};
 
 interface PostSaveMetadata {
     visualizations: object[];
@@ -433,19 +427,6 @@ export default class CampaignDb {
     }
 }
 
-type ModelWithAttributes = {
-    attributeValues: Array<{
-        attribute: { code: string };
-        value: string;
-    }>;
-};
-
-type DataSetWithDataInputPeriods = {
-    dataInputPeriods: Array<{ period: { id: string } }>;
-};
-
-type CampaignPeriods = { startDate: Date; endDate: Date };
-
 export function getDataInputFromCampaign(campaign: Campaign): Maybe<DataInput> {
     if (!campaign.startDate || !campaign.endDate) return;
 
@@ -454,44 +435,5 @@ export function getDataInputFromCampaign(campaign: Campaign): Maybe<DataInput> {
         periodEnd: formatDay(campaign.endDate),
         openingDate: formatDay(campaign.startDate),
         closingDate: formatDay(campaign.endDate, { daysToAdd: campaign.config.expirationDays }),
-    };
-}
-
-export function getCampaignPeriods<
-    DataSet extends ModelWithAttributes & DataSetWithDataInputPeriods
->(dataSet: DataSet): Maybe<CampaignPeriods> {
-    return getPeriodDatesFromAttributes(dataSet) || getPeriodDatesFromDataInputPeriods(dataSet);
-}
-
-function getPeriodDatesFromAttributes<DataSetWithAttributes extends ModelWithAttributes>(
-    dataSet: DataSetWithAttributes
-): Maybe<CampaignPeriods> {
-    const dataInputAttribute = dataSet.attributeValues.find(
-        av => av.attribute.code === baseConfig.attributeCodeForDataInputPeriods
-    );
-    if (!dataInputAttribute || !dataInputAttribute.value) return;
-
-    const dataInput = JSON.parse(dataInputAttribute.value) as DataInput;
-
-    return {
-        startDate: new Date(dataInput.periodStart),
-        endDate: new Date(dataInput.periodEnd),
-    };
-}
-
-function getPeriodDatesFromDataInputPeriods(
-    dataSet: DataSetWithDataInputPeriods
-): Maybe<CampaignPeriods> {
-    const { dataInputPeriods } = dataSet;
-    if (!dataInputPeriods) return;
-
-    const getDateFromPeriodId = (periodId: string) => moment(periodId, "YYYYMMDD").toDate();
-    const periods = dataInputPeriods.map(dip => dip.period.id);
-    const [min, max] = [_.min(periods), _.max(periods)];
-    if (!min || !max) return;
-
-    return {
-        startDate: getDateFromPeriodId(min),
-        endDate: getDateFromPeriodId(max),
     };
 }

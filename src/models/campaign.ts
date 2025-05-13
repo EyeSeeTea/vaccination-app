@@ -11,12 +11,13 @@ import {
     TargetPopulation,
     TargetPopulationData as TargetPopulationData_,
 } from "./TargetPopulation";
-import CampaignDb, { getCampaignPeriods } from "./CampaignDb";
+import CampaignDb from "./CampaignDb";
 import { promiseMap } from "../utils/promises";
 import i18n from "../locales";
 import { TeamsMetadata, getTeamsForCampaign, filterTeamsByNames } from "./Teams";
 import CampaignSharing from "./CampaignSharing";
 import { CampaignNotification } from "./CampaignNotification";
+import { getCampaignPeriods } from "./periods";
 
 export type TargetPopulationData = TargetPopulationData_;
 

@@ -1,6 +1,5 @@
 import _, { Dictionary } from "lodash";
 import DbD2 from "./db-d2";
-import { generateUid } from "d2/uid";
 import {
     dashboardItemsConfig,
     itemsMetadataConstructor,
@@ -18,6 +17,7 @@ import { Moment } from "moment";
 import { getDaysRange } from "../utils/date";
 import { AntigenDisaggregationEnabled } from "./AntigensDisaggregation";
 import { MetadataConfig } from "./config";
+import { generateUid } from "../utils/dhis2";
 
 type DashboardItem = {
     type: string;

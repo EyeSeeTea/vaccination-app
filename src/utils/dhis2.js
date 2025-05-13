@@ -1,3 +1,6 @@
+// @ts-ignore
+import { generateUid as d2GenerateUid } from "d2/uid";
+
 function getCurrentUserSymbol(d2, symbolName, defaultValue) {
     const { currentUser } = d2;
     const symbol = Object.getOwnPropertySymbols(currentUser).find(
@@ -22,4 +25,8 @@ export function getCurrentUserDataViewOrganisationUnits(d2) {
 
 export function isTestEnv() {
     return !!process.env.REACT_APP_CYPRESS;
+}
+
+export function generateUid() {
+    return d2GenerateUid();
 }
