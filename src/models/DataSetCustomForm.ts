@@ -6,7 +6,8 @@ import Campaign, { Antigen } from "./campaign";
 import { AntigenDisaggregationEnabled, CocMetadata } from "./AntigensDisaggregation";
 import "../utils/lodash-mixins";
 import { CategoryOption, getCode, getId } from "./db.types";
-import { DataInput, getDataInputFromCampaign } from "./CampaignDb";
+import { getDataInputFromCampaign } from "./CampaignDb";
+import { DataInput } from "./periods";
 
 const { createElement } = require("typed-html");
 const contentScript = require("!raw-loader!./custom-form-resources/content-script.js").default;

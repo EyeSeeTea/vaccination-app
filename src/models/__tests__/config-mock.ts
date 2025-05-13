@@ -37,19 +37,19 @@ const metadataConfig: MetadataConfig = {
         app: {
             code: "RVC_CREATED_BY_VACCINATION_APP",
             id: "1",
-            displayName: "Created by app",
+            name: "Created by app",
             valueType: "BOOLEAN",
         },
         hideInTallySheet: {
             id: "2",
             code: "",
-            displayName: "hideInTallySheet",
+            name: "hideInTallySheet",
             valueType: "BOOLEAN",
         },
         dataInputPeriods: {
             id: "3",
             code: "RVC_DATA_INPUT_PERIODS",
-            displayName: "Data Input Periods",
+            name: "Data Input Periods",
             valueType: "TEXT",
         },
     },
@@ -265,6 +265,7 @@ const metadataConfig: MetadataConfig = {
         {
             id: "1",
             displayName: "Measles",
+            categoriesOverride: {},
             name: "Measles",
             code: "RVC_MEASLES",
             doses: [],
@@ -290,6 +291,7 @@ const metadataConfig: MetadataConfig = {
             id: "2",
             name: "Meningitis Polysaccharide",
             displayName: "Meningitis Polysaccharide",
+            categoriesOverride: {},
             code: "RVC_MENPOLY",
             doses: [],
             dataElements: [
@@ -310,6 +312,7 @@ const metadataConfig: MetadataConfig = {
             isTypeSelectable: false,
             name: "Meningitis Conjugate",
             displayName: "Meningitis Conjugate",
+            categoriesOverride: {},
             code: "RVC_MENCONJ",
             doses: [],
             dataElements: [
@@ -333,6 +336,7 @@ const metadataConfig: MetadataConfig = {
             isTypeSelectable: false,
             name: "Cholera",
             displayName: "Cholera",
+            categoriesOverride: {},
             code: "RVC_CHOLERA",
             doses: [],
             dataElements: [
@@ -351,6 +355,7 @@ const metadataConfig: MetadataConfig = {
             isTypeSelectable: false,
             name: "PCV",
             displayName: "PCV",
+            categoriesOverride: {},
             code: "RVC_PCV",
             doses: [],
             dataElements: [
@@ -373,6 +378,7 @@ const metadataConfig: MetadataConfig = {
             isTypeSelectable: false,
             name: "Pertussis Penta",
             displayName: "Pertussis Penta",
+            categoriesOverride: {},
             code: "RVC_PERTPENTA",
             doses: [],
             dataElements: [
@@ -395,6 +401,7 @@ const metadataConfig: MetadataConfig = {
             isTypeSelectable: false,
             name: "Yellow Fever",
             displayName: "Yellow Fever",
+            categoriesOverride: {},
             code: "RVC_YELLOW_FEVER",
             doses: [],
             dataElements: [
@@ -424,6 +431,7 @@ const metadataConfig: MetadataConfig = {
             isTypeSelectable: false,
             name: "Japanese Encephalitis",
             displayName: "Japanese Encephalitis",
+            categoriesOverride: {},
             code: "RVC_JPENC",
             doses: [],
             dataElements: [
@@ -448,6 +456,7 @@ const metadataConfig: MetadataConfig = {
             isTypeSelectable: false,
             name: "Dengue",
             displayName: "Dengue",
+            categoriesOverride: {},
             code: "RVC_DENGUE",
             doses: [],
             dataElements: [
@@ -467,6 +476,7 @@ const metadataConfig: MetadataConfig = {
             isTypeSelectable: false,
             name: "Typhoid Fever",
             displayName: "Typhoid Fever",
+            categoriesOverride: {},
             code: "RVC_TYPHOID_FEVER",
             doses: [],
             dataElements: [

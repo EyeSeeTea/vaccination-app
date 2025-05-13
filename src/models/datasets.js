@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { getCurrentUserDataViewOrganisationUnits } from "../utils/dhis2";
-import { getCampaignPeriods } from "./CampaignDb";
+import { getCampaignPeriods } from "./periods";
 
 const requiredFields = ["attributeValues[value, attribute[code]]", "organisationUnits[id,path]"];
 

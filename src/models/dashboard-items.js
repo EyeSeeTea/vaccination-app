@@ -1,7 +1,7 @@
 import _ from "lodash";
-import { generateUid } from "d2/uid";
 import moment from "moment";
 import i18n from "@dhis2/d2-i18n";
+import { generateUid } from "../utils/dhis2";
 
 const definitions = {
     coverageByDosesAndPeriod: {

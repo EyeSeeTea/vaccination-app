@@ -1,6 +1,5 @@
 import _ from "lodash";
 import DbD2, { ApiResponse } from "./db-d2";
-import { generateUid } from "d2/uid";
 import { Moment } from "moment";
 import {
     OrganisationUnitPathOnly,
@@ -12,6 +11,7 @@ import {
     getRef,
 } from "./db.types";
 import { MetadataConfig } from "./config";
+import { generateUid } from "../utils/dhis2";
 
 export interface CategoryOptionTeam {
     id: string;

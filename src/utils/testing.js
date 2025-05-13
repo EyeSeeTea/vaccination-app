@@ -3,11 +3,11 @@ import { mount as enzymeMount } from "enzyme";
 import fetch from "node-fetch";
 import _ from "lodash";
 import sinon from "sinon";
-import { generateUid } from "d2/uid";
 import OldMuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import { MuiThemeProvider } from "@material-ui/core/styles";
 import { SnackbarProvider } from "@eyeseetea/d2-ui-components";
 import { muiTheme } from "../themes/dhis2.theme";
+import { generateUid } from "./dhis2";
 
 // DHIS2 expects a browser environment, add some required keys to the global node namespace
 Object.assign(global, {
