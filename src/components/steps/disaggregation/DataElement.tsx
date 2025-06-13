@@ -72,16 +72,21 @@ const DataElement: SFC<DataElementProps> = props => {
                                     />
                                 </div>
                             ))}
-                            <IconButton
-                                onClick={toggleEdit([antigenCode, dataElementIdx, categoryIdx])}
-                                aria-label={i18n.t("Edit")}
-                            >
-                                <Icon
-                                    color={isEditingCategory(categoryIdx) ? "primary" : "secondary"}
+
+                            {category.options.length > 1 && (
+                                <IconButton
+                                    onClick={toggleEdit([antigenCode, dataElementIdx, categoryIdx])}
+                                    aria-label={i18n.t("Edit")}
                                 >
-                                    edit
-                                </Icon>
-                            </IconButton>
+                                    <Icon
+                                        color={
+                                            isEditingCategory(categoryIdx) ? "primary" : "secondary"
+                                        }
+                                    >
+                                        edit
+                                    </Icon>
+                                </IconButton>
+                            )}
                         </div>
                     )}
                 </div>
