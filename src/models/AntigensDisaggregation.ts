@@ -102,19 +102,23 @@ export interface SectionForDisaggregation {
     dataElements: Ref[];
     dataSet: { id: string };
     sortOrder: number;
-    greyedFields: Array<{
-        categoryOptionCombo: {
-            id: string;
-            categoryOptions: Array<{
-                id: string;
-                name: string;
-                displayName: string;
-                categories: Ref[];
-            }>;
-        };
-        dataElement: Ref;
-    }>;
+    greyedFields: Array<GreyedField>;
 }
+
+type GreyedField = {
+    categoryOptionCombo: {
+        id: string;
+        categoryOptions: GreyedFieldCategoryOption[];
+    };
+    dataElement: Ref;
+};
+
+type GreyedFieldCategoryOption = {
+    id: string;
+    name: string;
+    displayName: string;
+    categories: Ref[];
+};
 
 export type AntigenDisaggregationDataElement = AntigenDisaggregation["dataElements"][0];
 
@@ -265,7 +269,6 @@ export class AntigensDisaggregation {
             throw new Error(`No categories defined for antigen: ${antigenConfig.code}`);
 
         return categoriesForAntigen.flatMap((categoryRef): CategoryData[] => {
-            const optional = categoryRef.optional;
             const category = _(categoriesByCode).getOrFail(categoryRef.code);
             const isDosesCategory = category.code === config.categoryCodeForDoses;
             const isAntigensCategory = category.code === config.categoryCodeForAntigens;
@@ -292,15 +295,9 @@ export class AntigensDisaggregation {
             // Example: Malaria will have separate dose categories by age groups
             return groups.map((group): CategoryData => {
                 const categoryOptionsEnabled = _(section ? section.greyedFields : [])
-                    .flatMap(greyedField => {
-                        return greyedField.categoryOptionCombo.categoryOptions.filter(
-                            categoryOption => {
-                                return categoryOption.categories.some(
-                                    greyedFieldCategory => greyedFieldCategory.id === category.id
-                                );
-                            }
-                        );
-                    })
+                    .flatMap(greyedField =>
+                        getGreyedFieldCategoryOptions(group, greyedField, category)
+                    )
                     .uniq()
                     .value();
 
@@ -313,6 +310,7 @@ export class AntigensDisaggregation {
                     categoryOptionsEnabled
                 );
 
+                const optional = group.optional ?? categoryRef.optional;
                 const selected = wasCategorySelected ? true : !optional;
 
                 // Example: _23.6 Displacement Status
@@ -399,10 +397,14 @@ export class AntigensDisaggregation {
         category: CategoryData,
         antigenDisaggregation: AntigenDisaggregation
     ) {
+        const isDoses = category.code === this.config.categoryCodeForDoses;
+
         const categoryOptionsList = _(category.options)
             .flatMap(({ values, indexSelected }) => values[indexSelected])
             .compact()
-            .filter(categoryOption => categoryOption.selected)
+            // For the Doses category, we want all the category options (doses), even if they are
+            // not selected, the selection will be done in the corresponding Age group category.
+            .filter(categoryOption => isDoses || categoryOption.selected)
             .value();
 
         const isAntigen = category.code === this.config.categoryCodeForAntigens;
@@ -505,10 +507,33 @@ export class AntigensDisaggregation {
 
 type Group = {
     categoryOptions: CategoryOption[][][];
+    optional?: boolean;
     name?: string;
     // Currently, this is used only to model age groups by doses
     onlyForCategoryOptionIds?: string[];
+    doseId?: string;
 };
+
+function getGreyedFieldCategoryOptions(
+    group: Group,
+    greyedField: GreyedField,
+    category: Category
+): GreyedFieldCategoryOption[] {
+    const { categoryOptions } = greyedField.categoryOptionCombo;
+
+    // As the Doses category is split, we have to perform an extra check: the greyed field
+    // should belong to the dose category option we are processing.
+    const matchesCategoryOption =
+        !group.doseId || categoryOptions.some(categoryOption => categoryOption.id === group.doseId);
+
+    if (matchesCategoryOption) {
+        return greyedField.categoryOptionCombo.categoryOptions.filter(categoryOption => {
+            return categoryOption.categories.some(category_ => category_.id === category.id);
+        });
+    } else {
+        return [];
+    }
+}
 
 function getGroupsForAgeGroups(antigenConfig: AntigenConfig): Group[] {
     return _(antigenConfig.doses)
@@ -521,8 +546,10 @@ function getGroupsForAgeGroups(antigenConfig: AntigenConfig): Group[] {
 
             return {
                 name: i18n.t("Dose {{-indexes}}", { indexes: dosesIndexes }),
-                categoryOptions: dose.ageGroups,
+                categoryOptions: dose.ageGroups.options,
+                optional: dose.ageGroups.optional,
                 onlyForCategoryOptionIds: doses.map(dose => dose.id),
+                doseId: dose.id,
             };
         })
         .value();

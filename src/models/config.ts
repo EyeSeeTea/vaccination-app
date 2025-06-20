@@ -136,13 +136,15 @@ export type AntigenConfig = {
 
 type AgeGroups = Array<CategoryOption[][]>;
 
+type AgeGroupsOptionable = { options: Array<CategoryOption[][]>; optional: boolean };
+
 export type Dose = {
     id: string;
     code: string;
     name: string;
     displayName: string;
     // Some antigens (i.e Malaria) have different age groups for specific doses
-    ageGroups: AgeGroups;
+    ageGroups: AgeGroupsOptionable;
 };
 
 type Code = string;
@@ -368,7 +370,7 @@ function getAntigens(
                 })
                 .value();
 
-            const allAgeGroupsFromDoses = doses.flatMap(dose => dose.ageGroups);
+            const allAgeGroupsFromDoses = doses.flatMap(dose => dose.ageGroups.options);
 
             return {
                 id: categoryOption.id,
@@ -387,32 +389,49 @@ function getAntigens(
     return antigensMetadata;
 }
 
+function buildAgeGroupsOptionable(
+    ageGroups: AgeGroups,
+    options?: { optional: boolean }
+): AgeGroupsOptionable {
+    return { options: ageGroups, optional: options?.optional ?? false };
+}
+
 function getAgeGroupsForDose(
     doseCategoryOption: CategoryOption,
     antigenCategoryOption: CategoryOption,
     categoryOptionGroupsByCode: _.Dictionary<CategoryOptionGroup>,
     antigenAgeGroups: AgeGroups
-): AgeGroups {
+): AgeGroupsOptionable {
     const doseIndex = doseCategoryOption.name.match(/(\d+)/)?.[1];
 
     if (doseIndex === undefined) {
         console.error(`Dose index not found for ${doseCategoryOption.name}`);
-        return antigenAgeGroups;
+        return buildAgeGroupsOptionable(antigenAgeGroups);
     } else {
         const namespace = { antigenCode: antigenCategoryOption.code, doseIndex: doseIndex };
         const optionalKey = interpolate(
-            baseConfig.categoryOptionGroupForAgeGroupsInDose,
+            baseConfig.categoryOptionGroupForAgeGroupsInDoseOptional,
             namespace
         );
         const key = interpolate(baseConfig.categoryOptionGroupForAgeGroupsInDose, namespace);
-        const optionsGroup = categoryOptionGroupsByCode[key];
+
+        const optionsGroupRequired = categoryOptionGroupsByCode[key];
+        const optionalOptionsGroup = categoryOptionGroupsByCode[optionalKey];
+
+        const { isOptional, optionsGroup } = optionsGroupRequired
+            ? { isOptional: false, optionsGroup: optionsGroupRequired }
+            : optionalOptionsGroup
+            ? { isOptional: true, optionsGroup: optionalOptionsGroup }
+            : { isOptional: undefined, optionsGroup: undefined };
 
         if (optionsGroup) {
             // Filter the base age groups nested structure and keep only those present for the specific dose
             const ageGroupsForDose = optionsGroup.categoryOptions;
-            return filterAgeGroups(antigenAgeGroups, ageGroupsForDose);
+            return buildAgeGroupsOptionable(filterAgeGroups(antigenAgeGroups, ageGroupsForDose), {
+                optional: isOptional,
+            });
         } else {
-            return antigenAgeGroups;
+            return buildAgeGroupsOptionable(antigenAgeGroups);
         }
     }
 }
