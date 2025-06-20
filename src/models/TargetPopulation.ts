@@ -5,7 +5,7 @@ import DbD2 from "./db-d2";
 import { MetadataConfig } from "./config";
 import { Maybe, DataValue, CategoryOption } from "./db.types";
 import { OrganisationUnit, OrganisationUnitPathOnly, OrganisationUnitLevel } from "./db.types";
-import { AntigenDisaggregationEnabled } from "./AntigensDisaggregation";
+import { AntigenDisaggregationEnabled, isAgeGroupIncluded } from "./AntigensDisaggregation";
 import { sortAgeGroups } from "../utils/age-groups";
 import Campaign from "./campaign";
 import { getDaysRange } from "../utils/date";
@@ -158,7 +158,7 @@ export class TargetPopulation {
             this.config,
             _(antigensDisaggregation)
                 .flatMap(({ ageGroups }) => ageGroups)
-                .uniq()
+                .uniqBy(ageGroup => ageGroup.id)
                 .value()
         );
 
@@ -199,7 +199,7 @@ export class TargetPopulation {
 
         return new TargetPopulation(this.campaign, {
             ...this.data,
-            antigensDisaggregation,
+            antigensDisaggregation: antigensDisaggregation,
             populationItems: populationItems,
             ageGroups: ageGroupsForAllAntigens,
             ageDistributionByOrgUnit: ageDistributionByOrgUnit,
@@ -302,7 +302,11 @@ export class TargetPopulation {
             const finalDistribution = this.getFinalDistribution(targetPopulationItem);
 
             const populationByAgeDataValues = _.flatMap(config.antigens, antigen => {
-                const ageGroupsForAntigen = _(antigen.ageGroups).flatten().flatten().uniq().value();
+                const ageGroupsForAntigen = _(antigen.ageGroups)
+                    .flatten()
+                    .flatten()
+                    .uniqBy(ageGroup => ageGroup.id)
+                    .value();
                 const antigenDisaggregation = antigensDisaggregation.find(
                     disaggregation => disaggregation.antigen.id === antigen.id
                 );
@@ -312,7 +316,7 @@ export class TargetPopulation {
 
                         const ageGroupInPopulation =
                             antigenDisaggregation &&
-                            _(antigenDisaggregation.ageGroups).includes(ageGroup);
+                            isAgeGroupIncluded(ageGroup, antigenDisaggregation, dose);
 
                         let populationForAgeRange: number;
                         if (ageGroupInPopulation) {

@@ -35,7 +35,7 @@ const DataElement: SFC<DataElementProps> = props => {
             <div className={classes.categoriesTitle}>{i18n.t("Disaggregation")}</div>
             {categories.map((category, categoryIdx) => (
                 <div
-                    key={category.code}
+                    key={categoryIdx}
                     className={classes.categoriesWrapper}
                     style={{ display: category.visible ? "" : "none" }}
                 >
@@ -72,16 +72,21 @@ const DataElement: SFC<DataElementProps> = props => {
                                     />
                                 </div>
                             ))}
-                            <IconButton
-                                onClick={toggleEdit([antigenCode, dataElementIdx, categoryIdx])}
-                                aria-label={i18n.t("Edit")}
-                            >
-                                <Icon
-                                    color={isEditingCategory(categoryIdx) ? "primary" : "secondary"}
+
+                            {category.options.length > 1 && (
+                                <IconButton
+                                    onClick={toggleEdit([antigenCode, dataElementIdx, categoryIdx])}
+                                    aria-label={i18n.t("Edit")}
                                 >
-                                    edit
-                                </Icon>
-                            </IconButton>
+                                    <Icon
+                                        color={
+                                            isEditingCategory(categoryIdx) ? "primary" : "secondary"
+                                        }
+                                    >
+                                        edit
+                                    </Icon>
+                                </IconButton>
+                            )}
                         </div>
                     )}
                 </div>
@@ -110,7 +115,7 @@ const styles = (_theme: Theme) =>
             display: "flex",
         },
         categoriesInnerWrapper: {
-            width: "200px",
+            width: "250px",
         },
         optionGroupWrapper: {
             textAlign: "center",

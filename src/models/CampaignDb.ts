@@ -16,7 +16,12 @@ import {
 } from "./db.types";
 import { Metadata, DataSet, Response } from "./db.types";
 import { formatDay } from "../utils/date";
-import { getDataElements, CocMetadata } from "./AntigensDisaggregation";
+import {
+    getDataElements,
+    CocMetadata,
+    AntigenDisaggregationEnabledDataElement,
+    AntigenDisaggregationEnabledDataElementCategory,
+} from "./AntigensDisaggregation";
 import { Dashboard, DashboardMetadata } from "./Dashboard";
 import { Teams, CategoryOptionTeam } from "./Teams";
 import { getDashboardCode, getByIndex, baseConfig } from "./config";
@@ -312,14 +317,14 @@ export default class CampaignDb {
 
             const greyedFields = _(disaggregationData.dataElements)
                 .flatMap(dataElementDis => {
-                    const groups: CategoryOption[][] = _.cartesianProduct(
-                        dataElementDis.categories.map(category => category.categoryOptions)
-                    );
+                    const disaggregations = getDisaggregations(dataElementDis);
 
-                    return groups.map(disaggregation => {
+                    return disaggregations.map(disaggregation => {
                         const cocId = cocMetadata.getByOptions(disaggregation);
-                        if (!cocId)
-                            throw new Error(`coc not found: ${JSON.stringify(disaggregation)} `);
+                        if (!cocId) {
+                            const cocInfo = disaggregation.map(coc => coc.name).join(", ");
+                            throw new Error(`coc not found: ${cocInfo}`);
+                        }
 
                         return {
                             dataElement: { id: dataElementDis.id },
@@ -445,6 +450,56 @@ type DataSetWithDataInputPeriods = {
 };
 
 type CampaignPeriods = { startDate: Date; endDate: Date };
+
+type Reference = {
+    category: AntigenDisaggregationEnabledDataElementCategory;
+    categoryOption: CategoryOption;
+    restrictForOptionIds: string[] | undefined;
+};
+
+// Return disaggregations, taking in account that some categories restrict
+// the options that can be selected together (for now this is used to allow age groups by dose)
+function getDisaggregations(
+    dataElementDis: AntigenDisaggregationEnabledDataElement
+): CategoryOption[][] {
+    const referencesGroups = dataElementDis.categories.map(category =>
+        category.categoryOptions.map(
+            (categoryOption): Reference => ({
+                category: category,
+                categoryOption: categoryOption,
+                restrictForOptionIds: category.onlyForCategoryOptionIds,
+            })
+        )
+    );
+
+    return _.cartesianProduct(referencesGroups).map(references => {
+        const optionsIds = references.flatMap(ref => ref.categoryOption.id);
+
+        const referencesFiltered = _(references)
+            .groupBy(ref => ref.category.code)
+            .values()
+            .map(referencesGroup => {
+                return _(referencesGroup).find(reference => {
+                    return (
+                        !reference.restrictForOptionIds ||
+                        intersects(reference.restrictForOptionIds, optionsIds)
+                    );
+                });
+            })
+            .value();
+
+        const referencesWithMatches = _.compact(referencesFiltered);
+
+        // If some category had no matches, skip the product (this happens for unselected doses)
+        return referencesFiltered.length === referencesWithMatches.length
+            ? referencesWithMatches.map(reference => reference.categoryOption)
+            : [];
+    });
+}
+
+function intersects<T>(xs: T[], ys: T[]): boolean {
+    return xs.some(x => ys.includes(x));
+}
 
 export function getDataInputFromCampaign(campaign: Campaign): Maybe<DataInput> {
     if (!campaign.startDate || !campaign.endDate) return;

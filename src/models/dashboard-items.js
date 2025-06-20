@@ -210,12 +210,12 @@ export function buildDashboardItemsCode(
     return code.slice(0, maxFieldLength);
 }
 
-function getDisaggregations(itemConfigs, disaggregationMetadata, antigen) {
+function getDisaggregations(itemConfigs, disaggregationMetadata, antigen, doseMetadata) {
     if (!itemConfigs.disaggregatedBy) return [];
 
     const ageGroups = c =>
         c.disaggregatedBy.includes("ageGroup") && antigen
-            ? disaggregationMetadata.ageGroups(antigen)
+            ? disaggregationMetadata.ageGroups(antigen, doseMetadata)
             : null;
 
     const teams = c => (c.disaggregatedBy.includes("team") ? disaggregationMetadata.teams() : null);
@@ -254,7 +254,7 @@ function getCharts({
                 rows: chart.rows,
                 filterDataBy: chart.filterDataBy,
                 ...itemsMetadata,
-                disaggregations: getDisaggregations(chart, disaggregationMetadata, antigen),
+                disaggregations: getDisaggregations(chart, disaggregationMetadata, antigen, null),
             })
         )
         .value();
@@ -291,7 +291,12 @@ function getTables({
                 legendId,
                 teamRowRawDimension,
                 ...itemsMetadata,
-                disaggregations: getDisaggregations(c, disaggregationMetadata, antigen),
+                disaggregations: getDisaggregations(
+                    c,
+                    disaggregationMetadata,
+                    antigen,
+                    doseMetadata
+                ),
                 showRowSubTotals: c.showRowSubTotals,
                 showColumnSubTotals: !!c.showColumnSubTotals,
                 showColumnTotals: _.isUndefined(c.showColumnTotals) ? true : c.showColumnTotals,

@@ -3,7 +3,11 @@ import _ from "lodash";
 import i18n from "@dhis2/d2-i18n";
 
 import Campaign, { Antigen } from "./campaign";
-import { AntigenDisaggregationEnabled, CocMetadata } from "./AntigensDisaggregation";
+import {
+    AntigenDisaggregationEnabled,
+    AntigenDisaggregationEnabledDataElement,
+    CocMetadata,
+} from "./AntigensDisaggregation";
 import "../utils/lodash-mixins";
 import { CategoryOption, getCode, getId } from "./db.types";
 import { DataInput, getDataInputFromCampaign } from "./CampaignDb";
@@ -167,7 +171,9 @@ export class DataSetCustomForm {
         const doses: Array<CategoryOption | undefined> = categoryDoses
             ? categoryDoses.categoryOptions
             : [undefined];
-        const showDoseName = doses.length > 1;
+
+        const isFirstDoseOfTheAntigen = doses[0]?.id === antigen?.doses[0]?.id;
+        const hideDoseName = !categoryDoses || (doses.length === 1 && isFirstDoseOfTheAntigen);
 
         return doses.map(dose => {
             const combinations = this.getDisaggregationCombinations({
@@ -183,7 +189,7 @@ export class DataSetCustomForm {
             return h("tr", { class: trClass }, [
                 h("td", { class: "data-element", "data-translate": true }, [
                     h("span", { "data-translate": true }, dataElement.name),
-                    showDoseName
+                    !hideDoseName
                         ? h("span", {}, " - ") +
                           h("span", { "data-translate": true }, dose ? dose.name : "-")
                         : null,
@@ -194,16 +200,18 @@ export class DataSetCustomForm {
         });
     }
 
-    getDataElementByCategoryOptionsLists(dataElements: DataElement[]) {
+    getDataElementByCategoryOptionsLists(
+        dataElements: DataElement[],
+        antigen: Maybe<Antigen>
+    ): Group[] {
         const { categoryCodeForAntigens, categoryCodeForDoses } = this.config;
         const outerCategories = [categoryCodeForAntigens, categoryCodeForDoses];
+        const dataElementsSplit = splitCategoriesForDataElements(dataElements);
 
-        return _(dataElements)
-            .groupBy(({ categories }) =>
-                categories.map(category => [category.code, ...category.categoryOptions])
-            )
+        const groupValues = _(dataElementsSplit)
+            .groupBy(({ categories }) => categories.flatMap(category => getCategoryKey(category)))
             .values()
-            .map(dataElementsGroup => {
+            .map((dataElementsGroup): GroupValues => {
                 const categoryOptionGroups = _(dataElementsGroup[0]?.categories)
                     .reject(category => _(outerCategories).includes(category.code))
                     .map(cat => cat.categoryOptions)
@@ -215,6 +223,8 @@ export class DataSetCustomForm {
                 // will show only the table that better fits the viewport.
 
                 return {
+                    type: "values",
+                    antigen: antigen,
                     dataElements: dataElementsGroup,
                     categoryOptionGroupsList: _.compact([
                         [categoryOptionGroups],
@@ -228,16 +238,55 @@ export class DataSetCustomForm {
                 };
             })
             .value();
+
+        return this.insertTotals(dataElementsSplit, groupValues);
     }
 
-    renderGroupWrapper(
-        antigen: Maybe<Antigen>,
-        data: {
-            dataElements: DataElement[];
-            categoryOptionGroupsList: CategoryOption[][][][];
+    // Insert the total table after the Doses Administered tables (which may be split by doses / age groups)
+    private insertTotals(
+        dataElements: AntigenDisaggregationEnabledDataElement[],
+        groupValues: GroupValues[]
+    ): Group[] {
+        const totalGroup = this.getCombinations(dataElements);
+
+        const lastIndexDosesAdministered = _(dataElements).findLastIndex(dataElement => {
+            return dataElement.code === this.config.dataElementDosesAdministeredCode;
+        });
+
+        if (totalGroup && lastIndexDosesAdministered >= 0) {
+            return (groupValues as Group[])
+                .slice(0, lastIndexDosesAdministered + 1)
+                .concat([totalGroup])
+                .concat(groupValues.slice(lastIndexDosesAdministered + 1));
+        } else {
+            return groupValues;
         }
-    ) {
-        const { dataElements, categoryOptionGroupsList } = data;
+    }
+
+    private getCombinations(
+        dataElements: AntigenDisaggregationEnabledDataElement[]
+    ): GroupTotal | undefined {
+        const { config } = this;
+        const dataElementDoses = dataElements.find(de => !!this.getDosesCategory(de));
+
+        const combinations = dataElements
+            .filter(dataElement => dataElement.code === config.dataElementDosesAdministeredCode)
+            .map(dataElement =>
+                _.cartesianProduct(dataElement.categories.map(category => category.categoryOptions))
+            )
+            .flat();
+
+        return dataElementDoses
+            ? {
+                  type: "total",
+                  dataElement: dataElementDoses,
+                  combinations: combinations,
+              }
+            : undefined;
+    }
+
+    renderGroupWrapper(group: GroupValues) {
+        const { antigen, dataElements, categoryOptionGroupsList } = group;
 
         return h(
             "div",
@@ -246,39 +295,34 @@ export class DataSetCustomForm {
                 h(
                     "div",
                     { class: "tableGroup" },
-                    categoryOptionGroupsArray
-                        .map((categoryOptionGroups, idx) => {
-                            const disaggregations = this.getDisaggregationCombinations({
-                                categoryOptionGroups:
-                                    removeCampaignTypeCategory(categoryOptionGroups),
-                            });
+                    categoryOptionGroupsArray.map((categoryOptionGroups, idx) => {
+                        const disaggregations = this.getDisaggregationCombinations({
+                            categoryOptionGroups: removeCampaignTypeCategory(categoryOptionGroups),
+                        });
 
-                            return h("table", { class: "dataValuesTable" }, [
-                                h(
-                                    "thead",
-                                    {},
-                                    renderHeaderForGroup(
-                                        disaggregations,
-                                        categoryOptionGroupsArray.length > 1
+                        return h("table", { class: "dataValuesTable" }, [
+                            h(
+                                "thead",
+                                {},
+                                renderHeaderForGroup(
+                                    disaggregations,
+                                    categoryOptionGroupsArray.length > 1
+                                )
+                            ),
+                            h(
+                                "tbody",
+                                {},
+                                _.flatMap(dataElements, dataElement =>
+                                    this.renderDataElement(
+                                        antigen,
+                                        dataElement,
+                                        categoryOptionGroups,
+                                        idx
                                     )
-                                ),
-                                h(
-                                    "tbody",
-                                    {},
-                                    _.flatMap(dataElements, dataElement =>
-                                        this.renderDataElement(
-                                            antigen,
-                                            dataElement,
-                                            categoryOptionGroups,
-                                            idx
-                                        )
-                                    )
-                                ),
-                            ]);
-                        })
-                        .concat(
-                            this.renderTotalTables(antigen, dataElements, categoryOptionGroupsArray)
-                        )
+                                )
+                            ),
+                        ]);
+                    })
                 )
             )
         );
@@ -290,52 +334,29 @@ export class DataSetCustomForm {
     }
 
     private renderTotalTables(
-        antigen: Maybe<Antigen>,
-        dataElements: DataElement[],
-        categoryOptionGroupsArray: CategoryOption[][][]
+        dataElement: DataElement,
+        combinations: Array<CategoryOption[]>
     ): Children {
-        const areTablesSplit = categoryOptionGroupsArray.length > 1;
-        const dataElementDoses = dataElements.find(de => !!this.getDosesCategory(de));
-        const categoryDoses = dataElementDoses ? this.getDosesCategory(dataElementDoses) : null;
-        const hasDosesSplit = categoryDoses && categoryDoses.categoryOptions.length > 1;
-        const dataElementsToShow =
-            dataElementDoses && (areTablesSplit || hasDosesSplit) ? [dataElementDoses] : [];
+        const cocIds = this.getCocIds(combinations);
 
-        return dataElementsToShow.map(dataElement =>
-            h("table", { class: "dataValuesTable" }, [
-                h("thead", {}, [
-                    h("td", { class: "header-first-column" }),
-                    h(
-                        "th",
-                        { class: "data-header", "data-translate": true },
-                        h("span", { align: "center" }, i18n.t("Total"))
-                    ),
-                ]),
+        return h("table", { class: "dataValuesTable" }, [
+            h("thead", {}, [
+                h("td", { class: "header-first-column" }),
                 h(
-                    "tbody",
-                    {},
-                    h("tr", { class: `derow de-${dataElement.id} secondary` }, [
-                        h(
-                            "td",
-                            { class: "data-element", "data-translate": true },
-                            dataElement.name
-                        ),
-                        totalTd(
-                            dataElement.id,
-                            _.flatMap(categoryOptionGroupsArray, categoryOptionGroupsGroups =>
-                                this.getCocIds(
-                                    this.getDisaggregationCombinations({
-                                        antigen: antigen,
-                                        dataElement: dataElement,
-                                        categoryOptionGroups: categoryOptionGroupsGroups,
-                                    })
-                                )
-                            )
-                        ),
-                    ])
+                    "th",
+                    { class: "data-header", "data-translate": true },
+                    h("span", { align: "center" }, i18n.t("Total"))
                 ),
-            ])
-        );
+            ]),
+            h(
+                "tbody",
+                {},
+                h("tr", { class: `derow de-${dataElement.id} secondary` }, [
+                    h("td", { class: "data-element", "data-translate": true }, dataElement.name),
+                    totalTd(dataElement.id, cocIds),
+                ])
+            ),
+        ]);
     }
 
     renderAntigenTab(disaggregation: Disaggregations[0]): string {
@@ -380,14 +401,25 @@ export class DataSetCustomForm {
                             "div",
                             { class: "formSection sectionContainer" },
                             _.flatMap(
-                                this.getDataElementByCategoryOptionsLists(dataElements),
-                                data => this.renderGroupWrapper(options.antigen, data)
+                                this.getDataElementByCategoryOptionsLists(
+                                    dataElements,
+                                    options.antigen
+                                ),
+                                group => this.renderGroup(group)
                             )
                         ),
                     ]),
                 ])
             )
         );
+    }
+
+    private renderGroup(data: Group) {
+        if (data.type === "values") {
+            return this.renderGroupWrapper(data);
+        } else {
+            return this.renderTotalTables(data.dataElement, data.combinations);
+        }
     }
 
     getGeneralDataElements(disaggregations: Disaggregations): DataElement[] {
@@ -586,6 +618,42 @@ export class DataSetCustomForm {
     }
 }
 
+// Generate the final data elements with their disaggregation by filtering out
+// irrelevant categoryOptions. For instance, in the case of Malaria, where age
+// groups depend on the dose, non-relevant dose options are excluded.
+
+function splitCategoriesForDataElements(
+    dataElements: AntigenDisaggregationEnabledDataElement[]
+): AntigenDisaggregationEnabledDataElement[] {
+    return dataElements.flatMap((dataElement): AntigenDisaggregationEnabledDataElement[] => {
+        const categoriesProduct = _.cartesianProduct(
+            groupConsecutivesBy(dataElement.categories, category => category.code)
+        );
+
+        return categoriesProduct.map(categories => {
+            const restrictedOptionIds = categories.flatMap(
+                category => category.onlyForCategoryOptionIds
+            );
+
+            const categoriesWithOptionsFiltered = categories.map(category => {
+                const needsFiltering =
+                    _(category.categoryOptions.map(categoryOption => categoryOption.id))
+                        .intersection(restrictedOptionIds)
+                        .size() > 0;
+
+                return {
+                    ...category,
+                    categoryOptions: needsFiltering
+                        ? category.categoryOptions.filter(co => restrictedOptionIds.includes(co.id))
+                        : category.categoryOptions,
+                };
+            });
+
+            return { ...dataElement, categories: categoriesWithOptionsFiltered };
+        });
+    });
+}
+
 function removeCampaignTypeCategory(categoryOptionGroups: CategoryOption[][]) {
     return _(categoryOptionGroups)
         .reject(categoryOptions => {
@@ -629,7 +697,7 @@ export function renderHeaderForGroup(
 
             return h("tr", {}, [
                 h("td", { class: "header-first-column" }),
-                groupConsecutives(categoryOptionsForRow).map(groups => {
+                groupConsecutivesBy(categoryOptionsForRow, JSON.stringify).map(groups => {
                     const categoryOptions = groups.map(group => _.last(group));
                     const categoryOption = _.first(categoryOptions);
                     if (!categoryOption) throw new Error("categoryOption is undefined");
@@ -651,17 +719,17 @@ export function renderHeaderForGroup(
         .value();
 }
 
-function groupConsecutives<T>(items: T[]): T[][] {
+function groupConsecutivesBy<T>(items: T[], mapper: (value: T) => string): T[][] {
     return _.reduce(
         items,
-        (result, values) => {
+        (result, value) => {
             const lastGroup = _.last(result);
             const lastInLastGroup = _.last(lastGroup);
 
-            if (lastGroup && lastInLastGroup && _.isEqual(lastInLastGroup, values)) {
-                lastGroup.push(values);
+            if (lastGroup && lastInLastGroup && _.isEqual(mapper(lastInLastGroup), mapper(value))) {
+                lastGroup.push(value);
             } else {
-                result.push([values]);
+                result.push([value]);
             }
             return result;
         },
@@ -678,3 +746,22 @@ interface CustomFormOptions {
     dataInput: Maybe<DataInput>;
     attributeCodeForDataInputPeriods: string;
 }
+
+function getCategoryKey(category: Category): string {
+    return [category.code, ...category.categoryOptions.map(co => co.id)].join(".");
+}
+
+type Group = GroupValues | GroupTotal;
+
+type GroupValues = {
+    type: "values";
+    antigen: Maybe<Antigen>;
+    dataElements: AntigenDisaggregationEnabledDataElement[];
+    categoryOptionGroupsList: CategoryOption[][][][];
+};
+
+type GroupTotal = {
+    type: "total";
+    dataElement: DataElement;
+    combinations: Array<CategoryOption[]>;
+};
