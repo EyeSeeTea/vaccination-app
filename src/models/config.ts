@@ -19,6 +19,7 @@ import {
     NamedRef,
 } from "./db.types";
 import { sortAgeGroups } from "../utils/age-groups";
+import { interpolate } from "../utils/strings";
 
 export const userRoles = {
     app: "RVC App: Access",
@@ -47,6 +48,8 @@ export const baseConfig = {
     categoryOptionCodeReactive: "RVC_REACTIVE",
     categoryOptionCodePreventive: "RVC_PREVENTIVE",
     categoryOptionGroupOfAntigensWithSelectableType: "RVC_ANTIGEN_TYPE_SELECTABLE",
+    categoryOptionGroupForAgeGroupsInDose: `{antigenCode}_DOSE_{doseIndex}_AGE_GROUP`,
+    categoryOptionGroupForAgeGroupsInDoseOptional: `{antigenCode}_DOSE_{doseIndex}_AGE_GROUP_OPTIONAL`,
     legendSetsCode: "RVC_LEGEND_ZERO",
     attributeCodeForApp: "RVC_CREATED_BY_VACCINATION_APP",
     attributeNameForHideInTallySheet: "hideInTallySheet",
@@ -396,8 +399,12 @@ function getAgeGroupsForDose(
         console.error(`Dose index not found for ${doseCategoryOption.name}`);
         return antigenAgeGroups;
     } else {
-        const antigenCode = antigenCategoryOption.code;
-        const key = `${antigenCode}_DOSE_${doseIndex}_AGE_GROUP`;
+        const namespace = { antigenCode: antigenCategoryOption.code, doseIndex: doseIndex };
+        const optionalKey = interpolate(
+            baseConfig.categoryOptionGroupForAgeGroupsInDose,
+            namespace
+        );
+        const key = interpolate(baseConfig.categoryOptionGroupForAgeGroupsInDose, namespace);
         const optionsGroup = categoryOptionGroupsByCode[key];
 
         if (optionsGroup) {
