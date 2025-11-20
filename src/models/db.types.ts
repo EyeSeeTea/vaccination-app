@@ -174,6 +174,7 @@ export interface Section {
     showRowTotals?: boolean;
     showColumnTotals?: boolean;
     dataSet?: Ref;
+    sortOrder?: number;
     dataElements?: Ref[];
     greyedFields?: Array<{
         categoryOptionCombo: Ref;
@@ -200,7 +201,7 @@ export interface DataSet extends Sharing {
     dataInputPeriods: DataInputPeriod[];
     attributeValues: AttributeValue[];
     formType: "DEFAULT" | "CUSTOM";
-    dataEntryForm?: Ref;
+    dataEntryForm: Ref | null;
 }
 
 export interface DataSetElement {
@@ -293,7 +294,7 @@ export interface Dashboard extends Sharing {
     }>;
 }
 
-export interface DataValue {
+export type DataValue = {
     dataSet?: string;
     completeDate?: string;
     period?: string;
@@ -304,7 +305,7 @@ export interface DataValue {
     categoryOptionCombo?: string;
     value: string;
     comment?: string;
-}
+};
 
 export interface DataValueToPost {
     dataSet?: string;

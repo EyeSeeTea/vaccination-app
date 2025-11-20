@@ -85,6 +85,7 @@
         "@typescript-eslint/typescript-estree": "4.33.0",
         "babel-core": "6.26.3",
         "babel-eslint": "10.1.0",
+        "cmd-ts": "^0.14.3",
         "cypress": "^3.1.5",
         "cypress-xpath": "^1.3.0",
         "enzyme": "^3.7.0",
@@ -104,6 +105,7 @@
         "html": "^1.0.0",
         "http-proxy-middleware": "1.3.1",
         "jest": "27.0.4",
+        "jest-file-snapshot": "^0.7.0",
         "jest-transform-stub": "^2.0.0",
         "loglevel": "^1.6.1",
         "md5": "^2.3.0",
@@ -116,6 +118,11 @@
         "typescript": "4.9.3",
         "wait-on": "^3.2.0",
         "xlsx": "^0.18.5"
+    },
+    "resolutions": {
+        "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+        "cmd-ts/chalk": "4.1.2",
+        "cmd-ts/strip-ansi": "6.0.0"
     },
     "manifest.webapp": {
         "name": "Vaccination campaign",

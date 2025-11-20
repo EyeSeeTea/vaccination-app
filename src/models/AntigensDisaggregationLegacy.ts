@@ -1,6 +1,5 @@
 import { Category, CategoryOption, DataElement, getCode, Maybe, Ref } from "./db.types";
 import _ from "lodash";
-import "../utils/lodash-mixins";
 import { MetadataConfig, getRvcCode, baseConfig, AntigenConfig, Dose } from "./config";
 import { Antigen } from "./campaign";
 import "../utils/lodash-mixins";
@@ -8,22 +7,13 @@ import DbD2 from "./db-d2";
 import { Struct } from "./Struct";
 import i18n from "../locales";
 import { assert } from "../utils/assert";
-import {
-    categoriesInDataElement,
-    dataElementsByAntigen,
-    DisaggregationType,
-    getAntigenCode,
-    getDataElementDisaggregations,
-} from "./D2CampaignMetadata";
-import { getAntigenCodeFromSectionCode } from "../data/CampaignD2Repository";
-import { zipShortest } from "../utils/lodash-mixins";
+import { categoriesInDataElement } from "./D2CampaignMetadata";
 
 const fp = require("lodash/fp");
 
 export type CampaignType = "preventive" | "reactive";
 
 const defaultCampaignType: CampaignType = "preventive";
-
 interface AntigenDisaggregationData {
     name: string;
     code: string;
@@ -55,7 +45,7 @@ interface AntigenDisaggregationData {
 
 type Code = string;
 
-export class AntigenDisaggregation extends Struct<AntigenDisaggregationData>() {
+export class AntigenDisaggregationLegacy extends Struct<AntigenDisaggregationData>() {
     codeMapping: Record<CampaignType, Code> = {
         preventive: baseConfig.categoryOptionCodePreventive,
         reactive: baseConfig.categoryOptionCodeReactive,
@@ -82,7 +72,7 @@ export class AntigenDisaggregation extends Struct<AntigenDisaggregationData>() {
         }
     }
 
-    updateCampaignType(type: CampaignType): AntigenDisaggregation {
+    updateCampaignType(type: CampaignType): AntigenDisaggregationLegacy {
         const codeToSet = this.codeMapping[type];
 
         const dataElementsUpdated = this.dataElements.map(dataElement => ({
@@ -112,23 +102,11 @@ export class AntigenDisaggregation extends Struct<AntigenDisaggregationData>() {
 export interface SectionForDisaggregation {
     name: string;
     code: string;
-    dataElements: Array<{ id: string; code: string }>;
+    dataElements: Ref[];
     dataSet: { id: string };
     sortOrder: number;
     greyedFields: Array<GreyedField>;
 }
-
-type DataElementId = string;
-
-export type CategoryCombosMapping = Record<
-    DataElementId,
-    {
-        id: string;
-        name: string;
-        categories: Ref[];
-        categoryOptionCombos: { id: string; categoryOptions: Ref[] }[];
-    }
->;
 
 type GreyedField = {
     categoryOptionCombo: {
@@ -145,10 +123,10 @@ type GreyedFieldCategoryOption = {
     categories: Ref[];
 };
 
-export type AntigenDisaggregationDataElement = AntigenDisaggregation["dataElements"][0];
+export type AntigenDisaggregationDataElement = AntigenDisaggregationLegacy["dataElements"][0];
 
 export type AntigenDisaggregationCategoriesData =
-    AntigenDisaggregation["dataElements"][0]["categories"];
+    AntigenDisaggregationLegacy["dataElements"][0]["categories"];
 
 type CategoryData = AntigenDisaggregationCategoriesData[0];
 
@@ -182,30 +160,26 @@ export type CocMetadata = {
 
 type AntigensDisaggregationData = {
     antigens: Antigen[];
-    disaggregation: { [code: string]: AntigenDisaggregation };
+    disaggregation: { [code: string]: AntigenDisaggregationLegacy };
 };
 
-export class AntigensDisaggregation {
+export class AntigensDisaggregationLegacy {
     constructor(private config: MetadataConfig, public data: AntigensDisaggregationData) {}
 
     static build(
         config: MetadataConfig,
         antigens: Antigen[],
-        categoryCombosMapping: CategoryCombosMapping,
         sections: SectionForDisaggregation[]
-    ): AntigensDisaggregation {
-        const antigensByCode = _.keyBy(config.antigens, antigen => getAntigenCode(antigen.code));
+    ): AntigensDisaggregationLegacy {
+        const antigensByCode = _.keyBy(config.antigens, getCode);
         const disaggregation = _(sections)
             .sortBy(section => section.sortOrder)
             .map(section => {
-                const antigenCode = getAntigenCodeFromSectionCode(section.code || "");
-                const antigen = antigensByCode[antigenCode];
-
+                const antigen = antigensByCode[section.name];
                 if (antigen) {
-                    const disaggregationForAntigen = AntigensDisaggregation.buildForAntigen(
+                    const disaggregationForAntigen = AntigensDisaggregationLegacy.buildForAntigen(
                         config,
                         antigen.code,
-                        categoryCombosMapping,
                         section
                     );
                     return [antigen.code, disaggregationForAntigen];
@@ -217,33 +191,37 @@ export class AntigensDisaggregation {
             .fromPairs()
             .value();
 
-        return new AntigensDisaggregation(config, { antigens, disaggregation });
+        return new AntigensDisaggregationLegacy(config, { antigens, disaggregation });
     }
 
-    public setAntigens(antigens: Antigen[]): AntigensDisaggregation {
+    public setAntigens(antigens: Antigen[]): AntigensDisaggregationLegacy {
         const disaggregationByCode = _.keyBy(this.data.disaggregation, getCode);
         const disaggregationUpdated = _(antigens)
             .keyBy(getCode)
             .mapValues(
                 antigen =>
                     disaggregationByCode[antigen.code] ||
-                    AntigensDisaggregation.buildForAntigen(this.config, antigen.code, {}, undefined)
+                    AntigensDisaggregationLegacy.buildForAntigen(
+                        this.config,
+                        antigen.code,
+                        undefined
+                    )
             )
             .value();
         const dataUpdated = { antigens, disaggregation: disaggregationUpdated };
-        return new AntigensDisaggregation(this.config, dataUpdated);
+        return new AntigensDisaggregationLegacy(this.config, dataUpdated);
     }
 
-    public forAntigen(antigen: Antigen): AntigenDisaggregation | undefined {
+    public forAntigen(antigen: Antigen): AntigenDisaggregationLegacy | undefined {
         return this.data.disaggregation[antigen.code];
     }
 
-    public set(path: (number | string)[], value: any): AntigensDisaggregation {
+    public set(path: (number | string)[], value: any): AntigensDisaggregationLegacy {
         const dataUpdated = fp.set(["disaggregation", ...path], value, this.data);
-        return new AntigensDisaggregation(this.config, dataUpdated);
+        return new AntigensDisaggregationLegacy(this.config, dataUpdated);
     }
 
-    public setCampaignType(antigen: Antigen, type: CampaignType): AntigensDisaggregation {
+    public setCampaignType(antigen: Antigen, type: CampaignType): AntigensDisaggregationLegacy {
         const dataUpdated: AntigensDisaggregationData = {
             ...this.data,
             disaggregation: _.mapValues(this.data.disaggregation, (disaggregation, antigenCode) => {
@@ -253,7 +231,7 @@ export class AntigensDisaggregation {
             }),
         };
 
-        return new AntigensDisaggregation(this.config, dataUpdated);
+        return new AntigensDisaggregationLegacy(this.config, dataUpdated);
     }
 
     public validate(): Array<{ key: string; namespace: _.Dictionary<string> }> {
@@ -288,264 +266,78 @@ export class AntigensDisaggregation {
 
     static getCategories(
         config: MetadataConfig,
-        dataElementConfig: MetadataConfig["dataElementsDisaggregation"][0] & { optional: boolean },
+        dataElementConfig: MetadataConfig["dataElementsDisaggregation"][0],
         antigenConfig: MetadataConfig["antigens"][0],
-        categoryCombosMapping: CategoryCombosMapping,
         section: Maybe<SectionForDisaggregation>
-    ): {
-        categoriesDisaggregation: AntigenDisaggregationCategoriesData;
-        dataElementSelected: boolean;
-    } {
+    ): AntigenDisaggregationCategoriesData {
         const categoriesByCode = _.keyBy(config.categories, getCode);
 
         const categoriesForAntigen = dataElementConfig.categories[antigenConfig.code];
         if (!categoriesForAntigen)
             throw new Error(`No categories defined for antigen: ${antigenConfig.code}`);
 
-        let info2:
-            | Record<DisaggregationType, { categoryCode: string; categoryOptions: Ref[] }>
-            | undefined;
-        let categoryCombo: CategoryCombosMapping[DataElementId] | undefined;
-        let d2DataElements: Array<{ id: string; code: string }>;
+        return categoriesForAntigen.flatMap((categoryRef): CategoryData[] => {
+            const category = _(categoriesByCode).getOrFail(categoryRef.code);
+            const isDosesCategory = category.code === config.categoryCodeForDoses;
+            const isAntigensCategory = category.code === config.categoryCodeForAntigens;
+            const isCampaignTypeCategory = category.code === config.categoryCodeForCampaignType;
+            const {
+                $categoryOptions,
+                name: categoryName,
+                ...categoryAttributes
+            } = _(config.categoriesDisaggregation).keyBy(getCode).getOrFail(categoryRef.code);
 
-        const de1 = dataElementsByAntigen.find(de => de.modelCode === dataElementConfig.code);
-        d2DataElements =
-            de1 && section
-                ? section.dataElements.filter(de => de.code.startsWith(de1.code))
-                : [dataElementConfig];
+            let groups: Group[];
 
-        const d2DataElement_ = d2DataElements[0];
-        if (section && d2DataElement_) {
-            categoryCombo = assert(categoryCombosMapping[d2DataElement_.id]);
-
-            const campaignTypeCategoryOption = _(section.dataElements)
-                .map(sectionDataElement => {
-                    const dataElement = config.dataElements.find(
-                        de => de.id === sectionDataElement.id
-                    );
-                    if (!dataElement) return null;
-                    const disaggregations = getDataElementDisaggregations(dataElement, config);
-                    return disaggregations.campaignType?.categoryOption;
-                })
-                .compact()
-                .first();
-
-            info2 = {
-                antigen: {
-                    categoryCode: baseConfig.categoryCodeForAntigens,
-                    categoryOptions: [antigenConfig],
-                },
-                dose: {
-                    categoryCode: baseConfig.categoryCodeForDoses,
-                    categoryOptions: antigenConfig.doses,
-                },
-                campaignType: {
-                    categoryCode: baseConfig.categoryCodeForCampaignType,
-                    categoryOptions: _.compact([campaignTypeCategoryOption]),
-                },
-            };
-        } else {
-            info2 = undefined;
-            categoryCombo = undefined;
-            d2DataElements = [];
-        }
-
-        const dataElementSelected =
-            !dataElementConfig.optional || !section
-                ? true
-                : section.dataElements.some(de => d2DataElements.some(d2de => d2de.id === de.id));
-
-        const categoriesDisaggregation = categoriesForAntigen.flatMap(
-            (categoryRef): CategoryData[] => {
-                const category = _(categoriesByCode).getOrFail(categoryRef.code);
-                const isDosesCategory = category.code === config.categoryCodeForDoses;
-                const isAntigensCategory = category.code === config.categoryCodeForAntigens;
-                const isCampaignTypeCategory = category.code === config.categoryCodeForCampaignType;
-                const {
-                    $categoryOptions,
-                    name: categoryName,
-                    ...categoryAttributes
-                } = _(config.categoriesDisaggregation).keyBy(getCode).getOrFail(categoryRef.code);
-
-                let groups: Group[];
-
-                if ($categoryOptions.kind === "fromAgeGroups") {
-                    groups = getGroupsForAgeGroups(antigenConfig);
-                } else if ($categoryOptions.kind === "fromAntigens") {
-                    groups = [{ categoryOptions: config.antigens.map(antigen => [[antigen]]) }];
-                } else if ($categoryOptions.kind === "fromDoses") {
-                    groups = [{ categoryOptions: antigenConfig.doses.map(dose => [[dose]]) }];
-                } else {
-                    groups = [
-                        { categoryOptions: $categoryOptions.values.map(option => [[option]]) },
-                    ];
-                }
-
-                // Create a category for each group of category options
-                // Example: Malaria will have separate dose categories by age groups
-                return groups.map((group): CategoryData => {
-                    let categoryOptionsEnabled: Ref[];
-
-                    if (section && categoryCombo && info2) {
-                        const greyedInfo = _(section.greyedFields)
-                            .filter(greyedField =>
-                                d2DataElements.some(de => de.id === greyedField.dataElement.id)
-                            )
-                            .map(greyedField => {
-                                const greyedCoc = assert(
-                                    categoryCombo?.categoryOptionCombos.find(
-                                        coc => coc.id === greyedField.categoryOptionCombo.id
-                                    )
-                                );
-
-                                const d2DataElement = assert(
-                                    config.dataElements.find(
-                                        de => de.id === greyedField.dataElement.id
-                                    )
-                                );
-
-                                const dataElementDisaggregations = getDataElementDisaggregations(
-                                    d2DataElement,
-                                    config
-                                );
-
-                                const categoryOptionsDisabled = _.compact([
-                                    dataElementDisaggregations.antigen?.categoryOption,
-                                    dataElementDisaggregations.dose?.categoryOption,
-                                    dataElementDisaggregations.campaignType?.categoryOption,
-                                    ...(greyedCoc.categoryOptions || []),
-                                ]);
-
-                                return categoryOptionsDisabled;
-                            })
-                            .compact()
-                            .value();
-
-                        const dataElementDisaggregations = {
-                            antigen: {
-                                categoryCode: baseConfig.categoryCodeForAntigens,
-                                categoryOptions: _(d2DataElements)
-                                    .map(
-                                        de =>
-                                            getDataElementDisaggregations(de, config).antigen
-                                                ?.categoryOption
-                                    )
-                                    .compact()
-                                    .value(),
-                            },
-                            dose: de1?.extraDisaggregations.includes("dose")
-                                ? {
-                                      categoryCode: baseConfig.categoryCodeForDoses,
-                                      categoryOptions: _(d2DataElements)
-                                          .map(
-                                              de =>
-                                                  getDataElementDisaggregations(de, config).dose
-                                                      ?.categoryOption
-                                          )
-                                          .compact()
-                                          .value(),
-                                  }
-                                : undefined,
-                            campaignType: {
-                                categoryCode: baseConfig.categoryCodeForCampaignType,
-                                categoryOptions: _(d2DataElements)
-                                    .map(
-                                        de =>
-                                            getDataElementDisaggregations(de, config).campaignType
-                                                ?.categoryOption
-                                    )
-                                    .compact()
-                                    .value(),
-                            },
-                        };
-
-                        const all = _.compact([
-                            dataElementDisaggregations.antigen,
-                            dataElementDisaggregations.dose,
-                            dataElementDisaggregations.campaignType,
-                            ...(categoryCombo.name === "default"
-                                ? []
-                                : categoryCombo.categories.map(category_ => {
-                                      const category = assert(
-                                          config.categories.find(cat => cat.id === category_.id)
-                                      );
-
-                                      return {
-                                          categoryCode: category.code,
-                                          categoryOptions: category.categoryOptions,
-                                      };
-                                  })),
-                        ]);
-
-                        const product3: Ref[][] = _.cartesianProduct(
-                            all.map(obj => obj.categoryOptions)
-                        );
-
-                        const product4 = product3.filter(product => {
-                            return !greyedInfo.some(item =>
-                                item.every(item2 =>
-                                    product.some(categoryOption => categoryOption.id === item2.id)
-                                )
-                            );
-                        });
-
-                        const product5 = _.unzip(product4);
-
-                        const intersect =
-                            !group.onlyForCategoryOptionIds ||
-                            _(product5.flatMap(xs => xs.map(x => x.id)))
-                                .intersection(group.onlyForCategoryOptionIds)
-                                .size() > 0;
-
-                        categoryOptionsEnabled = intersect
-                            ? zipShortest(all, product5).flatMap(([i, p]) => {
-                                  return i.categoryCode === categoryRef.code
-                                      ? _.uniqBy(
-                                            p.map((co): Ref => ({ id: co.id })),
-                                            co => co.id
-                                        )
-                                      : [];
-                              })
-                            : [];
-                    } else {
-                        categoryOptionsEnabled = [];
-                    }
-
-                    const wasCategorySelected = !_(categoryOptionsEnabled).isEmpty();
-
-                    const options = getCategoryOptions(
-                        antigenConfig,
-                        category,
-                        group.categoryOptions,
-                        categoryOptionsEnabled
-                    );
-
-                    const optional = group.optional ?? categoryRef.optional;
-                    const selected = wasCategorySelected ? true : !optional;
-
-                    // Example: _23.6 Displacement Status
-                    const cleanCategoryName = categoryName
-                        .replace(/^[_\d.\s]+/, "")
-                        .replace("RVC", "")
-                        .trim();
-
-                    return {
-                        ...categoryAttributes,
-                        name: cleanCategoryName + (group.name ? ` (${group.name})` : ""),
-                        optional: optional,
-                        selected: selected,
-                        options: options,
-                        visible: !(isDosesCategory || isAntigensCategory || isCampaignTypeCategory),
-                        restrictForOptionIds: group.onlyForCategoryOptionIds,
-                    };
-                });
+            if ($categoryOptions.kind === "fromAgeGroups") {
+                groups = getGroupsForAgeGroups(antigenConfig);
+            } else if ($categoryOptions.kind === "fromAntigens") {
+                groups = [{ categoryOptions: config.antigens.map(antigen => [[antigen]]) }];
+            } else if ($categoryOptions.kind === "fromDoses") {
+                groups = [{ categoryOptions: antigenConfig.doses.map(dose => [[dose]]) }];
+            } else {
+                groups = [{ categoryOptions: $categoryOptions.values.map(option => [[option]]) }];
             }
-        );
 
-        return {
-            categoriesDisaggregation: categoriesDisaggregation,
-            dataElementSelected: dataElementSelected,
-        };
+            // Create a category for each group of category options
+            // Example: Malaria will have separate dose categories by age groups
+            return groups.map((group): CategoryData => {
+                const categoryOptionsEnabled = _(section ? section.greyedFields : [])
+                    .flatMap(greyedField =>
+                        getGreyedFieldCategoryOptions(group, greyedField, category)
+                    )
+                    .uniq()
+                    .value();
+
+                const wasCategorySelected = !_(categoryOptionsEnabled).isEmpty();
+
+                const options = getCategoryOptions(
+                    antigenConfig,
+                    category,
+                    group.categoryOptions,
+                    categoryOptionsEnabled
+                );
+
+                const optional = group.optional ?? categoryRef.optional;
+                const selected = wasCategorySelected ? true : !optional;
+
+                // Example: _23.6 Displacement Status
+                const cleanCategoryName = categoryName
+                    .replace(/^[_\d.\s]+/, "")
+                    .replace("RVC", "")
+                    .trim();
+
+                return {
+                    ...categoryAttributes,
+                    name: cleanCategoryName + (group.name ? ` (${group.name})` : ""),
+                    optional: optional,
+                    selected: selected,
+                    options: options,
+                    visible: !(isDosesCategory || isAntigensCategory || isCampaignTypeCategory),
+                    restrictForOptionIds: group.onlyForCategoryOptionIds,
+                };
+            });
+        });
     }
 
     getEnabled(): AntigenDisaggregationEnabled {
@@ -612,7 +404,7 @@ export class AntigensDisaggregation {
 
     private getCategoryOptions(
         category: CategoryData,
-        antigenDisaggregation: AntigenDisaggregation
+        antigenDisaggregation: AntigenDisaggregationLegacy
     ) {
         const isDoses = category.code === this.config.categoryCodeForDoses;
 
@@ -636,42 +428,43 @@ export class AntigensDisaggregation {
     static buildForAntigen(
         config: MetadataConfig,
         antigenCode: string,
-        categoryCombosMapping: CategoryCombosMapping,
         section: Maybe<SectionForDisaggregation>
-    ): AntigenDisaggregation {
+    ): AntigenDisaggregationLegacy {
         const antigenConfig = _(config.antigens).keyBy(getCode).get(antigenCode);
 
         if (!antigenConfig) throw new Error(`No configuration for antigen: ${antigenCode}`);
 
-        const dataElementsDisaggregation = antigenConfig.dataElements.map(dataElement => {
+        const dataElementsProcessed = antigenConfig.dataElements.map(dataElementRef => {
             const dataElementConfig = _(config.dataElementsDisaggregation)
                 .keyBy(getCode)
-                .getOrFail(dataElement.code);
+                .getOrFail(dataElementRef.code);
 
-            const { categoriesDisaggregation, dataElementSelected } =
-                AntigensDisaggregation.getCategories(
-                    config,
-                    { ...dataElementConfig, optional: dataElement.optional },
-                    antigenConfig,
-                    categoryCombosMapping,
-                    section
-                );
+            const categoriesDisaggregation = AntigensDisaggregationLegacy.getCategories(
+                config,
+                dataElementConfig,
+                antigenConfig,
+                section
+            );
+            const selected =
+                !dataElementRef.optional || !section
+                    ? true
+                    : section.dataElements.some(de => de.id === dataElementRef.id);
 
             return {
                 id: dataElementConfig.id,
                 name: dataElementConfig.name,
                 code: dataElementConfig.code,
                 categories: categoriesDisaggregation,
-                optional: dataElement.optional,
-                selected: dataElementSelected,
+                optional: dataElementRef.optional,
+                selected,
             };
         });
 
-        const disaggregation = AntigenDisaggregation.create({
+        const disaggregation = AntigenDisaggregationLegacy.create({
             id: antigenConfig.id,
             name: antigenConfig.name,
             code: antigenConfig.code,
-            dataElements: dataElementsDisaggregation,
+            dataElements: dataElementsProcessed,
             doses: antigenConfig.doses,
             isTypeSelectable: antigenConfig.isTypeSelectable,
         });
@@ -757,6 +550,27 @@ type Group = {
     onlyForCategoryOptionIds?: string[];
     doseId?: string;
 };
+
+function getGreyedFieldCategoryOptions(
+    group: Group,
+    greyedField: GreyedField,
+    category: Category
+): GreyedFieldCategoryOption[] {
+    const { categoryOptions } = greyedField.categoryOptionCombo;
+
+    // As the Doses category is split, we have to perform an extra check: the greyed field
+    // should belong to the dose category option we are processing.
+    const matchesCategoryOption =
+        !group.doseId || categoryOptions.some(categoryOption => categoryOption.id === group.doseId);
+
+    if (matchesCategoryOption) {
+        return greyedField.categoryOptionCombo.categoryOptions.filter(categoryOption => {
+            return categoryOption.categories.some(category_ => category_.id === category.id);
+        });
+    } else {
+        return [];
+    }
+}
 
 function getGroupsForAgeGroups(antigenConfig: AntigenConfig): Group[] {
     return _(antigenConfig.doses)

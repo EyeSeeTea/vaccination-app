@@ -1,6 +1,5 @@
 import _ from "lodash";
 import DbD2, { ApiResponse } from "./db-d2";
-import { generateUid } from "d2/uid";
 import { Moment } from "moment";
 import {
     OrganisationUnitPathOnly,
@@ -12,6 +11,7 @@ import {
     getRef,
 } from "./db.types";
 import { MetadataConfig } from "./config";
+import { getUid } from "../utils/dhis2";
 
 export interface CategoryOptionTeam {
     id: string;
@@ -20,8 +20,8 @@ export interface CategoryOptionTeam {
     displayName: string;
     publicAccess: string;
     displayShortName: string;
-    startDate: Moment;
-    endDate: Moment;
+    startDate: string;
+    endDate: string;
     dimensionItemType: "CATEGORY_OPTION";
     categories: Ref[];
     organisationUnits: Ref[];
@@ -75,8 +75,8 @@ export class Teams {
         const allTeams = orderedOldTeams.map((ot, i) => ({
             ...ot,
             name: getTeamName(name, i + 1, teams),
-            startDate,
-            endDate,
+            startDate: startDate.toISOString(),
+            endDate: endDate.toISOString(),
             organisationUnits,
         }));
 
@@ -111,7 +111,7 @@ export class Teams {
     ): CategoryOptionTeam[] {
         const teamsData: CategoryOptionTeam[] = _.range(1, teams + 1).map(i => {
             const name = getTeamName(campaignName, nameOffset + i, teams);
-            const id = generateUid();
+            const id = getUid("team", name);
             const categoryOption: CategoryOptionTeam = {
                 id,
                 name,
@@ -119,8 +119,8 @@ export class Teams {
                 displayName: name,
                 publicAccess: "rwrw----",
                 displayShortName: name,
-                startDate,
-                endDate,
+                startDate: startDate.toISOString(),
+                endDate: endDate.toISOString(),
                 dimensionItemType: "CATEGORY_OPTION",
                 categories: [
                     {
@@ -192,7 +192,7 @@ export class Teams {
         const cocsToPost = _(allTeams)
             .reject(team => existingTeamIdsInCocs.has(team.id))
             .map(team => ({
-                id: generateUid(),
+                id: getUid("coc", team.id),
                 categoryCombo: { id: teamCategoryCombo.id },
                 name: team.name,
                 categoryOptions: [getRef(team)],

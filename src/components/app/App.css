@@ -11,3 +11,8 @@ body {
 .content {
     margin: 1rem 15px 15px;
 }
+
+
+iframe {
+  pointer-events: none;
+}

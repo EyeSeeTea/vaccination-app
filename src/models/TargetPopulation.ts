@@ -2,13 +2,15 @@ import _ from "lodash";
 import moment from "moment";
 
 import DbD2 from "./db-d2";
-import { MetadataConfig } from "./config";
-import { Maybe, DataValue, CategoryOption } from "./db.types";
+import { AntigenConfig, MetadataConfig } from "./config";
+import { Maybe, DataValue, CategoryOption, DataValueToPost } from "./db.types";
 import { OrganisationUnit, OrganisationUnitPathOnly, OrganisationUnitLevel } from "./db.types";
-import { AntigenDisaggregationEnabled, isAgeGroupIncluded } from "./AntigensDisaggregation";
+import { AntigenDisaggregationEnabled, isAgeGroupIncluded } from "./AntigensDisaggregationLegacy";
 import { sortAgeGroups } from "../utils/age-groups";
 import Campaign from "./campaign";
 import { getDaysRange } from "../utils/date";
+import { assert } from "../utils/assert";
+import { getDataElements } from "./D2CampaignMetadata";
 
 const fp = require("lodash/fp");
 
@@ -279,7 +281,6 @@ export class TargetPopulation {
             moment(campaign.startDate || undefined),
             moment(campaign.endDate || undefined)
         ).map(day => day.format(dailyPeriodFormat));
-        const populationByAgeDataElementId = config.population.populationByAgeDataElement.id;
 
         const dataValues = _.flatMap(this.data.populationItems, targetPopulationItem => {
             const orgUnitId = targetPopulationItem.organisationUnit.id;
@@ -301,7 +302,8 @@ export class TargetPopulation {
 
             const finalDistribution = this.getFinalDistribution(targetPopulationItem);
 
-            const populationByAgeDataValues = _.flatMap(config.antigens, antigen => {
+            const populationByAgeDataValues = _.flatMap(antigensDisaggregation, ad => {
+                const antigen = assert(config.antigens.find(a => a.id === ad.antigen.id));
                 const ageGroupsForAntigen = _(antigen.ageGroups)
                     .flatten()
                     .flatten()
@@ -312,7 +314,7 @@ export class TargetPopulation {
                 );
                 return _.flatMap(ageGroupsForAntigen, ageGroup => {
                     return _.flatMap(antigen.doses, dose => {
-                        const disaggregation = [antigen, dose, ageGroup];
+                        const disaggregation = [ageGroup];
 
                         const ageGroupInPopulation =
                             antigenDisaggregation &&
@@ -330,13 +332,12 @@ export class TargetPopulation {
                         }
 
                         return periods.map(period => {
-                            return {
+                            return this.mapDataValue(antigen, {
                                 period: period,
                                 orgUnit: orgUnitId,
-                                dataElement: populationByAgeDataElementId,
                                 categoryOptionCombo: cocMetadata.getByOptions(disaggregation),
                                 value: populationForAgeRange.toFixed(2),
-                            };
+                            });
                         });
                     });
                 });
@@ -351,6 +352,7 @@ export class TargetPopulation {
                             const ouId = populationDistribution.organisationUnit.id;
                             const value =
                                 _(ageDistributionByOrgUnit).getOrFail(ouId)[ageGroup.displayName];
+
                             return value
                                 ? {
                                       period: startPeriod,
@@ -374,6 +376,29 @@ export class TargetPopulation {
         });
 
         return dataValues;
+    }
+
+    private mapDataValue(
+        antigen: AntigenConfig,
+        dv: Omit<DataValueToPost, "dataElement">
+    ): DataValueToPost {
+        const { campaign } = this;
+        const { config } = campaign;
+        const dataElement = config.population.populationByAgeDataElement;
+        const match = assert(
+            campaign
+                .getEnabledAntigensDisaggregation()
+                .find(enabled => enabled.antigen.id === antigen.id)
+        );
+
+        const dataElements = getDataElements(this.campaign, match, dataElement.code, undefined);
+
+        const d2DataElement = assert(
+            dataElements[0],
+            `No data element found for antigen: ${antigen.name}`
+        );
+
+        return { ...dv, dataElement: d2DataElement.id };
     }
 
     private async getTotalPopulation(

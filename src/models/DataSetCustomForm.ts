@@ -1,3 +1,4 @@
+/// <reference path="../types/i18n.d.ts" />
 import { MetadataConfig } from "./config";
 import _ from "lodash";
 import i18n from "@dhis2/d2-i18n";
@@ -7,14 +8,17 @@ import {
     AntigenDisaggregationEnabled,
     AntigenDisaggregationEnabledDataElement,
     CocMetadata,
-} from "./AntigensDisaggregation";
+} from "./AntigensDisaggregationLegacy";
 import "../utils/lodash-mixins";
 import { CategoryOption, getCode, getId } from "./db.types";
 import { DataInput, getDataInputFromCampaign } from "./CampaignDb";
 
 const { createElement } = require("typed-html");
-const contentScript = require("!raw-loader!./custom-form-resources/content-script.js").default;
-const cssContents = require("!raw-loader!./custom-form-resources/form.css").default;
+//const contentScript = require("!raw-loader!./custom-form-resources/content-script.js").default;
+//const cssContents = require("!raw-loader!./custom-form-resources/form.css").default;
+
+const contentScript = "";
+const cssContents = "";
 
 type Children = string[];
 type Disaggregations = AntigenDisaggregationEnabled;

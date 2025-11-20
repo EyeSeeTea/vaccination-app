@@ -1,6 +1,5 @@
 import _, { Dictionary } from "lodash";
 import DbD2 from "./db-d2";
-import { generateUid } from "d2/uid";
 import {
     dashboardItemsConfig,
     itemsMetadataConstructor,
@@ -13,11 +12,12 @@ import {
     Sharing,
     CategoryOption,
 } from "./db.types";
-import { Antigen } from "./campaign";
+import Campaign, { Antigen } from "./campaign";
 import { Moment } from "moment";
 import { getDaysRange } from "../utils/date";
-import { AntigenDisaggregationEnabled, isAgeGroupIncluded } from "./AntigensDisaggregation";
+import { AntigenDisaggregationEnabled, isAgeGroupIncluded } from "./AntigensDisaggregationLegacy";
 import { AntigenConfig, MetadataConfig } from "./config";
+import { getUid } from "../utils/dhis2";
 
 type DashboardItem = {
     type: string;
@@ -61,13 +61,14 @@ export class Dashboard {
         metadataConfig: MetadataConfig,
         allCategoryIds: { ageGroup: string; doses: string; teams: string; antigen: string }
     ) {
-        const orgUnitsId = _(organisationUnitsPathOnly).map("id");
-        const { organisationUnits: organisationUnitsWithName } = await this.db.api.get<{
+        const orgUnitsId = _(organisationUnitsPathOnly).map("id").value();
+        const res = await this.db.api.get<{
             organisationUnits?: { id: string; displayName: string; path: string }[];
         }>("/metadata", {
             "organisationUnits:fields": "id,displayName,path",
             "organisationUnits:filter": `id:in:[${orgUnitsId}]`,
         });
+        const { organisationUnits: organisationUnitsWithName } = res;
         const antigenCodes = antigens.map(an => an.code);
         const antigensMeta = _.filter(metadataConfig.antigens, an =>
             _.includes(antigenCodes, an.code)
@@ -151,6 +152,7 @@ export class Dashboard {
     }
 
     public async create({
+        campaign,
         dashboardId,
         datasetName,
         organisationUnits,
@@ -164,6 +166,7 @@ export class Dashboard {
         sharing,
         allCategoryIds,
     }: {
+        campaign: Campaign;
         dashboardId?: string;
         datasetName: string;
         organisationUnits: OrganisationUnitPathOnly[];
@@ -187,6 +190,7 @@ export class Dashboard {
         );
 
         const dashboardItems = this.createDashboardItems(
+            campaign,
             datasetName,
             startDate,
             endDate,
@@ -201,7 +205,7 @@ export class Dashboard {
             .value();
 
         const dashboard = {
-            id: dashboardId || generateUid(),
+            id: dashboardId || getUid("dashboard", campaign.id),
             name: `${datasetName}`,
             code: dashboardCode,
             dashboardItems: items,
@@ -214,6 +218,7 @@ export class Dashboard {
     }
 
     createDashboardItems(
+        campaign: Campaign,
         datasetName: String,
         startDate: Moment,
         endDate: Moment,
@@ -251,6 +256,7 @@ export class Dashboard {
             .value();
 
         const dashboardItems = buildDashboardItems(
+            campaign,
             antigensMeta,
             datasetName,
             organisationUnitsMetadata,

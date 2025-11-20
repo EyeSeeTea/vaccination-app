@@ -1,7 +1,8 @@
+import { getUid } from "../utils/dhis2";
 import _ from "lodash";
-import { generateUid } from "d2/uid";
 import moment from "moment";
 import i18n from "@dhis2/d2-i18n";
+import { processDisaggregations } from "./campaign-d2-visualizations";
 
 const definitions = {
     coverageByDosesAndPeriod: {
@@ -52,6 +53,7 @@ export const dashboardItemsConfig = {
             "RVC_CAMPAIGN_COVERAGE",
             "RVC_VACCINE_UTILIZATION",
             "RVC_CAMPAIGN_NEEDLES_RATIO",
+            "RVC_AEFI_ALL_ANTIGENS",
         ],
         DATA_ELEMENT: ["RVC_AEB", "RVC_AEFI", "RVC_DOSES_ADMINISTERED", "RVC_DOSES_USED"],
     },
@@ -83,7 +85,7 @@ export const dashboardItemsConfig = {
             appendCode: "Global quality indicators",
         },
         aefiAEB: {
-            elements: ["RVC_AEB", "RVC_AEFI"],
+            elements: ["RVC_AEB", "RVC_AEFI_ALL_ANTIGENS"],
             rows: ["pe"],
             filterDataBy: ["ou"],
             disaggregatedBy: [],
@@ -168,7 +170,7 @@ export const dashboardItemsConfig = {
             area: "site",
             title: ns =>
                 i18n.t("Campaign Coverage by age range and dose (do not edit this table)", ns),
-            appendCode: "Coverage by age range and dose ", //coverageByCampaignAgeRangeAndDose
+            appendCode: "Coverage by age range and dose", //coverageByCampaignAgeRangeAndDose
             showRowSubTotals: false,
             showColumnTotals: false,
         },
@@ -233,6 +235,7 @@ function getDisaggregations(itemConfigs, disaggregationMetadata, antigen, doseMe
 }
 
 function getCharts({
+    campaign,
     charts,
     antigen,
     elements,
@@ -242,8 +245,15 @@ function getCharts({
 }) {
     return _(charts)
         .map((chart, key) =>
-            chartConstructor({
-                id: generateUid(),
+            chartConstructor2({
+                campaign: campaign,
+                id: getUid(
+                    "chart",
+                    campaign.id +
+                        antigen?.id +
+                        chart.appendCode +
+                        organisationUnits.map(ou => ou.jd).join("-")
+                ),
                 antigen,
                 data: elements[key],
                 type: chart.type,
@@ -261,6 +271,7 @@ function getCharts({
 }
 
 function getTables({
+    campaign,
     tables,
     antigen,
     elements,
@@ -278,8 +289,16 @@ function getTables({
             const teamRowRawDimension = _.some(c.rows, r => r === "team") ? teamMetadata : null;
             const legendId = c.legendCode ? legendsMetadata.get(c.legendCode) : null;
 
-            return tableConstructor({
-                id: generateUid(),
+            return tableConstructor2({
+                campaign: campaign,
+                id: getUid(
+                    "table",
+                    campaign.id +
+                        antigen?.id +
+                        c.appendCode +
+                        organisationUnits.map(ou => ou.jd).join("-") +
+                        doseMetadata?.doseId
+                ),
                 antigen,
                 data: elements[key],
                 appendCode: c.appendCode,
@@ -306,7 +325,16 @@ function getTables({
         .value();
 }
 
+function tableConstructor2(options) {
+    return tableConstructor({ ...options, ...processDisaggregations(options) });
+}
+
+function chartConstructor2(options) {
+    return chartConstructor({ ...options, ...processDisaggregations(options) });
+}
+
 export function buildDashboardItems(
+    campaign,
     antigensMeta,
     datasetName,
     organisationUnitsMetadata,
@@ -339,6 +367,7 @@ export function buildDashboardItems(
             }
 
             return getTables({
+                campaign: campaign,
                 tables: tablesByAntigenMetadata,
                 antigen,
                 elements,
@@ -354,6 +383,7 @@ export function buildDashboardItems(
         .flatMap(antigen =>
             organisationUnitsMetadata.map(ou =>
                 getTables({
+                    campaign: campaign,
                     tables: tablesByAntigenAndSiteMetadata,
                     antigen,
                     elements,
@@ -372,6 +402,7 @@ export function buildDashboardItems(
             const doses = disaggregationMetadata.doses(antigen);
             if (!doses)
                 return getTables({
+                    campaign: campaign,
                     tables: tablesByAntigenAndDoseMetadata,
                     antigen,
                     elements,
@@ -388,6 +419,7 @@ export function buildDashboardItems(
             }));
             return _.flatMap(dosesForTables, dft =>
                 getTables({
+                    campaign: campaign,
                     tables: tablesByAntigenAndDoseMetadata,
                     antigen,
                     elements,
@@ -402,6 +434,7 @@ export function buildDashboardItems(
         .value();
 
     const globalTables = getTables({
+        campaign: campaign,
         tables: globalTablesMetadata,
         antigen: null,
         elements,
@@ -421,6 +454,7 @@ export function buildDashboardItems(
     const chartsByAntigen = _(antigensMeta)
         .flatMap(antigen =>
             getCharts({
+                campaign: campaign,
                 charts: chartsByAntigenMetadata,
                 antigen,
                 elements,
@@ -439,9 +473,9 @@ const dataMapper = (elementsMetadata, filterList) =>
         .map(dataList => {
             return dataList.data
                 .filter(({ code }) => _.includes(filterList, code))
-                .map(({ id }) => ({
+                .map(({ id, code }) => ({
                     dataDimensionItemType: dataList.type,
-                    [dataList.key]: { id },
+                    [dataList.key]: { id, code },
                 }));
         })
         .flatten()
@@ -572,11 +606,7 @@ const chartConstructor = ({
 
     const columns = _.isEmpty(disaggregations) ? allColumns : allColumns.filter(c => c.id !== "dx");
 
-    const filterDimensions = _.compact([
-        ...filterDataBy,
-        antigenCategory,
-        _.isEmpty(disaggregations) ? null : "dx",
-    ]);
+    const filterDimensions = _.compact([...filterDataBy, _.isEmpty(disaggregations) ? null : "dx"]);
 
     let organisationUnitNames;
 
@@ -802,11 +832,7 @@ const tableConstructor = ({
 
     const subName = antigen ? antigen.name : "Global";
     const filters = filterDataBy.map(f => ({ id: f }));
-    const allFilters = _.compact([
-        ...filters,
-        dose ? { id: dose.categoryId } : null,
-        antigen ? { id: antigenCategory } : null,
-    ]);
+    const allFilters = _.compact(filters);
 
     return {
         id,
@@ -913,11 +939,7 @@ const tableConstructor = ({
         },
         dataElementGroupSetDimensions: [],
         attributeDimensions: [],
-        filterDimensions: _.compact([
-            ...filterDataBy,
-            antigen ? antigenCategory : null,
-            dose ? dose.categoryId : null,
-        ]),
+        filterDimensions: _.compact(filterDataBy),
         interpretations: [],
         itemOrganisationUnitGroups: [],
         userGroupAccesses: [],
