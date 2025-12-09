@@ -111,7 +111,6 @@ export class D2LegacyGetCampaign {
             antigensDisaggregation,
             targetPopulation: undefined,
             teams: _.size(teamsMetadata),
-            teamsMetadata: { elements: teamsMetadata },
             dashboardId: dashboard ? dashboard.id : undefined,
             extraDataSets: getExtraDataSetsIntersectingWithCampaignOrgUnits(extraDataSets, dataSet),
             sections: sections,

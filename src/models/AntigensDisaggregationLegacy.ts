@@ -63,7 +63,7 @@ export class AntigenDisaggregationLegacy extends Struct<AntigenDisaggregationDat
 
         const selected = selectedList[0];
 
-        if (!selected || selectedList.length !== 1) {
+        if (!selected /*|| selectedList.length !== 1*/) {
             return undefined;
         } else {
             return selected.option.code === baseConfig.categoryOptionCodeReactive

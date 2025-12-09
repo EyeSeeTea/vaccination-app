@@ -252,7 +252,7 @@ function getCharts({
                     campaign.id +
                         antigen?.id +
                         chart.appendCode +
-                        organisationUnits.map(ou => ou.jd).join("-")
+                        organisationUnits.map(ou => ou.id).join("-")
                 ),
                 antigen,
                 data: elements[key],
@@ -296,7 +296,7 @@ function getTables({
                     campaign.id +
                         antigen?.id +
                         c.appendCode +
-                        organisationUnits.map(ou => ou.jd).join("-") +
+                        organisationUnits.map(ou => ou.id).join("-") +
                         doseMetadata?.doseId
                 ),
                 antigen,

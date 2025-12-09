@@ -15,18 +15,16 @@ import {
 import { createStyles, WithStyles, Theme } from "@material-ui/core";
 
 import i18n from "../../../locales";
-import {
-    AntigenDisaggregationLegacy,
-    CampaignType,
-} from "../../../models/AntigensDisaggregationLegacy";
+import { CampaignType } from "../../../models/AntigensDisaggregationLegacy";
 import SimpleCheckbox from "../../forms/SimpleCheckBox";
 import DataElement from "./DataElement";
 import { memoize } from "../../../utils/memoize";
+import { AntigenDisaggregation } from "../../../models/AntigensDisaggregation";
 
 type Path = Array<number | string>;
 
 interface AntigenSectionProps extends WithStyles<typeof styles> {
-    antigen: AntigenDisaggregationLegacy;
+    antigen: AntigenDisaggregation;
     antigenCode: string;
     update: (path: Path) => (value: any) => void;
     setCampaignType(type: CampaignType): void;
@@ -102,7 +100,7 @@ class AntigenSection extends React.Component<AntigenSectionProps, Disaggregation
 }
 
 interface TypeSelectProps {
-    antigen: AntigenDisaggregationLegacy;
+    antigen: AntigenDisaggregation;
     setCampaignType(type: CampaignType): void;
 }
 

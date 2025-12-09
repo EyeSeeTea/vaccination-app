@@ -378,8 +378,13 @@ export default class DbD2 {
             }
         } catch (err0) {
             const err = err0 as any;
-            console.error("Error posting metadata:", err, err.constructor.name, Object.keys(err));
             if (err.constructor.name === "JestAssertionError") throw err;
+            console.error(
+                "Error posting metadata:",
+                err,
+                JSON.stringify(metadata, null, 4),
+                JSON.stringify(err, null, 4)
+            );
             return { status: false, error: JSON.stringify(err) };
         }
     }

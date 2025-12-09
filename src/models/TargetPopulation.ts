@@ -371,7 +371,7 @@ export class TargetPopulation {
             return _.concat(
                 totalPopulationDataValues,
                 ageDistributionDataValues,
-                populationByAgeDataValues
+                new SelectDataValueWithValues().execute(populationByAgeDataValues)
             );
         });
 
@@ -598,4 +598,43 @@ export function groupTargetPopulationByArea(
         .compact()
         .sortBy(({ area }) => area.displayName)
         .value();
+}
+
+// When antigens have different age groups per dose, multiple data values can be generated for the same
+// key (dataElement, orgUnit, period, categoryOptionCombo). In that case, we select the non-zero value
+// or zero if all values are zero.
+
+class SelectDataValueWithValues {
+    execute(dataValues: DataValueToPost[]): DataValueToPost[] {
+        return _(dataValues)
+            .groupBy(dataValue => this.getDataValueUniqueKey(dataValue))
+            .values()
+            .map(dataValuesGroup => this.pickDataValueWithHighestValue(dataValuesGroup))
+            .value();
+    }
+
+    private getDataValueUniqueKey(dataValue: DataValueToPost): string {
+        return [
+            dataValue.dataElement,
+            dataValue.orgUnit,
+            dataValue.period,
+            dataValue.categoryOptionCombo,
+            dataValue.attributeOptionCombo,
+        ].join(".");
+    }
+
+    private pickDataValueWithHighestValue(dataValues: DataValueToPost[]): DataValueToPost {
+        const [zero = [], nonZero = []] = _(dataValues)
+            .uniqBy(dv => dv.value)
+            .sortBy(dv => parseFloat(dv.value))
+            .reverse()
+            .partition(dv => parseFloat(dv.value) === 0)
+            .value();
+
+        if (nonZero.length > 1) {
+            console.warn(`Multiple data values found for the same key, this should not happen`);
+        }
+
+        return assert(_.first(nonZero) || _.first(zero));
+    }
 }

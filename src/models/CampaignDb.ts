@@ -84,7 +84,8 @@ export default class CampaignDb {
 
     public async createDashboard(): Promise<string> {
         if (!this.campaign.id) throw new Error("Cannot create dashboard for unpersisted campaign");
-        const teamIds = this.campaign.teamsMetadata.elements.map(t => t.id);
+        const teamsMetadata = await this.campaign.teamsMetadata();
+        const teamIds = teamsMetadata.elements.map(t => t.id);
         const dashboardMetadata = await this.getDashboardMetadata(this.campaign.id, teamIds);
         const metadata: PostSaveMetadata = {
             ...dashboardMetadata,
@@ -104,7 +105,7 @@ export default class CampaignDb {
 
     public async save(): Promise<Response<string>> {
         const { campaign } = this;
-        const { db, config: metadataConfig, teamsMetadata } = campaign;
+        const { db, config: metadataConfig } = campaign;
         const dataSetId = campaign.id || getUid("dataSet", campaign.name);
         console.debug(`Saving campaign with dataSetId=${dataSetId}`);
 
@@ -113,6 +114,7 @@ export default class CampaignDb {
         }
         const startDate = moment(campaign.startDate).startOf("day");
         const endDate = moment(campaign.endDate).endOf("day");
+        const teamsMetadata = await campaign.teamsMetadata();
 
         const teamGenerator = Teams.build(teamsMetadata);
         const newTeams = teamGenerator.getTeams({
@@ -122,7 +124,7 @@ export default class CampaignDb {
             teamsCategoyId: this.teamsCategoryId,
             startDate,
             endDate,
-            isEdit: campaign.isEdit(),
+            isEdit: await campaign.isEdit(),
         });
 
         const teamIds = newTeams.map(team => team.id);
@@ -266,7 +268,9 @@ export default class CampaignDb {
         let metadata;
         let modelReferencesToDelete: ModelReference[];
 
-        if (campaign.isEdit()) {
+        const isEdit = await campaign.isEdit();
+
+        if (isEdit) {
             // The saving of existing sections on DHIS2 is buggy: /metadata
             // often responds with a 500 Server Error when a data set and their sections are
             // posted on the same request. Workaround: post the sections on a separate request.
@@ -299,7 +303,7 @@ export default class CampaignDb {
 
         const result: ApiResponse<MetadataResponse> = await db.postMetadata<Metadata>(metadata);
 
-        if (campaign.isEdit()) {
+        if (isEdit) {
             await this.cleanUpDashboardItems(db, modelReferencesToDelete);
 
             // Teams must be deleted after all asociated dashboard and dashboard items (favorites) are deleted

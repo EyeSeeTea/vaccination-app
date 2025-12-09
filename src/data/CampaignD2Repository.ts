@@ -13,7 +13,7 @@ import CampaignDb, { getCampaignPeriods } from "../models/CampaignDb";
 import { getAntigenCode } from "../models/D2CampaignMetadata";
 import { getByIndex, getDashboardCode, MetadataConfig } from "../models/config";
 import DbD2 from "../models/db-d2";
-import { OrganisationUnitPathOnly, Ref, Response } from "../models/db.types";
+import { Maybe, OrganisationUnitPathOnly, Ref, Response } from "../models/db.types";
 import { getTeamsForCampaign } from "../models/Teams";
 
 export class CampaignD2Repository implements CampaignRepository {
@@ -109,18 +109,14 @@ class CampaignD2Get {
 
         const antigens = _(dataSet.sections)
             .map(section => {
-                const antigenCode = getAntigenCodeFromSectionCode(section.code || "");
+                const antigenCode = getAntigenCodeFromSection(section);
                 return antigenCode ? antigensByCode[antigenCode] : undefined;
             })
             .compact()
             .value();
 
         const periods = getCampaignPeriods(dataSet);
-        const { categoryComboCodeForTeams } = config;
-        const { name, sections } = dataSet;
-        const ouIds = dataSet.organisationUnits.map(ou => ou.id);
-        const teamsCategoyId = getByIndex(config.categories, "code", categoryComboCodeForTeams).id;
-        const teamsMetadata = await getTeamsForCampaign(db, ouIds, teamsCategoyId, name);
+        const { sections } = dataSet;
 
         const categoryComboIds = _(dataSet.dataSetElements)
             .map(dse => dse.categoryCombo.id)
@@ -171,6 +167,13 @@ class CampaignD2Get {
             sections
         );
 
+        const teamsMetadata = await Campaign.teamsMetadata({
+            config: config,
+            db: db,
+            organisationUnits: dataSet.organisationUnits,
+            name: dataSet.name,
+        });
+
         const initialData: Data = {
             id: dataSet.id,
             name: dataSet.name,
@@ -182,7 +185,6 @@ class CampaignD2Get {
             antigensDisaggregation: antigensDisaggregation,
             targetPopulation: undefined,
             teams: _.size(teamsMetadata),
-            teamsMetadata: { elements: teamsMetadata },
             dashboardId: dashboard ? dashboard.id : undefined,
             extraDataSets: getExtraDataSetsIntersectingWithCampaignOrgUnits(extraDataSets, dataSet),
             sections: sections,
@@ -192,7 +194,7 @@ class CampaignD2Get {
     }
 }
 
-export function getAntigenCodeFromSectionCode(sectionCode: string): string {
-    // RVC_[dataSetId]-[antigenCode]
-    return sectionCode.split("-")[1] || "";
+//   code="RVC_[dataSetId]-MALARIA"
+export function getAntigenCodeFromSection(section: { code: Maybe<string> }): string {
+    return section.code?.split("-")[1] || "";
 }

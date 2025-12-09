@@ -15,7 +15,7 @@ import {
     getAntigenCode,
     getDataElementDisaggregations,
 } from "./D2CampaignMetadata";
-import { getAntigenCodeFromSectionCode } from "../data/CampaignD2Repository";
+import { getAntigenCodeFromSection as getAntigenCodeFromSection } from "../data/CampaignD2Repository";
 import { zipShortest } from "../utils/lodash-mixins";
 
 const fp = require("lodash/fp");
@@ -198,7 +198,7 @@ export class AntigensDisaggregation {
         const disaggregation = _(sections)
             .sortBy(section => section.sortOrder)
             .map(section => {
-                const antigenCode = getAntigenCodeFromSectionCode(section.code || "");
+                const antigenCode = getAntigenCodeFromSection(section);
                 const antigen = antigensByCode[antigenCode];
 
                 if (antigen) {

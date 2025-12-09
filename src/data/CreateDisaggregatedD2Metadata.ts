@@ -163,6 +163,7 @@ export class CreateDisaggregatedD2Metadata {
                                   );
                             const formula =
                                 "(" + dataElements.map(de => `#{${de.id}}`).join(" + ") + ")";
+
                             return [dataElementConfig.code, formula];
                         })
                         .thru(pairs => [...existingDataElements, ...pairs])

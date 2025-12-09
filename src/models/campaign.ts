@@ -23,6 +23,7 @@ import { CampaignNotification } from "./CampaignNotification";
 import { CampaignD2Repository } from "../data/CampaignD2Repository";
 import { AntigensDisaggregation } from "./AntigensDisaggregation";
 import CampaignDb from "./CampaignDb";
+import { D2LegacyGetCampaign } from "./D2LegacyGetCampaign";
 
 export type TargetPopulationData = TargetPopulationData_;
 
@@ -47,7 +48,6 @@ export interface Data {
     antigensDisaggregation: AntigensDisaggregation | AntigensDisaggregationLegacy;
     targetPopulation: Maybe<TargetPopulation>;
     teams: Maybe<number>;
-    teamsMetadata: TeamsMetadata;
     dashboardId: Maybe<string>;
     sections: SectionForDisaggregation[];
 }
@@ -135,10 +135,14 @@ export default class Campaign {
     public static async get(
         config: MetadataConfig,
         db: DbD2,
-        dataSetId: string
+        dataSetId: string,
+        options?: { legacy: boolean }
     ): Promise<Campaign> {
-        //return new D2LegacyGetCampaign(config, db).get(dataSetId);
-        return new CampaignD2Repository(config, db).get(dataSetId);
+        if (options?.legacy) {
+            return new D2LegacyGetCampaign(config, db).get(dataSetId);
+        } else {
+            return new CampaignD2Repository(config, db).get(dataSetId);
+        }
     }
 
     public update(newData: Partial<Data>): Campaign {
@@ -153,10 +157,10 @@ export default class Campaign {
         );
     }
 
-    public async notifyOnUpdateIfData(): Promise<boolean> {
+    public async notifyOnUpdateIfData(options: { isEdit: boolean }): Promise<boolean> {
         const { db } = this;
 
-        if (this.isEdit() && (await this.hasDataValues())) {
+        if (options.isEdit && (await this.hasDataValues())) {
             const notification = new CampaignNotification(db);
             return notification.sendOnUpdateOrDelete([this.getDataSet()], "update");
         } else {
@@ -542,19 +546,44 @@ export default class Campaign {
         return this.update({ ...this.data, teams });
     }
 
-    public get teamsMetadata(): TeamsMetadata {
-        return this.data.teamsMetadata;
+    public async teamsMetadata(): Promise<TeamsMetadata> {
+        return Campaign.teamsMetadata(this);
+    }
+
+    static async teamsMetadata(options: {
+        config: MetadataConfig;
+        db: DbD2;
+        organisationUnits: Ref[];
+        name: string;
+    }) {
+        const { config, organisationUnits, db, name } = options;
+        const { categoryComboCodeForTeams } = config;
+        const ouIds = organisationUnits.map(ou => ou.id);
+        const teamsCategoyId = getByIndex(config.categories, "code", categoryComboCodeForTeams).id;
+
+        return {
+            elements: await getTeamsForCampaign(db, ouIds, teamsCategoyId, name),
+        };
     }
 
     /* Save */
 
-    isEdit(): boolean {
-        return !!this.id;
+    async isEdit(): Promise<boolean> {
+        const { dataSets } = await this.db.api.get<{ dataSets: Array<{ id: string }> }>(
+            "/dataSets",
+            {
+                fields: ["id"],
+                filter: `id:eq:${this.id}`,
+            }
+        );
+
+        return dataSets.length > 0;
     }
 
     public async save(): Promise<Response<string>> {
+        const isEdit = await this.isEdit();
         const saveResponse = await new CampaignD2Repository(this.config, this.db).save(this);
-        this.notifyOnUpdateIfData();
+        this.notifyOnUpdateIfData({ isEdit });
         return saveResponse;
     }
 
