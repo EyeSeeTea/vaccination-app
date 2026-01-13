@@ -76,6 +76,21 @@ export function cartesianProduct2<T1, T2>(groups: [T1[], T2[]]): Array<[T1, T2]>
     return result;
 }
 
+export function cartesianProduct3<T1, T2, T3>(groups: [T1[], T2[], T3[]]): Array<[T1, T2, T3]> {
+    const [group1, group2, group3] = groups;
+    const result: Array<[T1, T2, T3]> = [];
+
+    for (const a of group1) {
+        for (const b of group2) {
+            for (const c of group3) {
+                result.push([a, b, c]);
+            }
+        }
+    }
+
+    return result;
+}
+
 // Generate the power set of an array
 // E.g., powerSet([1,2,3]) => [[], [1], [2], [3], [1,2], [1,3], [2,3], [1,2,3]]
 export function powerSet<T>(array: T[]): T[][] {

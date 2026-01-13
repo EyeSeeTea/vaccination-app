@@ -10,15 +10,11 @@ import {
     PartialPersistedModel,
 } from "@eyeseetea/d2-api/2.36";
 import { CampaignType } from "../models/AntigensDisaggregationLegacy";
-import {
-    dataElementsByAntigen,
-    indicatorsByAntigen,
-    NewDataElement,
-} from "../models/D2CampaignMetadata";
-import { cartesianProduct2, powerSet } from "../utils/lodash-mixins";
+import { dataElementsInfo, indicatorsInfo, DataElementInfo } from "../models/D2CampaignMetadata";
+import { cartesianProduct2, cartesianProduct3, powerSet } from "../utils/lodash-mixins";
 import { interpolate } from "../utils/strings";
 import { getUid } from "../utils/dhis2";
-import { assert } from "../utils/assert";
+import { assert, throw_ } from "../utils/assert";
 import fs from "fs";
 
 export class CreateDisaggregatedD2Metadata {
@@ -90,7 +86,7 @@ export class CreateDisaggregatedD2Metadata {
             ],
         };
 
-        const dataElements = dataElementsByAntigen.flatMap(dataElementConfig => {
+        const dataElements = dataElementsInfo.flatMap(dataElementConfig => {
             return antigens.flatMap(antigen => {
                 return this.getDataElements(metadata1, dataElementConfig, antigen, null, null);
             });
@@ -104,7 +100,7 @@ export class CreateDisaggregatedD2Metadata {
             ],
         };
 
-        const indicators = indicatorsByAntigen.flatMap(indicatorConfig => {
+        const indicators = indicatorsInfo.flatMap(indicatorConfig => {
             const existingIndicator =
                 indicatorConfig.modelCode && !indicatorConfig.newEntity
                     ? assert(
@@ -115,25 +111,17 @@ export class CreateDisaggregatedD2Metadata {
                       )
                     : undefined;
 
-            const antigens2 = indicatorConfig.extraDisaggregations.includes("antigen")
+            const antigens2 = indicatorConfig.disaggregations.includes("antigen")
                 ? antigens
                 : [null];
 
-            const error = () => {
-                throw new Error();
-            };
-
             return antigens2.flatMap(antigen => {
                 const combos = cartesianProduct2([
-                    indicatorConfig.extraDisaggregations.includes("dose")
-                        ? antigen
-                            ? antigen.disaggregations.dose
-                            : error()
+                    indicatorConfig.disaggregations.includes("dose")
+                        ? antigen?.disaggregations.dose || throw_(new Error())
                         : [null],
-                    indicatorConfig.extraDisaggregations.includes("campaignType")
-                        ? antigen
-                            ? antigen.disaggregations.campaignType
-                            : error()
+                    indicatorConfig.disaggregations.includes("campaignType")
+                        ? antigen?.disaggregations.campaignType || throw_(new Error())
                         : [null],
                 ]);
 
@@ -167,7 +155,7 @@ export class CreateDisaggregatedD2Metadata {
                         (de): [string, string] => [de.code, `#{${de.id}}`]
                     );
 
-                    const namespace = _(dataElementsByAntigen)
+                    const namespace = _(dataElementsInfo)
                         .map((dataElementConfig): [string, string] => {
                             const dataElements = antigen
                                 ? this.getDataElements(
@@ -302,77 +290,80 @@ export class CreateDisaggregatedD2Metadata {
 
     private getDataElements(
         metadata: Metadata,
-        dataElementConfig: NewDataElement,
+        dataElementConfig: DataElementInfo,
         antigen: AntigenInfo,
         doseNum: number | null,
         campaignType: CampaignType | null
     ) {
-        const combos = cartesianProduct2([
-            dataElementConfig.extraDisaggregations.includes("dose")
+        const combos = cartesianProduct3([
+            dataElementConfig.disaggregations.includes("antigen") ? [antigen] : [null],
+            dataElementConfig.disaggregations.includes("dose")
                 ? doseNum
                     ? [doseNum]
                     : antigen.disaggregations.dose
                 : [null],
-            dataElementConfig.extraDisaggregations.includes("campaignType")
+            dataElementConfig.disaggregations.includes("campaignType")
                 ? campaignType
                     ? [campaignType]
                     : antigen.disaggregations.campaignType
                 : [null],
         ]);
 
-        return combos.map(([doseNum, campaignType]): PartialPersistedModel<D2DataElement> => {
-            const existingDataElement = !dataElementConfig.newEntity
-                ? assert(
-                      metadata.dataElements.find(de => de.code === dataElementConfig.modelCode),
-                      `DataElement not found: ${dataElementConfig.modelCode}`
-                  )
-                : undefined;
+        return combos.map(
+            ([antigen, doseNum, campaignType]): PartialPersistedModel<D2DataElement> => {
+                const existingDataElement = !dataElementConfig.newEntity
+                    ? assert(
+                          metadata.dataElements.find(de => de.code === dataElementConfig.modelCode),
+                          `DataElement not found: ${dataElementConfig.modelCode}`
+                      )
+                    : undefined;
 
-            const name = _.compact([
-                dataElementConfig.name,
-                antigen.antigen.name,
-                doseNum ? `Dose ${doseNum.toString()}` : null,
-                campaignType ? this.campaignTypes[campaignType].name : null,
-            ]).join(" - ");
+                const name = _.compact([
+                    dataElementConfig.name,
+                    antigen ? antigen.antigen.name : null,
+                    doseNum ? `Dose ${doseNum.toString()}` : null,
+                    campaignType ? this.campaignTypes[campaignType].name : null,
+                ]).join(" - ");
 
-            // Keep only the dose number (if present) in the form name
-            const formName = _.compact([
-                dataElementConfig.name,
-                doseNum ? `Dose ${doseNum.toString()}` : null,
-            ]).join(" - ");
+                // Keep only the dose number (if present) in the form name
+                const formName = _.compact([
+                    dataElementConfig.name,
+                    doseNum ? `Dose ${doseNum.toString()}` : null,
+                ]).join(" - ");
 
-            const code = _.compact([
-                dataElementConfig.code,
-                antigen.antigen.code,
-                doseNum,
-                campaignType ? this.campaignTypes[campaignType].code : null,
-            ]).join("-");
+                const code = _.compact([
+                    dataElementConfig.code,
+                    antigen ? antigen.antigen.code : null,
+                    doseNum,
+                    campaignType ? this.campaignTypes[campaignType].code : null,
+                ]).join("-");
 
-            const shortName = name
-                .split(" - ")
-                .map(n => acronym(n))
-                .join(" ");
+                const shortName = name
+                    .split(" - ")
+                    .map(n => acronym(n))
+                    .join(" ");
 
-            return {
-                ..._.omit(existingDataElement, ["created"]),
-                id: getUid("dataElement", code.replace(/-/g, "_")),
-                name: name,
-                shortName: shortName,
-                formName: formName,
-                code: code,
-                zeroIsSignificant: dataElementConfig.storeZeroDataValues,
-                categoryCombo: assert(
-                    metadata.categoryCombos.find(
-                        cc =>
-                            (dataElementConfig.categoryCombo.code &&
-                                cc.code === dataElementConfig.categoryCombo.code) ||
-                            (dataElementConfig.categoryCombo.name &&
-                                cc.name === dataElementConfig.categoryCombo.name)
+                return {
+                    ..._.omit(existingDataElement, ["created"]),
+                    id: getUid("dataElement", code.replace(/-/g, "_")),
+                    name: name,
+                    shortName: shortName,
+                    formName: formName,
+                    code: code,
+                    zeroIsSignificant: dataElementConfig.storeZeroDataValues,
+                    categoryCombo: assert(
+                        metadata.categoryCombos.find(
+                            cc =>
+                                (dataElementConfig.categoryCombo.code &&
+                                    cc.code === dataElementConfig.categoryCombo.code) ||
+                                (dataElementConfig.categoryCombo.name &&
+                                    cc.name === dataElementConfig.categoryCombo.name)
+                        ),
+                        `CategoryCombo not found: ${dataElementConfig.categoryCombo.code}`
                     ),
-                    `CategoryCombo not found: ${dataElementConfig.categoryCombo.code}`
-                ),
-            };
-        });
+                };
+            }
+        );
     }
 
     private getValidationRules(

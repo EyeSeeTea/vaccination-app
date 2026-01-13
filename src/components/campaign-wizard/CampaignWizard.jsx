@@ -110,7 +110,7 @@ class CampaignWizard extends React.Component {
                 label: i18n.t("Configure Indicators"),
                 component: DisaggregationStep,
                 validationKeys: ["antigensDisaggregation"],
-                validationKeysLive: ["antigensDisaggregation"],
+                validationKeysLive: [],
                 description: i18n.t(
                     `Select the indicators and breakdowns that you wish to monitor for each antigen in your campaign.\n\n                Standard age groups for each antigen appear by default. In some cases, you may click on an age group to select subdivisions if that information is important for your campaign. Compulsory indicators may not be un-selected.`
                 ),

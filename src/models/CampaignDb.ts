@@ -27,10 +27,10 @@ import { getDashboardCode, getByIndex, baseConfig, MetadataConfig } from "./conf
 import { assert } from "../utils/assert";
 import { getUid } from "../utils/dhis2";
 import {
-    getFormDataElements,
+    getDisaggregatedDataElements,
     campaignTypes,
     categoriesInDataElement,
-    dataElementsByAntigen,
+    dataElementsInfo,
     getAntigenCode,
     getDataElementDisaggregations,
 } from "./D2CampaignMetadata";
@@ -142,7 +142,7 @@ export default class CampaignDb {
 
         const dataSetElements = _(disaggregationData)
             .flatMap((dd): DataSetElement[] => {
-                return getFormDataElements(campaign, dd).map(
+                return getDisaggregatedDataElements(campaign, dd).map(
                     ({ formDataElement, categoryCombo }) => {
                         return {
                             dataSet: { id: dataSetId },
@@ -357,7 +357,7 @@ export default class CampaignDb {
             const { antigen } = disaggregationDataItem;
             const sectionName = `${antigen.name} [${campaignTypes[campaignType].name}]`;
 
-            const greyedFields = _(getFormDataElements(campaign, disaggregationDataItem))
+            const greyedFields = _(getDisaggregatedDataElements(campaign, disaggregationDataItem))
                 .flatMap(({ dataElement, formDataElement, categoryCombo }) => {
                     const disaggregations = getDisaggregations(
                         campaign.config,
@@ -389,11 +389,13 @@ export default class CampaignDb {
                 .sortBy(gf => [gf.dataElement.id, gf.categoryOptionCombo.id].join("."))
                 .value();
 
-            const dataElements2 = getFormDataElements(campaign, disaggregationDataItem)
+            const dataElements2 = getDisaggregatedDataElements(campaign, disaggregationDataItem)
                 .map(de => de.formDataElement)
                 .filter(dataElement => {
-                    const isDataElementByAntigen = dataElementsByAntigen.some(de =>
-                        dataElement.code.startsWith(de.code)
+                    const isDataElementByAntigen = dataElementsInfo.some(
+                        de =>
+                            dataElement.code.startsWith(de.code) &&
+                            de.disaggregations.includes("antigen")
                     );
                     return isDataElementByAntigen;
                 });
@@ -413,11 +415,11 @@ export default class CampaignDb {
 
         const dataElements2 = _(disaggregationData)
             .flatMap(dd => {
-                return getFormDataElements(campaign, dd);
+                return getDisaggregatedDataElements(campaign, dd);
             })
             .map(de => de.formDataElement)
             .filter(dataElement => {
-                const isDataElementByAntigen = dataElementsByAntigen.some(de =>
+                const isDataElementByAntigen = dataElementsInfo.some(de =>
                     dataElement.code.startsWith(de.code)
                 );
                 return !isDataElementByAntigen;
@@ -547,7 +549,7 @@ type Reference = {
 };
 
 // Return disaggregations, taking in account that some categories restrict
-// the options that can be selected together (for now this is used to allow age groups by dose)
+// the options that can be selected together (this is used to model age groups by dose)
 function getDisaggregations(
     config: MetadataConfig,
     dataElementDis: AntigenDisaggregationEnabledDataElement,

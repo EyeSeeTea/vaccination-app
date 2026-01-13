@@ -18,13 +18,13 @@ import i18n from "../locales";
 import { assert, throw_ } from "../utils/assert";
 import {
     categoriesInDataElement,
-    dataElementsByAntigen,
+    dataElementsInfo,
     DisaggregationType,
     getAntigenCode,
     getDataElementDisaggregations,
-    NewDataElement,
+    DataElementInfo,
 } from "./D2CampaignMetadata";
-import { getAntigenCodeFromSection } from "../data/CampaignD2Repository";
+import { getAntigenCodeFromSection } from "../data/CampaignD2Get";
 import { zipShortest } from "../utils/lodash-mixins";
 
 const fp = require("lodash/fp");
@@ -306,7 +306,7 @@ export class AntigensDisaggregation {
         categoriesDisaggregation: AntigenDisaggregationCategoriesData;
         dataElementSelected: boolean;
     } {
-        const dataElementInfo = dataElementsByAntigen.find(
+        const dataElementInfo = dataElementsInfo.find(
             de => de.modelCode === dataElementConfig.code
         );
 
@@ -613,7 +613,7 @@ export function isAgeGroupIncluded(
 
 class GetCategoriesDisaggregation {
     categoriesByCode: Record<string, Category>;
-    dataElementInfo: Maybe<NewDataElement>;
+    dataElementInfo: Maybe<DataElementInfo>;
 
     constructor(
         private options: {
@@ -627,7 +627,7 @@ class GetCategoriesDisaggregation {
     ) {
         this.categoriesByCode = _.keyBy(options.config.categories, category => category.code);
 
-        this.dataElementInfo = dataElementsByAntigen.find(
+        this.dataElementInfo = dataElementsInfo.find(
             de => de.modelCode === options.dataElementConfig.code
         );
     }
@@ -847,11 +847,7 @@ class GetCategoriesDisaggregation {
 
         const categoryCode = codes[disaggregationType];
 
-        if (
-            disaggregationType !== "antigen" &&
-            !this.dataElementInfo?.extraDisaggregations.includes(disaggregationType)
-        )
-            return;
+        if (!this.dataElementInfo?.disaggregations.includes(disaggregationType)) return;
 
         return {
             code: categoryCode,

@@ -1,6 +1,6 @@
 import { assert } from "../utils/assert";
 import Campaign from "./campaign";
-import { getFormDataElements, getIndicators } from "./D2CampaignMetadata";
+import { getDisaggregatedDataElements, getIndicators } from "./D2CampaignMetadata";
 import { baseConfig } from "./config";
 
 /**
@@ -17,8 +17,8 @@ import { baseConfig } from "./config";
 }
  *
  * Actions:
- * 
- * - Move antigen/dose/type disaggregations from columns/filters to dataDimensionItems 
+ *
+ * - Move antigen/dose/type disaggregations from columns/filters to dataDimensionItems
  */
 export function processDisaggregations(options: {
     title: () => string;
@@ -40,29 +40,34 @@ export function processDisaggregations(options: {
             category => category.code === baseConfig.categoryCodeForDoses
         )
     );
-    const disaggregations2 = options.disaggregations.filter(
-        dd => dd.categoryId !== ageGroupCategory.id
-    );
-    //if (!antigen) return { data, disaggregations: disaggregations2 };
 
-    const dd = antigen ? assert(enabled.find(x => x.antigen.id === antigen.id)) : undefined;
-    const res = dd ? getFormDataElements(campaign, dd) : [];
+    const antigenDisaggregation = antigen
+        ? assert(enabled.find(dis => dis.antigen.id === antigen.id))
+        : undefined;
+    const disaggregatedDataElements = antigenDisaggregation
+        ? getDisaggregatedDataElements(campaign, antigenDisaggregation)
+        : [];
     const dataDimensionItems = data;
     const doseNum = dose ? parseInt(assert(dose.name.match(/(\d)/)?.[1])) : undefined;
     const disaggregatedByDose = options.disaggregations.some(
         dd => dd.categoryId === dosesCategory.id
     );
 
-    const data2 = dataDimensionItems.flatMap(ddi => {
-        switch (ddi.dataDimensionItemType) {
+    const dataMapped = dataDimensionItems.flatMap(dimension => {
+        switch (dimension.dataDimensionItemType) {
             case "DATA_ELEMENT": {
-                const mappedIndicators = dd
-                    ? getIndicators(campaign, dd, ddi.dataElement.code, doseNum)
+                const mappedIndicators = antigenDisaggregation
+                    ? getIndicators(
+                          campaign,
+                          antigenDisaggregation,
+                          dimension.dataElement.code,
+                          doseNum
+                      )
                     : [];
 
                 if (!disaggregatedByDose && !doseNum && mappedIndicators.length > 0) {
                     // Use an indicator to display data elements when the dose is not specified
-                    // Current use cases: Doses Administered, AEFI.
+                    // Currently used for Doses Administered and AEFI.
 
                     return mappedIndicators.map((indicator): D2DataDimensionItem => {
                         return {
@@ -71,14 +76,15 @@ export function processDisaggregations(options: {
                         };
                     });
                 } else {
-                    const matching = res.filter(
-                        x =>
-                            x.info?.modelCode === ddi.dataElement.code &&
-                            (!doseNum || x.doseNum === doseNum)
+                    const matching = disaggregatedDataElements.filter(
+                        disaggregatedDataElement =>
+                            disaggregatedDataElement.info?.modelCode ===
+                                dimension.dataElement.code &&
+                            (!doseNum || disaggregatedDataElement.doseNum === doseNum)
                     );
 
                     if (matching.length === 0) {
-                        return [ddi];
+                        return [dimension];
                     } else {
                         return matching.map((dataElement): D2DataDimensionItem => {
                             return {
@@ -90,8 +96,13 @@ export function processDisaggregations(options: {
                 }
             }
             case "INDICATOR": {
-                const mappedIndicators = dd
-                    ? getIndicators(campaign, dd, ddi.indicator.code, doseNum)
+                const mappedIndicators = antigenDisaggregation
+                    ? getIndicators(
+                          campaign,
+                          antigenDisaggregation,
+                          dimension.indicator.code,
+                          doseNum
+                      )
                     : [];
 
                 return mappedIndicators.length > 0
@@ -101,12 +112,19 @@ export function processDisaggregations(options: {
                               indicator: { id: indicator.id },
                           };
                       })
-                    : [ddi];
+                    : [dimension];
             }
         }
     });
 
-    return { data: data2, disaggregations: disaggregations2 };
+    const disaggregationsExcludingAgeGroups = options.disaggregations.filter(
+        disaggregation => disaggregation.categoryId !== ageGroupCategory.id
+    );
+
+    return {
+        data: dataMapped,
+        disaggregations: disaggregationsExcludingAgeGroups,
+    };
 }
 
 type Id = string;

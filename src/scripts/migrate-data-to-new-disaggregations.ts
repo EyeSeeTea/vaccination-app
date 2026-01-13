@@ -5,7 +5,7 @@ import { D2Api } from "../types/d2-api";
 import { promiseMap } from "../utils/promises";
 import { assert, assertCondition, assertValue } from "../utils/assert";
 import {
-    dataElementsByAntigen,
+    dataElementsInfo,
     DisaggregationType,
     getDataElementFromDisaggregation,
 } from "../models/D2CampaignMetadata";
@@ -72,7 +72,7 @@ class MigrateData {
          {
             "dataElementName": "Vaccine doses administered",
             "categoryOptionCombo": "Kwyo5Eygxts",
-            "categoryOptionComboName": "Malaria, Dose 1, Preventive, 5 - 11 m", 
+            "categoryOptionComboName": "Malaria, Dose 1, Preventive, 5 - 11 m",
             "value": "1"
          }
         */
@@ -143,12 +143,10 @@ class MigrateData {
 
             assertValue(dataElementCode, `Unknown data element id: ${dv.dataElement}`);
 
-            const dataElementInfo = dataElementsByAntigen.find(
-                de => de.modelCode === dataElementCode
-            );
+            const dataElementInfo = dataElementsInfo.find(de => de.modelCode === dataElementCode);
             if (!dataElementInfo) return dv;
 
-            const disaggregations = ["antigen", ...dataElementInfo.extraDisaggregations];
+            const disaggregations = dataElementInfo.disaggregations;
             const cocInfo = assert(cocsMap[dv.categoryOptionCombo]);
 
             console.debug(
