@@ -2,6 +2,7 @@ import _ from "lodash";
 import {
     D2Api,
     D2CategoryCombo,
+    D2CategoryOptionCombo,
     D2DataElement,
     D2Indicator,
     D2ValidationRule,
@@ -18,6 +19,7 @@ import { cartesianProduct2, powerSet } from "../utils/lodash-mixins";
 import { interpolate } from "../utils/strings";
 import { getUid } from "../utils/dhis2";
 import { assert } from "../utils/assert";
+import fs from "fs";
 
 export class CreateDisaggregatedD2Metadata {
     campaignTypes = {
@@ -44,13 +46,13 @@ export class CreateDisaggregatedD2Metadata {
     async execute() {
         console.debug("Creating disaggregated metadata...");
 
-        const metadata = await this.getMetadata();
+        const metadata0 = await this.getMetadata();
 
         const antigensWithCampaignTypeSelectable = assert(
-            metadata.categoryOptionGroups.find(cog => cog.code === "RVC_ANTIGEN_TYPE_SELECTABLE")
+            metadata0.categoryOptionGroups.find(cog => cog.code === "RVC_ANTIGEN_TYPE_SELECTABLE")
         ).categoryOptions;
 
-        const antigenCogs = metadata.categoryOptionGroups.filter(cog =>
+        const antigenCogs = metadata0.categoryOptionGroups.filter(cog =>
             cog.code.endsWith("_DOSES")
         );
 
@@ -73,11 +75,34 @@ export class CreateDisaggregatedD2Metadata {
             };
         });
 
+        const categoryCombos = this.getCategoriesCombos(metadata0);
+        categoryCombos.forEach(cc => {
+            console.debug(
+                `CategoryCombo: ${cc.name} [${cc.code}] (${cc.categories?.length} categories)`
+            );
+        });
+
+        const metadata1: typeof metadata0 = {
+            ...metadata0,
+            categoryCombos: [
+                ...(categoryCombos as typeof metadata0.categoryCombos),
+                ...metadata0.categoryCombos,
+            ],
+        };
+
         const dataElements = dataElementsByAntigen.flatMap(dataElementConfig => {
             return antigens.flatMap(antigen => {
-                return this.getDataElements(metadata, dataElementConfig, antigen, null, null);
+                return this.getDataElements(metadata1, dataElementConfig, antigen, null, null);
             });
         });
+
+        const metadata: typeof metadata0 = {
+            ...metadata1,
+            dataElements: [
+                ...(dataElements as typeof metadata0.dataElements),
+                ...metadata1.dataElements,
+            ],
+        };
 
         const indicators = indicatorsByAntigen.flatMap(indicatorConfig => {
             const existingIndicator =
@@ -175,9 +200,9 @@ export class CreateDisaggregatedD2Metadata {
                     );
                     return {
                         indicatorType: { id: "cpUX4dfC0mL" },
-                        ...existingIndicator,
+                        ..._.omit(existingIndicator, ["created"]),
                         id: getUid("indicator", code.replace(/-/g, "_")),
-                        ...existingIndicator2,
+                        ..._.omit(existingIndicator2, ["created"]),
                         name: name,
                         shortName: shortName,
                         numerator: interpolate(indicatorConfig.numerator, namespace),
@@ -199,13 +224,6 @@ export class CreateDisaggregatedD2Metadata {
         });
         console.debug(`Creating ${indicators.length} indicators...`);
 
-        const categoryCombos = this.createCategoriesCombos(metadata);
-        categoryCombos.forEach(cc => {
-            console.debug(
-                `CategoryCombo: ${cc.name} [${cc.code}] (${cc.categories?.length} categories)`
-            );
-        });
-
         console.debug(`Creating ${categoryCombos.length} category combos...`);
 
         const validationRules = this.getValidationRules(metadata, antigens, dataElements);
@@ -219,25 +237,67 @@ export class CreateDisaggregatedD2Metadata {
             .post(payload)
             .getData()
             .catch(err => {
-                console.error("Error saving metadata:", JSON.stringify(err.response.data, null, 4));
+                console.error("Error saving metadata:", JSON.stringify(err, null, 4));
                 throw err;
             });
 
-        console.debug("Updating category option combos...");
-        for (const cc of categoryCombos) {
-            const cocsCount = _(cc.categories)
-                .map(
-                    category =>
-                        metadata.categories.find(category_ => category_.id === category.id)
-                            ?.categoryOptions.length || 1
-                )
-                .reduce((a, b) => a * b, 1);
-            console.debug(`Generating COCs for CategoryCombo ${cc.code} (${cocsCount})`);
+        const categoryOptionCombos = await this.buildCategoryOptionCombos(categoryCombos);
 
+        const payload2 = { ...payload, categoryOptionCombos };
+
+        const payloadOutput = `new-disaggregations-metadata.json`;
+        console.debug(`Saving metadata payload to ${payloadOutput}...`);
+        fs.writeFileSync(payloadOutput, JSON.stringify(payload2, null, 4), "utf-8");
+
+        return res;
+    }
+
+    private async buildCategoryOptionCombos(
+        categoryCombos: PartialPersistedModel<D2CategoryCombo>[]
+    ): Promise<PartialPersistedModel<D2CategoryOptionCombo>[]> {
+        console.debug("Updating category option combos...");
+
+        for (const cc of categoryCombos) {
+            console.debug(`Generating COCs for category combo id=${cc.id} code=${cc.code}`);
             await this.api.maintenance.categoryOptionComboSingleUpdate(cc.id).getData();
         }
 
-        return res;
+        const persisted = await this.api.metadata
+            .get({
+                categoryCombos: {
+                    fields: {
+                        id: true,
+                        name: true,
+                        categories: { categoryOptions: { id: true } },
+                        categoryOptionCombos: { $owner: true },
+                    },
+                    filter: { id: { in: categoryCombos.map(cc => cc.id) } },
+                },
+            })
+            .getData();
+
+        // Validate COCs count
+        persisted.categoryCombos.forEach(categoryCombo => {
+            const expectedCocsCount = _(categoryCombo.categories)
+                .map(category => category.categoryOptions.length)
+                .reduce((a, b) => a * b, 1);
+
+            if (categoryCombo.categoryOptionCombos.length !== expectedCocsCount) {
+                console.debug(
+                    `Warning: category combo id=${categoryCombo.id} name=${categoryCombo.name} has ${categoryCombo.categoryOptionCombos.length} COCs, expected ${expectedCocsCount}`
+                );
+            } else {
+                console.debug(
+                    `Category combo id=${categoryCombo.id} name=${categoryCombo.name} has the expected number of COCs: ${expectedCocsCount}`
+                );
+            }
+        });
+
+        const categoryOptionCombos = _(persisted.categoryCombos)
+            .flatMap(cc => cc.categoryOptionCombos)
+            .value();
+
+        return categoryOptionCombos;
     }
 
     private getDataElements(
@@ -294,12 +354,13 @@ export class CreateDisaggregatedD2Metadata {
                 .join(" ");
 
             return {
-                ...existingDataElement,
+                ..._.omit(existingDataElement, ["created"]),
                 id: getUid("dataElement", code.replace(/-/g, "_")),
                 name: name,
                 shortName: shortName,
                 formName: formName,
                 code: code,
+                zeroIsSignificant: dataElementConfig.storeZeroDataValues,
                 categoryCombo: assert(
                     metadata.categoryCombos.find(
                         cc =>
@@ -364,7 +425,6 @@ export class CreateDisaggregatedD2Metadata {
                         code: code,
                         name: `No Adverse Event Following Immunization (${details})`,
                         sharing: { public: "rw------" },
-                        created: "2023-03-01T10:25:48.600",
                         instruction: `Please fill in the AEFI registration form / Por favor, rellene el formulario de registro AEFI / SVP, remplissez le formulaire AEFI (${details})`,
                         importance: "MEDIUM",
                         operator: "equal_to",
@@ -435,7 +495,6 @@ export class CreateDisaggregatedD2Metadata {
                         id: id,
                         code: code,
                         name: `Vaccine doses administered <= used (${details})`,
-                        created: "2023-03-01T10:25:48.597",
                         importance: "MEDIUM",
                         operator: "less_than_or_equal_to",
                         periodType: "Daily",
@@ -461,7 +520,7 @@ export class CreateDisaggregatedD2Metadata {
         return _.concat(rules1, rules2);
     }
 
-    private createCategoriesCombos(metadata: Metadata): PartialPersistedModel<D2CategoryCombo>[] {
+    private getCategoriesCombos(metadata: Metadata) {
         const categoriesByCode = _.keyBy(metadata.categories, c => c.code);
         const existingCategoryCombosByCode = _.keyBy(metadata.categoryCombos, cc => cc.code);
 
@@ -472,7 +531,7 @@ export class CreateDisaggregatedD2Metadata {
             );
 
             return _(powerSet(optional))
-                .map((comboForOptional): PartialPersistedModel<D2CategoryCombo> | undefined => {
+                .map((comboForOptional): PartialPersistedModel<D2CategoryCombo> => {
                     const combo = [...required, ...comboForOptional];
                     const name = combo.map(c => c.name).join(" / ");
                     const code = "RVC_" + combo.map(c => c.code.replace(/^RVC_/, "")).join("_");
@@ -488,7 +547,7 @@ export class CreateDisaggregatedD2Metadata {
                         code: code,
                         sharing: { public: "rw------" },
                         skipTotal: false,
-                        categories: _.at(categoriesByCode, codes),
+                        categories: _.at(categoriesByCode, codes).map(cat => ({ id: cat.id })),
                     };
                 })
                 .compact()

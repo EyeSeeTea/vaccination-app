@@ -106,12 +106,7 @@ export interface MetadataConfig extends BaseConfig {
         ageGroupCategory: Category;
     };
     dataElements: DataElement[];
-    dataElementsDisaggregation: Array<{
-        name: string;
-        code: string;
-        id: string;
-        categories: Record<AntigenCode, Array<{ code: string; optional: boolean }>>;
-    }>;
+    dataElementsDisaggregation: Array<DataElementDisaggregation>;
     indicators: Indicator[];
     antigens: Array<AntigenConfig>;
     legendSets: Array<{
@@ -121,6 +116,18 @@ export interface MetadataConfig extends BaseConfig {
         extraActivities: DataSet[];
     };
 }
+
+export type CategoryInfo = {
+    code: string;
+    optional: boolean;
+};
+
+export type DataElementDisaggregation = {
+    name: string;
+    code: string;
+    id: string;
+    categories: Record<AntigenCode, Array<CategoryInfo>>;
+};
 
 export type AntigenConfig = {
     id: string;

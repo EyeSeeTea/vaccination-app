@@ -7,10 +7,12 @@ import {
     AntigenDisaggregationEnabled,
 } from "./AntigensDisaggregationLegacy";
 import Campaign from "./campaign";
-import { getRvcCode, MetadataConfig, baseConfig } from "./config";
-import { DataElement, Ref } from "./db.types";
+import { getRvcCode, MetadataConfig, baseConfig, Dose } from "./config";
+import { Ref } from "./db.types";
 
 export type DisaggregationType = "antigen" | "dose" | "campaignType";
+
+export const allDisaggregationTypes: DisaggregationType[] = ["antigen", "dose", "campaignType"];
 
 export type NewDataElement = {
     name: string;
@@ -19,6 +21,7 @@ export type NewDataElement = {
     extraDisaggregations: DisaggregationType[];
     categoryCombo: { name?: string; code?: string };
     newEntity?: boolean;
+    storeZeroDataValues: boolean;
 };
 
 export const dataElementsByAntigen: NewDataElement[] = [
@@ -29,6 +32,7 @@ export const dataElementsByAntigen: NewDataElement[] = [
         modelCode: "RVC_DOSES_ADMINISTERED",
         extraDisaggregations: ["dose", "campaignType"],
         categoryCombo: { name: "default" },
+        storeZeroDataValues: true,
     },
     {
         name: "Vaccine doses used",
@@ -36,6 +40,7 @@ export const dataElementsByAntigen: NewDataElement[] = [
         modelCode: "RVC_DOSES_USED",
         extraDisaggregations: ["campaignType"],
         categoryCombo: { name: "default" },
+        storeZeroDataValues: true,
     },
     {
         name: "Adverse Event Following Immunization",
@@ -43,6 +48,7 @@ export const dataElementsByAntigen: NewDataElement[] = [
         modelCode: "RVC_AEFI",
         extraDisaggregations: ["campaignType"],
         categoryCombo: { code: "RVC_SEVERITY" },
+        storeZeroDataValues: true,
     },
     {
         name: "Needles for dilution",
@@ -50,6 +56,7 @@ export const dataElementsByAntigen: NewDataElement[] = [
         modelCode: "RVC_NEEDLES",
         extraDisaggregations: ["campaignType"],
         categoryCombo: { name: "default" },
+        storeZeroDataValues: true,
     },
     {
         name: "Syringes for dilution",
@@ -57,6 +64,7 @@ export const dataElementsByAntigen: NewDataElement[] = [
         modelCode: "RVC_SYRINGES",
         extraDisaggregations: ["campaignType"],
         categoryCombo: { name: "default" },
+        storeZeroDataValues: true,
     },
     // Skip General Q&S (ADS, AEB, Safety boxes), common to all antigens
     // Population
@@ -64,8 +72,9 @@ export const dataElementsByAntigen: NewDataElement[] = [
         name: "Population by age",
         code: "RVC_POPULATION_BY_AGE",
         modelCode: "RVC_POPULATION_BY_AGE",
-        extraDisaggregations: ["campaignType"],
+        extraDisaggregations: ["dose"],
         categoryCombo: { code: "RVC_AGE_GROUP" },
+        storeZeroDataValues: false,
     },
     // RVC_AGE_DISTRIBUTION -> informative, not used in formulas, not by antigen
 ];
@@ -258,35 +267,31 @@ export function getFormDataElements(
     });
 }
 
-type De = { id: string; code: string };
+type DataElement = { id: string; code: string };
 
 export function getDataElements(
     campaign: Campaign,
     dd: AntigenDisaggregationEnabled[0],
     modelCode: string,
-    doseNum: number | undefined
-): De[] {
+    dose: Dose
+): DataElement[] {
     return dataElementsByAntigen.flatMap(dataElementConfig => {
         if (dataElementConfig.modelCode !== modelCode) return [];
 
         const { antigen } = dd;
 
         const combos = cartesianProduct2([
-            dataElementConfig.extraDisaggregations.includes("dose")
-                ? doseNum
-                    ? [doseNum.toString()]
-                    : antigen.doses.map(dose => dose.name.match(/(\d+)/)?.[0])
-                : [undefined],
+            dataElementConfig.extraDisaggregations.includes("dose") ? [dose] : [undefined],
             dataElementConfig.extraDisaggregations.includes("campaignType")
                 ? [assert(dd.type)]
                 : [undefined],
         ]);
 
-        return combos.map(([doseNum2, campaignType]) => {
+        return combos.map(([dose, campaignType]) => {
             const code = _.compact([
                 dataElementConfig.code,
                 getAntigenCode(antigen.code),
-                doseNum2,
+                dose ? assert(dose.name.match(/(\d+)/))[0] : undefined,
                 campaignType ? campaignTypes[campaignType].code : undefined,
             ]).join("-");
 
@@ -339,6 +344,27 @@ export function getIndicators(
             );
         });
     });
+}
+
+type CategoryOptionValue = string; // name or code
+type Disaggregation = Partial<Record<DisaggregationType, CategoryOptionValue>>;
+
+export function getDataElementFromDisaggregation(
+    dataElementConfig: NewDataElement,
+    disaggregation: Disaggregation,
+    dataElements: DataElement[]
+): DataElement {
+    const dataElementCode = _.compact([
+        dataElementConfig.code,
+        disaggregation.antigen?.replace(/^RVC_ANTIGEN_/, ""),
+        disaggregation.dose?.match(/(\d+)/)?.[0],
+        disaggregation.campaignType?.replace(/^RVC_/, ""),
+    ]).join("-");
+
+    return assert(
+        dataElements.find(de => de.code === dataElementCode),
+        `dataElement not found: ${dataElementCode}`
+    );
 }
 
 export const categoriesInDataElement = ["RVC_ANTIGEN", "RVC_DOSE", "RVC_TYPE"];

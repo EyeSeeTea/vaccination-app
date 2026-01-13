@@ -6,7 +6,8 @@ import DbD2 from "../models/db-d2";
 import { default as Api } from "d2/api/Api";
 import { assert } from "../utils/assert";
 
-export function getD2Api(auth: string, baseUrl: string) {
+export function getD2Api(options: { auth: string; baseUrl: string }) {
+    const { auth, baseUrl } = options;
     const [username, password] = auth.split(":");
     return new D2Api({
         baseUrl: baseUrl,

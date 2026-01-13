@@ -18,9 +18,9 @@ const program = command({
         }),
     },
     handler: async args => {
-        const api = getD2Api(args.auth, args.url);
+        const api = getD2Api({ auth: args.auth, baseUrl: args.url });
         const res = await new CreateDisaggregatedD2Metadata(api).execute();
-        console.debug(res);
+        console.debug("POST metadata", res);
     },
 });
 

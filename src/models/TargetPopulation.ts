@@ -2,7 +2,7 @@ import _ from "lodash";
 import moment from "moment";
 
 import DbD2 from "./db-d2";
-import { AntigenConfig, MetadataConfig } from "./config";
+import { AntigenConfig, Dose, MetadataConfig } from "./config";
 import { Maybe, DataValue, CategoryOption, DataValueToPost } from "./db.types";
 import { OrganisationUnit, OrganisationUnitPathOnly, OrganisationUnitLevel } from "./db.types";
 import { AntigenDisaggregationEnabled, isAgeGroupIncluded } from "./AntigensDisaggregationLegacy";
@@ -313,6 +313,8 @@ export class TargetPopulation {
                     disaggregation => disaggregation.antigen.id === antigen.id
                 );
                 return _.flatMap(ageGroupsForAntigen, ageGroup => {
+                    // We must include the doses disaggregated as some antigens
+                    // (ie. Malaria) have different age groups per dose.
                     return _.flatMap(antigen.doses, dose => {
                         const disaggregation = [ageGroup];
 
@@ -332,7 +334,7 @@ export class TargetPopulation {
                         }
 
                         return periods.map(period => {
-                            return this.mapDataValue(antigen, {
+                            return this.mapDataValue(antigen, dose, {
                                 period: period,
                                 orgUnit: orgUnitId,
                                 categoryOptionCombo: cocMetadata.getByOptions(disaggregation),
@@ -371,7 +373,7 @@ export class TargetPopulation {
             return _.concat(
                 totalPopulationDataValues,
                 ageDistributionDataValues,
-                new SelectDataValueWithValues().execute(populationByAgeDataValues)
+                populationByAgeDataValues
             );
         });
 
@@ -380,6 +382,7 @@ export class TargetPopulation {
 
     private mapDataValue(
         antigen: AntigenConfig,
+        dose: Dose,
         dv: Omit<DataValueToPost, "dataElement">
     ): DataValueToPost {
         const { campaign } = this;
@@ -391,7 +394,7 @@ export class TargetPopulation {
                 .find(enabled => enabled.antigen.id === antigen.id)
         );
 
-        const dataElements = getDataElements(this.campaign, match, dataElement.code, undefined);
+        const dataElements = getDataElements(this.campaign, match, dataElement.code, dose);
 
         const d2DataElement = assert(
             dataElements[0],
@@ -598,43 +601,4 @@ export function groupTargetPopulationByArea(
         .compact()
         .sortBy(({ area }) => area.displayName)
         .value();
-}
-
-// When antigens have different age groups per dose, multiple data values can be generated for the same
-// key (dataElement, orgUnit, period, categoryOptionCombo). In that case, we select the non-zero value
-// or zero if all values are zero.
-
-class SelectDataValueWithValues {
-    execute(dataValues: DataValueToPost[]): DataValueToPost[] {
-        return _(dataValues)
-            .groupBy(dataValue => this.getDataValueUniqueKey(dataValue))
-            .values()
-            .map(dataValuesGroup => this.pickDataValueWithHighestValue(dataValuesGroup))
-            .value();
-    }
-
-    private getDataValueUniqueKey(dataValue: DataValueToPost): string {
-        return [
-            dataValue.dataElement,
-            dataValue.orgUnit,
-            dataValue.period,
-            dataValue.categoryOptionCombo,
-            dataValue.attributeOptionCombo,
-        ].join(".");
-    }
-
-    private pickDataValueWithHighestValue(dataValues: DataValueToPost[]): DataValueToPost {
-        const [zero = [], nonZero = []] = _(dataValues)
-            .uniqBy(dv => dv.value)
-            .sortBy(dv => parseFloat(dv.value))
-            .reverse()
-            .partition(dv => parseFloat(dv.value) === 0)
-            .value();
-
-        if (nonZero.length > 1) {
-            console.warn(`Multiple data values found for the same key, this should not happen`);
-        }
-
-        return assert(_.first(nonZero) || _.first(zero));
-    }
 }

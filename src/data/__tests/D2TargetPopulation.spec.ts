@@ -21,7 +21,7 @@ describe("TargetPopulation", () => {
                 .setAgeGroupPopulation({ orgUnitIds: ["lrjmTKZJUEx"], ageGroup: "24 - 35 m" }, 3)
                 // Japanese Encephalitis
                 .setAgeGroupPopulation({ orgUnitIds: ["lrjmTKZJUEx"], ageGroup: "8 - 11 m" }, 4)
-                .setAgeGroupPopulation({ orgUnitIds: ["lrjmTKZJUEx"], ageGroup: "15 - 29 m" }, 5);
+                .setAgeGroupPopulation({ orgUnitIds: ["lrjmTKZJUEx"], ageGroup: "15 - 29 y" }, 5);
 
             const dataValues = await targetPopulationUpdated.getDataValues();
             expectToMatchSnapshot(dataValues, "target-population-data-values");

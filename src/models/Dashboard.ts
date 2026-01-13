@@ -273,11 +273,13 @@ export class Dashboard {
         const reportTableIds = reportTables.map(table => table.id);
 
         const dashboardCharts = chartIds.map((id: string) => ({
+            id: getUid("dashboardItem", campaign.id + id),
             type: "VISUALIZATION",
             visualization: { id },
         }));
 
         const dashboardTables = reportTableIds.map((id: string) => ({
+            id: getUid("dashboardItem", campaign.id + id),
             type: "VISUALIZATION",
             visualization: { id },
         }));

@@ -11,10 +11,9 @@ import Campaign, {
 } from "../models/campaign";
 import CampaignDb, { getCampaignPeriods } from "../models/CampaignDb";
 import { getAntigenCode } from "../models/D2CampaignMetadata";
-import { getByIndex, getDashboardCode, MetadataConfig } from "../models/config";
+import { getDashboardCode, MetadataConfig } from "../models/config";
 import DbD2 from "../models/db-d2";
 import { Maybe, OrganisationUnitPathOnly, Ref, Response } from "../models/db.types";
-import { getTeamsForCampaign } from "../models/Teams";
 
 export class CampaignD2Repository implements CampaignRepository {
     constructor(private config: MetadataConfig, private db: DbD2) {}
@@ -184,7 +183,7 @@ class CampaignD2Get {
             antigens: antigens,
             antigensDisaggregation: antigensDisaggregation,
             targetPopulation: undefined,
-            teams: _.size(teamsMetadata),
+            teams: teamsMetadata.elements.length,
             dashboardId: dashboard ? dashboard.id : undefined,
             extraDataSets: getExtraDataSetsIntersectingWithCampaignOrgUnits(extraDataSets, dataSet),
             sections: sections,

@@ -10,17 +10,17 @@ export function getCampaign(config: MetadataConfig, db: DbD2): Campaign {
 
 class TeamCampaignBuilder {
     disaggregationActions = [
-        // Vaccine Doses Administered -> Age Groups (Dose 4)
+        // Malaria -> Vaccine Doses Administered -> Age Groups (Dose 4)
         select__("MALARIA.dataElements.0.categories.4.selected"),
-        // AEFI -> Severity -> Minor
+        // Malaria -> AEFI -> Severity -> Minor
         unselect("MALARIA.dataElements.5.categories.2.options.0.values.0.0.selected"),
 
-        // Vaccine Doses Administered -> 12-59m and 5-14y
+        // Japanese Encephalitis -> Vaccine Doses Administered -> 12-59m and 5-14y
         unselect("JPENC.dataElements.0.categories.3.options.1.values.0.0.selected"),
         unselect("JPENC.dataElements.0.categories.3.options.2.values.0.0.selected"),
-        // Select Vaccine Doses Administered -> Gender
+        // Japanese Encephalitis -> Select Vaccine Doses Administered -> Gender
         select__("JPENC.dataElements.0.categories.4.selected"),
-        // Unselect Syringes for Dillution
+        // Japanese Encephalitis -> Unselect Syringes for Dillution
         unselect("JPENC.dataElements.4.selected"),
     ];
 
@@ -31,8 +31,8 @@ class TeamCampaignBuilder {
 
         const campaign = Campaign.create(this.config, this.db)
             .update({
-                name: "ZCampaignD2Repository Test",
-                description: "Test Campaign",
+                name: "Campaign Test",
+                description: "Campaign Test description",
                 startDate: new Date("2025-11-19"),
                 endDate: new Date("2025-11-20"),
                 organisationUnits: [

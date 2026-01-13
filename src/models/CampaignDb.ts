@@ -12,6 +12,7 @@ import {
     Section,
     CategoryOption,
     NamedRef,
+    Ref,
 } from "./db.types";
 import { Metadata, DataSet, Response } from "./db.types";
 import { formatDay } from "../utils/date";
@@ -266,7 +267,7 @@ export default class CampaignDb {
         const { teamsToDelete = [], existingDataSet } = options;
         const { sections, ...nonSectionsMetadata } = allMetadata;
         let metadata;
-        let modelReferencesToDelete: ModelReference[];
+        let existingModels: ModelReference[];
 
         const isEdit = await campaign.isEdit();
 
@@ -283,10 +284,10 @@ export default class CampaignDb {
                 }
             }
             metadata = nonSectionsMetadata;
-            modelReferencesToDelete = await Campaign.getResources(config, db, allMetadata.dataSets);
+            existingModels = await Campaign.getResources(config, db, allMetadata.dataSets);
         } else {
             metadata = allMetadata;
-            modelReferencesToDelete = [];
+            existingModels = [];
         }
 
         if (existingDataSet) {
@@ -304,7 +305,7 @@ export default class CampaignDb {
         const result: ApiResponse<MetadataResponse> = await db.postMetadata<Metadata>(metadata);
 
         if (isEdit) {
-            await this.cleanUpDashboardItems(db, modelReferencesToDelete);
+            await this.cleanUpDashboardItems(db, metadata, existingModels);
 
             // Teams must be deleted after all asociated dashboard and dashboard items (favorites) are deleted
             if (!_.isEmpty(teamsToDelete)) {
@@ -328,10 +329,16 @@ export default class CampaignDb {
 
     private async cleanUpDashboardItems(
         db: DbD2,
+        metadata: Omit<PostSaveMetadata, "sections">,
         modelReferencesToDelete: ModelReference[]
     ): Promise<Response<string>> {
+        const idsInMetadata = _(metadata.visualizations)
+            .map(dashboard => (dashboard as Ref).id)
+            .compact()
+            .value();
+
         const dashboardItems = _(modelReferencesToDelete)
-            .filter(o => _.includes(["visualizations"], o.model))
+            .filter(o => o.model === "visualizations" && !idsInMetadata.includes(o.id))
             .value();
 
         return await db.deleteMany(dashboardItems);

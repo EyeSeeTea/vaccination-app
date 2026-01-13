@@ -22,7 +22,6 @@ const program = command({
             legacy: true,
         });
         console.debug(`Loaded campaign from ${args.sourceUrl}: ${campaign.name}`);
-        console.log(campaign.antigensDisaggregation.getEnabled().map(x => x.antigen.code));
 
         campaign.config = target.config;
         campaign.db = target.db;

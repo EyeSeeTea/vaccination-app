@@ -523,7 +523,13 @@ export class AntigensDisaggregationLegacy {
 
         function getCocIdByCategoryOptions(categoryOptions: Ref[]): Maybe<string> {
             const key = getKey(categoryOptions);
-            return cocsByOptionsKey[key];
+            const value = cocsByOptionsKey[key];
+            if (!value) {
+                console.warn(
+                    `Coc not found for options: ${categoryOptions.map(co => co.id).join(", ")}`
+                );
+            }
+            return value;
         }
 
         function getByCategoryCombo(categoryCombo: Ref): string[] {
