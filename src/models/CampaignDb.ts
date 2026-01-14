@@ -74,7 +74,7 @@ export default class CampaignDb {
         const { categoryCodeForTeams, categoryCodeForDoses, categoryCodeForAntigens } =
             campaign.config;
         const { categoryComboCodeForTeams } = campaign.config;
-        const categoriesByCode = _(categories).keyBy("code");
+        const categoriesByCode = _(categories).keyBy(category => category.code);
 
         this.ageGroupCategoryId = categoriesByCode.getOrFail(categoryCodeForAgeGroup).id;
         this.teamsCategoryId = categoriesByCode.getOrFail(categoryCodeForTeams).id;

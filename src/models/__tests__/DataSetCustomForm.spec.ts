@@ -1,5 +1,5 @@
 import { renderHeaderForGroup } from "../DataSetCustomForm";
-import { co } from "./config-mock";
+import { CategoryOption } from "../db.types";
 // @ts-ignore
 import { prettyPrint } from "html";
 
@@ -56,4 +56,13 @@ function expectSameHtml(html1: string, html2: string): void {
     const html1p = prettyPrint(html1);
     const html2p = prettyPrint(html2);
     expect(html1p).toEqual(html2p);
+}
+
+function co(name: string): CategoryOption {
+    return {
+        id: `id-${name}`,
+        code: name,
+        name: name,
+        displayName: name,
+    };
 }
