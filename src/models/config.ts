@@ -1,6 +1,6 @@
 import _ from "lodash";
 import "../utils/lodash-mixins";
-import DbD2 from "./db-d2";
+import DbD2, { metadataFields } from "./db-d2";
 import {
     Category,
     DataElementGroup,
@@ -29,6 +29,17 @@ export const userRoles = {
     medicalFocalPoint: "Position: Medical Focal Point",
     onlineDataEntry: "Data Entry: Online Edit",
 };
+
+const categoryCodes = [
+    "RVC_GENDER",
+    "RVC_TYPE",
+    "RVC_WS",
+    "RVC_ANTIGEN",
+    "RVC_DOSE",
+    "RVC_SEVERITY",
+    "RVC_AGE_GROUP",
+    "RVC_DISTATUS",
+];
 
 export const baseConfig = {
     expirationDays: 8,
@@ -524,7 +535,7 @@ function getAttributes(attributes: Attribute[]) {
     };
 }
 
-function getDefaults(metadata: RawMetadataConfig): MetadataConfig["defaults"] {
+function getDefaults(metadata: RawMetadataConfig1): MetadataConfig["defaults"] {
     return {
         categoryOptionCombo: _(metadata.categoryOptionCombos)
             .keyBy(coc => coc.displayName)
@@ -532,7 +543,7 @@ function getDefaults(metadata: RawMetadataConfig): MetadataConfig["defaults"] {
     };
 }
 
-interface RawMetadataConfig {
+type RawMetadataConfig1 = {
     attributes: Attribute[];
     categories: Category[];
     categoryCombos: CategoryCombo[];
@@ -545,7 +556,11 @@ interface RawMetadataConfig {
     organisationUnitLevels: OrganisationUnitLevel[];
     userRoles: NamedObject[];
     legendSets: Ref[];
-}
+};
+
+type RawMetadataConfig2 = {
+    categories: Omit<Category, "categoryOptions">[];
+};
 
 export async function getMetadataConfig(db: DbD2): Promise<MetadataConfig> {
     const userRoleNames = _(baseConfig.userRoleNames as _.Dictionary<string[]>)
@@ -558,9 +573,9 @@ export async function getMetadataConfig(db: DbD2): Promise<MetadataConfig> {
     const codeFilter = "code:startsWith:RVC_";
     const modelParams = { filters: [codeFilter] };
 
-    const metadataParams = {
+    const metadataParams1 = {
         attributes: {},
-        categories: modelParams,
+        categories: { filters: [`code:in:[${categoryCodes.join(",")}]`] },
         categoryCombos: modelParams,
         categoryOptionGroups: {
             ...modelParams,
@@ -584,7 +599,20 @@ export async function getMetadataConfig(db: DbD2): Promise<MetadataConfig> {
         userRoles: { fields: namedObjectFields, filters: [userRolesFilter] },
     };
 
-    const metadata = await db.getMetadata<RawMetadataConfig>(metadataParams);
+    // Second request with different fields to avoid fetching too much data
+    const metadataParams2 = {
+        categories: {
+            fields: _.omit(metadataFields.categories, ["categoryOptions"]),
+            filters: ["code:in:[RVC_TEAM]"],
+        },
+    };
+
+    const metadata1 = await db.getMetadata<RawMetadataConfig1>(metadataParams1);
+    const metadata2 = await db.getMetadata<RawMetadataConfig2>(metadataParams2);
+    const metadata2b: Pick<RawMetadataConfig1, "categories"> = {
+        categories: metadata2.categories.map(category => ({ ...category, categoryOptions: [] })),
+    };
+    const metadata = mergeMetadata(metadata1, metadata2b);
 
     const antigens = getAntigens(
         metadata.dataElementGroups,
@@ -628,3 +656,24 @@ export async function getMetadataConfig(db: DbD2): Promise<MetadataConfig> {
 }
 
 type AntigenCode = string;
+
+type GenericMetadata = Record<string, unknown[]>;
+
+// Merges two metadata objects, concatenating arrays (omit special "system" property)
+function mergeMetadata<T1 extends GenericMetadata, T2 extends GenericMetadata>(
+    metadata1: T1,
+    metadata2: T2
+): T1 & T2 {
+    const clean = <T extends GenericMetadata>(obj: T) => _.omit(obj, ["system"]) as T;
+
+    return _.mergeWith({}, clean(metadata1), clean(metadata2), (objValue, srcValue) => {
+        if (
+            (Array.isArray(objValue) || objValue === undefined) &&
+            (Array.isArray(srcValue) || srcValue === undefined)
+        ) {
+            return [...(objValue || []), ...(srcValue || [])];
+        } else {
+            throw new Error("Cannot merge metadata: incompatible types");
+        }
+    });
+}
