@@ -1,0 +1,18 @@
+{
+    "args": [
+        "/metadata",
+        {
+            "organisationUnits:fields": "id,displayName,path",
+            "organisationUnits:filter": "id:in:[lrjmTKZJUEx]"
+        }
+    ],
+    "returnValue": {
+        "organisationUnits": [
+            {
+                "displayName": "External Consultations",
+                "id": "lrjmTKZJUEx",
+                "path": "/zOyMxdCLXBM/G7g4TvbjFlX/o9PqPy9YOvf/wY8HiLmETeU/BaEwEdzSA6G/lrjmTKZJUEx"
+            }
+        ]
+    }
+}

@@ -32,4 +32,3 @@ src/locales/
 cypress/screenshots/
 cypress/videos/
 
-__snapshots__/

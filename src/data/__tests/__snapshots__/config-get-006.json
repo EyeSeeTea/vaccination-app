@@ -1,0 +1,443 @@
+{
+    "args": [
+        "/analytics",
+        {
+            "dimension": [
+                "dx:e0cPRcP5XNc",
+                "uaaMNSXGGTT",
+                "pe:20251119",
+                "ou:wY8HiLmETeU;lrjmTKZJUEx"
+            ],
+            "skipRounding": true
+        }
+    ],
+    "returnValue": {
+        "headerWidth": 5,
+        "headers": [
+            {
+                "column": "Data",
+                "hidden": false,
+                "meta": true,
+                "name": "dx",
+                "type": "java.lang.String",
+                "valueType": "TEXT"
+            },
+            {
+                "column": "_23.5 RVC Age groups",
+                "hidden": false,
+                "meta": true,
+                "name": "uaaMNSXGGTT",
+                "type": "java.lang.String",
+                "valueType": "TEXT"
+            },
+            {
+                "column": "Period",
+                "hidden": false,
+                "meta": true,
+                "name": "pe",
+                "type": "java.lang.String",
+                "valueType": "TEXT"
+            },
+            {
+                "column": "Organisation unit",
+                "hidden": false,
+                "meta": true,
+                "name": "ou",
+                "type": "java.lang.String",
+                "valueType": "TEXT"
+            },
+            {
+                "column": "Value",
+                "hidden": false,
+                "meta": false,
+                "name": "value",
+                "type": "java.lang.Double",
+                "valueType": "NUMBER"
+            }
+        ],
+        "height": 10,
+        "metaData": {
+            "dimensions": {
+                "co": [
+                    "dwusui0STtc",
+                    "nkEGI7N2kUB",
+                    "NjNKDBJ1Svq",
+                    "OAfN55Y0ch3",
+                    "vQW8S2iK9iO",
+                    "VRX1b1p3Ba2",
+                    "TwUxJTY3rtq",
+                    "aWAiETbFZVa",
+                    "jyPce4uqMQ2",
+                    "Wul4OM2LLUS",
+                    "nOqgZtnoiT6",
+                    "uQH8nGgiyQn",
+                    "l9O3DEcPig2",
+                    "TxrDyNmi2XN",
+                    "obDbAvNDFF8",
+                    "Cf2S11GgvyM",
+                    "jeRJuMqW4QV",
+                    "MxbvnlvBcbu",
+                    "J78bBZyyW5c",
+                    "DZcNeXBHOrk",
+                    "bFU2PNcOf6k",
+                    "JWJmWAiAumm",
+                    "J6952sjszkA",
+                    "sI0LE90Kzhi",
+                    "t9J6rvVzK2T",
+                    "onOCGaKWYs4",
+                    "lX9SqhZm23s",
+                    "DxRKEcORFhh",
+                    "bClXexCm0Tl",
+                    "Zh8LtDVbs2k",
+                    "CBTZrcKQhqD",
+                    "ekehdmjV2sG",
+                    "ve6jWYVBySB"
+                ],
+                "dx": [
+                    "e0cPRcP5XNc"
+                ],
+                "ou": [
+                    "wY8HiLmETeU",
+                    "lrjmTKZJUEx"
+                ],
+                "pe": [
+                    "20251119"
+                ],
+                "uaaMNSXGGTT": [
+                    "u4ygmgNB0ks",
+                    "AKBiAeMF7DT",
+                    "UrNpL1aZbE4",
+                    "crPESHASfpI",
+                    "ia2FalGX1jy",
+                    "OOOeIPhGjzf",
+                    "IHMvH38Cwgx",
+                    "FDdhOKnwzQ6",
+                    "aOKeL9Dc9Om",
+                    "mKkzuzv5Ier",
+                    "Y86VjYO1RjK",
+                    "mgeEAcULoaL",
+                    "fnZu45UhqYW",
+                    "ayCQ7FPkkhi",
+                    "qNbalD7KAcu",
+                    "mL5SUc8K5Zx",
+                    "iqHPnnKYlF6",
+                    "CQYU2TlembI",
+                    "WkQrsL6dWma",
+                    "Wy9pbFUUkx3",
+                    "iSQvyRRdfg8",
+                    "Qeo0TBePh98",
+                    "aoQHuEKd0tY",
+                    "yawHvPkkmII",
+                    "XBpMJkq8Zvo",
+                    "OYaOs0KPzjK",
+                    "CTU4Nsrhu9T",
+                    "G6mQq9nxBbt",
+                    "G274KynDbNg",
+                    "ykuSLuR0zjf",
+                    "WKsdFFi6J0q",
+                    "Bw9YRHXY2v9",
+                    "us11XgsMjfa"
+                ]
+            },
+            "items": {
+                "20251119": {
+                    "name": "2025-11-19"
+                },
+                "AKBiAeMF7DT": {
+                    "name": "0 - 5 w"
+                },
+                "Bw9YRHXY2v9": {
+                    "name": "> 45 y"
+                },
+                "CBTZrcKQhqD": {
+                    "name": "15 - 99 y"
+                },
+                "CQYU2TlembI": {
+                    "name": "25 - 59 m"
+                },
+                "CTU4Nsrhu9T": {
+                    "name": "15 - 29 y"
+                },
+                "Cf2S11GgvyM": {
+                    "name": "5 - 11 m"
+                },
+                "DZcNeXBHOrk": {
+                    "name": "6 w - 11 m"
+                },
+                "DxRKEcORFhh": {
+                    "name": "8 - 14 y"
+                },
+                "FDdhOKnwzQ6": {
+                    "name": "6 - 8 m"
+                },
+                "G274KynDbNg": {
+                    "name": "15 - 99 y"
+                },
+                "G6mQq9nxBbt": {
+                    "name": "15 - 45 y"
+                },
+                "IHMvH38Cwgx": {
+                    "name": "5 - 11 m"
+                },
+                "J6952sjszkA": {
+                    "name": "6 - 11 m"
+                },
+                "J78bBZyyW5c": {
+                    "name": "> 45 y"
+                },
+                "JWJmWAiAumm": {
+                    "name": "24 - 59 m"
+                },
+                "MxbvnlvBcbu": {
+                    "name": "2 - 4 y"
+                },
+                "NjNKDBJ1Svq": {
+                    "name": "24 - 35 m"
+                },
+                "OAfN55Y0ch3": {
+                    "name": "> 14 y"
+                },
+                "OOOeIPhGjzf": {
+                    "name": "2 - 11 m"
+                },
+                "OYaOs0KPzjK": {
+                    "name": "15 - 19 y"
+                },
+                "Qeo0TBePh98": {
+                    "name": "5 - 14 y"
+                },
+                "TwUxJTY3rtq": {
+                    "name": "30 - 45 y"
+                },
+                "TxrDyNmi2XN": {
+                    "name": "2 - 11 m"
+                },
+                "UrNpL1aZbE4": {
+                    "name": "0 - 6 w"
+                },
+                "VRX1b1p3Ba2": {
+                    "name": "12 - 59 m"
+                },
+                "WKsdFFi6J0q": {
+                    "name": "30 - 45 y"
+                },
+                "WkQrsL6dWma": {
+                    "name": "5 - 7 y"
+                },
+                "Wul4OM2LLUS": {
+                    "name": "6 - 8 m"
+                },
+                "Wy9pbFUUkx3": {
+                    "name": "5 - 9 y"
+                },
+                "XBpMJkq8Zvo": {
+                    "name": "> 14 y"
+                },
+                "Y86VjYO1RjK": {
+                    "name": "9 - 11 m"
+                },
+                "Zh8LtDVbs2k": {
+                    "name": "5 - 7 y"
+                },
+                "aOKeL9Dc9Om": {
+                    "name": "6 - 11 m"
+                },
+                "aWAiETbFZVa": {
+                    "name": "9 - 59 m"
+                },
+                "aoQHuEKd0tY": {
+                    "name": "8 - 14 y"
+                },
+                "ayCQ7FPkkhi": {
+                    "name": "12 - 59 m"
+                },
+                "bClXexCm0Tl": {
+                    "name": "> 30 y"
+                },
+                "bFU2PNcOf6k": {
+                    "name": "25 - 59 m"
+                },
+                "crPESHASfpI": {
+                    "name": "0 - 11 m"
+                },
+                "dwusui0STtc": {
+                    "name": "15 - 45 y"
+                },
+                "dx": {
+                    "name": "Data"
+                },
+                "e0cPRcP5XNc": {
+                    "name": "Age distribution (%)"
+                },
+                "ekehdmjV2sG": {
+                    "name": "8 - 11 m"
+                },
+                "fnZu45UhqYW": {
+                    "name": "12 - 23 m"
+                },
+                "iSQvyRRdfg8": {
+                    "name": "5 - 12 y"
+                },
+                "ia2FalGX1jy": {
+                    "name": "6 w - 11 m"
+                },
+                "iqHPnnKYlF6": {
+                    "name": "2 - 4 y"
+                },
+                "jeRJuMqW4QV": {
+                    "name": "15 - 29 y"
+                },
+                "jyPce4uqMQ2": {
+                    "name": "9 - 14 y"
+                },
+                "l9O3DEcPig2": {
+                    "name": "15 - 19 y"
+                },
+                "lX9SqhZm23s": {
+                    "name": "12 - 23 m"
+                },
+                "lrjmTKZJUEx": {
+                    "name": "External Consultations"
+                },
+                "mKkzuzv5Ier": {
+                    "name": "8 - 11 m"
+                },
+                "mL5SUc8K5Zx": {
+                    "name": "24 - 59 m"
+                },
+                "mgeEAcULoaL": {
+                    "name": "9 - 59 m"
+                },
+                "nOqgZtnoiT6": {
+                    "name": "0 - 5 w"
+                },
+                "nkEGI7N2kUB": {
+                    "name": "5 - 14 y"
+                },
+                "obDbAvNDFF8": {
+                    "name": "0 - 6 w"
+                },
+                "onOCGaKWYs4": {
+                    "name": "9 - 11 m"
+                },
+                "ou": {
+                    "name": "Organisation unit"
+                },
+                "pe": {
+                    "name": "Period"
+                },
+                "qNbalD7KAcu": {
+                    "name": "24 - 35 m"
+                },
+                "sI0LE90Kzhi": {
+                    "name": "0 - 11 m"
+                },
+                "t9J6rvVzK2T": {
+                    "name": "10 - 14 y"
+                },
+                "u4ygmgNB0ks": {
+                    "name": "0 - 1 m"
+                },
+                "uQH8nGgiyQn": {
+                    "name": "5 - 12 y"
+                },
+                "uaaMNSXGGTT": {
+                    "name": "_23.5 RVC Age groups"
+                },
+                "us11XgsMjfa": {
+                    "name": "10 - 14 y"
+                },
+                "vQW8S2iK9iO": {
+                    "name": "0 - 1 m"
+                },
+                "ve6jWYVBySB": {
+                    "name": "5 - 9 y"
+                },
+                "wY8HiLmETeU": {
+                    "name": "ZZZ_RUSK_211201_Bikenge, Rougeole_CLOSED"
+                },
+                "yawHvPkkmII": {
+                    "name": "9 - 14 y"
+                },
+                "ykuSLuR0zjf": {
+                    "name": "> 30 y"
+                }
+            }
+        },
+        "rowContext": {
+        },
+        "rows": [
+            [
+                "e0cPRcP5XNc",
+                "mKkzuzv5Ier",
+                "20251119",
+                "lrjmTKZJUEx",
+                "4.0"
+            ],
+            [
+                "e0cPRcP5XNc",
+                "fnZu45UhqYW",
+                "20251119",
+                "lrjmTKZJUEx",
+                "2.0"
+            ],
+            [
+                "e0cPRcP5XNc",
+                "fnZu45UhqYW",
+                "20251119",
+                "wY8HiLmETeU",
+                "2.0"
+            ],
+            [
+                "e0cPRcP5XNc",
+                "mKkzuzv5Ier",
+                "20251119",
+                "wY8HiLmETeU",
+                "4.0"
+            ],
+            [
+                "e0cPRcP5XNc",
+                "qNbalD7KAcu",
+                "20251119",
+                "wY8HiLmETeU",
+                "3.0"
+            ],
+            [
+                "e0cPRcP5XNc",
+                "CTU4Nsrhu9T",
+                "20251119",
+                "wY8HiLmETeU",
+                "5.0"
+            ],
+            [
+                "e0cPRcP5XNc",
+                "IHMvH38Cwgx",
+                "20251119",
+                "lrjmTKZJUEx",
+                "1.0"
+            ],
+            [
+                "e0cPRcP5XNc",
+                "IHMvH38Cwgx",
+                "20251119",
+                "wY8HiLmETeU",
+                "1.0"
+            ],
+            [
+                "e0cPRcP5XNc",
+                "qNbalD7KAcu",
+                "20251119",
+                "lrjmTKZJUEx",
+                "3.0"
+            ],
+            [
+                "e0cPRcP5XNc",
+                "CTU4Nsrhu9T",
+                "20251119",
+                "lrjmTKZJUEx",
+                "5.0"
+            ]
+        ],
+        "width": 5
+    }
+}

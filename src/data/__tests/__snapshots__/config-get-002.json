@@ -1,0 +1,21 @@
+{
+    "args": [
+        "/metadata",
+        {
+            "categories:fields": "id,displayName,code,dataDimensionType,dataDimension",
+            "categories:filter": "code:in:[RVC_TEAM]",
+            "translate": true
+        }
+    ],
+    "returnValue": {
+        "categories": [
+            {
+                "code": "RVC_TEAM",
+                "dataDimension": true,
+                "dataDimensionType": "ATTRIBUTE",
+                "displayName": "_23.4 RVC Teams",
+                "id": "qCY7FfAFlPl"
+            }
+        ]
+    }
+}

@@ -1,0 +1,21 @@
+{
+    "args": [
+        "/dataSets",
+        {
+            "fields": [
+                "id"
+            ],
+            "filter": "id:eq:undefined"
+        }
+    ],
+    "returnValue": {
+        "dataSets": [
+        ],
+        "pager": {
+            "page": 1,
+            "pageCount": 0,
+            "pageSize": 50,
+            "total": 0
+        }
+    }
+}
