@@ -477,7 +477,7 @@ export default class CampaignDb {
             (existingDataSet &&
                 existingDataSet.dataEntryForm &&
                 existingDataSet.dataEntryForm.id) ||
-            getUid("dataEntryForm", campaign.id);
+            getUid("dataEntryForm", campaign.name);
 
         return {
             id: formId,

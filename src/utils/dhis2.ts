@@ -1,24 +1,27 @@
 import md5 from "md5";
+import { D2 } from "../models/d2.types";
 
-function getCurrentUserSymbol(d2, symbolName, defaultValue) {
+function getCurrentUserSymbol(d2: D2, symbolName: string, defaultValue: unknown) {
     const { currentUser } = d2;
     const symbol = Object.getOwnPropertySymbols(currentUser).find(
         symbol => symbol.toString() === `Symbol(${symbolName})`
     );
 
-    if (!symbol || !currentUser[symbol]) {
+    const value = symbol ? (currentUser as any)[symbol] : undefined;
+
+    if (!value) {
         console.error(`Cannot get symbol for current user: ${symbolName}`);
         return defaultValue;
     } else {
-        return currentUser[symbol];
+        return value;
     }
 }
 
-export function getCurrentUserRoles(d2) {
+export function getCurrentUserRoles(d2: D2) {
     return getCurrentUserSymbol(d2, "userRoles", []);
 }
 
-export function getCurrentUserDataViewOrganisationUnits(d2) {
+export function getCurrentUserDataViewOrganisationUnits(d2: D2) {
     return getCurrentUserSymbol(d2, "dataViewOrganisationUnits", []);
 }
 
@@ -35,8 +38,8 @@ const uidStructure = [asciiLetters, ...range10.map(() => asciiLettersAndNumbers)
 const maxHashValue = uidStructure.map(cs => cs.length).reduce((acc, n) => acc * n, 1);
 
 /* Return pseudo-random UID from seed prefix/key */
-export function getUid(prefix, key) {
-    const seed = prefix + key;
+export function getUid(...values: string[]): string {
+    const seed = values.join("");
     const md5hash = md5(seed);
     const nHashChars = Math.ceil(Math.log(maxHashValue) / Math.log(16));
     const hashInteger = parseInt(md5hash.slice(0, nHashChars), 16);

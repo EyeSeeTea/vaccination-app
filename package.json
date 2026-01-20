@@ -1,7 +1,7 @@
 {
     "name": "vaccination-app",
     "description": "DHIS2 MSF Vaccination Campaign App",
-    "version": "2.5.0",
+    "version": "2.5.0-rc.2",
     "license": "GPL-3.0",
     "author": "EyeSeeTea team",
     "homepage": ".",

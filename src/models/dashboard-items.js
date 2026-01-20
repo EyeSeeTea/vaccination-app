@@ -249,7 +249,7 @@ function getCharts({
                 campaign: campaign,
                 id: getUid(
                     "chart",
-                    campaign.id +
+                    campaign.name +
                         antigen?.id +
                         chart.appendCode +
                         organisationUnits.map(ou => ou.id).join("-")
@@ -293,7 +293,7 @@ function getTables({
                 campaign: campaign,
                 id: getUid(
                     "table",
-                    campaign.id +
+                    campaign.name +
                         antigen?.id +
                         c.appendCode +
                         organisationUnits.map(ou => ou.id).join("-") +

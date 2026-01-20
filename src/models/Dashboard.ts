@@ -191,6 +191,7 @@ export class Dashboard {
 
         const dashboardItems = this.createDashboardItems(
             campaign,
+            dashboardCode,
             datasetName,
             startDate,
             endDate,
@@ -205,7 +206,7 @@ export class Dashboard {
             .value();
 
         const dashboard = {
-            id: dashboardId || getUid("dashboard", campaign.id),
+            id: dashboardId || getUid("dashboard", dashboardCode),
             name: `${datasetName}`,
             code: dashboardCode,
             dashboardItems: items,
@@ -219,6 +220,7 @@ export class Dashboard {
 
     createDashboardItems(
         campaign: Campaign,
+        dashboardCode: string,
         datasetName: String,
         startDate: Moment,
         endDate: Moment,
@@ -273,13 +275,13 @@ export class Dashboard {
         const reportTableIds = reportTables.map(table => table.id);
 
         const dashboardCharts = chartIds.map((id: string) => ({
-            id: getUid("dashboardItem", campaign.id + id),
+            id: getUid("dashboardItem", dashboardCode, id),
             type: "VISUALIZATION",
             visualization: { id },
         }));
 
         const dashboardTables = reportTableIds.map((id: string) => ({
-            id: getUid("dashboardItem", campaign.id + id),
+            id: getUid("dashboardItem", dashboardCode, id),
             type: "VISUALIZATION",
             visualization: { id },
         }));
