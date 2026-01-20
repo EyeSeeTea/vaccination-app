@@ -1,6 +1,7 @@
 import { toMatchFile } from "jest-file-snapshot";
 import fs from "fs";
 import path from "path";
+import stringify from "json-stable-stringify";
 
 import "./FulfillableMock";
 import { FulfillableMock } from "./FulfillableMock";
@@ -164,7 +165,7 @@ type SerializedCall = {
 };
 
 function expectCallMatchesSnapshot(snapshotFilePath: string, call: SerializedCall) {
-    const pretty = JSON.stringify(call, null, 4);
+    const pretty = stringify(call, { space: 4 }) + "\n";
     return expect(pretty).toMatchFile(snapshotFilePath);
 }
 

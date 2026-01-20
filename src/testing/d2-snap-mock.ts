@@ -5,7 +5,7 @@ import { init } from "d2";
 
 import { D2, D2ApiLegacy, D2ApiLegacyGetNoGeneric } from "../models/d2.types";
 import DbD2 from "../models/db-d2";
-import { stabilizeD2MetadataResponse } from "./d2-processors";
+import { D2MetadataResponse, stabilizeD2MetadataResponse } from "./d2-processors";
 import { D2Api } from "../types/d2-api";
 import { assert } from "../utils/assert";
 import { recordAndReplayFnCalls } from "./mock-fn-record-and-replay";
@@ -48,7 +48,13 @@ export function getD2ApiSnapMock(name: string): SnapshotMock<D2Api> {
         metadata: {
             get: getD2ApiResponseMock<D2Api["metadata"]["get"]>(
                 `${name}-metadata-get`,
-                (api, args) => api.metadata.get(...args).getData()
+                (api, args) =>
+                    api.metadata
+                        .get(...args)
+                        .getData()
+                        .then(res =>
+                            stabilizeD2MetadataResponse(res as unknown as D2MetadataResponse)
+                        )
             ),
             post: getD2ApiResponseMock<D2Api["metadata"]["post"]>(
                 `${name}-metadata-post`,

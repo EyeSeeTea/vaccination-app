@@ -19,14 +19,15 @@ export type D2MetadataResponse = Partial<{
     categoryOptionGroups: D2CategoryOptionGroup[];
     users: D2User[];
     categoryCombos: D2CategoryCombo[];
-}>;
+}> &
+    Record<string, unknown[]>;
 
 export function stabilizeD2MetadataResponse(d2Response: D2MetadataResponse): D2MetadataResponse {
     if (!d2Response.system) return d2Response;
 
     const { system: _system, ...metadata } = d2Response;
 
-    return {
+    const nested = {
         ...metadata,
 
         ...(metadata.dataElementGroups
@@ -43,17 +44,20 @@ export function stabilizeD2MetadataResponse(d2Response: D2MetadataResponse): D2M
 
         ...(metadata.dataSets
             ? {
-                  dataSets: (metadata.dataSets || []).map(dataSet => ({
-                      ...dataSet,
-                      ...(dataSet.dataSetElements
-                          ? {
-                                dataSetElements: _.sortBy(
-                                    dataSet.dataSetElements,
-                                    dataSetElement => dataSetElement.dataElement.id
-                                ),
-                            }
-                          : {}),
-                  })),
+                  dataSets: (metadata.dataSets || []).map(dataSet => {
+                      return {
+                          ...dataSet,
+                          version: 1,
+                          ...(dataSet.dataSetElements
+                              ? {
+                                    dataSetElements: _.sortBy(
+                                        dataSet.dataSetElements,
+                                        dataSetElement => dataSetElement.dataElement.id
+                                    ),
+                                }
+                              : {}),
+                      };
+                  }),
               }
             : {}),
 
@@ -121,4 +125,75 @@ export function stabilizeD2MetadataResponse(d2Response: D2MetadataResponse): D2M
               }
             : {}),
     };
+
+    removeNestedPropertiesInPlace(nested, "lastUpdated");
+    traverseCollectionItemsInplace<User>(nested, "users", anonymizeUser);
+    return nested;
+}
+
+type User = {
+    name?: string;
+    displayName?: string;
+    username?: string;
+};
+
+/**
+ * Recursively traverse any JS object and apply a callback to each item
+ * in any <prop> array found (at any depth).
+ */
+function traverseCollectionItemsInplace<Item>(
+    obj: unknown,
+    prop: string,
+    processItem: (item: Item) => void
+): void {
+    if (Array.isArray(obj)) {
+        for (const item of obj) {
+            traverseCollectionItemsInplace(item, prop, processItem);
+        }
+    } else if (obj && typeof obj === "object") {
+        for (const [key, value] of Object.entries(obj)) {
+            if (key === prop && Array.isArray(value)) {
+                for (const user of value) {
+                    processItem(user);
+                }
+            } else {
+                traverseCollectionItemsInplace(value, prop, processItem);
+            }
+        }
+    }
+}
+
+function removeNestedPropertiesInPlace(obj: unknown, prop: string): void {
+    if (Array.isArray(obj)) {
+        for (const item of obj) {
+            removeNestedPropertiesInPlace(item, prop);
+        }
+    } else if (obj && typeof obj === "object") {
+        for (const [key, value] of Object.entries(obj)) {
+            if (key === prop) {
+                delete (obj as any)[key];
+            } else {
+                removeNestedPropertiesInPlace(value, prop);
+            }
+        }
+    }
+}
+
+function hashString(input: string): number {
+    let hash = 0;
+    for (let i = 0; i < input.length; i++) {
+        hash = (hash << 5) - hash + input.charCodeAt(i);
+        hash |= 0;
+    }
+    return Math.abs(hash);
+}
+
+function anonymizeUser(user: User): void {
+    const seed = user.username ?? user.displayName ?? user.name ?? "unknown";
+
+    const hash = hashString(seed);
+
+    if (user.username) user.username = `user_${hash}`;
+    if (user.name) user.name = `User ${hash % 10000}`;
+    if (user.displayName) user.displayName = `User ${hash % 10000}`;
 }

@@ -31,7 +31,7 @@ class TeamCampaignBuilder {
 
         const campaign = Campaign.create(this.config, this.db)
             .update({
-                name: "Campaign Test",
+                name: "0Campaign Test",
                 description: "Campaign Test description",
                 startDate: new Date("2025-11-19"),
                 endDate: new Date("2025-11-20"),

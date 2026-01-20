@@ -21,10 +21,10 @@ describe("CampaignD2Repository", () => {
         it("should get campaign with correct disaggregations", async () => {
             const { config } = await getConfig();
             const mockD2 = getDbD2SnapMock("campaign-get");
-            const campaign = await new CampaignD2Repository(config, mockD2).get("mOGi376dpt2");
+            const campaign = await new CampaignD2Repository(config, mockD2).get("CgW2JWldLHu");
 
             expect(mockD2).toBeFulfilled();
-            expect(campaign.name).toEqual("Campaign Test");
+            expect(campaign.name).toEqual("0Campaign Test");
             expect(campaign.antigenCodes).toEqual(["RVC_ANTIGEN_MALARIA", "RVC_ANTIGEN_JPENC"]);
 
             const [malaria, japaneseEnc] = campaign.antigensDisaggregation.getEnabled();
