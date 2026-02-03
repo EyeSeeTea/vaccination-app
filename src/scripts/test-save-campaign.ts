@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { command, run, option, string } from "cmd-ts";
-import { getD2LegacyApi } from "./utils";
+import { getAppApi } from "./utils";
 import { MetadataConfig } from "../models/config";
 // @ts-ignore
 import DbD2 from "../models/db-d2";
@@ -23,7 +23,7 @@ const program = command({
         }),
     },
     handler: async args => {
-        const d2ApiLegacy = await getD2LegacyApi(args);
+        const d2ApiLegacy = await getAppApi(args);
         await new SaveCampaign(d2ApiLegacy).execute();
     },
 });

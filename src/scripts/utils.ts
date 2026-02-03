@@ -1,10 +1,12 @@
+import _ from "lodash";
 import { D2Api } from "@eyeseetea/d2-api/2.36";
 import { option, string } from "cmd-ts";
 import { init } from "d2";
-import { getMetadataConfig } from "../models/config";
+import { getMetadataConfig, MetadataConfig } from "../models/config";
 import DbD2 from "../models/db-d2";
 import { default as Api } from "d2/api/Api";
 import { assert } from "../utils/assert";
+import { list } from "../models/datasets";
 
 export function getD2Api(options: { auth: string; baseUrl: string }) {
     const { auth, baseUrl } = options;
@@ -18,7 +20,11 @@ export function getD2Api(options: { auth: string; baseUrl: string }) {
     });
 }
 
-export async function getD2LegacyApi(options: { url: string; auth: string }) {
+export type LegacyApi = { config: MetadataConfig; db: DbD2 };
+
+export type AppApi = { d2Api: D2Api; legacy: LegacyApi };
+
+export async function getAppApi(options: { url: string; auth: string }): Promise<AppApi> {
     const { url, auth } = options;
 
     const api = new Api();
@@ -28,7 +34,10 @@ export async function getD2LegacyApi(options: { url: string; auth: string }) {
     const db = new DbD2(d2);
     const config = await getMetadataConfig(db);
 
-    return { config: config, db: db };
+    return {
+        d2Api: getD2Api({ auth, baseUrl: url }),
+        legacy: { config, db },
+    };
 }
 
 export function getDefaultD2Args() {
@@ -69,4 +78,27 @@ export function getSourceTargetD2Args() {
             description: "Target authentication credentials (USER:PASSWORD)",
         }),
     };
+}
+
+type CampaignDataSet = {
+    id: string;
+    name: string;
+    organisationUnits: Array<{ id: string }>;
+};
+
+export async function getCampaignDataSets(options: {
+    config: MetadataConfig;
+    db: DbD2;
+}): Promise<CampaignDataSet[]> {
+    const res = await list(options.config, options.db.d2, {}, { pageSize: 1_000 });
+
+    return _(res.objects as CampaignDataSet[])
+        .reject(dataSet =>
+            Boolean(
+                dataSet.name.match(/\btest\b/) ||
+                    dataSet.name.match(/DEFAULT/) ||
+                    dataSet.name.match(/Pilot/)
+            )
+        )
+        .value();
 }

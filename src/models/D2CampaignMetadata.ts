@@ -80,7 +80,8 @@ export const dataElementsInfo: DataElementInfo[] = [
         categoryCombo: { code: "RVC_AGE_GROUP" },
         storeZeroDataValues: false,
     },
-    // Skip General Q&S (ADS, AEB, Safety boxes), common to all antigens
+    // Skip data elements without disaggregation: RVC_ADS_USED, RVC_AGE_DISTRIBUTION,
+    // RVC_SAFETY_BOXES, RVC_TOTAL_POPULATION
 ];
 
 type Indicator = {
@@ -354,8 +355,8 @@ type Disaggregation = Partial<Record<DisaggregationType, CategoryOptionValue>>;
 
 export function getDataElementFromDisaggregation(
     dataElementConfig: DataElementInfo,
-    disaggregation: Disaggregation,
-    dataElements: DataElementRef[]
+    dataElements: DataElementRef[],
+    disaggregation: Disaggregation
 ): DataElementRef {
     const dataElementCode = _.compact([
         dataElementConfig.code,

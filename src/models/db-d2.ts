@@ -338,6 +338,7 @@ export default class DbD2 {
 
         const missingCodes = _(codes)
             .difference(categoryCombos.map(cc => cc.code))
+            .remove("default")
             .value();
 
         if (!_(missingCodes).isEmpty()) {

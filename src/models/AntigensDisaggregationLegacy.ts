@@ -14,6 +14,7 @@ const fp = require("lodash/fp");
 export type CampaignType = "preventive" | "reactive";
 
 const defaultCampaignType: CampaignType = "preventive";
+
 interface AntigenDisaggregationData {
     name: string;
     code: string;

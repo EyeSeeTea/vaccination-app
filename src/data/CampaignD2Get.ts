@@ -13,6 +13,7 @@ import { getAntigenCode } from "../models/D2CampaignMetadata";
 import { AntigenConfig, getDashboardCode, MetadataConfig } from "../models/config";
 import DbD2 from "../models/db-d2";
 import { Maybe, OrganisationUnitPathOnly, Ref } from "../models/db.types";
+import { PairOf } from "../utils/typescript";
 
 export class CampaignD2Get {
     constructor(private config: MetadataConfig, private db: DbD2) {}
@@ -140,7 +141,6 @@ export function getAntigenCodeFromSection(section: { code: Maybe<string> }): str
     // section.code: "RVC_${dataSetId}-MALARIA"
     return section.code?.split("-")[1] || "";
 }
-type PairOf<T> = [keyof T, T[keyof T]];
 type MetadataQuery = {
     dataSets: Array<{
         id: string;
