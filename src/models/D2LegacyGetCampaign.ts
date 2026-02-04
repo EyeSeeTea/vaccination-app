@@ -92,8 +92,8 @@ export class D2LegacyGetCampaign {
         const { categoryComboCodeForTeams } = config;
         const { name, sections } = dataSet;
         const ouIds = dataSet.organisationUnits.map(ou => ou.id);
-        const teamsCategoyId = getByIndex(config.categories, "code", categoryComboCodeForTeams).id;
-        const teamsMetadata = await getTeamsForCampaign(db, ouIds, teamsCategoyId, name);
+        const teamsCategoryId = getByIndex(config.categories, "code", categoryComboCodeForTeams).id;
+        const teamsMetadata = await getTeamsForCampaign(db, ouIds, teamsCategoryId, name);
         const antigensDisaggregation = AntigensDisaggregationLegacy.build(
             config,
             antigens,

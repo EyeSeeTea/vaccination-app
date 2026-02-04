@@ -31,7 +31,14 @@
 
 import _ from "lodash";
 import { array, command, flag, multioption, run, string } from "cmd-ts";
-import { AppApi, getAppApi, getCampaignDataSets, getSourceTargetD2Args } from "./utils";
+import {
+    AppApi,
+    getAppApi,
+    getCampaignDataSets,
+    getLogsArguments,
+    getSourceTargetD2Args,
+    setupLogsFromArgs,
+} from "./utils";
 import { D2Api, DataValueSetsDataValue } from "../types/d2-api";
 import { promiseMap } from "../utils/promises";
 import { assertCondition, assertValue } from "../utils/assert";
@@ -59,8 +66,10 @@ const program = command({
             long: "post",
             description: "Actually post migrated data values to target DHIS2",
         }),
+        ...getLogsArguments(),
     },
     handler: async args => {
+        setupLogsFromArgs(args);
         const apiSource = await getAppApi({ auth: args.sourceAuth, url: args.sourceUrl });
         const apiTarget = await getAppApi({ auth: args.targetAuth, url: args.targetUrl });
         new MigrateData(apiSource, apiTarget).execute(args);

@@ -240,7 +240,12 @@ export function filterTeamsByNames(
     if (_.isEmpty(teams)) return [];
     const nameMatches = (teamName: string, campaignName: string) => {
         const splitStr = " - ";
-        const campaignNameFromTeam = teamName.split(splitStr).slice(1).join(splitStr);
+        const campaignNameFromTeam = teamName
+            .split(splitStr)
+            .slice(1)
+            .join(splitStr)
+            // Remove stray quotes from DHIS2 names
+            .replace(/["']/g, "");
         const prefixRegexp = new RegExp("^Team \\d+" + splitStr);
         return Boolean(teamName.match(prefixRegexp) && campaignName === campaignNameFromTeam);
     };

@@ -23,8 +23,8 @@ const program = command({
         }),
     },
     handler: async args => {
-        const d2ApiLegacy = await getAppApi(args);
-        await new SaveCampaign(d2ApiLegacy).execute();
+        const appApi = await getAppApi(args);
+        await new SaveCampaign(appApi.legacy).execute();
     },
 });
 

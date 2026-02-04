@@ -1,12 +1,13 @@
 import _ from "lodash";
 import { D2Api } from "@eyeseetea/d2-api/2.36";
-import { option, string } from "cmd-ts";
+import { option, optional, string } from "cmd-ts";
 import { init } from "d2";
 import { getMetadataConfig, MetadataConfig } from "../models/config";
 import DbD2 from "../models/db-d2";
 import { default as Api } from "d2/api/Api";
 import { assert } from "../utils/assert";
 import { list } from "../models/datasets";
+import { setupLogs } from "./logging";
 
 export function getD2Api(options: { auth: string; baseUrl: string }) {
     const { auth, baseUrl } = options;
@@ -101,4 +102,24 @@ export async function getCampaignDataSets(options: {
             )
         )
         .value();
+}
+
+export function getLogsArguments() {
+    return {
+        logFile: option({
+            type: optional(string),
+            long: "log-file",
+            description: "Path to log file",
+        }),
+    };
+}
+
+export function setupLogsFromArgs(args: { logFile?: string }) {
+    if (args.logFile) {
+        setupLogs({
+            file: args.logFile,
+            append: false,
+            timestamps: true,
+        });
+    }
 }

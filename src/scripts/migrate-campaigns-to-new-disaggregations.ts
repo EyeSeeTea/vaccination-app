@@ -1,6 +1,13 @@
 import _ from "lodash";
 import { command, flag, option, optional, run, string } from "cmd-ts";
-import { getAppApi, getSourceTargetD2Args, AppApi, getCampaignDataSets } from "./utils";
+import {
+    getAppApi,
+    getSourceTargetD2Args,
+    AppApi,
+    getCampaignDataSets,
+    getLogsArguments,
+    setupLogsFromArgs,
+} from "./utils";
 import Campaign from "../models/campaign";
 import { CampaignD2Repository } from "../data/CampaignD2Repository";
 import DbD2 from "../models/db-d2";
@@ -21,8 +28,11 @@ const program = command({
             long: "all-campaigns",
             description: "Migrate all campaigns from source to target",
         }),
+        ...getLogsArguments(),
     },
     handler: async args => {
+        setupLogsFromArgs(args);
+
         const source = await getAppApi({ url: args.sourceUrl, auth: args.sourceAuth });
         const target = await getAppApi({ url: args.targetUrl, auth: args.targetAuth });
 
