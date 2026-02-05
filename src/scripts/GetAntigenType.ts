@@ -1,7 +1,7 @@
-import { assert } from "../utils/assert";
+import { assert, assertValue } from "../utils/assert";
 import { D2Api } from "../types/d2-api";
-import { CampaignRef } from "./migrate-campaigns-to-new-disaggregations";
-import { CampaignType } from "../models/AntigensDisaggregation";
+import { AntigenDisaggregationEnabled, CampaignType } from "../models/AntigensDisaggregation";
+import Campaign from "../models/campaign";
 
 /**
  * Determine campaign type (reactive/preventive) for antigens in a campaign.
@@ -38,36 +38,40 @@ export class GetAntigenType {
         });
     }
 
-    execute(options: {
-        campaign: CampaignRef | undefined;
-        antigenCode: string;
-        fallback?: CampaignType;
-    }): CampaignType {
+    execute(options: { campaign: Campaign; antigenCode: string }): CampaignType {
         const { campaign, antigenCode } = options;
-        const antigenIsSelectable = this.data.selectableAntigenCodes.includes(antigenCode);
 
-        // Info from categoryOptionGroup RVC_ANTIGEN_TYPE_SELECTABLE:
-        // "Antigens that can be selected also as campaign type Reactive (default: Preventive)"
-        if (!antigenIsSelectable) {
+        const antigen = this.getAntigen(campaign, antigenCode);
+        const typeFromCampaignName = this.getTypeFromCampaignName(campaign);
+
+        if (antigen.type) {
+            return antigen.type;
+        } else if (!antigen.antigen.isTypeSelectable) {
             return "preventive";
-        } else if (campaign) {
-            return this.getTypeFromCampaignName(campaign);
-        } else if (options.fallback) {
-            return options.fallback;
+        } else if (typeFromCampaignName) {
+            return typeFromCampaignName;
         } else {
-            const msg = `Cannot determine campaign type for antigen "${antigenCode}" with no campaign`;
-            throw new Error(msg);
+            throw new Error(`Cannot determine campaign type for antigen "${antigenCode}"`);
         }
     }
 
-    private getTypeFromCampaignName(campaign: CampaignRef): "preventive" | "reactive" {
+    private getAntigen(
+        campaign: Campaign,
+        antigenCode: string
+    ): AntigenDisaggregationEnabled[number] {
+        const antigens = campaign.antigensDisaggregation.getEnabled();
+        const antigen = antigens.find(a => a.antigen.code === antigenCode);
+        assertValue(antigen, `Antigen "${antigenCode}" not found in campaign ${campaign.id}`);
+        return antigen;
+    }
+
+    private getTypeFromCampaignName(campaign: Campaign): CampaignType | undefined {
         if (campaign.name.includes("REAC")) {
             return "reactive";
         } else if (campaign.name.includes("PRE")) {
             return "preventive";
         } else {
-            const msg = `[${campaign.id}] Could not determine type based on name "${campaign.name}"`;
-            throw new Error(msg);
+            return undefined;
         }
     }
 }

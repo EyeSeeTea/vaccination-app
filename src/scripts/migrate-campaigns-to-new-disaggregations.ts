@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { command, flag, option, optional, run, string } from "cmd-ts";
+import { array, command, flag, multioption, run, string } from "cmd-ts";
 import {
     getAppApi,
     getSourceTargetD2Args,
@@ -12,15 +12,14 @@ import Campaign from "../models/campaign";
 import { CampaignD2Repository } from "../data/CampaignD2Repository";
 import DbD2 from "../models/db-d2";
 import { MetadataConfig } from "../models/config";
-import { assert } from "../utils/assert";
 import { GetAntigenType } from "./GetAntigenType";
 
 const program = command({
     name: "create-disaggregated-metadata",
     args: {
         ...getSourceTargetD2Args(),
-        campaignId: option({
-            type: optional(string),
+        campaignIds: multioption({
+            type: array(string),
             long: "campaign-id",
             description: "Campaign (data set) ID of the campaign to migrate",
         }),
@@ -36,18 +35,22 @@ const program = command({
         const source = await getAppApi({ url: args.sourceUrl, auth: args.sourceAuth });
         const target = await getAppApi({ url: args.targetUrl, auth: args.targetAuth });
 
-        if (!args.campaignId && !args.allCampaigns) {
-            throw new Error("Either --campaign-id or --all-campaigns must be provided");
+        if (args.campaignIds.length === 0 && !args.allCampaigns) {
+            throw new Error("At least one --campaign-id or --all-campaigns must be provided");
         }
 
         const campaignIds = args.allCampaigns
             ? await MigrateCampaignToNewDisaggregations.getCampaignIds(source.legacy)
-            : _.compact([args.campaignId]);
+            : args.campaignIds;
 
         const migrateCampaign = await MigrateCampaignToNewDisaggregations.init({ source, target });
 
         for (const id of campaignIds) {
-            await migrateCampaign.execute(id);
+            try {
+                await migrateCampaign.execute(id);
+            } catch (error) {
+                console.error(`Error migrating campaign ${id}: ${(error as Error).message}`);
+            }
         }
     },
 });
@@ -87,19 +90,13 @@ class MigrateCampaignToNewDisaggregations {
     // based on the logic in GetAntigenType
     private async updateCampaignTypeForAntigens(campaign: Campaign): Promise<Campaign> {
         const getAntigenType = await GetAntigenType.init({ api: this.instances.target.d2Api });
-        const campaignRef = { id: assert(campaign.id), name: campaign.name };
 
         return campaign.antigens.reduce((accCampaign, antigen) => {
-            const campaignType = getAntigenType.execute({
-                campaign: campaignRef,
-                antigenCode: antigen.code,
-            });
+            const campaignType = getAntigenType.execute({ campaign, antigenCode: antigen.code });
             console.debug(`  - Setting antigen ${antigen.code} to ${campaignType.toUpperCase()}`);
             return accCampaign.setCampaignTypeForAntigen(antigen, campaignType);
         }, campaign);
     }
 }
-
-export type CampaignRef = { id: string; name: string };
 
 run(program, process.argv.slice(2));

@@ -8,6 +8,11 @@ import { default as Api } from "d2/api/Api";
 import { assert } from "../utils/assert";
 import { list } from "../models/datasets";
 import { setupLogs } from "./logging";
+import {
+    DataSetWithDataInputPeriods,
+    getCampaignPeriods,
+    ModelWithAttributes,
+} from "../models/CampaignDbLegacy";
 
 export function getD2Api(options: { auth: string; baseUrl: string }) {
     const { auth, baseUrl } = options;
@@ -81,10 +86,19 @@ export function getSourceTargetD2Args() {
     };
 }
 
-type CampaignDataSet = {
+type CampaignDataSetRes = {
     id: string;
     name: string;
     organisationUnits: Array<{ id: string }>;
+} & ModelWithAttributes &
+    DataSetWithDataInputPeriods;
+
+export type CampaignDataSet = {
+    id: string;
+    name: string;
+    organisationUnits: Array<{ id: string }>;
+    startDate: Date;
+    endDate: Date;
 };
 
 export async function getCampaignDataSets(options: {
@@ -93,7 +107,12 @@ export async function getCampaignDataSets(options: {
 }): Promise<CampaignDataSet[]> {
     const res = await list(options.config, options.db.d2, {}, { pageSize: 1_000 });
 
-    return _(res.objects as CampaignDataSet[])
+    return _(res.objects as CampaignDataSetRes[])
+        .map(dataSet => {
+            const periods = getCampaignPeriods(dataSet);
+            if (!periods) throw new Error(`Data set ${dataSet.name} has no valid periods`);
+            return { ...dataSet, ...periods };
+        })
         .reject(dataSet =>
             Boolean(
                 dataSet.name.match(/\btest\b/) ||

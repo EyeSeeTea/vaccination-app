@@ -41,7 +41,7 @@ import {
 } from "./utils";
 import { D2Api, DataValueSetsDataValue } from "../types/d2-api";
 import { promiseMap } from "../utils/promises";
-import { assertCondition, assertValue } from "../utils/assert";
+import { assert, assertCondition, assertValue } from "../utils/assert";
 import {
     DataElementInfo,
     dataElementsInfo,
@@ -52,15 +52,22 @@ import { fromPairs } from "../utils/lodash-mixins";
 import { Ref } from "../models/db.types";
 import { PairOf } from "../utils/typescript";
 import { GetAntigenType } from "./GetAntigenType";
+import Campaign from "../models/campaign";
+import { CampaignD2Repository } from "../data/CampaignD2Repository";
+import { CampaignRepository } from "../domain/repositories/CampaignRepository";
 
 const program = command({
     name: "create-disaggregated-metadata",
     args: {
         ...getSourceTargetD2Args(),
-        orgUnitIds: multioption({
+        campaignIds: multioption({
             type: array(string),
-            long: "orgunit-ids",
-            description: "Organisation Unit IDs to migrate (all children will be included)",
+            long: "campaign-id",
+            description: "Campaign (data set) ID of the campaign to migrate",
+        }),
+        allCampaigns: flag({
+            long: "all-campaigns",
+            description: "Migrate all campaigns from source to target",
         }),
         post: flag({
             long: "post",
@@ -69,10 +76,22 @@ const program = command({
         ...getLogsArguments(),
     },
     handler: async args => {
+        if (args.campaignIds.length === 0 && !args.allCampaigns) {
+            throw new Error("At least one --campaign-id or --all-campaigns must be provided");
+        }
         setupLogsFromArgs(args);
         const apiSource = await getAppApi({ auth: args.sourceAuth, url: args.sourceUrl });
         const apiTarget = await getAppApi({ auth: args.targetAuth, url: args.targetUrl });
-        new MigrateData(apiSource, apiTarget).execute(args);
+        const repo = new CampaignD2Repository(apiTarget.legacy.config, apiTarget.legacy.db);
+
+        const campaignIds = args.allCampaigns
+            ? (await getCampaignDataSets(apiSource.legacy)).map(c => c.id)
+            : args.campaignIds;
+
+        new MigrateData(repo, apiSource, apiTarget).execute({
+            campaignIds: campaignIds,
+            post: args.post,
+        });
     },
 });
 
@@ -80,7 +99,7 @@ run(program, process.argv.slice(2));
 
 class MigrateData {
     // Check data element group "RVC - All Data Elements"
-    sourceDataElementCodes = [
+    sourceDataElementCampaignCodes = [
         "RVC_AEFI",
         "RVC_SAFETY_BOXES",
         "RVC_SYRINGES",
@@ -89,9 +108,16 @@ class MigrateData {
         "RVC_DOSES_USED",
         "RVC_ADS_USED",
         "RVC_DOSES_ADMINISTERED",
+    ];
+    sourceDataElementPopulationCodes = [
         "RVC_AGE_DISTRIBUTION",
         "RVC_TOTAL_POPULATION",
         "RVC_POPULATION_BY_AGE",
+    ];
+
+    sourceDataElementCodes = [
+        ...this.sourceDataElementCampaignCodes,
+        ...this.sourceDataElementPopulationCodes,
     ];
 
     // These are the categories that can be mapped from source COC to disaggregated dataElements
@@ -118,28 +144,23 @@ class MigrateData {
     apiSource: D2Api;
     apiTarget: D2Api;
 
-    constructor(private appSource: AppApi, appTarget: AppApi) {
+    constructor(
+        private campaignRepository: CampaignRepository,
+        private appSource: AppApi,
+        appTarget: AppApi
+    ) {
         this.apiSource = appSource.d2Api;
         this.apiTarget = appTarget.d2Api;
     }
 
-    async execute(options: { orgUnitIds: string[]; post: boolean }): Promise<void> {
+    async execute(options: { campaignIds: string[]; post: boolean }): Promise<void> {
         await this.migrateCampaignsData(options);
     }
 
-    private async getMappingOptions(): Promise<Omit<MappingOptions, "sourceCocsMapping">> {
+    private async getMappingOptions(): Promise<
+        Omit<MappingOptions, "sourceCocsMapping" | "campaign">
+    > {
         const dataElementIdToCodeMapping = await this.getDataElementIdToCodeMapping();
-        const { legacy } = this.appSource;
-        const dataSets = await getCampaignDataSets(legacy);
-
-        const orgUnitToCampaignMapping: Record<string, CampaignRef> = _(dataSets)
-            .flatMap(dataSet => {
-                return dataSet.organisationUnits.map(orgUnit => {
-                    return [orgUnit.id, { id: dataSet.id, name: dataSet.name }];
-                });
-            })
-            .fromPairs()
-            .value();
 
         return {
             dataElementIdToCodeMapping: dataElementIdToCodeMapping,
@@ -147,78 +168,48 @@ class MigrateData {
             targetCocsMapping: await this.getTargetCocsMapping(),
             targetDataElements: await this.getDataElements(this.apiTarget),
             getAntigenType: await GetAntigenType.init({ api: this.apiTarget }),
-            orgUnitToCampaignMapping: orgUnitToCampaignMapping,
         };
     }
 
-    async migrateCampaignsData(options: { orgUnitIds: string[]; post: boolean }): Promise<void> {
-        console.debug(`Get data values from source: orgUnitIds=${options.orgUnitIds.join(", ")}`);
+    async migrateCampaignsData(options: { campaignIds: string[]; post: boolean }): Promise<void> {
         const mappingOptions = await this.getMappingOptions();
-        const { dataElementCodeToIdMapping } = mappingOptions;
 
-        const orgUnitIdsGroups = await this.getChunkedOrgUnits({
-            parentOrgUnitIds: options.orgUnitIds,
-            chunkSize: 10,
-        });
+        for (const campaignId of options.campaignIds) {
+            const campaign = await this.campaignRepository.get(campaignId);
 
-        await promiseMap(orgUnitIdsGroups, async orgUnitIds => {
-            const dataValues = await this.getDataValues(orgUnitIds, dataElementCodeToIdMapping);
-
-            const mappingOptionsFull: MappingOptions = {
-                ...mappingOptions,
-                sourceCocsMapping: await this.getSourceCocsMappingFromDataValues(dataValues),
-            };
-
-            const mappedDataValues = _(dataValues)
-                .map(dataValue => this.mapDataValue(dataValue, mappingOptionsFull))
-                .compact()
-                .value();
-
-            await this.postDataValues(mappedDataValues, options);
-        });
+            try {
+                await this.migrateCampaign(campaign, mappingOptions, options);
+            } catch (error) {
+                console.error(
+                    `Error migrating data for campaign ${campaign.id}: ${(error as Error).message}`
+                );
+            }
+        }
     }
 
-    // data values endpoint cannot be paginated (we have param <limit> for not <page> or some kind
-    // of stable ordering that would allow a manual paginated). So we use chunks of orgUnitIds to limit
-    // the number of data values retrieved per request.
-    // As we get descendants, first get all org units and chunk those
-    private async getChunkedOrgUnits(options: {
-        parentOrgUnitIds: Id[];
-        chunkSize: number;
-    }): Promise<Array<Id[]>> {
-        const pageSize = 1000;
+    private async migrateCampaign(
+        campaign: Campaign,
+        mappingOptions: Omit<MappingOptions, "sourceCocsMapping" | "campaign">,
+        options: { post: boolean }
+    ) {
+        console.debug(`Migrating data for campaign: ${campaign.name} [${campaign.id}]`);
 
-        // For each parent, get paginated descendants, merge them all, flatten and finally chunk
-        const orgUnitGroups = await promiseMap(options.parentOrgUnitIds, async parentOrgUnitId => {
-            const { pager } = await this.apiSource.models.organisationUnits
-                .get({
-                    fields: { id: true },
-                    filter: { path: { like: parentOrgUnitId } },
-                    page: 1,
-                    pageSize: 0,
-                })
-                .getData();
+        const { dataElementCodeToIdMapping } = mappingOptions;
 
-            const pagesCount = Math.ceil(pager.total / pageSize);
-            console.debug(`Tree from orgUnit.id=${parentOrgUnitId} has ${pager.total} descendants`);
+        const dataValues = await this.getDataValues(campaign, dataElementCodeToIdMapping);
 
-            const orgUnitGroups = await promiseMap(_.range(1, pagesCount + 1), async page => {
-                const metadata = await this.apiSource.models.organisationUnits
-                    .get({
-                        fields: { id: true },
-                        filter: { path: { like: parentOrgUnitId } },
-                        page: page,
-                        pageSize: pageSize,
-                    })
-                    .getData();
+        const mappingOptionsFull: MappingOptions = {
+            ...mappingOptions,
+            campaign: campaign,
+            sourceCocsMapping: await this.getSourceCocsMappingFromDataValues(dataValues),
+        };
 
-                return metadata.objects.map(ou => ou.id);
-            });
+        const mappedDataValues = _(dataValues)
+            .map(dataValue => this.mapDataValue(campaign, dataValue, mappingOptionsFull))
+            .compact()
+            .value();
 
-            return _.flatten(orgUnitGroups);
-        });
-
-        return _(orgUnitGroups).flatten().chunk(options.chunkSize).value();
+        await this.postDataValues(mappedDataValues, options);
     }
 
     private async postDataValues(
@@ -266,6 +257,7 @@ class MigrateData {
     }
 
     private mapDataValue(
+        campaign: Campaign,
         dataValue: DataValueSetsDataValue,
         options: MappingOptions
     ): DataValueSetsDataValue | null {
@@ -290,7 +282,6 @@ class MigrateData {
         const zeroValues = ["0", "0.00"];
         const isZeroValue = zeroValues.includes(dataValue.value);
         if (isZeroValue && !dataElementInfo.storeZeroDataValues) {
-            console.debug(`Skipping zero value for ${dataElementCodeSource}`);
             return null;
         }
 
@@ -298,7 +289,7 @@ class MigrateData {
         assertValue(cocSource, `COC not found for COC=${dataValue.categoryOptionCombo}`);
 
         const targetDataElementDisaggregation = this.getTargetDataElementDisaggregation(
-            dataValue,
+            campaign,
             cocSource,
             dataElementInfo,
             options
@@ -333,7 +324,7 @@ class MigrateData {
     }
 
     private getTargetDataElementDisaggregation(
-        dataValue: DataValueSetsDataValue,
+        campaign: Campaign,
         cocSource: SourceCoc,
         dataElementInfo: DataElementInfo,
         options: MappingOptions
@@ -370,14 +361,9 @@ class MigrateData {
         if (!campaignTypeIsUnset) {
             return disaggregation;
         } else {
-            // Old campaigns may have antigens with no campaign type.
-            // If the antigen is listed in "Antigen Type Selectable", assume REACTIVE, else PREVENTIVE.
-            const campaign = options.orgUnitToCampaignMapping[dataValue.orgUnit];
-
             const type = options.getAntigenType.execute({
                 campaign: campaign,
-                antigenCode: disaggregation.antigen || "",
-                fallback: "preventive",
+                antigenCode: assert(disaggregation.antigen),
             });
 
             const campaignTypeCode = type === "reactive" ? "RVC_REACTIVE" : "RVC_PREVENTIVE";
@@ -399,9 +385,18 @@ class MigrateData {
     }
 
     private async getDataValues(
-        orgUnitIds: string[],
+        campaign: Campaign,
         dataElementCodeToIdMapping: Record<Code, Id>
     ): Promise<DataValueSetsDataValue[]> {
+        const orgUnitIds = campaign.organisationUnits.map(ou => ou.id);
+        const dateToString = (date: Date | null) => assert(date).toISOString().slice(0, 10);
+
+        const dateOptions = {
+            startDate: dateToString(campaign.startDate),
+            endDate: dateToString(campaign.endDate),
+        };
+
+        // Vaccinations data + population data under the campaign orgunits
         const dataElementIds = _(this.sourceDataElementCodes)
             .map(deCode => dataElementCodeToIdMapping[deCode])
             .compact()
@@ -413,23 +408,52 @@ class MigrateData {
                 ", "
             )}`
         );
-        console.debug(`Fetching data values for orgUnits: ${orgUnitIds.join(", ")}`);
+        console.debug(
+            `[${campaign.id}] Fetching data values for orgUnits: ${orgUnitIds.join(", ")}`
+        );
 
         const res = await this.apiSource.dataValues
             .getSet({
                 dataSet: [],
                 // prop dataElement: Id[] not implemented by this version of d2-api
                 ["dataElement" as string]: dataElementIds,
-                startDate: (new Date().getFullYear() - 50).toString(),
-                endDate: (new Date().getFullYear() + 50).toString(),
+                ...dateOptions,
                 orgUnit: orgUnitIds,
-                children: false, // already getting descendants orgUnits
+                children: false,
             })
             .getData();
 
-        console.debug(`Retrieved ${res.dataValues.length} data values`);
+        const populationDataElementIds = _(this.sourceDataElementPopulationCodes)
+            .map(deCode => dataElementCodeToIdMapping[deCode])
+            .compact()
+            .value();
 
-        return res.dataValues;
+        // Copy population data start from level 4
+        const orgUnitIdsForPopulation = _(campaign.organisationUnits)
+            .flatMap(ou => ou.path.split("/").slice(4))
+            .uniq()
+            .value();
+
+        console.debug(
+            `[${
+                campaign.id
+            }] Fetching population data values for orgUnits: ${orgUnitIdsForPopulation.join(`, `)}`
+        );
+
+        const res2 = await this.apiSource.dataValues
+            .getSet({
+                dataSet: [],
+                // prop dataElement: Id[] not implemented by this version of d2-api
+                ["dataElement" as string]: populationDataElementIds,
+                ...dateOptions,
+                orgUnit: orgUnitIdsForPopulation,
+                children: false,
+            })
+            .getData();
+
+        const allDataValues = _.concat(res.dataValues, res2.dataValues);
+        console.debug(`[${campaign.id}] Retrieved ${allDataValues.length} data values`);
+        return allDataValues;
     }
 
     private async getTargetCocsMapping(): Promise<TargetCocsMapping> {
@@ -612,8 +636,6 @@ type Id = string;
 type Code = string;
 type DataElement = { id: string; code: string };
 
-type CampaignRef = { id: string; name: string };
-
 type MappingOptions = {
     dataElementIdToCodeMapping: Record<Id, Code>;
     dataElementCodeToIdMapping: Record<Code, Id>;
@@ -621,5 +643,6 @@ type MappingOptions = {
     targetCocsMapping: TargetCocsMapping;
     targetDataElements: DataElement[];
     getAntigenType: GetAntigenType;
-    orgUnitToCampaignMapping: Record<Id, CampaignRef>;
+    //orgUnitToCampaignMapping: Record<Id, Campaign>;
+    campaign: Campaign;
 };

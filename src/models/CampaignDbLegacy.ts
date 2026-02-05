@@ -442,14 +442,14 @@ export default class CampaignDb {
     }
 }
 
-type ModelWithAttributes = {
+export type ModelWithAttributes = {
     attributeValues: Array<{
         attribute: { code: string };
         value: string;
     }>;
 };
 
-type DataSetWithDataInputPeriods = {
+export type DataSetWithDataInputPeriods = {
     dataInputPeriods: Array<{ period: { id: string } }>;
 };
 
