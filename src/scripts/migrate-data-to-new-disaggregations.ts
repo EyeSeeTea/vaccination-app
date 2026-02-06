@@ -98,6 +98,9 @@ const program = command({
 run(program, process.argv.slice(2));
 
 class MigrateData {
+    orgUnitLevelProject = 4;
+    zeroValues = ["0", "0.00"];
+
     // Check data element group "RVC - All Data Elements"
     sourceDataElementCampaignCodes = [
         "RVC_AEFI",
@@ -146,7 +149,7 @@ class MigrateData {
 
     constructor(
         private campaignRepository: CampaignRepository,
-        private appSource: AppApi,
+        appSource: AppApi,
         appTarget: AppApi
     ) {
         this.apiSource = appSource.d2Api;
@@ -158,7 +161,7 @@ class MigrateData {
     }
 
     private async getMappingOptions(): Promise<
-        Omit<MappingOptions, "sourceCocsMapping" | "campaign">
+        Omit<MappingOptionsForCampaign, "sourceCocsMapping" | "campaign">
     > {
         const dataElementIdToCodeMapping = await this.getDataElementIdToCodeMapping();
 
@@ -189,16 +192,14 @@ class MigrateData {
 
     private async migrateCampaign(
         campaign: Campaign,
-        mappingOptions: Omit<MappingOptions, "sourceCocsMapping" | "campaign">,
+        mappingOptions: Omit<MappingOptionsForCampaign, "sourceCocsMapping" | "campaign">,
         options: { post: boolean }
     ) {
         console.debug(`Migrating data for campaign: ${campaign.name} [${campaign.id}]`);
 
-        const { dataElementCodeToIdMapping } = mappingOptions;
+        const dataValues = await this.getDataValues(campaign, mappingOptions);
 
-        const dataValues = await this.getDataValues(campaign, dataElementCodeToIdMapping);
-
-        const mappingOptionsFull: MappingOptions = {
+        const mappingOptionsFull: MappingOptionsForCampaign = {
             ...mappingOptions,
             campaign: campaign,
             sourceCocsMapping: await this.getSourceCocsMappingFromDataValues(dataValues),
@@ -259,7 +260,7 @@ class MigrateData {
     private mapDataValue(
         campaign: Campaign,
         dataValue: DataValueSetsDataValue,
-        options: MappingOptions
+        options: MappingOptionsForCampaign
     ): DataValueSetsDataValue | null {
         const {
             dataElementIdToCodeMapping,
@@ -279,8 +280,7 @@ class MigrateData {
         }
 
         // Control zero values: skip if zeros are not significant for the data element
-        const zeroValues = ["0", "0.00"];
-        const isZeroValue = zeroValues.includes(dataValue.value);
+        const isZeroValue = this.zeroValues.includes(dataValue.value);
         if (isZeroValue && !dataElementInfo.storeZeroDataValues) {
             return null;
         }
@@ -327,7 +327,7 @@ class MigrateData {
         campaign: Campaign,
         cocSource: SourceCoc,
         dataElementInfo: DataElementInfo,
-        options: MappingOptions
+        options: MappingOptionsForCampaign
     ): Partial<Record<DisaggregationType, string>> {
         const disaggregation: Partial<Record<DisaggregationType, string>> = fromPairs(
             _(cocSource.categoryOptions)
@@ -384,53 +384,60 @@ class MigrateData {
         return metadata.dataElements;
     }
 
-    private async getDataValues(
-        campaign: Campaign,
-        dataElementCodeToIdMapping: Record<Code, Id>
-    ): Promise<DataValueSetsDataValue[]> {
-        const orgUnitIds = campaign.organisationUnits.map(ou => ou.id);
-        const dateToString = (date: Date | null) => assert(date).toISOString().slice(0, 10);
-
-        const dateOptions = {
-            startDate: dateToString(campaign.startDate),
-            endDate: dateToString(campaign.endDate),
-        };
-
-        // Vaccinations data + population data under the campaign orgunits
-        const dataElementIds = _(this.sourceDataElementCodes)
-            .map(deCode => dataElementCodeToIdMapping[deCode])
+    private getDataElementIds(codes: string[], options: MappingOptionsGlobal): string[] {
+        const dataElementIds = _(codes)
+            .map(deCode => options.dataElementCodeToIdMapping[deCode])
             .compact()
             .value();
 
         assertValue(
-            dataElementIds.length === this.sourceDataElementCodes.length,
+            dataElementIds.length === codes.length,
             `Some data element IDs could not be mapped from codes: ${this.sourceDataElementCodes.join(
                 ", "
             )}`
         );
+
+        return dataElementIds;
+    }
+
+    private async getDataValues(
+        campaign: Campaign,
+        options: MappingOptionsGlobal
+    ): Promise<DataValueSetsDataValue[]> {
+        const orgUnitIds = campaign.organisationUnits.map(ou => ou.id);
+
+        const dateOptions = {
+            startDate: dateToDayString(campaign.startDate),
+            endDate: dateToDayString(campaign.endDate),
+        };
+
+        // Vaccinations data + population data under the campaign orgunits
+        const dataElementIds = this.getDataElementIds(this.sourceDataElementCodes, options);
+
         console.debug(
-            `[${campaign.id}] Fetching data values for orgUnits: ${orgUnitIds.join(", ")}`
+            `[${campaign.id}] Fetching data values for orgUnits: ${orgUnitIds.join(
+                ", "
+            )}: ${JSON.stringify(dateOptions)}`
         );
 
         const res = await this.apiSource.dataValues
             .getSet({
                 dataSet: [],
-                // prop dataElement: Id[] not implemented by this version of d2-api
                 ["dataElement" as string]: dataElementIds,
                 ...dateOptions,
                 orgUnit: orgUnitIds,
-                children: false,
             })
             .getData();
 
-        const populationDataElementIds = _(this.sourceDataElementPopulationCodes)
-            .map(deCode => dataElementCodeToIdMapping[deCode])
-            .compact()
-            .value();
+        const populationDataElementIds = this.getDataElementIds(
+            this.sourceDataElementPopulationCodes,
+            options
+        );
 
-        // Copy population data start from level 4
+        // We have other population data (total population, population by age) in higher levels.
         const orgUnitIdsForPopulation = _(campaign.organisationUnits)
-            .flatMap(ou => ou.path.split("/").slice(4))
+            .map(ou => ou.path.split("/")[this.orgUnitLevelProject])
+            .compact()
             .uniq()
             .value();
 
@@ -440,20 +447,79 @@ class MigrateData {
             }] Fetching population data values for orgUnits: ${orgUnitIdsForPopulation.join(`, `)}`
         );
 
-        const res2 = await this.apiSource.dataValues
+        const resPopulation = await this.apiSource.dataValues
             .getSet({
                 dataSet: [],
                 // prop dataElement: Id[] not implemented by this version of d2-api
                 ["dataElement" as string]: populationDataElementIds,
                 ...dateOptions,
                 orgUnit: orgUnitIdsForPopulation,
-                children: false,
+                children: true,
             })
             .getData();
 
-        const allDataValues = _.concat(res.dataValues, res2.dataValues);
+        await this.checkDataValuesOutsideCampaignPeriod(campaign, options);
+
+        const allDataValues = _.concat(res.dataValues, resPopulation.dataValues);
         console.debug(`[${campaign.id}] Retrieved ${allDataValues.length} data values`);
         return allDataValues;
+    }
+
+    private async checkDataValuesOutsideCampaignPeriod(
+        campaign: Campaign,
+        mappingOptions: MappingOptionsGlobal
+    ): Promise<void> {
+        const orgUnitIds = campaign.organisationUnits.map(ou => ou.id);
+        const oneDayMsecs = 24 * 60 * 60 * 1000;
+        const dataElementIds = this.getDataElementIds(
+            this.sourceDataElementCampaignCodes,
+            mappingOptions
+        );
+
+        const resBefore = await this.apiSource.dataValues
+            .getSet({
+                dataSet: [],
+                ["dataElement" as string]: dataElementIds,
+                startDate: "1950",
+                endDate: dateToDayString(
+                    new Date(assert(campaign.startDate).getTime() - oneDayMsecs)
+                ),
+                orgUnit: orgUnitIds,
+            })
+            .getData();
+
+        const resAfter = await this.apiSource.dataValues
+            .getSet({
+                dataSet: [],
+                ["dataElement" as string]: dataElementIds,
+                startDate: dateToDayString(
+                    new Date(assert(campaign.endDate).getTime() + oneDayMsecs)
+                ),
+                endDate: new Date().getFullYear().toString(),
+                orgUnit: orgUnitIds,
+            })
+            .getData();
+
+        const dataValuesOutsidePeriod = _(resBefore.dataValues)
+            .concat(resAfter.dataValues)
+            .reject(dv => this.zeroValues.includes(dv.value))
+            .value();
+
+        if (dataValuesOutsidePeriod.length > 0) {
+            console.debug(
+                `[${campaign.id}] Found ${
+                    dataValuesOutsidePeriod.length
+                } data values outside campaign period (${dateToDayString(
+                    campaign.startDate
+                )} -> ${dateToDayString(campaign.endDate)})`
+            );
+
+            dataValuesOutsidePeriod.forEach(dv => {
+                console.debug(
+                    `  - [${campaign.id}] [outside] ou=${dv.orgUnit} de=${dv.dataElement} coc=${dv.categoryOptionCombo} aoc=${dv.attributeOptionCombo} p=${dv.period} value=${dv.value}`
+                );
+            });
+        }
     }
 
     private async getTargetCocsMapping(): Promise<TargetCocsMapping> {
@@ -636,13 +702,19 @@ type Id = string;
 type Code = string;
 type DataElement = { id: string; code: string };
 
-type MappingOptions = {
+type MappingOptionsGlobal = {
     dataElementIdToCodeMapping: Record<Id, Code>;
     dataElementCodeToIdMapping: Record<Code, Id>;
-    sourceCocsMapping: SourceCocsMapping;
     targetCocsMapping: TargetCocsMapping;
     targetDataElements: DataElement[];
     getAntigenType: GetAntigenType;
-    //orgUnitToCampaignMapping: Record<Id, Campaign>;
-    campaign: Campaign;
 };
+
+type MappingOptionsForCampaign = MappingOptionsGlobal & {
+    campaign: Campaign;
+    sourceCocsMapping: SourceCocsMapping;
+};
+
+function dateToDayString(date: Date | null) {
+    return assert(date).toISOString().slice(0, 10);
+}

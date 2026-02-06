@@ -75,6 +75,7 @@ class MigrateCampaignToNewDisaggregations {
         Object.assign(campaign, target);
         const campaign2 = await this.updateCampaignTypeForAntigens(campaign);
         const campaignRepository = new CampaignD2Repository(target.config, target.db);
+        await this.checkCustomDashboardItems(campaign2);
         const saveResult = await campaignRepository.save(campaign2);
         log(`Result: ${JSON.stringify(saveResult)}`);
     }
@@ -96,6 +97,45 @@ class MigrateCampaignToNewDisaggregations {
             console.debug(`  - Setting antigen ${antigen.code} to ${campaignType.toUpperCase()}`);
             return accCampaign.setCampaignTypeForAntigen(antigen, campaignType);
         }, campaign);
+    }
+
+    private async checkCustomDashboardItems(campaign: Campaign): Promise<void> {
+        const metadata = await this.instances.source.d2Api.metadata
+            .get({
+                dashboards: {
+                    fields: {
+                        dashboardItems: {
+                            visualization: {
+                                name: true,
+                            },
+                        },
+                    },
+                    filter: {
+                        code: { eq: `RVC_CAMPAIGN_${campaign.id}` },
+                    },
+                },
+            })
+            .getData();
+
+        const dashboards = metadata.dashboards[0];
+        if (!dashboards) {
+            console.debug(`  - No dashboard found for campaign ${campaign.id}`);
+            return;
+        }
+
+        const customVisualizations = dashboards.dashboardItems.filter(
+            item => !item.visualization.name.includes(campaign.name)
+        );
+
+        if (customVisualizations.length > 0) {
+            const names = customVisualizations
+                .map(item => `"${item.visualization.name}"`)
+                .join(", ");
+
+            console.debug(
+                `  - Found ${customVisualizations.length} custom visualizations: ${names}`
+            );
+        }
     }
 }
 
