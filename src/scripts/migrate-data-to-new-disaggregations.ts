@@ -74,7 +74,7 @@ const program = command({
             description: "Actually post migrated data values to target DHIS2",
         }),
         ignoreCampaignPeriods: flag({
-            long: "ignore-campaign-periods",
+            long: "include-data-outside-campaign-period-boundaries",
             description: "Include also data values outside campaign period in the post",
         }),
         ...getLogsArguments(),
