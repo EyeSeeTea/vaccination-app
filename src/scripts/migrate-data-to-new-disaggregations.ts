@@ -73,6 +73,10 @@ const program = command({
             long: "post",
             description: "Actually post migrated data values to target DHIS2",
         }),
+        ignoreCampaignPeriods: flag({
+            long: "ignore-campaign-periods",
+            description: "Include also data values outside campaign period in the post",
+        }),
         ...getLogsArguments(),
     },
     handler: async args => {
@@ -91,6 +95,7 @@ const program = command({
         new MigrateData(repo, apiSource, apiTarget).execute({
             campaignIds: campaignIds,
             post: args.post,
+            ignoreCampaignPeriods: args.ignoreCampaignPeriods,
         });
     },
 });
@@ -156,13 +161,17 @@ class MigrateData {
         this.apiTarget = appTarget.d2Api;
     }
 
-    async execute(options: { campaignIds: string[]; post: boolean }): Promise<void> {
+    async execute(options: {
+        campaignIds: string[];
+        post: boolean;
+        ignoreCampaignPeriods: boolean;
+    }): Promise<void> {
         await this.migrateCampaignsData(options);
     }
 
-    private async getMappingOptions(): Promise<
-        Omit<MappingOptionsForCampaign, "sourceCocsMapping" | "campaign">
-    > {
+    private async getMappingOptions(options: {
+        ignoreCampaignPeriods: boolean;
+    }): Promise<Omit<MappingOptionsForCampaign, "sourceCocsMapping" | "campaign">> {
         const dataElementIdToCodeMapping = await this.getDataElementIdToCodeMapping();
 
         return {
@@ -171,11 +180,16 @@ class MigrateData {
             targetCocsMapping: await this.getTargetCocsMapping(),
             targetDataElements: await this.getDataElements(this.apiTarget),
             getAntigenType: await GetAntigenType.init({ api: this.apiTarget }),
+            ignoreCampaignPeriods: options.ignoreCampaignPeriods,
         };
     }
 
-    async migrateCampaignsData(options: { campaignIds: string[]; post: boolean }): Promise<void> {
-        const mappingOptions = await this.getMappingOptions();
+    async migrateCampaignsData(options: {
+        campaignIds: string[];
+        post: boolean;
+        ignoreCampaignPeriods: boolean;
+    }): Promise<void> {
+        const mappingOptions = await this.getMappingOptions(options);
 
         for (const campaignId of options.campaignIds) {
             const campaign = await this.campaignRepository.get(campaignId);
@@ -223,28 +237,37 @@ class MigrateData {
             console.debug(`--post not set, skip posting ${dataValues.length} data values`);
             return;
         } else {
-            console.debug(`Posting ${dataValues.length} data values to target DHIS2`);
+            console.debug(`${dataValues.length} data values to post to target DHIS2`);
 
-            try {
-                const postResult = await this.apiTarget.dataValues
-                    .postSet({ force: true }, { dataValues: dataValues })
-                    .getData()
-                    .then(res => (res as unknown as { response: typeof res }).response);
-
-                console.debug(
-                    `Posted: ${postResult.status} - ${JSON.stringify(postResult.importCount)}`
-                );
-
-                if (postResult.conflicts && postResult.conflicts.length > 0) {
-                    postResult.conflicts.forEach(conflict => {
-                        console.debug(`Conflict: ${JSON.stringify(conflict)}`);
-                    });
+            for (const dataValuesChunk of _.chunk(dataValues, 1000)) {
+                try {
+                    await this.postDataValuesBatch(this.apiTarget, dataValuesChunk);
+                } catch (err) {
+                    console.error(
+                        `Error posting values: ${(err as Error).message} - ${JSON.stringify(err)}`
+                    );
                 }
-            } catch (err) {
-                console.error(
-                    `Error posting data values: ${(err as Error).message} - ${JSON.stringify(err)}`
-                );
             }
+        }
+    }
+
+    private async postDataValuesBatch(
+        api: D2Api,
+        dataValues: DataValueSetsDataValue[]
+    ): Promise<void> {
+        console.debug(`Posting batch of ${dataValues.length} data values`);
+
+        const postResult = await api.dataValues
+            .postSet({ force: true }, { dataValues: dataValues })
+            .getData()
+            .then(res => (res as unknown as { response: typeof res }).response);
+
+        console.debug(`Posted: ${postResult.status} - ${JSON.stringify(postResult.importCount)}`);
+
+        if (postResult.conflicts && postResult.conflicts.length > 0) {
+            postResult.conflicts.forEach(conflict => {
+                console.debug(`Conflict: ${JSON.stringify(conflict)}`);
+            });
         }
     }
 
@@ -458,17 +481,24 @@ class MigrateData {
             })
             .getData();
 
-        await this.checkDataValuesOutsideCampaignPeriod(campaign, options);
+        const dataValuesOutSidePeriods = await this.getDataValuesOutsideCampaignPeriod(
+            campaign,
+            options
+        );
 
-        const allDataValues = _.concat(res.dataValues, resPopulation.dataValues);
+        const campaignDataValues = options.ignoreCampaignPeriods
+            ? _.concat(res.dataValues, dataValuesOutSidePeriods)
+            : res.dataValues;
+
+        const allDataValues = _.concat(campaignDataValues, resPopulation.dataValues);
         console.debug(`[${campaign.id}] Retrieved ${allDataValues.length} data values`);
         return allDataValues;
     }
 
-    private async checkDataValuesOutsideCampaignPeriod(
+    private async getDataValuesOutsideCampaignPeriod(
         campaign: Campaign,
         mappingOptions: MappingOptionsGlobal
-    ): Promise<void> {
+    ): Promise<DataValueSetsDataValue[]> {
         const orgUnitIds = campaign.organisationUnits.map(ou => ou.id);
         const oneDayMsecs = 24 * 60 * 60 * 1000;
         const dataElementIds = this.getDataElementIds(
@@ -505,11 +535,21 @@ class MigrateData {
             .reject(dv => this.zeroValues.includes(dv.value))
             .value();
 
+        const outsidePeriods = _(dataValuesOutsidePeriod)
+            .map(dv => dv.period)
+            .uniq()
+            .sort()
+            .value();
+
+        // Log data values outside campaign period
+
         if (dataValuesOutsidePeriod.length > 0) {
             console.debug(
                 `[${campaign.id}] Found ${
                     dataValuesOutsidePeriod.length
-                } data values outside campaign period (${dateToDayString(
+                } data values (${periodToDate(_.first(outsidePeriods))} -> ${periodToDate(
+                    _.last(outsidePeriods)
+                )}) outside campaign period (${dateToDayString(
                     campaign.startDate
                 )} -> ${dateToDayString(campaign.endDate)})`
             );
@@ -520,6 +560,8 @@ class MigrateData {
                 );
             });
         }
+
+        return dataValuesOutsidePeriod;
     }
 
     private async getTargetCocsMapping(): Promise<TargetCocsMapping> {
@@ -708,6 +750,7 @@ type MappingOptionsGlobal = {
     targetCocsMapping: TargetCocsMapping;
     targetDataElements: DataElement[];
     getAntigenType: GetAntigenType;
+    ignoreCampaignPeriods: boolean;
 };
 
 type MappingOptionsForCampaign = MappingOptionsGlobal & {
@@ -715,6 +758,14 @@ type MappingOptionsForCampaign = MappingOptionsGlobal & {
     sourceCocsMapping: SourceCocsMapping;
 };
 
-function dateToDayString(date: Date | null) {
-    return assert(date).toISOString().slice(0, 10);
+// Date(YYYY-MM-DD) -> "YYYY-MM-DD"
+function dateToDayString(date: Date | null): string {
+    if (!date) return "-";
+    return date.toISOString().slice(0, 10);
+}
+
+// "20251211" -> "2025-12-11"
+function periodToDate(period: string | undefined): string {
+    if (!period) return "-";
+    return `${period.slice(0, 4)}-${period.slice(4, 6)}-${period.slice(6, 8)}`;
 }
