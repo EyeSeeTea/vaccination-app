@@ -101,7 +101,7 @@ export class HideGreyedOutColumnsForForm {
         const headers = this.getHeaderCells(table);
         const values = this.getValueCells(table);
         const disabledMap = this.getDisabledCellsCountMap(headers, values);
-        this.hideCells(table, disabledMap);
+        this.hideCells(disabledMap);
     }
 
     // From table headers with colspan, generate cartesian product of cells:
@@ -158,9 +158,8 @@ export class HideGreyedOutColumnsForForm {
     }
 
     // Update the colspan of header/data cells, or hide them if fully disabled
-    private hideCells(table: Element, disabledMap: Map<Element, number>) {
-        table.querySelectorAll("thead tr th, tbody tr td").forEach(cell => {
-            const disabledCount = disabledMap.get(cell) ?? 0;
+    private hideCells(disabledMap: Map<Element, number>) {
+        disabledMap.forEach((disabledCount, cell) => {
             const originalColspan = parseInt(cell.getAttribute("colspan") ?? "1");
             const finalColspan = originalColspan - disabledCount;
 
