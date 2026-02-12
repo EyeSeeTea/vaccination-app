@@ -11,7 +11,7 @@ function run() {
         compilerOptions: {
             target: ts.ScriptTarget.ES2022,
             module: ts.ModuleKind.None,
-            removeComments: false,
+            removeComments: true,
         },
         fileName: path.basename(inputFile),
     });
