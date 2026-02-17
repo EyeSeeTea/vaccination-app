@@ -80,8 +80,11 @@ export const dataElementsInfo: DataElementInfo[] = [
         categoryCombo: { code: "RVC_AGE_GROUP" },
         storeZeroDataValues: false,
     },
-    // Skip data elements without disaggregation: RVC_ADS_USED, RVC_AGE_DISTRIBUTION,
-    // RVC_SAFETY_BOXES, RVC_TOTAL_POPULATION
+    // Skip data elements without disaggregation:
+    //   RVC_ADS_USED
+    //   RVC_AGE_DISTRIBUTION,
+    //   RVC_SAFETY_BOXES
+    //   RVC_TOTAL_POPULATION
 ];
 
 type Indicator = {

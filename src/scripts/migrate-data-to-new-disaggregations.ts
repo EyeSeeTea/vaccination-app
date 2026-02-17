@@ -135,8 +135,8 @@ class MigrateData {
         RVC_TYPE: "campaignType",
     };
 
-    // Category combos starting with "RVC_AGE_GROUP_" (include also "default" for no disaggregation)
-    sourceCategoryComboIdentifiables = [
+    // Category combos codes starting with "RVC_AGE_GROUP_" (include "default" for no disaggregation)
+    targetCategoryCombos = [
         "default",
         "RVC_SEVERITY",
         "RVC_AGE_GROUP",
@@ -147,6 +147,26 @@ class MigrateData {
         "RVC_AGE_GROUP_GENDER_DISTATUS_WS",
         "RVC_AGE_GROUP_GENDER_WS",
         "RVC_AGE_GROUP_WS",
+    ];
+
+    sourceCategoryCombos = [
+        "RVC_ANTIGEN",
+        "RVC_ANTIGEN_SEVERITY",
+        "RVC_ANTIGEN_TYPE",
+        "RVC_ANTIGEN_TYPE_SEVERITY",
+        "RVC_ANTIGEN_AGE_GROUP",
+        "RVC_ANTIGEN_DOSE_AGE_GROUP",
+        "RVC_ANTIGEN_DOSE_AGE_GROUP_GENDER",
+        "RVC_ANTIGEN_DOSE_TYPE_AGE_GROUP",
+        "RVC_ANTIGEN_DOSE_AGE_GROUP_DISTATUS",
+        "RVC_ANTIGEN_DOSE_TYPE_AGE_GROUP_GENDER",
+        "RVC_ANTIGEN_DOSE_AGE_GROUP_GENDER_DISTATUS",
+        "RVC_ANTIGEN_DOSE_TYPE_AGE_GROUP_DISTATUS",
+        "RVC_ANTIGEN_DOSE_TYPE_AGE_GROUP_WS",
+        "RVC_ANTIGEN_DOSE_TYPE_AGE_GROUP_GENDER_DISTATUS",
+        "RVC_ANTIGEN_DOSE_TYPE_AGE_GROUP_GENDER_WS",
+        "RVC_ANTIGEN_DOSE_TYPE_AGE_GROUP_DISTATUS_WS",
+        "RVC_ANTIGEN_DOSE_TYPE_AGE_GROUP_GENDER_DISTATUS_WS",
     ];
 
     apiSource: D2Api;
@@ -224,24 +244,21 @@ class MigrateData {
             .compact()
             .value();
 
-        await this.postDataValues(mappedDataValues, options);
+        if (options.post) {
+            await this.postDataValues(this.apiTarget, mappedDataValues);
+            console.debug(`Migrated ${mappedDataValues.length} data values to target`);
+        }
     }
 
-    private async postDataValues(
-        dataValues: DataValueSetsDataValue[],
-        options: { post: boolean }
-    ): Promise<void> {
+    private async postDataValues(api: D2Api, dataValues: DataValueSetsDataValue[]): Promise<void> {
         if (dataValues.length === 0) {
             return;
-        } else if (!options.post) {
-            console.debug(`--post not set, skip posting ${dataValues.length} data values`);
-            return;
         } else {
-            console.debug(`${dataValues.length} data values to post to target DHIS2`);
+            console.debug(`${dataValues.length} data values to post: ${api.baseUrl}`);
 
             for (const dataValuesChunk of _.chunk(dataValues, 1000)) {
                 try {
-                    await this.postDataValuesBatch(this.apiTarget, dataValuesChunk);
+                    await this.postDataValuesBatch(api, dataValuesChunk);
                 } catch (err) {
                     console.error(
                         `Error posting values: ${(err as Error).message} - ${JSON.stringify(err)}`
@@ -578,7 +595,7 @@ class MigrateData {
                             categoryOptions: { id: true },
                         },
                     },
-                    filter: { identifiable: { in: this.sourceCategoryComboIdentifiables } },
+                    filter: { identifiable: { in: this.targetCategoryCombos } },
                 },
             })
             .getData();
