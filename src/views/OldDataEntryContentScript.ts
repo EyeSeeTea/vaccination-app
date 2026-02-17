@@ -6,25 +6,13 @@
  * - Reorder tables in antigen tabs to be: doses administered + doses used + quality&safety
  * - Hide fully greyed-out columns (reduce colspan or hide them when fully disabled).
  */
-declare global {
-    interface JQuery {
-        on(
-            event: "dhis2.de.event.formLoaded",
-            handler: (ev: JQuery.Event, dataSetId: string) => void
-        ): JQuery;
-    }
-}
 
-function debug(msg: string): void {
-    console.debug(`[custom-js-css:vaccination-app] ${msg}`);
-}
-
-const tablesSelector = "table.sectionTable:not(.floatThead-table)";
+const tablesCssSelector = "table.sectionTable:not(.floatThead-table)";
 
 // Force this order for vaccination data tables:
-//  [doses administered]
-//  [doses used + non-disaggregated Q&S]
-//  [disaggregated Q&S (AEFI)]
+//   [doses administered]
+//   [doses used + non-disaggregated Q&S]
+//   [disaggregated Q&S (AEFI)]
 //
 // We have two known cases to consider:
 //   1) [doses used + non-disaggregated Q&S] + [disaggregated Q&S (AEFI)] + [doses administered]
@@ -39,7 +27,7 @@ export class ReorderTablesForAntigen {
     }
 
     private reorderTablesInAntigenTab(tab: Element): void {
-        const [table1, table2, table3] = Array.from(tab.querySelectorAll(tablesSelector));
+        const [table1, table2, table3] = Array.from(tab.querySelectorAll(tablesCssSelector));
 
         if (table1 && table2 && table3) {
             const [nonDisaggregated, qAndS, dosesAdministered] = [table1, table2, table3];
@@ -66,7 +54,7 @@ export class ReorderTablesForAntigen {
     }
 }
 
-// From Antigen HTML tables with colspan greyed-out columns like this (:N means colspan=N):
+// From an antigen tables(:N means colspan=N, ~vX~ means greyed-out cell):
 //
 // Disaggregation 1 |                   a1:6                  |
 // Disaggregation 2 |      b1:3          |     b2:3           |
@@ -75,7 +63,7 @@ export class ReorderTablesForAntigen {
 // Data Element 1   | v1   | ~v2~ | v3  | ~v4~  | v5   | ~v6~ |
 // Data Element 2   | v7   | ~v8~ | v9  | ~v10~ | v11  | ~v12~ |
 //
-// Reduce the colspan of a cell or hide it when fully greyed out, to end up with this:
+// We reduce the colspan of cells (or hide it when fully greyed out):
 //
 // Disaggregation 1 |            a1:3            |
 // Disaggregation 2 |     b1:2     |     b2:1    |
@@ -92,7 +80,7 @@ export class HideGreyedOutColumnsForForm {
         debug(`Hide greyed out columns: ${tabs.length} tabs found`);
 
         tabs.forEach(tab => {
-            const tables = Array.from(tab.querySelectorAll(tablesSelector));
+            const tables = Array.from(tab.querySelectorAll(tablesCssSelector));
             tables.forEach(table => this.executeForTable(table));
         });
     }
@@ -119,7 +107,7 @@ export class HideGreyedOutColumnsForForm {
             });
         });
 
-        return ArrayUtils.zipLists(cells);
+        return ArrayUtils.transpose(cells);
     }
 
     // From table date, generate cartesian products (exclude the first column, the data element name):
@@ -133,12 +121,15 @@ export class HideGreyedOutColumnsForForm {
             return Array.from(tr.querySelectorAll("td")).slice(1);
         });
 
-        return ArrayUtils.zipLists(cells);
+        return ArrayUtils.transpose(cells);
     }
 
     // Merge the cartesian products of header cells and value cells, and return a count of how
     // many times each cell (header or data) has been disabled.
-    private getDisabledCellsCountMap(headers: Element[][], values: Element[][]) {
+    private getDisabledCellsCountMap(
+        headers: Element[][],
+        values: Element[][]
+    ): Map<Element, number> {
         const groups = ArrayUtils.zip2(headers, values);
 
         const cellsDisabled = groups.flatMap(([headerGroup, valueGroup]) => {
@@ -158,7 +149,7 @@ export class HideGreyedOutColumnsForForm {
     }
 
     // Update the colspan of header/data cells, or hide them if fully disabled
-    private hideCells(disabledMap: Map<Element, number>) {
+    private hideCells(disabledMap: Map<Element, number>): void {
         disabledMap.forEach((disabledCount, cell) => {
             const originalColspan = parseInt(cell.getAttribute("colspan") ?? "1");
             const finalColspan = originalColspan - disabledCount;
@@ -174,7 +165,7 @@ export class HideGreyedOutColumnsForForm {
 
 class ArrayUtils {
     // count([1, 2, 3, 2, 3]) -> Map { 1 => 1, 2 => 2, 3 => 2 }
-    static count<T>(xs: readonly T[]): Map<T, number> {
+    static count<T>(xs: T[]): Map<T, number> {
         const result = new Map<T, number>();
 
         for (const x of xs) {
@@ -189,8 +180,8 @@ class ArrayUtils {
         return Array(times).fill(item);
     }
 
-    // zip([[1, 2, 3], [10, 20, 30]]) -> [[1, 10], [2, 20], [3, 30]]
-    static zipLists<T>(arrays: readonly (readonly T[])[]): T[][] {
+    // transpose([[0, 1], [10, 11], [20, 21]]) -> [[0, 10, 20], [1, 11, 21]]
+    static transpose<T>(arrays: T[][]): T[][] {
         if (arrays.length === 0) return [];
         const minLen = Math.min(...arrays.map(a => a.length));
         const indexes = Array.from(Array(minLen).keys());
@@ -198,11 +189,24 @@ class ArrayUtils {
     }
 
     // zip2([1, 2, 3], ["a", "b", "c"]) -> [[1, "a"], [2, "b"], [3, "c"]]
-    static zip2<T, U>(array1: readonly T[], array2: readonly U[]): [T, U][] {
+    static zip2<S, T>(array1: S[], array2: T[]): [S, T][] {
         const minLen = Math.min(array1.length, array2.length);
         const indexes = Array.from(Array(minLen).keys());
         return indexes.map(idx => [array1[idx]!, array2[idx]!]);
     }
+}
+
+declare global {
+    interface JQuery {
+        on(
+            event: "dhis2.de.event.formLoaded",
+            handler: (ev: JQuery.Event, dataSetId: string) => void
+        ): JQuery;
+    }
+}
+
+function debug(msg: string): void {
+    console.debug(`[custom-js-css:vaccination-app] ${msg}`);
 }
 
 function init() {
