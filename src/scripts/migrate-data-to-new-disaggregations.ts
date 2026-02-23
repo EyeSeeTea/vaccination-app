@@ -542,7 +542,7 @@ class MigrateData {
                 startDate: dateToDayString(
                     new Date(assert(campaign.endDate).getTime() + oneDayMsecs)
                 ),
-                endDate: new Date().getFullYear().toString(),
+                endDate: (new Date().getFullYear() + 100).toString(),
                 orgUnit: orgUnitIds,
             })
             .getData();
