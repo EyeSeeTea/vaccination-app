@@ -1,20 +1,24 @@
 /**
  * Delete deprecated metadata and their dependencies. Entities to delete:
  *
- * - deprecated category combos (+ categoryOptionCombos + associated datavalues+audits)
- *     category combos disaggregated by antigen and/or doses
- * - deprecated data elements (+ associated datavalues+audits)
- *    global data elements that were not disaggregated by antigen and/or doses
+ * - Category combos which are disaggregated by antigen/doses/campaignType, for example
+ *   "RVC_ANTIGEN_DOSE_TYPE_AGE_GROUP", which will now be a dataElement antigen/dose/type.
+ *   Also, delete their categoryOptionCombo, associated datavalues and audits.
+ *
+ * - Non-disaggregated data elements (+dataValues/audits). Example: "RVC_DOSES_ADMINISTERED"
+ *
+ * - Indicators associated to now deprecated global data elements.
  **/
 
 import _ from "lodash";
 import { command, flag, option, run } from "cmd-ts";
-import { dataElementsInfo } from "../models/D2CampaignMetadata";
-import { D2Api, D2CategoryComboSchema, Ref, SelectedPick } from "../types/d2-api";
-import { runPsql } from "./psql";
-import { getAppApi, getDefaultD2Args, getLogsArguments } from "./utils";
 import fs from "fs";
 import path from "path";
+
+import { runPsql } from "./psql";
+import { D2Api, D2CategoryComboSchema, Ref, SelectedPick } from "../types/d2-api";
+import { getAppApi, getDefaultD2Args, getLogsArguments, setupLogsFromArgs } from "./utils";
+import { baseCategoriesForDosesAdministered } from "../models/config";
 
 const program = command({
     name: "delete-old-disaggregations",
@@ -22,29 +26,24 @@ const program = command({
         ...getDefaultD2Args(),
         postgresUrl: option({
             long: "postgres-url",
-            description:
-                "PostgreSQL connection string. Ex: postgresql://user:password@localhost:5432/dhis2",
+            description: "Postgres URL. Ex: postgresql://USER:PASSWORD@localhost:5432/DB",
         }),
         delete: flag({
             long: "delete",
-            description: "Actually delete the data. By default, the script runs in dry-run mode",
+            description: "Actually perform a delete (by default, the script runs in dry-run mode)",
         }),
         ...getLogsArguments(),
     },
     handler: async args => {
+        setupLogsFromArgs(args);
         const appApi = await getAppApi({ auth: args.auth, url: args.url });
-
-        new DeleteOldDisaggregations(appApi.d2Api, args.postgresUrl, {
-            delete: args.delete,
-        }).execute();
+        await new DeleteOldDisaggregations(appApi.d2Api, args.postgresUrl, args).execute();
     },
 });
 
 run(program, process.argv.slice(2));
 
 class DeleteOldDisaggregations {
-    globalOrgUnitId = "zOyMxdCLXBM"; // MSF
-
     // Deprecated data elements were disaggregated by antigen and/or doses
     deprecatedCategoryCombos = [
         "RVC_ANTIGEN",
@@ -66,24 +65,108 @@ class DeleteOldDisaggregations {
         "RVC_ANTIGEN_DOSE_TYPE_AGE_GROUP_GENDER_DISTATUS_WS",
     ];
 
-    dryRun: boolean;
+    deprecatedDataElements = [
+        "RVC_DOSES_ADMINISTERED",
+        "RVC_DOSES_USED",
+        "RVC_AEFI",
+        "RVC_NEEDLES",
+        "RVC_SYRINGES",
+        "RVC_POPULATION_BY_AGE",
+    ];
 
-    constructor(private api: D2Api, private psqlUrl: string, options: { delete: boolean }) {
-        this.dryRun = !options.delete;
-    }
+    deprecatedIndicators = [
+        "RVC_DOSES_ADMINISTERED",
+        "RVC_CAMPAIGN_COVERAGE",
+        "RVC_VACCINE_UTILIZATION",
+        "RVC_DILUTION_SYRINGES_RATIO",
+        "RVC_CAMPAIGN_NEEDLES_RATIO",
+    ];
+
+    constructor(
+        private api: D2Api,
+        private psqlUrl: string,
+        private options: { delete: boolean }
+    ) {}
 
     async execute(): Promise<void> {
-        await this.insertIndexes();
-        await this.deleteCategoryCombos();
-        await this.deleteDataElements();
-        await this.deleteDepecratedIndicators();
+        await this.insertSqlIndexesToSpeedUpDeletions();
+        await this.deleteDeprecatedCategoryCombos();
+        await this.reduceCategoriesInAdministeredCategoryCombos();
+        await this.deleteDataValuesForDeprecatedDataElements();
+        await this.deleteDeprecatedIndicators();
     }
 
-    private async insertIndexes(): Promise<void> {
+    private get dryRun(): boolean {
+        return !this.options.delete;
+    }
+
+    private async reduceCategoriesInAdministeredCategoryCombos(): Promise<void> {
+        this.debug(`Reducing categories in category combos`);
+
+        // Vacc app uses category combos to model the categories that are optional/required for
+        // each data element (optionally customizable by antigen). By doing it like this,
+        // however, we create COCs that are not actually used. To reduce the number of COCs, we will
+        // remove from the category combo -only for Doses Administered- the categories that are
+        // always present.
+
+        const { categoryCombos } = await this.api.metadata
+            .get({
+                categoryCombos: {
+                    fields: {
+                        $owner: true,
+                        categoryOptionCombos: { id: true },
+                        categories: { id: true, code: true },
+                    },
+                    filter: { code: { $like: "RVC_DE_DOSES_ADMINISTERED_" } },
+                },
+            })
+            .getData();
+
+        const categoryOptionCombos = _(categoryCombos)
+            .flatMap(cc => cc.categoryOptionCombos)
+            .value();
+
+        if (categoryOptionCombos.length > 0) {
+            // As COCs are not used anywhere, we can simply remove them at this point. DHIS2 may
+            // eventually recreate them, but we will have a smaller number of COCs as we cleared
+            // the categories.
+            this.debug(`Delete ${categoryOptionCombos.length} COCs`);
+            await this.deleteCocs(categoryOptionCombos);
+        }
+
+        const categoryCombosWithReducedCategories = _(categoryCombos)
+            .map(categoryCombo => {
+                // d2-api does not correctly type the result from intersection of fields
+                // `"$owner: true & categories: { id: true, code: true }"`,
+                // so let's type assert so we can access `categoryCombo.categories[].code`
+                const categoriesForCategoryCombo: Array<{ id: string; code: string }> =
+                    categoryCombo.categories;
+                const categories = categoriesForCategoryCombo.filter(category =>
+                    baseCategoriesForDosesAdministered.includes(category.code)
+                );
+
+                return !_.isEqual(categoryCombo.categories, categories)
+                    ? { ...categoryCombo, categories: categories, categoryOptionCombos: [] }
+                    : null;
+            })
+            .compact()
+            .value();
+
+        if (categoryCombosWithReducedCategories.length > 0) {
+            const codes = categoryCombosWithReducedCategories.map(cc => cc.code).join(", ");
+            this.debug(`Update category combos to reduce number of categories: ${codes}`);
+            const res = await this.api.metadata
+                .post({ categoryCombos: categoryCombosWithReducedCategories })
+                .getData();
+            this.debug(`Updated category combos: ${res.status}`);
+        }
+    }
+
+    private async insertSqlIndexesToSpeedUpDeletions(): Promise<void> {
         this.debug(`Insert indexes to speed up deletions`);
 
         await runPsql({ url: this.psqlUrl, dryRun: false }, async query => {
-            const sql = this.getSql("indexes.sql");
+            const sql = this.getSqlAsString("indexes.sql");
             await query(sql);
         });
     }
@@ -92,25 +175,18 @@ class DeleteOldDisaggregations {
         return { url: this.psqlUrl, dryRun: this.dryRun };
     }
 
-    private getDeprecatedDataElementCodes(): string[] {
-        return dataElementsInfo
-            .filter(dataElement => dataElement.disaggregations.includes("antigen"))
-            .map(dataElement => dataElement.modelCode);
-    }
-
-    private getDeprecatedIndicatorCodes(): string[] {
-        return dataElementsInfo
-            .filter(dataElement => dataElement.disaggregations.includes("antigen"))
-            .map(dataElement => dataElement.modelCode);
-    }
-
-    private async deleteDataValuesForDeprecatedDataElements(
-        dataElements: Array<{ code: string }>
-    ): Promise<void> {
-        this.debug(`Deleting data values`);
+    private async deleteDataValuesForDeprecatedDataElements(): Promise<void> {
+        const dataElements = await this.getDeprecatedDataElements();
         const dataElementCodes = dataElements.map(de => de.code);
+        this.debug(
+            `Found ${dataElements.length} deprecated data elements: ${
+                dataElementCodes.join(", ") || "-"
+            }`
+        );
 
-        const res1 = await runPsql(this.psqlOptions, async query => {
+        this.debug(`Deleting data values`);
+
+        const resValues = await runPsql(this.psqlOptions, async query => {
             return query(
                 `
                     DELETE FROM datavalue
@@ -121,10 +197,10 @@ class DeleteOldDisaggregations {
                 [dataElementCodes]
             );
         });
-        this.debug(`Deleted data values: ${res1?.rowCount}`);
+        this.debug(`Deleted data values: ${resValues?.rowCount}`);
 
         this.debug(`Deleting data values audits`);
-        const res2 = await runPsql(this.psqlOptions, async query => {
+        const resAudits = await runPsql(this.psqlOptions, async query => {
             return query(
                 `
                     DELETE FROM datavalueaudit
@@ -135,44 +211,47 @@ class DeleteOldDisaggregations {
                 [dataElementCodes]
             );
         });
-        this.debug(`Deleted data values audits: ${res2?.rowCount}`);
+        this.debug(`Deleted data values audits: ${resAudits?.rowCount}`);
     }
 
-    private getSql(filename: string): string {
+    private getSqlAsString(filename: string): string {
         const sqlPath = path.join(__dirname, "sql", filename);
         return fs.readFileSync(sqlPath, "utf-8");
     }
 
-    private async deleteCategoryCombos(): Promise<void> {
+    private async deleteDeprecatedCategoryCombos(): Promise<void> {
         const categoryCombos = await this.getDeprecatedCategoryCombos();
         const codes = categoryCombos.map(cc => cc.code).join(", ");
-        this.debug(`Found ${categoryCombos.length} deprecated category combos:\n${codes}`);
+        this.debug(`Found ${categoryCombos.length} deprecated category combos: ${codes || "-"}`);
 
         for (const categoryCombo of categoryCombos) {
             this.debug(`Processing category combo ${categoryCombo.code}`);
-            const cocs = await this.getCocs(categoryCombo);
-
-            const allCocIds = cocs.map(coc => coc.id);
-            const cocIdsChunks = _.chunk(allCocIds, 1000);
-
+            const cocs = await this.getCategoryOptionCombos(categoryCombo);
             this.debug(`Deleting ${cocs.length} COCS for category combo ${categoryCombo.code}`);
-            for (const [index, cocIds] of cocIdsChunks.entries()) {
-                console.debug(`[${index + 1}/${cocIdsChunks.length}] ${cocIds.length} to delete`);
-
-                await runPsql(this.psqlOptions, async query => {
-                    await query(`CREATE TEMP TABLE temp_uids (uid VARCHAR(11))`);
-                    await query(`INSERT INTO temp_uids (uid) SELECT * FROM unnest($1::text[])`, [
-                        cocIds,
-                    ]);
-                    await query(this.getSql("delete-cocs.sql"));
-                });
-            }
-
+            await this.deleteCocs(cocs);
             await this.deleteCategoryCombo(categoryCombo);
         }
     }
 
-    private async getCocs(
+    private async deleteCocs(cocs: Ref[]): Promise<void> {
+        const cocIdsChunks = _(cocs)
+            .map(coc => coc.id)
+            .chunk(1000)
+            .value();
+
+        for (const [index, ids] of cocIdsChunks.entries()) {
+            const prefix = `[${index + 1}/${cocIdsChunks.length}]`;
+            this.debug(`${prefix}  ${ids.length} to delete`);
+
+            await runPsql(this.psqlOptions, async query => {
+                await query(`CREATE TEMP TABLE temp_uids (uid VARCHAR(11))`);
+                await query(`INSERT INTO temp_uids (uid) SELECT * FROM unnest($1::text[])`, [ids]);
+                await query(this.getSqlAsString("delete-cocs.sql"));
+            });
+        }
+    }
+
+    private async getCategoryOptionCombos(
         categoryCombo: SelectedPick<D2CategoryComboSchema, { id: true; code: true }>
     ): Promise<Ref[]> {
         const res = await this.api.metadata
@@ -191,27 +270,23 @@ class DeleteOldDisaggregations {
         categoryCombo: SelectedPick<D2CategoryComboSchema, { id: true; code: true }>
     ) {
         try {
-            console.debug(`Deleting category combo ${categoryCombo.code}`);
+            this.debug(`Deleting category combo ${categoryCombo.code}`);
             const res = await this.api.metadata
                 .post(
                     { categoryCombos: [{ id: categoryCombo.id }] },
-                    {
-                        importStrategy: "DELETE",
-                        importMode: this.dryRun ? "VALIDATE" : "COMMIT",
-                    }
+                    { importStrategy: "DELETE", importMode: this.getImportMode() }
                 )
                 .getData();
 
             this.debug(`Deleted category combo ${categoryCombo.code} (${res.status})`);
         } catch (error) {
-            this.debug(
-                `Error deleting category combo ${categoryCombo.code}: ${JSON.stringify(
-                    error,
-                    null,
-                    4
-                )}`
-            );
+            const errStr = JSON.stringify(error, null, 4);
+            this.debug(`Error deleting category combo ${categoryCombo.code}: ${errStr}`);
         }
+    }
+
+    private getImportMode() {
+        return this.dryRun ? "VALIDATE" : "COMMIT";
     }
 
     private async getDeprecatedCategoryCombos() {
@@ -227,22 +302,19 @@ class DeleteOldDisaggregations {
             })
             .getData();
 
-        const categoryCombos2 = _(categoryCombos)
-            .sortBy(cc => cc.code.length)
+        // Sort by code length to delete smaller category combos first (less categories, less COCs)
+        return _(categoryCombos)
+            .sortBy(categoryCombo => categoryCombo.code.length)
             .value();
-        return categoryCombos2;
     }
 
-    private async deleteDataElements(): Promise<void> {
-        const dataElements = await this.getDeprecatedDataElements();
-        await this.deleteDataValuesForDeprecatedDataElements(dataElements);
-
-        for (const dataElement of dataElements) {
+    private async _deleteDeprecatedDataElements(): Promise<void> {
+        for (const dataElement of await this.getDeprecatedDataElements()) {
             this.debug(`Deleting data element ${dataElement.code}`);
             const res = await this.api.metadata
                 .post(
                     { dataElements: [{ id: dataElement.id }] },
-                    { importStrategy: "DELETE", importMode: this.dryRun ? "VALIDATE" : "COMMIT" }
+                    { importStrategy: "DELETE", importMode: this.getImportMode() }
                 )
                 .getData();
 
@@ -255,7 +327,7 @@ class DeleteOldDisaggregations {
             .get({
                 dataElements: {
                     fields: { id: true, code: true },
-                    filter: { code: { in: this.getDeprecatedDataElementCodes() } },
+                    filter: { identifiable: { in: this.deprecatedDataElements } },
                 },
             })
             .getData();
@@ -263,22 +335,25 @@ class DeleteOldDisaggregations {
         return metadata.dataElements;
     }
 
-    private async deleteDepecratedIndicators(): Promise<void> {
+    private async deleteDeprecatedIndicators(): Promise<void> {
         const { indicators } = await this.api.metadata
             .get({
                 indicators: {
                     fields: { id: true, code: true },
-                    filter: { code: { in: this.getDeprecatedIndicatorCodes() } },
+                    filter: { identifiable: { in: this.deprecatedIndicators } },
                 },
             })
             .getData();
+
+        const codes = indicators.map(ind => ind.code).join(", ");
+        this.debug(`Found ${indicators.length} deprecated indicators: ${codes || "-"}`);
 
         for (const indicator of indicators) {
             this.debug(`Deleting indicator ${indicator.code}`);
             const res = await this.api.metadata
                 .post(
                     { indicators: [{ id: indicator.id }] },
-                    { importStrategy: "DELETE", importMode: this.dryRun ? "VALIDATE" : "COMMIT" }
+                    { importStrategy: "DELETE", importMode: this.getImportMode() }
                 )
                 .getData();
 
@@ -286,7 +361,7 @@ class DeleteOldDisaggregations {
         }
     }
 
-    debug(message: string) {
+    private debug(message: string) {
         const prefix = this.dryRun ? "[DRY RUN] " : "";
         console.debug(`${prefix}${message}`);
     }

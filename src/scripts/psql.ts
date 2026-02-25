@@ -1,4 +1,3 @@
-import { split } from "lodash";
 import { Client } from "pg";
 
 type QueryFunction = (query: string, values?: unknown[]) => Promise<QueryResult | undefined>;
@@ -13,37 +12,39 @@ export async function runPsql<U>(
     const client = new Client(url);
     await client.connect();
 
+    const queryWithLog: QueryFunction = async (query, values) => {
+        const queries = splitSqlCommands(query);
+        let res: QueryResult | undefined = undefined;
+
+        for (const q of queries) {
+            const sqlSingleLine = q.replace(/\s+/g, " ").trim();
+            console.debug(`Executing query: ${sqlSingleLine.slice(0, 200)}`);
+            const res2 = await client.query(q, values);
+            res = { rows: res2.rows, rowCount: res2.rowCount };
+        }
+        return res;
+    };
+
     try {
         if (dryRun) {
             await client.query("BEGIN");
         }
 
-        const queryWithLog: QueryFunction = async (query, values?) => {
-            const queries = splitSqlCommands(query);
-
-            let res: QueryResult | undefined = undefined;
-
-            for (const q of queries) {
-                const sqlSingleLine = q.replace(/\s+/g, " ").trim();
-                console.debug(`Executing query: ${sqlSingleLine.slice(0, 200)}`);
-                const res2 = await client.query(q, values);
-                res = { rows: res2.rows, rowCount: res2.rowCount };
-            }
-            return res;
-        };
         const result = await command(queryWithLog);
 
         if (dryRun) {
             await client.query("ROLLBACK");
             console.debug("Dry run: transaction rolled back.");
-        } else {
-            await client.query("COMMIT");
         }
 
         return result;
     } catch (error) {
         if (dryRun) {
-            await client.query("ROLLBACK");
+            try {
+                await client.query("ROLLBACK");
+            } catch (rollbackError) {
+                console.error("Rollback failed:", rollbackError);
+            }
         }
         throw error;
     } finally {
@@ -51,18 +52,22 @@ export async function runPsql<U>(
     }
 }
 
+// Splits SQL string into individual commands, handling semicolons inside strings and comments.
+//
+// splitSqlCommands("SELECT *\nFROM table1;\n--some comment\nSELECT * FROM table2;") =>
+//      ["SELECT * FROM table1;", "SELECT * FROM table2;"]
 export function splitSqlCommands(sql: string): string[] {
     return (
         sql
             // remove single-line comments
             .replace(/--.*$/gm, "")
-            // split by semicolon
-            .split(";")
+            // split only on semicolon at end of line
+            .split(/;[ \t]*(?:\r?\n|$)/)
             // trim whitespace
             .map(cmd => cmd.trim())
             // remove empty entries
             .filter(cmd => cmd.length > 0)
-            // add semicolon back if you want executable statements
+            // add semicolon back
             .map(cmd => cmd + ";")
     );
 }

@@ -110,7 +110,8 @@ export async function getCampaignDataSets(options: {
     return _(res.objects as CampaignDataSetRes[])
         .map(dataSet => {
             const periods = getCampaignPeriods(dataSet);
-            if (!periods) throw new Error(`Data set ${dataSet.name} has no valid periods`);
+            if (!periods)
+                throw new Error(`Dataset ${dataSet.name} [${dataSet.id}] has no valid periods`);
             return { ...dataSet, ...periods };
         })
         .reject(dataSet =>
