@@ -141,9 +141,11 @@ class DeleteOldDisaggregations {
                 // so let's type assert so we can access `categoryCombo.categories[].code`
                 const categoriesForCategoryCombo: Array<{ id: string; code: string }> =
                     categoryCombo.categories;
-                const categories = categoriesForCategoryCombo.filter(category =>
-                    baseCategoriesForDosesAdministered.includes(category.code)
-                );
+
+                // Remove the categories already added as base categories in the code
+                const categories = _(categoriesForCategoryCombo)
+                    .reject(category => baseCategoriesForDosesAdministered.includes(category.code))
+                    .value();
 
                 return !_.isEqual(categoryCombo.categories, categories)
                     ? { ...categoryCombo, categories: categories, categoryOptionCombos: [] }
