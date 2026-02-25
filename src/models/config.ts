@@ -81,6 +81,13 @@ export const baseConfig = {
     },
 };
 
+export const baseCategoriesForDosesAdministered = [
+    baseConfig.categoryCodeForAntigens,
+    baseConfig.categoryCodeForDoses,
+    baseConfig.categoryCodeForCampaignType,
+    baseConfig.categoryCodeForAgeGroup,
+];
+
 type BaseConfig = typeof baseConfig;
 
 export interface MetadataConfig extends BaseConfig {
@@ -113,7 +120,6 @@ export interface MetadataConfig extends BaseConfig {
         dataElementGroup: DataElementGroup;
         totalPopulationDataElement: DataElement;
         ageDistributionDataElement: DataElement;
-        populationByAgeDataElement: DataElement;
         ageGroupCategory: Category;
     };
     dataElements: DataElement[];
@@ -264,7 +270,9 @@ function getConfigDataElementsDisaggregation(
 
             const requiredCategoriesDefault = getCategories("REQUIRED");
             const optionalCategoriesDefault = getCategories("OPTIONAL");
+            const categoriesByCode = _.keyBy(categories, getCode);
 
+            // Categories can be customized by antigen
             const categoriesByAntigen = _(antigens)
                 .map(antigen => {
                     const requiredCategories = _(
@@ -279,7 +287,22 @@ function getConfigDataElementsDisaggregation(
                         .map(category => ({ code: category.code, optional: true }))
                         .value();
 
-                    const categories = _.concat(requiredCategories, optionalCategories);
+                    // Special case for 'Doses administered': to reduce the number of categories in
+                    // the category combo (which generates COCs), add inconditionally categories
+                    // that are always present for this data element.
+                    const baseCategories =
+                        dataElement.code === baseConfig.dataElementDosesAdministeredCode
+                            ? _(categoriesByCode)
+                                  .at(baseCategoriesForDosesAdministered)
+                                  .map(category => ({ code: category.code, optional: false }))
+                                  .value()
+                            : [];
+
+                    const categories = _(baseCategories)
+                        .concat(requiredCategories)
+                        .concat(optionalCategories)
+                        .uniqBy(getCode)
+                        .value();
 
                     return [antigen.code, categories] as [typeof antigen.code, typeof categories];
                 })
@@ -503,9 +526,6 @@ function getPopulationMetadata(
     const ageDistributionDataElement = dataElementsByCode.getOrFail(
         baseConfig.dataElementCodeForAgeDistribution
     );
-    const populationByAgeDataElement = dataElementsByCode.getOrFail(
-        baseConfig.dataElementCodeForPopulationByAge
-    );
 
     const ageGroupCategory = _(categories)
         .keyBy("code")
@@ -518,7 +538,6 @@ function getPopulationMetadata(
     return {
         totalPopulationDataElement: totalPopulationDataElement,
         ageDistributionDataElement: ageDistributionDataElement,
-        populationByAgeDataElement: populationByAgeDataElement,
         ageGroupCategory,
         dataElementGroup: populationGroup,
     };
