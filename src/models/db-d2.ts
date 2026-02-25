@@ -91,6 +91,7 @@ export interface AnalyticsResponse {
 // https://docs.dhis2.org/2.30/en/developer/html/dhis2_developer_manual_full.html#webapi_reading_data_values
 export interface GetDataValuesParams {
     dataSet?: string[];
+    dataElement?: string[];
     dataElementGroup?: string[];
     orgUnit: string[];
     period?: string[];

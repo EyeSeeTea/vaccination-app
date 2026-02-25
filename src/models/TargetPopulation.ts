@@ -2,7 +2,7 @@ import _ from "lodash";
 import moment from "moment";
 
 import DbD2 from "./db-d2";
-import { AntigenConfig, Dose, MetadataConfig } from "./config";
+import { AntigenConfig, baseConfig, Dose, MetadataConfig } from "./config";
 import { Maybe, DataValue, CategoryOption, DataValueToPost } from "./db.types";
 import { OrganisationUnit, OrganisationUnitPathOnly, OrganisationUnitLevel } from "./db.types";
 import { AntigenDisaggregationEnabled, isAgeGroupIncluded } from "./AntigensDisaggregationLegacy";
@@ -243,33 +243,37 @@ export class TargetPopulation {
     }
 
     public async areDataValuesUpTodate(): Promise<boolean> {
-        const { config, campaign } = this;
+        const { campaign } = this;
         if (!campaign.id) return false;
 
-        const isPopulationByAge = (dataValue: DataValue) =>
-            dataValue.dataElement === config.population.populationByAgeDataElement.id;
+        let expectedDataValues: DataValue[];
+        try {
+            // getDataValues() will only succeed if all required fields are present
+            expectedDataValues = await this.getDataValues();
+        } catch {
+            return false;
+        }
 
-        // getDataValues() will only succeed if all required fields are present, fallback to empty
-        const expectedDataValues = await this.getDataValues().catch(_err => [] as DataValue[]);
+        if (expectedDataValues.length === 0) return true;
+
+        const dataElementIds = _(expectedDataValues)
+            .map(dv => dv.dataElement)
+            .uniq()
+            .value();
 
         const actualDataValues = await this.db.getDataValues({
-            dataElementGroup: [config.population.dataElementGroup.id],
+            dataElement: dataElementIds,
             orgUnit: campaign.organisationUnits.map(ou => ou.id),
             startDate: campaign.startDate || undefined,
             endDate: campaign.endDate || undefined,
         });
 
-        const filterAndSortDataValues = (dataValues: DataValue[]) =>
-            _(dataValues)
-                .filter(isPopulationByAge)
-                .map(dv => [dv.period, dv.orgUnit, dv.categoryOptionCombo, dv.value].join("-"))
-                .sortBy()
-                .value();
+        const getKey = (dv: DataValue) =>
+            [dv.dataElement, dv.period, dv.orgUnit, dv.categoryOptionCombo, dv.value].join(".");
 
-        const expected = filterAndSortDataValues(expectedDataValues);
-        const actual = filterAndSortDataValues(actualDataValues);
+        const actualKeys = new Set(actualDataValues.map(getKey));
 
-        return _.isEqual(expected, actual);
+        return expectedDataValues.every(expectedDv => actualKeys.has(getKey(expectedDv)));
     }
 
     public async getDataValues(): Promise<DataValue[]> {
@@ -386,15 +390,14 @@ export class TargetPopulation {
         dv: Omit<DataValueToPost, "dataElement">
     ): DataValueToPost {
         const { campaign } = this;
-        const { config } = campaign;
-        const dataElement = config.population.populationByAgeDataElement;
+        const dataElementCode = baseConfig.dataElementCodeForPopulationByAge;
         const match = assert(
             campaign
                 .getEnabledAntigensDisaggregation()
                 .find(enabled => enabled.antigen.id === antigen.id)
         );
 
-        const dataElements = getDataElements(this.campaign, match, dataElement.code, dose);
+        const dataElements = getDataElements(this.campaign, match, dataElementCode, dose);
 
         const d2DataElement = assert(
             dataElements[0],
