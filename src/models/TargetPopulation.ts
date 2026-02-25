@@ -243,7 +243,7 @@ export class TargetPopulation {
     }
 
     public async areDataValuesUpTodate(): Promise<boolean> {
-        const { campaign } = this;
+        const { config, campaign } = this;
         if (!campaign.id) return false;
 
         let expectedDataValues: DataValue[];
@@ -261,19 +261,30 @@ export class TargetPopulation {
             .uniq()
             .value();
 
+        const campaignOrgUnitIds = new Set(campaign.organisationUnits.map(ou => ou.id));
+
         const actualDataValues = await this.db.getDataValues({
             dataElement: dataElementIds,
-            orgUnit: campaign.organisationUnits.map(ou => ou.id),
+            orgUnit: Array.from(campaignOrgUnitIds),
             startDate: campaign.startDate || undefined,
             endDate: campaign.endDate || undefined,
         });
 
-        const getKey = (dv: DataValue) =>
-            [dv.dataElement, dv.period, dv.orgUnit, dv.categoryOptionCombo, dv.value].join(".");
+        const getKey = (dataValue: DataValue) =>
+            [
+                dataValue.dataElement,
+                dataValue.period,
+                dataValue.orgUnit,
+                dataValue.categoryOptionCombo || config.defaults.categoryOptionCombo.id,
+                dataValue.value,
+            ].join(".");
 
         const actualKeys = new Set(actualDataValues.map(getKey));
 
-        return expectedDataValues.every(expectedDv => actualKeys.has(getKey(expectedDv)));
+        // Check that all expected data values for the campaign orgunits are present in actual data values
+        return _(expectedDataValues)
+            .filter(dv => campaignOrgUnitIds.has(dv.orgUnit))
+            .every(expectedDv => actualKeys.has(getKey(expectedDv)));
     }
 
     public async getDataValues(): Promise<DataValue[]> {
