@@ -20,6 +20,8 @@ import {
 } from "./db.types";
 import { sortAgeGroups } from "../utils/age-groups";
 import { interpolate } from "../utils/strings";
+import { assert } from "../utils/assert";
+import { dataElementsInfo, indicatorsInfo } from "./D2CampaignMetadata";
 
 export const userRoles = {
     app: "RVC App: Access",
@@ -233,6 +235,23 @@ function getFromRefs<T>(refs: Ref[], objects: T[]): T[] {
     return refs.map(ref => _(objectsById).getOrFail(ref.id));
 }
 
+const dataElementsFromInfo = dataElementsInfo.map(
+    (deInfo): DataElement => ({
+        id: deInfo.modelCode,
+        code: deInfo.modelCode,
+        displayName: deInfo.name,
+        categoryCombo: { id: "VIRTUAL" },
+        formName: deInfo.name,
+    })
+);
+
+const indicatorsFromInfo = indicatorsInfo.map(
+    (indicatorInfo): Indicator => ({
+        id: indicatorInfo.modelCode,
+        code: indicatorInfo.modelCode,
+    })
+);
+
 function getConfigDataElementsDisaggregation(
     antigens: MetadataConfig["antigens"],
     dataElementGroups: DataElementGroup[],
@@ -242,10 +261,16 @@ function getConfigDataElementsDisaggregation(
 ): MetadataConfig["dataElementsDisaggregation"] {
     const groupsByCode = _.keyBy(dataElementGroups, getCode);
     const catCombosByCode = _.keyBy(categoryCombos, getCode);
-    const dataElementsForAntigens = getFromRefs(
+
+    const dataElementsFromGroup = getFromRefs(
         _(groupsByCode).getOrFail(baseConfig.dataElementGroupCodeForAntigens).dataElements,
         dataElements
     );
+
+    const dataElementsForAntigens = _(dataElementsFromGroup)
+        .concat(dataElementsFromInfo)
+        .uniqBy(de => de.code)
+        .value();
 
     return dataElementsForAntigens.map(
         (dataElement): MetadataConfig["dataElementsDisaggregation"][0] => {
@@ -319,6 +344,17 @@ function getConfigDataElementsDisaggregation(
     );
 }
 
+const dataElementsOrderByCode = [
+    "RVC_DOSES_ADMINISTERED", //
+    "RVC_DOSES_USED",
+    "RVC_ADS_USED",
+    "RVC_NEEDLES",
+    "RVC_SYRINGES",
+    "RVC_SAFETY_BOXES",
+    "RVC_AEB",
+    "RVC_AEFI",
+];
+
 function getAntigens(
     dataElementGroups: DataElementGroup[],
     dataElements: DataElement[],
@@ -342,16 +378,29 @@ function getAntigens(
         (categoryOption): MetadataConfig["antigens"][0] => {
             const getDataElements = (typeString: string) => {
                 const code = getRvcCode([categoryOption.code, typeString]);
-                const dataElementsForType = getFromRefs(
+                const dataElementsForType0 = getFromRefs(
                     _(dataElementGroupsByCode).getOrFail(code).dataElements,
                     dataElements
                 );
-                // formName: Name - INDEX
+
+                const dataElementsForType = _(dataElementsForType0)
+                    .map(dataElement => {
+                        const codePrefix = assert(dataElement.code.split("-")[0]);
+                        const deInfo = dataElementsInfo.find(de => de.code.startsWith(codePrefix));
+                        // For disaggregated data elements, use modelCode as domain ID (as
+                        // we don't have actual objects in the database)
+                        return deInfo
+                            ? { id: deInfo.modelCode, code: deInfo.modelCode }
+                            : { id: dataElement.id, code: dataElement.code };
+                    })
+                    .uniqBy(de => de.code)
+                    .value();
+
                 return dataElementsForType.map(de => ({
                     id: de.id,
                     code: de.code,
                     optional: typeString === "OPTIONAL",
-                    order: parseInt(de.formName.split(" - ")[1] || "0"),
+                    order: dataElementsOrderByCode.indexOf(de.code) ?? Number.MAX_VALUE,
                 }));
             };
 
@@ -650,7 +699,14 @@ export async function getMetadataConfig(db: DbD2): Promise<MetadataConfig> {
             .flatMap(category => category.categoryOptions)
             .value(),
         categoryCombos: metadata.categoryCombos,
-        dataElements: metadata.dataElements,
+        dataElements: _(metadata.dataElements)
+            .concat(dataElementsFromInfo)
+            .uniqBy(de => de.code)
+            .value(),
+        indicators: _(metadata.indicators)
+            .concat(indicatorsFromInfo)
+            .uniqBy(ind => ind.code)
+            .value(),
         dataElementsDisaggregation: getConfigDataElementsDisaggregation(
             antigens,
             metadata.dataElementGroups,
@@ -667,7 +723,6 @@ export async function getMetadataConfig(db: DbD2): Promise<MetadataConfig> {
         ),
         userRoles: metadata.userRoles,
         legendSets: metadata.legendSets,
-        indicators: metadata.indicators,
         dataSets: { extraActivities: metadata.dataSets },
     };
 
