@@ -235,22 +235,24 @@ function getFromRefs<T>(refs: Ref[], objects: T[]): T[] {
     return refs.map(ref => _(objectsById).getOrFail(ref.id));
 }
 
-const dataElementsFromInfo = dataElementsInfo.map(
-    (deInfo): DataElement => ({
-        id: deInfo.modelCode,
-        code: deInfo.modelCode,
-        displayName: deInfo.name,
-        categoryCombo: { id: "VIRTUAL" },
-        formName: deInfo.name,
-    })
-);
+const dataElementsFromInfo = () =>
+    dataElementsInfo.map(
+        (deInfo): DataElement => ({
+            id: deInfo.modelCode,
+            code: deInfo.modelCode,
+            displayName: deInfo.name,
+            categoryCombo: { id: "VIRTUAL" },
+            formName: deInfo.name,
+        })
+    );
 
-const indicatorsFromInfo = indicatorsInfo.map(
-    (indicatorInfo): Indicator => ({
-        id: indicatorInfo.modelCode,
-        code: indicatorInfo.modelCode,
-    })
-);
+const indicatorsFromInfo = () =>
+    indicatorsInfo.map(
+        (indicatorInfo): Indicator => ({
+            id: indicatorInfo.modelCode,
+            code: indicatorInfo.modelCode,
+        })
+    );
 
 function getConfigDataElementsDisaggregation(
     antigens: MetadataConfig["antigens"],
@@ -268,7 +270,7 @@ function getConfigDataElementsDisaggregation(
     );
 
     const dataElementsForAntigens = _(dataElementsFromGroup)
-        .concat(dataElementsFromInfo)
+        .concat(dataElementsFromInfo())
         .uniqBy(de => de.code)
         .value();
 
@@ -700,11 +702,11 @@ export async function getMetadataConfig(db: DbD2): Promise<MetadataConfig> {
             .value(),
         categoryCombos: metadata.categoryCombos,
         dataElements: _(metadata.dataElements)
-            .concat(dataElementsFromInfo)
+            .concat(dataElementsFromInfo())
             .uniqBy(de => de.code)
             .value(),
         indicators: _(metadata.indicators)
-            .concat(indicatorsFromInfo)
+            .concat(indicatorsFromInfo())
             .uniqBy(ind => ind.code)
             .value(),
         dataElementsDisaggregation: getConfigDataElementsDisaggregation(
