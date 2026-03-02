@@ -4,6 +4,7 @@ import {
     D2CategoryCombo,
     D2CategoryOptionCombo,
     D2DataElement,
+    D2DataElementGroup,
     D2Indicator,
     D2ValidationRule,
     MetadataPick,
@@ -14,8 +15,9 @@ import { dataElementsInfo, indicatorsInfo, DataElementInfo } from "../models/D2C
 import { cartesianProduct2, cartesianProduct3, powerSet } from "../utils/lodash-mixins";
 import { interpolate } from "../utils/strings";
 import { getUid } from "../utils/dhis2";
-import { assert, throw_ } from "../utils/assert";
+import { assert, assertValue, throw_ } from "../utils/assert";
 import fs from "fs";
+import { getId } from "../models/db.types";
 
 export class CreateDisaggregatedD2Metadata {
     campaignTypes = {
@@ -88,9 +90,18 @@ export class CreateDisaggregatedD2Metadata {
 
         const dataElements = dataElementsInfo.flatMap(dataElementConfig => {
             return antigens.flatMap(antigen => {
-                return this.getDataElements(metadata1, dataElementConfig, antigen, null, null);
+                return this.getDataElements(metadata1, dataElementConfig, {
+                    antigen,
+                    doseNum: null,
+                    campaignType: null,
+                });
             });
         });
+
+        const dataElementGroups = this.getDataElementGroupsWithDisaggregatedDataElements(
+            metadata1,
+            antigens
+        );
 
         const metadata: typeof metadata0 = {
             ...metadata1,
@@ -101,15 +112,9 @@ export class CreateDisaggregatedD2Metadata {
         };
 
         const indicators = indicatorsInfo.flatMap(indicatorConfig => {
-            const existingIndicator =
-                indicatorConfig.modelCode && !indicatorConfig.newEntity
-                    ? assert(
-                          metadata.indicators.find(
-                              indicator => indicator.code === indicatorConfig.modelCode
-                          ),
-                          `Indicator not found: ${indicatorConfig.modelCode}`
-                      )
-                    : undefined;
+            const existingIndicator = metadata.indicators.find(
+                ind => ind.code === indicatorConfig.modelCode
+            );
 
             const antigens2 = indicatorConfig.disaggregations.includes("antigen")
                 ? antigens
@@ -158,21 +163,17 @@ export class CreateDisaggregatedD2Metadata {
                     const namespace = _(dataElementsInfo)
                         .map((dataElementConfig): [string, string] => {
                             const dataElements = antigen
-                                ? this.getDataElements(
-                                      metadata,
-                                      dataElementConfig,
+                                ? this.getDataElements(metadata, dataElementConfig, {
                                       antigen,
                                       doseNum,
-                                      campaignType
-                                  )
+                                      campaignType,
+                                  })
                                 : antigens.flatMap(antigen =>
-                                      this.getDataElements(
-                                          metadata,
-                                          dataElementConfig,
+                                      this.getDataElements(metadata, dataElementConfig, {
                                           antigen,
                                           doseNum,
-                                          campaignType
-                                      )
+                                          campaignType,
+                                      })
                                   );
                             const formula =
                                 "(" + dataElements.map(de => `#{${de.id}}`).join(" + ") + ")";
@@ -217,9 +218,19 @@ export class CreateDisaggregatedD2Metadata {
         const validationRules = this.getValidationRules(metadata, antigens, dataElements);
         console.debug(`Creating ${validationRules.length} validation rules...`);
 
-        const payload = _({ dataElements, indicators, categoryCombos, validationRules })
+        const payload = _({
+            dataElements,
+            indicators,
+            categoryCombos,
+            validationRules,
+            dataElementGroups,
+        })
             .mapValues(objs => objs.map(obj => _.omit(obj, ["lastUpdated"])))
             .value();
+
+        const payloadOutputBase = `new-disaggregations-metadata-base.json`;
+        console.debug(`Saving metadata payload to ${payloadOutputBase}...`);
+        fs.writeFileSync(payloadOutputBase, JSON.stringify(payload, null, 4), "utf-8");
 
         const res = await this.api.metadata
             .post(payload)
@@ -238,6 +249,53 @@ export class CreateDisaggregatedD2Metadata {
         fs.writeFileSync(payloadOutput, JSON.stringify(payload2, null, 4), "utf-8");
 
         return res;
+    }
+
+    // Replace global DEs by disaggregated DEs in groups "RVC - Antigen - ANTIGEN - REQUIRED|OPTIONAL"
+    private getDataElementGroupsWithDisaggregatedDataElements(
+        metadata: Metadata,
+        antigens: AntigenInfo[]
+    ): PartialPersistedModel<D2DataElementGroup>[] {
+        return _(antigens)
+            .flatMap(antigen => {
+                const degsForAntigen = metadata.dataElementGroups.filter(deg =>
+                    deg.code.startsWith(`RVC_ANTIGEN_${antigen.antigen.code}`)
+                );
+                return degsForAntigen.map(degForAntigen => ({ antigen, degForAntigen }));
+            })
+            .map(({ antigen, degForAntigen }) => {
+                const mapping = _(dataElementsInfo)
+                    .map(dataElementConfig => {
+                        const targetDataElements = this.getDataElements(
+                            metadata,
+                            dataElementConfig,
+                            { antigen, doseNum: null, campaignType: null }
+                        );
+
+                        return [dataElementConfig.modelCode, targetDataElements] as [
+                            typeof dataElementConfig.modelCode,
+                            typeof targetDataElements
+                        ];
+                    })
+                    .fromPairs()
+                    .value();
+
+                const dataElementsUpdated = degForAntigen.dataElements.flatMap(de => {
+                    const deCode =
+                        "code" in de && typeof de.code === "string" ? de.code : undefined;
+                    const targetDataElements = deCode ? mapping[deCode] || [de] : [de];
+                    return targetDataElements.map(de => ({ id: de.id }));
+                });
+
+                return _.isEqual(
+                    degForAntigen.dataElements.map(getId),
+                    dataElementsUpdated.map(getId)
+                )
+                    ? null
+                    : { ...degForAntigen, dataElements: dataElementsUpdated };
+            })
+            .compact()
+            .value();
     }
 
     private async buildCategoryOptionCombos(
@@ -291,10 +349,13 @@ export class CreateDisaggregatedD2Metadata {
     private getDataElements(
         metadata: Metadata,
         dataElementConfig: DataElementInfo,
-        antigen: AntigenInfo,
-        doseNum: number | null,
-        campaignType: CampaignType | null
+        options: {
+            antigen: AntigenInfo;
+            doseNum: number | null;
+            campaignType: CampaignType | null;
+        }
     ) {
+        const { antigen, doseNum, campaignType } = options;
         const combos = cartesianProduct3([
             dataElementConfig.disaggregations.includes("antigen") ? [antigen] : [null],
             dataElementConfig.disaggregations.includes("dose")
@@ -311,12 +372,9 @@ export class CreateDisaggregatedD2Metadata {
 
         return combos.map(
             ([antigen, doseNum, campaignType]): PartialPersistedModel<D2DataElement> => {
-                const existingDataElement = !dataElementConfig.newEntity
-                    ? assert(
-                          metadata.dataElements.find(de => de.code === dataElementConfig.modelCode),
-                          `DataElement not found: ${dataElementConfig.modelCode}`
-                      )
-                    : undefined;
+                const existingDataElement = metadata.dataElements.find(
+                    de => de.code === dataElementConfig.modelCode
+                );
 
                 const name = _.compact([
                     dataElementConfig.name,
@@ -344,7 +402,10 @@ export class CreateDisaggregatedD2Metadata {
                     .join(" ");
 
                 return {
-                    ..._.omit(existingDataElement, ["created"]),
+                    domainType: "AGGREGATE",
+                    valueType: "INTEGER_ZERO_OR_POSITIVE",
+                    aggregationType: "SUM",
+                    ...(existingDataElement ? _.omit(existingDataElement, ["created"]) : {}),
                     id: getUid("dataElement", code.replace(/-/g, "_")),
                     name: name,
                     shortName: shortName,
@@ -576,6 +637,10 @@ const metadataQuery = {
     },
     dataElements: {
         fields: { $owner: true },
+        filter: { code: { $like: "RVC_" } },
+    },
+    dataElementGroups: {
+        fields: { $owner: true, dataElements: { id: true, code: true } },
         filter: { code: { $like: "RVC_" } },
     },
     indicators: {
