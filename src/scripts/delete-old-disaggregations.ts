@@ -89,18 +89,19 @@ class DeleteOldDisaggregations {
     ) {}
 
     async execute(): Promise<void> {
-        await this.insertSqlIndexesToSpeedUpDeletions();
-        await this.deleteDeprecatedCategoryCombos();
-        await this.reduceCategoriesInAdministeredCategoryCombos();
+        await this.createSqlIndexesToSpeedupDeletions();
+        await this.removeBaseCategoriesInDosesAdministeredCategoryCombos();
         await this.deleteDataValuesForDeprecatedDataElements();
         await this.deleteDeprecatedIndicators();
+        await this.deleteDeprecatedDataElements();
+        await this.deleteDeprecatedCategoryCombos();
     }
 
     private get dryRun(): boolean {
         return !this.options.delete;
     }
 
-    private async reduceCategoriesInAdministeredCategoryCombos(): Promise<void> {
+    private async removeBaseCategoriesInDosesAdministeredCategoryCombos(): Promise<void> {
         this.debug(`Reducing categories in category combos`);
 
         // Vacc app uses category combos to model the categories that are optional/required for
@@ -131,7 +132,7 @@ class DeleteOldDisaggregations {
             // eventually recreate them, but we will have a smaller number of COCs as we cleared
             // the categories.
             this.debug(`Delete ${categoryOptionCombos.length} COCs`);
-            await this.deleteCocs(categoryOptionCombos);
+            await this.deleteCocs(categoryOptionCombos, { prefix: "DOSES_ADMIN CATCOMBOS" });
         }
 
         const categoryCombosWithReducedCategories = _(categoryCombos)
@@ -164,7 +165,7 @@ class DeleteOldDisaggregations {
         }
     }
 
-    private async insertSqlIndexesToSpeedUpDeletions(): Promise<void> {
+    private async createSqlIndexesToSpeedupDeletions(): Promise<void> {
         this.debug(`Insert indexes to speed up deletions`);
 
         await runPsql({ url: this.psqlUrl, dryRun: false }, async query => {
@@ -230,20 +231,20 @@ class DeleteOldDisaggregations {
             this.debug(`Processing category combo ${categoryCombo.code}`);
             const cocs = await this.getCategoryOptionCombos(categoryCombo);
             this.debug(`Deleting ${cocs.length} COCS for category combo ${categoryCombo.code}`);
-            await this.deleteCocs(cocs);
+            await this.deleteCocs(cocs, { prefix: `CATCOMBO ${categoryCombo.code}` });
             await this.deleteCategoryCombo(categoryCombo);
         }
     }
 
-    private async deleteCocs(cocs: Ref[]): Promise<void> {
+    private async deleteCocs(cocs: Ref[], options: { prefix: string }): Promise<void> {
         const cocIdsChunks = _(cocs)
             .map(coc => coc.id)
             .chunk(1000)
             .value();
 
         for (const [index, ids] of cocIdsChunks.entries()) {
-            const prefix = `[${index + 1}/${cocIdsChunks.length}]`;
-            this.debug(`${prefix}  ${ids.length} to delete`);
+            const pagination = `[${index + 1}/${cocIdsChunks.length}]`;
+            this.debug(`Delete COCs: [${options.prefix}] ${pagination} ${ids.length} to delete`);
 
             await runPsql(this.psqlOptions, async query => {
                 await query(`CREATE TEMP TABLE temp_uids (uid VARCHAR(11))`);
@@ -310,7 +311,7 @@ class DeleteOldDisaggregations {
             .value();
     }
 
-    private async _deleteDeprecatedDataElements(): Promise<void> {
+    private async deleteDeprecatedDataElements(): Promise<void> {
         for (const dataElement of await this.getDeprecatedDataElements()) {
             this.debug(`Deleting data element ${dataElement.code}`);
             const res = await this.api.metadata
