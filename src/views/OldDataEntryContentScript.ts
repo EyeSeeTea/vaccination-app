@@ -163,6 +163,14 @@ export class HideGreyedOutColumnsForForm {
     }
 }
 
+// Return the value with a non-undefined assertion, or throws an error if undefined.
+function assert<T>(value: T | undefined): T {
+    if (value === undefined) {
+        throw new Error("Expected value to be defined");
+    }
+    return value;
+}
+
 class ArrayUtils {
     // count([1, 2, 3, 2, 3]) -> Map { 1 => 1, 2 => 2, 3 => 2 }
     static count<T>(xs: T[]): Map<T, number> {
@@ -185,14 +193,14 @@ class ArrayUtils {
         if (arrays.length === 0) return [];
         const minLen = Math.min(...arrays.map(a => a.length));
         const indexes = Array.from(Array(minLen).keys());
-        return indexes.map(idx => arrays.map(arr => arr[idx]!));
+        return indexes.map(idx => arrays.map(arr => assert(arr[idx])));
     }
 
     // zip2([1, 2, 3], ["a", "b", "c"]) -> [[1, "a"], [2, "b"], [3, "c"]]
     static zip2<S, T>(array1: S[], array2: T[]): [S, T][] {
         const minLen = Math.min(array1.length, array2.length);
         const indexes = Array.from(Array(minLen).keys());
-        return indexes.map(idx => [array1[idx]!, array2[idx]!]);
+        return indexes.map(idx => [assert(array1[idx]), assert(array2[idx])]);
     }
 }
 
