@@ -49,7 +49,7 @@ const program = command({
             try {
                 await migrateCampaign.execute(id);
             } catch (error) {
-                console.error(`Error migrating campaign ${id}: ${(error as Error).message}`);
+                console.error(`Error migrating campaign ${id}`, error);
             }
         }
     },
