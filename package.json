@@ -55,6 +55,7 @@
         "build-data-entry-content-script": "yarn run-script src/scripts/compile-data-entry-content-script.ts",
         "test": "jest",
         "lint": "eslint src cypress",
+        "lint:unused": "ts-prune src",
         "eject": "react-scripts eject",
         "prettify": "prettier \"{src,config,cypress}/**/*.{js,jsx,ts,tsx,json,css}\" --write",
         "extract-pot": "d2-i18n-extract -p src/ -o i18n/",
