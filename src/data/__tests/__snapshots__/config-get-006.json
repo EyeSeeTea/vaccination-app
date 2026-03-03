@@ -55,7 +55,7 @@
                 "valueType": "NUMBER"
             }
         ],
-        "height": 10,
+        "height": 0,
         "metaData": {
             "dimensions": {
                 "co": [
@@ -69,7 +69,6 @@
                     "aWAiETbFZVa",
                     "jyPce4uqMQ2",
                     "Wul4OM2LLUS",
-                    "nOqgZtnoiT6",
                     "uQH8nGgiyQn",
                     "l9O3DEcPig2",
                     "TxrDyNmi2XN",
@@ -83,7 +82,6 @@
                     "JWJmWAiAumm",
                     "J6952sjszkA",
                     "sI0LE90Kzhi",
-                    "t9J6rvVzK2T",
                     "onOCGaKWYs4",
                     "lX9SqhZm23s",
                     "DxRKEcORFhh",
@@ -105,7 +103,6 @@
                 ],
                 "uaaMNSXGGTT": [
                     "u4ygmgNB0ks",
-                    "AKBiAeMF7DT",
                     "UrNpL1aZbE4",
                     "crPESHASfpI",
                     "ia2FalGX1jy",
@@ -135,16 +132,12 @@
                     "G274KynDbNg",
                     "ykuSLuR0zjf",
                     "WKsdFFi6J0q",
-                    "Bw9YRHXY2v9",
-                    "us11XgsMjfa"
+                    "Bw9YRHXY2v9"
                 ]
             },
             "items": {
                 "20251119": {
                     "name": "2025-11-19"
-                },
-                "AKBiAeMF7DT": {
-                    "name": "0 - 5 w"
                 },
                 "Bw9YRHXY2v9": {
                     "name": "> 45 y"
@@ -308,9 +301,6 @@
                 "mgeEAcULoaL": {
                     "name": "9 - 59 m"
                 },
-                "nOqgZtnoiT6": {
-                    "name": "0 - 5 w"
-                },
                 "nkEGI7N2kUB": {
                     "name": "5 - 14 y"
                 },
@@ -332,9 +322,6 @@
                 "sI0LE90Kzhi": {
                     "name": "0 - 11 m"
                 },
-                "t9J6rvVzK2T": {
-                    "name": "10 - 14 y"
-                },
                 "u4ygmgNB0ks": {
                     "name": "0 - 1 m"
                 },
@@ -343,9 +330,6 @@
                 },
                 "uaaMNSXGGTT": {
                     "name": "_23.5 RVC Age groups"
-                },
-                "us11XgsMjfa": {
-                    "name": "10 - 14 y"
                 },
                 "vQW8S2iK9iO": {
                     "name": "0 - 1 m"
@@ -367,77 +351,7 @@
         "rowContext": {
         },
         "rows": [
-            [
-                "e0cPRcP5XNc",
-                "mKkzuzv5Ier",
-                "20251119",
-                "lrjmTKZJUEx",
-                "4.0"
-            ],
-            [
-                "e0cPRcP5XNc",
-                "fnZu45UhqYW",
-                "20251119",
-                "lrjmTKZJUEx",
-                "2.0"
-            ],
-            [
-                "e0cPRcP5XNc",
-                "fnZu45UhqYW",
-                "20251119",
-                "wY8HiLmETeU",
-                "2.0"
-            ],
-            [
-                "e0cPRcP5XNc",
-                "mKkzuzv5Ier",
-                "20251119",
-                "wY8HiLmETeU",
-                "4.0"
-            ],
-            [
-                "e0cPRcP5XNc",
-                "qNbalD7KAcu",
-                "20251119",
-                "wY8HiLmETeU",
-                "3.0"
-            ],
-            [
-                "e0cPRcP5XNc",
-                "CTU4Nsrhu9T",
-                "20251119",
-                "wY8HiLmETeU",
-                "5.0"
-            ],
-            [
-                "e0cPRcP5XNc",
-                "IHMvH38Cwgx",
-                "20251119",
-                "lrjmTKZJUEx",
-                "1.0"
-            ],
-            [
-                "e0cPRcP5XNc",
-                "IHMvH38Cwgx",
-                "20251119",
-                "wY8HiLmETeU",
-                "1.0"
-            ],
-            [
-                "e0cPRcP5XNc",
-                "qNbalD7KAcu",
-                "20251119",
-                "lrjmTKZJUEx",
-                "3.0"
-            ],
-            [
-                "e0cPRcP5XNc",
-                "CTU4Nsrhu9T",
-                "20251119",
-                "lrjmTKZJUEx",
-                "5.0"
-            ]
         ],
-        "width": 5
+        "width": 0
     }
 }

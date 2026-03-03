@@ -3485,25 +3485,7 @@
                             "id": "SH409LQl7iv"
                         },
                         {
-                            "id": "WOuic19DqbW"
-                        },
-                        {
-                            "id": "awoPmSuHI0z"
-                        },
-                        {
-                            "id": "y0eNbOfb14e"
-                        },
-                        {
-                            "id": "y4w5z7dy8AQ"
-                        },
-                        {
-                            "id": "GgaoJYKAek3"
-                        },
-                        {
-                            "id": "Kkuk5kbeIkM"
-                        },
-                        {
-                            "id": "mMKG6pKBiF4"
+                            "id": "GmKq53XwVTm"
                         },
                         {
                             "id": "CcqvFMzfomu"
@@ -3554,6 +3536,18 @@
                 }
             ],
             "categoryOptionCombos": [
+                {
+                    "categoryCombo": {
+                        "id": "SS8lww0UED6"
+                    },
+                    "categoryOptions": [
+                        {
+                            "id": "CcqvFMzfomu"
+                        }
+                    ],
+                    "id": "SKg3MkVYq0Q",
+                    "name": "Team 001 - 0Campaign Test"
+                }
             ]
         }
     ],
@@ -3563,14 +3557,26 @@
         "response": {
             "responseType": "ImportReport",
             "stats": {
-                "created": 0,
+                "created": 1,
                 "deleted": 0,
                 "ignored": 0,
-                "total": 1,
+                "total": 2,
                 "updated": 1
             },
             "status": "OK",
             "typeReports": [
+                {
+                    "klass": "org.hisp.dhis.category.CategoryOptionCombo",
+                    "objectReports": [
+                    ],
+                    "stats": {
+                        "created": 1,
+                        "deleted": 0,
+                        "ignored": 0,
+                        "total": 1,
+                        "updated": 0
+                    }
+                },
                 {
                     "klass": "org.hisp.dhis.category.Category",
                     "objectReports": [

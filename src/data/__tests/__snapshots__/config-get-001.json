@@ -273,12 +273,6 @@
                         "displayName": "Malaria",
                         "id": "CVffOBBLW9c",
                         "name": "Malaria"
-                    },
-                    {
-                        "code": "RVC_ANTIGEN_NOPV2",
-                        "displayName": "nOPV2",
-                        "id": "Lkqnk5iSkzj",
-                        "name": "nOPV2"
                     }
                 ],
                 "code": "RVC_ANTIGEN",
@@ -346,11 +340,6 @@
                         "displayName": "0 - 1 m",
                         "id": "u4ygmgNB0ks",
                         "name": "0 - 1 m"
-                    },
-                    {
-                        "displayName": "0 - 5 w",
-                        "id": "AKBiAeMF7DT",
-                        "name": "0 - 5 w"
                     },
                     {
                         "displayName": "0 - 6 w",
@@ -501,11 +490,6 @@
                         "displayName": "> 45 y",
                         "id": "Bw9YRHXY2v9",
                         "name": "> 45 y"
-                    },
-                    {
-                        "displayName": "10 - 14 y",
-                        "id": "us11XgsMjfa",
-                        "name": "10 - 14 y"
                     }
                 ],
                 "code": "RVC_AGE_GROUP",
@@ -655,335 +639,6 @@
                 "code": "RVC_AGE_GROUP_WS",
                 "displayName": "Age Group / Woman Status",
                 "id": "m0KXsmdiUo8"
-            },
-            {
-                "categories": [
-                    {
-                        "id": "a6SQVBY9s18"
-                    }
-                ],
-                "code": "RVC_ANTIGEN",
-                "displayName": "Antigen",
-                "id": "m6IIKizUedi"
-            },
-            {
-                "categories": [
-                    {
-                        "id": "a6SQVBY9s18"
-                    },
-                    {
-                        "id": "uaaMNSXGGTT"
-                    }
-                ],
-                "code": "RVC_ANTIGEN_AGE_GROUP",
-                "displayName": "Antigen / Age group",
-                "id": "uqionj519TF"
-            },
-            {
-                "categories": [
-                    {
-                        "id": "a6SQVBY9s18"
-                    },
-                    {
-                        "id": "WuatkvLRte5"
-                    },
-                    {
-                        "id": "uaaMNSXGGTT"
-                    }
-                ],
-                "code": "RVC_ANTIGEN_DOSE_AGE_GROUP",
-                "displayName": "Antigen / Dose / Age group",
-                "id": "uew2EWkqw22"
-            },
-            {
-                "categories": [
-                    {
-                        "id": "a6SQVBY9s18"
-                    },
-                    {
-                        "id": "WuatkvLRte5"
-                    },
-                    {
-                        "id": "uaaMNSXGGTT"
-                    },
-                    {
-                        "id": "WmizOGdFRJm"
-                    }
-                ],
-                "code": "RVC_ANTIGEN_DOSE_AGE_GROUP_DISTATUS",
-                "displayName": "Antigen / Dose / Age group / Displacement Status",
-                "id": "Kg7e04JvQ5k"
-            },
-            {
-                "categories": [
-                    {
-                        "id": "a6SQVBY9s18"
-                    },
-                    {
-                        "id": "WuatkvLRte5"
-                    },
-                    {
-                        "id": "uaaMNSXGGTT"
-                    },
-                    {
-                        "id": "gGacWJA8jIW"
-                    }
-                ],
-                "code": "RVC_ANTIGEN_DOSE_AGE_GROUP_GENDER",
-                "displayName": "Antigen / Dose / Age group / Gender",
-                "id": "SUmw2YDQDlX"
-            },
-            {
-                "categories": [
-                    {
-                        "id": "a6SQVBY9s18"
-                    },
-                    {
-                        "id": "WuatkvLRte5"
-                    },
-                    {
-                        "id": "uaaMNSXGGTT"
-                    },
-                    {
-                        "id": "gGacWJA8jIW"
-                    },
-                    {
-                        "id": "WmizOGdFRJm"
-                    }
-                ],
-                "code": "RVC_ANTIGEN_DOSE_AGE_GROUP_GENDER_DISTATUS",
-                "displayName": "Antigen / Dose / Age group / Gender / Displacement Status",
-                "id": "O0UJyI8lwvU"
-            },
-            {
-                "categories": [
-                    {
-                        "id": "a6SQVBY9s18"
-                    },
-                    {
-                        "id": "WuatkvLRte5"
-                    },
-                    {
-                        "id": "PIicq46RZ36"
-                    },
-                    {
-                        "id": "uaaMNSXGGTT"
-                    }
-                ],
-                "code": "RVC_ANTIGEN_DOSE_TYPE_AGE_GROUP",
-                "displayName": "Antigen / Dose / Type / Age group",
-                "id": "i6q79CXE1Pz"
-            },
-            {
-                "categories": [
-                    {
-                        "id": "a6SQVBY9s18"
-                    },
-                    {
-                        "id": "WuatkvLRte5"
-                    },
-                    {
-                        "id": "PIicq46RZ36"
-                    },
-                    {
-                        "id": "uaaMNSXGGTT"
-                    },
-                    {
-                        "id": "WmizOGdFRJm"
-                    }
-                ],
-                "code": "RVC_ANTIGEN_DOSE_TYPE_AGE_GROUP_DISTATUS",
-                "displayName": "Antigen / Dose / Type / Age group / Displacement Status",
-                "id": "Si8oBnQwHOa"
-            },
-            {
-                "categories": [
-                    {
-                        "id": "a6SQVBY9s18"
-                    },
-                    {
-                        "id": "WuatkvLRte5"
-                    },
-                    {
-                        "id": "PIicq46RZ36"
-                    },
-                    {
-                        "id": "uaaMNSXGGTT"
-                    },
-                    {
-                        "id": "WmizOGdFRJm"
-                    },
-                    {
-                        "id": "ERUJcCIKkY8"
-                    }
-                ],
-                "code": "RVC_ANTIGEN_DOSE_TYPE_AGE_GROUP_DISTATUS_WS",
-                "displayName": "Antigen / Dose / Type / Age group / Displacement Status / Woman Status",
-                "id": "qKqyMb6UOEA"
-            },
-            {
-                "categories": [
-                    {
-                        "id": "a6SQVBY9s18"
-                    },
-                    {
-                        "id": "WuatkvLRte5"
-                    },
-                    {
-                        "id": "PIicq46RZ36"
-                    },
-                    {
-                        "id": "uaaMNSXGGTT"
-                    },
-                    {
-                        "id": "gGacWJA8jIW"
-                    }
-                ],
-                "code": "RVC_ANTIGEN_DOSE_TYPE_AGE_GROUP_GENDER",
-                "displayName": "Antigen / Dose / Type / Age group / Gender",
-                "id": "eKqKYwt2WAZ"
-            },
-            {
-                "categories": [
-                    {
-                        "id": "a6SQVBY9s18"
-                    },
-                    {
-                        "id": "WuatkvLRte5"
-                    },
-                    {
-                        "id": "PIicq46RZ36"
-                    },
-                    {
-                        "id": "uaaMNSXGGTT"
-                    },
-                    {
-                        "id": "gGacWJA8jIW"
-                    },
-                    {
-                        "id": "WmizOGdFRJm"
-                    }
-                ],
-                "code": "RVC_ANTIGEN_DOSE_TYPE_AGE_GROUP_GENDER_DISTATUS",
-                "displayName": "Antigen / Dose / Type / Age group / Gender / Displacement Status",
-                "id": "ewqERFgIx90"
-            },
-            {
-                "categories": [
-                    {
-                        "id": "a6SQVBY9s18"
-                    },
-                    {
-                        "id": "WuatkvLRte5"
-                    },
-                    {
-                        "id": "PIicq46RZ36"
-                    },
-                    {
-                        "id": "uaaMNSXGGTT"
-                    },
-                    {
-                        "id": "gGacWJA8jIW"
-                    },
-                    {
-                        "id": "WmizOGdFRJm"
-                    },
-                    {
-                        "id": "ERUJcCIKkY8"
-                    }
-                ],
-                "code": "RVC_ANTIGEN_DOSE_TYPE_AGE_GROUP_GENDER_DISTATUS_WS",
-                "displayName": "Antigen / Dose / Type / Age group / Gender / Displacement Status / Woman Status",
-                "id": "ise2i6KE1Wt"
-            },
-            {
-                "categories": [
-                    {
-                        "id": "a6SQVBY9s18"
-                    },
-                    {
-                        "id": "WuatkvLRte5"
-                    },
-                    {
-                        "id": "PIicq46RZ36"
-                    },
-                    {
-                        "id": "uaaMNSXGGTT"
-                    },
-                    {
-                        "id": "gGacWJA8jIW"
-                    },
-                    {
-                        "id": "ERUJcCIKkY8"
-                    }
-                ],
-                "code": "RVC_ANTIGEN_DOSE_TYPE_AGE_GROUP_GENDER_WS",
-                "displayName": "Antigen / Dose / Type / Age group / Gender / Woman Status",
-                "id": "WqyC88I6BnY"
-            },
-            {
-                "categories": [
-                    {
-                        "id": "a6SQVBY9s18"
-                    },
-                    {
-                        "id": "WuatkvLRte5"
-                    },
-                    {
-                        "id": "PIicq46RZ36"
-                    },
-                    {
-                        "id": "uaaMNSXGGTT"
-                    },
-                    {
-                        "id": "ERUJcCIKkY8"
-                    }
-                ],
-                "code": "RVC_ANTIGEN_DOSE_TYPE_AGE_GROUP_WS",
-                "displayName": "Antigen / Dose / Type / Age group / Woman Status",
-                "id": "WOo1aqdwxV1"
-            },
-            {
-                "categories": [
-                    {
-                        "id": "a6SQVBY9s18"
-                    },
-                    {
-                        "id": "iemAs0M9Cnd"
-                    }
-                ],
-                "code": "RVC_ANTIGEN_SEVERITY",
-                "displayName": "Antigen / Severity",
-                "id": "Sm65ETbrxKc"
-            },
-            {
-                "categories": [
-                    {
-                        "id": "a6SQVBY9s18"
-                    },
-                    {
-                        "id": "PIicq46RZ36"
-                    }
-                ],
-                "code": "RVC_ANTIGEN_TYPE",
-                "displayName": "Antigen / Type",
-                "id": "FvWXvS5KuX0"
-            },
-            {
-                "categories": [
-                    {
-                        "id": "a6SQVBY9s18"
-                    },
-                    {
-                        "id": "PIicq46RZ36"
-                    },
-                    {
-                        "id": "iemAs0M9Cnd"
-                    }
-                ],
-                "code": "RVC_ANTIGEN_TYPE_SEVERITY",
-                "displayName": "Antigen / Type / Severity",
-                "id": "WK32tqF1Xmd"
             },
             {
                 "categories": [
@@ -1147,18 +802,6 @@
             },
             {
                 "categories": [
-                    {
-                        "id": "a6SQVBY9s18"
-                    },
-                    {
-                        "id": "WuatkvLRte5"
-                    },
-                    {
-                        "id": "PIicq46RZ36"
-                    },
-                    {
-                        "id": "uaaMNSXGGTT"
-                    }
                 ],
                 "code": "RVC_DE_DOSES_ADMINISTERED_REQUIRED",
                 "displayName": "Data Element - Vaccine doses administered - Required",
@@ -1199,18 +842,6 @@
             },
             {
                 "categories": [
-                    {
-                        "id": "a6SQVBY9s18"
-                    },
-                    {
-                        "id": "WuatkvLRte5"
-                    },
-                    {
-                        "id": "PIicq46RZ36"
-                    },
-                    {
-                        "id": "uaaMNSXGGTT"
-                    },
                     {
                         "id": "gGacWJA8jIW"
                     }
@@ -1280,12 +911,6 @@
                         "displayName": "Poliomyelitis Injectable",
                         "id": "KQK6cm8hchd",
                         "name": "Poliomyelitis Injectable"
-                    },
-                    {
-                        "code": "RVC_ANTIGEN_NOPV2",
-                        "displayName": "nOPV2",
-                        "id": "Lkqnk5iSkzj",
-                        "name": "nOPV2"
                     },
                     {
                         "code": "RVC_ANTIGEN_TYPHOID_FEVER",
@@ -2679,123 +2304,6 @@
                 "code": "RVC_ANTIGEN_YELLOW_FEVER_DOSES",
                 "id": "CqakN2VwMCf",
                 "name": "Yellow Fever - Doses"
-            },
-            {
-                "categoryOptions": [
-                    {
-                        "displayName": "0 - 5 w",
-                        "id": "AKBiAeMF7DT",
-                        "name": "0 - 5 w"
-                    },
-                    {
-                        "displayName": "6 w - 11 m",
-                        "id": "ia2FalGX1jy",
-                        "name": "6 w - 11 m"
-                    }
-                ],
-                "code": "RVC_ANTIGEN_NOPV2_AGE_GROUP_0-11M_1",
-                "id": "HQZEufTdKPg",
-                "name": "nOPV2 - Age group - 0 - 11 m - 1"
-            },
-            {
-                "categoryOptions": [
-                    {
-                        "displayName": "12 - 23 m",
-                        "id": "fnZu45UhqYW",
-                        "name": "12 - 23 m"
-                    },
-                    {
-                        "displayName": "24 - 59 m",
-                        "id": "mL5SUc8K5Zx",
-                        "name": "24 - 59 m"
-                    }
-                ],
-                "code": "RVC_ANTIGEN_NOPV2_AGE_GROUP_12-59M_1",
-                "id": "f9FOhDapNVq",
-                "name": "nOPV2 - Age group - 12 - 59 m - 1"
-            },
-            {
-                "categoryOptions": [
-                    {
-                        "displayName": "5 - 9 y",
-                        "id": "Wy9pbFUUkx3",
-                        "name": "5 - 9 y"
-                    },
-                    {
-                        "displayName": "10 - 14 y",
-                        "id": "us11XgsMjfa",
-                        "name": "10 - 14 y"
-                    }
-                ],
-                "code": "RVC_ANTIGEN_NOPV2_AGE_GROUP_5-14Y_1",
-                "id": "p6Wr8oqmZbf",
-                "name": "nOPV2 - Age group - 5 - 14 y - 1"
-            },
-            {
-                "categoryOptions": [
-                    {
-                        "displayName": "15 - 29 y",
-                        "id": "CTU4Nsrhu9T",
-                        "name": "15 - 29 y"
-                    },
-                    {
-                        "displayName": "> 30 y",
-                        "id": "ykuSLuR0zjf",
-                        "name": "> 30 y"
-                    }
-                ],
-                "code": "RVC_ANTIGEN_NOPV2_AGE_GROUP_>14Y_1",
-                "id": "zeQjxPIfkPJ",
-                "name": "nOPV2 - Age group - > 14 y - 1"
-            },
-            {
-                "categoryOptions": [
-                    {
-                        "displayName": "5 - 14 y",
-                        "id": "Qeo0TBePh98",
-                        "name": "5 - 14 y"
-                    },
-                    {
-                        "displayName": "> 14 y",
-                        "id": "XBpMJkq8Zvo",
-                        "name": "> 14 y"
-                    },
-                    {
-                        "displayName": "12 - 59 m",
-                        "id": "ayCQ7FPkkhi",
-                        "name": "12 - 59 m"
-                    },
-                    {
-                        "displayName": "0 - 11 m",
-                        "id": "crPESHASfpI",
-                        "name": "0 - 11 m"
-                    }
-                ],
-                "code": "RVC_ANTIGEN_NOPV2_AGE_GROUP",
-                "id": "FdEG4RgCmca",
-                "name": "nOPV2 - Age groups"
-            },
-            {
-                "categoryOptions": [
-                    {
-                        "displayName": "Dose 3",
-                        "id": "KCOwpvGIkD1",
-                        "name": "Dose 3"
-                    },
-                    {
-                        "displayName": "Dose 2",
-                        "id": "WvIXuDUzaPa",
-                        "name": "Dose 2"
-                    },
-                    {
-                        "displayName": "Dose 1",
-                        "id": "yeUyvybVBmh",
-                        "name": "Dose 1"
-                    }
-                ],
-                "code": "RVC_ANTIGEN_NOPV2_DOSES",
-                "id": "GxyuiIi6G7g",
-                "name": "nOPV2 - Doses"
             }
         ],
         "dataElementGroups": [
@@ -2806,31 +2314,13 @@
                         "id": "CCqBBZmfsTs"
                     },
                     {
-                        "id": "OQOgTET6NwY"
-                    },
-                    {
-                        "id": "OY40ChLj0YE"
-                    },
-                    {
-                        "id": "WCQHqR2RBIX"
-                    },
-                    {
                         "id": "e0cPRcP5XNc"
                     },
                     {
                         "id": "mOE5w8jVtuh"
                     },
                     {
-                        "id": "mcug85FSmAk"
-                    },
-                    {
-                        "id": "mkgnDxyksQS"
-                    },
-                    {
                         "id": "q0MMyiUi0Pl"
-                    },
-                    {
-                        "id": "ycy4WvaTCtm"
                     },
                     {
                         "id": "ywKG3QmCbDi"
@@ -2853,22 +2343,22 @@
                         "id": "CCqBBZmfsTs"
                     },
                     {
-                        "id": "OQOgTET6NwY"
+                        "id": "GoiUfjBOTky"
                     },
                     {
-                        "id": "OY40ChLj0YE"
+                        "id": "OgwH9lXdkD7"
                     },
                     {
-                        "id": "WCQHqR2RBIX"
-                    },
-                    {
-                        "id": "mkgnDxyksQS"
+                        "id": "aqOyGWpPplU"
                     },
                     {
                         "id": "q0MMyiUi0Pl"
                     },
                     {
-                        "id": "ycy4WvaTCtm"
+                        "id": "qkQp38yT80K"
+                    },
+                    {
+                        "id": "u4cD3f8jVRG"
                     },
                     {
                         "id": "ywKG3QmCbDi"
@@ -2888,13 +2378,28 @@
                 "code": "RVC_ANTIGEN_CHOLERA_REQUIRED",
                 "dataElements": [
                     {
-                        "id": "OY40ChLj0YE"
+                        "id": "GsgF2FWQQ7f"
                     },
                     {
-                        "id": "mkgnDxyksQS"
+                        "id": "OMAFXIkGUe8"
                     },
                     {
-                        "id": "ycy4WvaTCtm"
+                        "id": "OUcZxaaUkFw"
+                    },
+                    {
+                        "id": "eesNacbOHiv"
+                    },
+                    {
+                        "id": "i2GERRyAqNf"
+                    },
+                    {
+                        "id": "iAsxSBtYrKH"
+                    },
+                    {
+                        "id": "mkIlGRVgaPy"
+                    },
+                    {
+                        "id": "q8yGIclDKdh"
                     }
                 ],
                 "displayName": "RVC - Antigen - Cholera - Required",
@@ -2914,16 +2419,37 @@
                         "id": "CCqBBZmfsTs"
                     },
                     {
-                        "id": "OY40ChLj0YE"
+                        "id": "CcIPUz6olnj"
                     },
                     {
-                        "id": "mkgnDxyksQS"
+                        "id": "GucN1xeIly7"
+                    },
+                    {
+                        "id": "K26DJOrFpT0"
+                    },
+                    {
+                        "id": "K8GkdtC78tw"
+                    },
+                    {
+                        "id": "KGITMwenocu"
+                    },
+                    {
+                        "id": "O0Y3QwQMWOy"
+                    },
+                    {
+                        "id": "eKUNpBFvOx3"
                     },
                     {
                         "id": "q0MMyiUi0Pl"
                     },
                     {
-                        "id": "ycy4WvaTCtm"
+                        "id": "qyQdnBjKB5v"
+                    },
+                    {
+                        "id": "yMeaJEptXa7"
+                    },
+                    {
+                        "id": "ymkhp8j38q3"
                     },
                     {
                         "id": "ywKG3QmCbDi"
@@ -2936,10 +2462,16 @@
                 "code": "RVC_ANTIGEN_DENGUE_OPTIONAL",
                 "dataElements": [
                     {
-                        "id": "OQOgTET6NwY"
+                        "id": "GUkhtuVpEyv"
                     },
                     {
-                        "id": "WCQHqR2RBIX"
+                        "id": "KE8qVBDVk4E"
+                    },
+                    {
+                        "id": "W00csERJkFV"
+                    },
+                    {
+                        "id": "eUqyo6LvoFU"
                     }
                 ],
                 "displayName": "RVC - Antigen - Dengue - Optional",
@@ -2952,16 +2484,31 @@
                         "id": "CCqBBZmfsTs"
                     },
                     {
-                        "id": "OY40ChLj0YE"
+                        "id": "GmoDtPvR7U4"
                     },
                     {
-                        "id": "mkgnDxyksQS"
+                        "id": "KcIB5QYWzEl"
+                    },
+                    {
+                        "id": "OCY7hLG7XZ3"
+                    },
+                    {
+                        "id": "SIcWOgUEp9D"
+                    },
+                    {
+                        "id": "eAWEFmqn3Yq"
+                    },
+                    {
+                        "id": "i8klt4eb2Gr"
+                    },
+                    {
+                        "id": "iCQcM2qWwbJ"
                     },
                     {
                         "id": "q0MMyiUi0Pl"
                     },
                     {
-                        "id": "ycy4WvaTCtm"
+                        "id": "ySk94JYjnYb"
                     },
                     {
                         "id": "ywKG3QmCbDi"
@@ -2984,16 +2531,16 @@
                         "id": "CCqBBZmfsTs"
                     },
                     {
-                        "id": "OY40ChLj0YE"
+                        "id": "CYcvGqAKEng"
                     },
                     {
-                        "id": "mkgnDxyksQS"
+                        "id": "CcAUTiv7jse"
                     },
                     {
                         "id": "q0MMyiUi0Pl"
                     },
                     {
-                        "id": "ycy4WvaTCtm"
+                        "id": "uUGINcHuCTM"
                     },
                     {
                         "id": "ywKG3QmCbDi"
@@ -3006,10 +2553,16 @@
                 "code": "RVC_ANTIGEN_JPENC_OPTIONAL",
                 "dataElements": [
                     {
-                        "id": "OQOgTET6NwY"
+                        "id": "CiqELOu7olD"
                     },
                     {
-                        "id": "WCQHqR2RBIX"
+                        "id": "OywPcT6ZiMj"
+                    },
+                    {
+                        "id": "Sgu4jrYMpYT"
+                    },
+                    {
+                        "id": "Wu6ne9S0Kli"
                     }
                 ],
                 "displayName": "RVC - Antigen - Japanese Encephalitis - Optional",
@@ -3022,16 +2575,31 @@
                         "id": "CCqBBZmfsTs"
                     },
                     {
-                        "id": "OY40ChLj0YE"
+                        "id": "GS8hyJgaU8U"
                     },
                     {
-                        "id": "mkgnDxyksQS"
+                        "id": "KKA1Efr8Y4K"
+                    },
+                    {
+                        "id": "KsYh9PM22xS"
+                    },
+                    {
+                        "id": "OkumEinBuQY"
+                    },
+                    {
+                        "id": "Sc6HSbQRwv7"
+                    },
+                    {
+                        "id": "aUcneO6x7zy"
+                    },
+                    {
+                        "id": "aysxBqyKcVj"
+                    },
+                    {
+                        "id": "iiWOs8QZAbZ"
                     },
                     {
                         "id": "q0MMyiUi0Pl"
-                    },
-                    {
-                        "id": "ycy4WvaTCtm"
                     },
                     {
                         "id": "ywKG3QmCbDi"
@@ -3054,22 +2622,43 @@
                         "id": "CCqBBZmfsTs"
                     },
                     {
-                        "id": "OQOgTET6NwY"
+                        "id": "CaMJQBdvmUZ"
                     },
                     {
-                        "id": "OY40ChLj0YE"
+                        "id": "G0yyStsMUdI"
                     },
                     {
-                        "id": "WCQHqR2RBIX"
+                        "id": "GcyqgCr5egM"
                     },
                     {
-                        "id": "mkgnDxyksQS"
+                        "id": "Gm4JnDkBLLC"
+                    },
+                    {
+                        "id": "GygD80BasA5"
+                    },
+                    {
+                        "id": "WW4snESkjB1"
+                    },
+                    {
+                        "id": "aomalunQflT"
+                    },
+                    {
+                        "id": "i2YncpvIyZ9"
+                    },
+                    {
+                        "id": "iKSQsu3Vz7v"
+                    },
+                    {
+                        "id": "iMGa2189iGz"
+                    },
+                    {
+                        "id": "mgMDtxQuUEj"
+                    },
+                    {
+                        "id": "mygX5rhFlM7"
                     },
                     {
                         "id": "q0MMyiUi0Pl"
-                    },
-                    {
-                        "id": "ycy4WvaTCtm"
                     },
                     {
                         "id": "ywKG3QmCbDi"
@@ -3089,25 +2678,46 @@
                 "code": "RVC_ANTIGEN_MR_REQUIRED",
                 "dataElements": [
                     {
+                        "id": "C6K4diGirIR"
+                    },
+                    {
                         "id": "CCqBBZmfsTs"
                     },
                     {
-                        "id": "OQOgTET6NwY"
+                        "id": "Gsc6TznPUwk"
                     },
                     {
-                        "id": "OY40ChLj0YE"
+                        "id": "K460aOalyAc"
                     },
                     {
-                        "id": "WCQHqR2RBIX"
+                        "id": "OCYTcC3lwwb"
                     },
                     {
-                        "id": "mkgnDxyksQS"
+                        "id": "S2gFmHtDvov"
+                    },
+                    {
+                        "id": "WUIdpUriPmN"
+                    },
+                    {
+                        "id": "e6G2dOAZE2G"
+                    },
+                    {
+                        "id": "mQ0115STLXX"
+                    },
+                    {
+                        "id": "mSQrYjbMv1z"
                     },
                     {
                         "id": "q0MMyiUi0Pl"
                     },
                     {
-                        "id": "ycy4WvaTCtm"
+                        "id": "uUCOX3YSE4Y"
+                    },
+                    {
+                        "id": "yUOGkVYOLvr"
+                    },
+                    {
+                        "id": "yqgnnp8nGQ1"
                     },
                     {
                         "id": "ywKG3QmCbDi"
@@ -3130,16 +2740,49 @@
                         "id": "CCqBBZmfsTs"
                     },
                     {
-                        "id": "OY40ChLj0YE"
+                        "id": "CK2tN9ZP37Q"
                     },
                     {
-                        "id": "mkgnDxyksQS"
+                        "id": "Cgkl1dRCTR2"
+                    },
+                    {
+                        "id": "GU6jwfYkizt"
+                    },
+                    {
+                        "id": "GaMhKdtNYQK"
+                    },
+                    {
+                        "id": "O44KANi4GyP"
+                    },
+                    {
+                        "id": "OUO4q8IYi0b"
+                    },
+                    {
+                        "id": "Os8kiugHpyv"
+                    },
+                    {
+                        "id": "SKELfPJEqWj"
+                    },
+                    {
+                        "id": "WwaUtv4hi0r"
+                    },
+                    {
+                        "id": "aoWsRUWzbUl"
                     },
                     {
                         "id": "q0MMyiUi0Pl"
                     },
                     {
-                        "id": "ycy4WvaTCtm"
+                        "id": "u0sWSx1fGIm"
+                    },
+                    {
+                        "id": "yY6foSxEBN0"
+                    },
+                    {
+                        "id": "yYCEcutK32t"
+                    },
+                    {
+                        "id": "yscVr5t1VAe"
                     },
                     {
                         "id": "ywKG3QmCbDi"
@@ -3159,25 +2802,40 @@
                 "code": "RVC_ANTIGEN_MEASLES_REQUIRED",
                 "dataElements": [
                     {
+                        "id": "C8hIXJmfowu"
+                    },
+                    {
                         "id": "CCqBBZmfsTs"
                     },
                     {
-                        "id": "OQOgTET6NwY"
+                        "id": "GWQTuNVw9X0"
                     },
                     {
-                        "id": "OY40ChLj0YE"
+                        "id": "OESSlY0sep3"
                     },
                     {
-                        "id": "WCQHqR2RBIX"
+                        "id": "OYOusC3R7uQ"
                     },
                     {
-                        "id": "mkgnDxyksQS"
+                        "id": "W6SoEV9TSwp"
+                    },
+                    {
+                        "id": "aOsPEuwN7Zf"
+                    },
+                    {
+                        "id": "aaeyPjTmmxP"
+                    },
+                    {
+                        "id": "eausOGJSrfP"
+                    },
+                    {
+                        "id": "m8E1vzW1CeC"
                     },
                     {
                         "id": "q0MMyiUi0Pl"
                     },
                     {
-                        "id": "ycy4WvaTCtm"
+                        "id": "ugDBHxAiTuq"
                     },
                     {
                         "id": "ywKG3QmCbDi"
@@ -3190,13 +2848,19 @@
                 "code": "RVC_ANTIGEN_MENCONJ_OPTIONAL",
                 "dataElements": [
                     {
+                        "id": "C6d53wPJgOe"
+                    },
+                    {
                         "id": "CCqBBZmfsTs"
                     },
                     {
-                        "id": "OQOgTET6NwY"
+                        "id": "qmUbfZKLjLS"
                     },
                     {
-                        "id": "WCQHqR2RBIX"
+                        "id": "uaIV7MQlk86"
+                    },
+                    {
+                        "id": "yWm83H8sKYi"
                     },
                     {
                         "id": "ywKG3QmCbDi"
@@ -3209,16 +2873,25 @@
                 "code": "RVC_ANTIGEN_MENCONJ_REQUIRED",
                 "dataElements": [
                     {
-                        "id": "OY40ChLj0YE"
+                        "id": "G80ynH11yAa"
                     },
                     {
-                        "id": "mkgnDxyksQS"
+                        "id": "GouqJOwg6fi"
+                    },
+                    {
+                        "id": "K04fAZaN7xq"
+                    },
+                    {
+                        "id": "SaIzALT0pLB"
+                    },
+                    {
+                        "id": "aasl5KoL3R4"
                     },
                     {
                         "id": "q0MMyiUi0Pl"
                     },
                     {
-                        "id": "ycy4WvaTCtm"
+                        "id": "uwt6xEoLAuD"
                     }
                 ],
                 "displayName": "RVC - Antigen - Meningitis Conjugate - Required",
@@ -3238,25 +2911,40 @@
                         "id": "CCqBBZmfsTs"
                     },
                     {
-                        "id": "OQOgTET6NwY"
+                        "id": "GoAPEdOm2In"
                     },
                     {
-                        "id": "OY40ChLj0YE"
+                        "id": "KEGYn6rE4YQ"
                     },
                     {
-                        "id": "WCQHqR2RBIX"
+                        "id": "Soi8Ai3KtdV"
                     },
                     {
-                        "id": "mkgnDxyksQS"
+                        "id": "W6MsVuc7YXl"
+                    },
+                    {
+                        "id": "aiS8iq7G5se"
+                    },
+                    {
+                        "id": "eec1bzZ00mI"
+                    },
+                    {
+                        "id": "eovBAYvKugE"
                     },
                     {
                         "id": "q0MMyiUi0Pl"
                     },
                     {
-                        "id": "ycy4WvaTCtm"
+                        "id": "uAygZZpgdaR"
+                    },
+                    {
+                        "id": "uOyCRhdy4Pf"
                     },
                     {
                         "id": "ywKG3QmCbDi"
+                    },
+                    {
+                        "id": "ywkrK0xNTPn"
                     }
                 ],
                 "displayName": "RVC - Antigen - Meningitis Polysaccharide - Required",
@@ -3276,16 +2964,37 @@
                         "id": "CCqBBZmfsTs"
                     },
                     {
-                        "id": "OY40ChLj0YE"
+                        "id": "CkA3FuMKUeD"
                     },
                     {
-                        "id": "mkgnDxyksQS"
+                        "id": "Gue2igABSY3"
+                    },
+                    {
+                        "id": "WY8oSDBhgEC"
+                    },
+                    {
+                        "id": "WastbinMwSi"
+                    },
+                    {
+                        "id": "ayy2cdjFft5"
+                    },
+                    {
+                        "id": "ewi42rO23q4"
+                    },
+                    {
+                        "id": "ey4W3n6pwZD"
+                    },
+                    {
+                        "id": "ice8llmSuZq"
+                    },
+                    {
+                        "id": "mCIyRKtJFOZ"
                     },
                     {
                         "id": "q0MMyiUi0Pl"
                     },
                     {
-                        "id": "ycy4WvaTCtm"
+                        "id": "uaKuNbpPEEz"
                     },
                     {
                         "id": "ywKG3QmCbDi"
@@ -3308,22 +3017,37 @@
                         "id": "CCqBBZmfsTs"
                     },
                     {
-                        "id": "OQOgTET6NwY"
+                        "id": "CshRQkHKgIg"
                     },
                     {
-                        "id": "OY40ChLj0YE"
+                        "id": "GsEx2y0Fk9r"
                     },
                     {
-                        "id": "WCQHqR2RBIX"
+                        "id": "SI0uTUSXX8l"
                     },
                     {
-                        "id": "mkgnDxyksQS"
+                        "id": "SYQhJcudQj4"
+                    },
+                    {
+                        "id": "SeQ0MJeekaz"
+                    },
+                    {
+                        "id": "e44IFEwkC5n"
+                    },
+                    {
+                        "id": "eSi8YBLOsTS"
+                    },
+                    {
+                        "id": "ekGspmJ930a"
                     },
                     {
                         "id": "q0MMyiUi0Pl"
                     },
                     {
-                        "id": "ycy4WvaTCtm"
+                        "id": "qMAPBSweG6O"
+                    },
+                    {
+                        "id": "uKyuMHRDlgr"
                     },
                     {
                         "id": "ywKG3QmCbDi"
@@ -3343,13 +3067,34 @@
                 "code": "RVC_ANTIGEN_POLIO_ORAL_REQUIRED",
                 "dataElements": [
                     {
-                        "id": "OY40ChLj0YE"
+                        "id": "G0o9rx2D3je"
                     },
                     {
-                        "id": "mkgnDxyksQS"
+                        "id": "Gi48UWvwQP7"
                     },
                     {
-                        "id": "ycy4WvaTCtm"
+                        "id": "S2YfKamwsAp"
+                    },
+                    {
+                        "id": "SGaWG09YApn"
+                    },
+                    {
+                        "id": "aM06kjJloqL"
+                    },
+                    {
+                        "id": "e4muPNbYCp5"
+                    },
+                    {
+                        "id": "uGg1df52cka"
+                    },
+                    {
+                        "id": "uS87eU55GVs"
+                    },
+                    {
+                        "id": "umAVD2UFoM8"
+                    },
+                    {
+                        "id": "uyYFGbziNiu"
                     }
                 ],
                 "displayName": "RVC - Antigen - Poliomyelitis Oral - Required",
@@ -3366,13 +3111,34 @@
                 "code": "RVC_ANTIGEN_ROTAVIRUS_REQUIRED",
                 "dataElements": [
                     {
-                        "id": "OY40ChLj0YE"
+                        "id": "CK4q2YxC464"
                     },
                     {
-                        "id": "mkgnDxyksQS"
+                        "id": "Cu21wfzsRPR"
                     },
                     {
-                        "id": "ycy4WvaTCtm"
+                        "id": "KI6zexrs3Ay"
+                    },
+                    {
+                        "id": "O6gT142ZpUf"
+                    },
+                    {
+                        "id": "OUOC0L6wyJY"
+                    },
+                    {
+                        "id": "SW0y5OT7G06"
+                    },
+                    {
+                        "id": "eSMtabEMeXP"
+                    },
+                    {
+                        "id": "mGU7q9iIqWU"
+                    },
+                    {
+                        "id": "mcIDWrcXb14"
+                    },
+                    {
+                        "id": "qymIcW8C2G3"
                     }
                 ],
                 "displayName": "RVC - Antigen - Rotavirus - Required",
@@ -3392,16 +3158,16 @@
                         "id": "CCqBBZmfsTs"
                     },
                     {
-                        "id": "OY40ChLj0YE"
-                    },
-                    {
-                        "id": "mkgnDxyksQS"
+                        "id": "iuiUFwjke8E"
                     },
                     {
                         "id": "q0MMyiUi0Pl"
                     },
                     {
-                        "id": "ycy4WvaTCtm"
+                        "id": "q2QBkC0MWFA"
+                    },
+                    {
+                        "id": "ueyUV9lKoHA"
                     },
                     {
                         "id": "ywKG3QmCbDi"
@@ -3414,10 +3180,16 @@
                 "code": "RVC_ANTIGEN_TYPHOID_FEVER_OPTIONAL",
                 "dataElements": [
                     {
-                        "id": "OQOgTET6NwY"
+                        "id": "C0RygFO42SI"
                     },
                     {
-                        "id": "WCQHqR2RBIX"
+                        "id": "e80cgjixtGQ"
+                    },
+                    {
+                        "id": "eUAPuyOv6Qd"
+                    },
+                    {
+                        "id": "u4w9LebQKHk"
                     }
                 ],
                 "displayName": "RVC - Antigen - Typhoid Fever - Optional",
@@ -3430,16 +3202,25 @@
                         "id": "CCqBBZmfsTs"
                     },
                     {
-                        "id": "OY40ChLj0YE"
+                        "id": "GE0gOZyCL63"
                     },
                     {
-                        "id": "mkgnDxyksQS"
+                        "id": "Gg2XIpAHzVc"
+                    },
+                    {
+                        "id": "WY8J6YF6FY8"
                     },
                     {
                         "id": "q0MMyiUi0Pl"
                     },
                     {
-                        "id": "ycy4WvaTCtm"
+                        "id": "qikbedwJRtl"
+                    },
+                    {
+                        "id": "u6a8N58nBXl"
+                    },
+                    {
+                        "id": "uQUvbI6HqCH"
                     },
                     {
                         "id": "ywKG3QmCbDi"
@@ -3462,22 +3243,37 @@
                         "id": "CCqBBZmfsTs"
                     },
                     {
-                        "id": "OQOgTET6NwY"
+                        "id": "CuoBOSLFqix"
                     },
                     {
-                        "id": "OY40ChLj0YE"
+                        "id": "K6EfSNlGNWE"
                     },
                     {
-                        "id": "WCQHqR2RBIX"
+                        "id": "O8gfd3zoKfI"
                     },
                     {
-                        "id": "mkgnDxyksQS"
+                        "id": "ec2MEeSzPUR"
+                    },
+                    {
+                        "id": "eoW44jlNxh1"
+                    },
+                    {
+                        "id": "i2aMCptb4Cf"
+                    },
+                    {
+                        "id": "m02LktmnkQf"
                     },
                     {
                         "id": "q0MMyiUi0Pl"
                     },
                     {
-                        "id": "ycy4WvaTCtm"
+                        "id": "qA8F6DfHKeA"
+                    },
+                    {
+                        "id": "us6ALI2GFoX"
+                    },
+                    {
+                        "id": "yKsvMiVvav3"
                     },
                     {
                         "id": "ywKG3QmCbDi"
@@ -3487,29 +3283,6 @@
                 "id": "K4I7vkVupkD"
             },
             {
-                "code": "RVC_ANTIGEN_NOPV2_OPTIONAL",
-                "dataElements": [
-                ],
-                "displayName": "RVC - Antigen - nOPV2 - Optional",
-                "id": "WIXBEb1u0cf"
-            },
-            {
-                "code": "RVC_ANTIGEN_NOPV2_REQUIRED",
-                "dataElements": [
-                    {
-                        "id": "OY40ChLj0YE"
-                    },
-                    {
-                        "id": "mkgnDxyksQS"
-                    },
-                    {
-                        "id": "ycy4WvaTCtm"
-                    }
-                ],
-                "displayName": "RVC - Antigen - nOPV2 - Required",
-                "id": "g2yib68W5Gq"
-            },
-            {
                 "code": "RVC_POPULATION",
                 "dataElements": [
                     {
@@ -3517,9 +3290,6 @@
                     },
                     {
                         "id": "mOE5w8jVtuh"
-                    },
-                    {
-                        "id": "mcug85FSmAk"
                     }
                 ],
                 "displayName": "RVC - Population",
@@ -3556,28 +3326,6 @@
                 "displayName": "Accidental Exposure to Blood (AEB)",
                 "formName": "Accidental Exposure to Blood (AEB) - 7",
                 "id": "q0MMyiUi0Pl"
-            },
-            {
-                "categoryCombo": {
-                    "categories": [
-                        {
-                            "id": "a6SQVBY9s18"
-                        },
-                        {
-                            "id": "PIicq46RZ36"
-                        },
-                        {
-                            "id": "iemAs0M9Cnd"
-                        }
-                    ],
-                    "code": "RVC_ANTIGEN_TYPE_SEVERITY",
-                    "displayName": "Antigen / Type / Severity",
-                    "id": "WK32tqF1Xmd"
-                },
-                "code": "RVC_AEFI",
-                "displayName": "Adverse Event Following Immunization",
-                "formName": "Adverse Event Following Immunization - 8",
-                "id": "OY40ChLj0YE"
             },
             {
                 "categoryCombo": {
@@ -4143,38 +3891,6 @@
                 "categoryCombo": {
                     "categories": [
                         {
-                            "id": "iemAs0M9Cnd"
-                        }
-                    ],
-                    "code": "RVC_SEVERITY",
-                    "displayName": "Severity",
-                    "id": "KamOZ5UfyqN"
-                },
-                "code": "RVC_AEFI-NOPV2-PREVENTIVE",
-                "displayName": "Adverse Event Following Immunization - nOPV2 - Preventive",
-                "formName": "Adverse Event Following Immunization",
-                "id": "uAw3p7uPffs"
-            },
-            {
-                "categoryCombo": {
-                    "categories": [
-                        {
-                            "id": "iemAs0M9Cnd"
-                        }
-                    ],
-                    "code": "RVC_SEVERITY",
-                    "displayName": "Severity",
-                    "id": "KamOZ5UfyqN"
-                },
-                "code": "RVC_AEFI-NOPV2-REACTIVE",
-                "displayName": "Adverse Event Following Immunization - nOPV2 - Reactive",
-                "formName": "Adverse Event Following Immunization",
-                "id": "ykyWgq3p5Xm"
-            },
-            {
-                "categoryCombo": {
-                    "categories": [
-                        {
                             "id": "uaaMNSXGGTT"
                         }
                     ],
@@ -4186,25 +3902,6 @@
                 "displayName": "Age distribution (%)",
                 "formName": "Age distribution (%)",
                 "id": "e0cPRcP5XNc"
-            },
-            {
-                "categoryCombo": {
-                    "categories": [
-                        {
-                            "id": "a6SQVBY9s18"
-                        },
-                        {
-                            "id": "PIicq46RZ36"
-                        }
-                    ],
-                    "code": "RVC_ANTIGEN_TYPE",
-                    "displayName": "Antigen / Type",
-                    "id": "FvWXvS5KuX0"
-                },
-                "code": "RVC_NEEDLES",
-                "displayName": "Needles for dilution",
-                "formName": "Needles for dilution - 4",
-                "id": "OQOgTET6NwY"
             },
             {
                 "categoryCombo": {
@@ -4730,58 +4427,6 @@
                 "displayName": "Needles for dilution - Yellow Fever - Reactive",
                 "formName": "Needles for dilution",
                 "id": "m02LktmnkQf"
-            },
-            {
-                "categoryCombo": {
-                    "categories": [
-                        {
-                            "id": "OJ4OwOR4pwt"
-                        }
-                    ],
-                    "displayName": "default",
-                    "id": "ZzAH6jf5jnB"
-                },
-                "code": "RVC_NEEDLES-NOPV2-PREVENTIVE",
-                "displayName": "Needles for dilution - nOPV2 - Preventive",
-                "formName": "Needles for dilution",
-                "id": "OSiNtjBGOhe"
-            },
-            {
-                "categoryCombo": {
-                    "categories": [
-                        {
-                            "id": "OJ4OwOR4pwt"
-                        }
-                    ],
-                    "displayName": "default",
-                    "id": "ZzAH6jf5jnB"
-                },
-                "code": "RVC_NEEDLES-NOPV2-REACTIVE",
-                "displayName": "Needles for dilution - nOPV2 - Reactive",
-                "formName": "Needles for dilution",
-                "id": "Cqon3x1ZH38"
-            },
-            {
-                "categoryCombo": {
-                    "categories": [
-                        {
-                            "id": "a6SQVBY9s18"
-                        },
-                        {
-                            "id": "WuatkvLRte5"
-                        },
-                        {
-                            "id": "uaaMNSXGGTT"
-                        }
-                    ],
-                    "code": "RVC_ANTIGEN_DOSE_AGE_GROUP",
-                    "displayName": "Antigen / Dose / Age group",
-                    "id": "uew2EWkqw22"
-                },
-                "code": "RVC_POPULATION_BY_AGE",
-                "displayName": "Population by age",
-                "formName": "Population by age",
-                "id": "mcug85FSmAk"
             },
             {
                 "categoryCombo": {
@@ -5363,54 +5008,6 @@
                 "categoryCombo": {
                     "categories": [
                         {
-                            "id": "uaaMNSXGGTT"
-                        }
-                    ],
-                    "code": "RVC_AGE_GROUP",
-                    "displayName": "Age Group",
-                    "id": "CSSkEMBWRNO"
-                },
-                "code": "RVC_POPULATION_BY_AGE-NOPV2-1",
-                "displayName": "Population by age - nOPV2 - Dose 1",
-                "formName": "Population by age - Dose 1",
-                "id": "a4oXvknZbQp"
-            },
-            {
-                "categoryCombo": {
-                    "categories": [
-                        {
-                            "id": "uaaMNSXGGTT"
-                        }
-                    ],
-                    "code": "RVC_AGE_GROUP",
-                    "displayName": "Age Group",
-                    "id": "CSSkEMBWRNO"
-                },
-                "code": "RVC_POPULATION_BY_AGE-NOPV2-2",
-                "displayName": "Population by age - nOPV2 - Dose 2",
-                "formName": "Population by age - Dose 2",
-                "id": "meKuFvR49zj"
-            },
-            {
-                "categoryCombo": {
-                    "categories": [
-                        {
-                            "id": "uaaMNSXGGTT"
-                        }
-                    ],
-                    "code": "RVC_AGE_GROUP",
-                    "displayName": "Age Group",
-                    "id": "CSSkEMBWRNO"
-                },
-                "code": "RVC_POPULATION_BY_AGE-NOPV2-3",
-                "displayName": "Population by age - nOPV2 - Dose 3",
-                "formName": "Population by age - Dose 3",
-                "id": "S8a6lV2ESVx"
-            },
-            {
-                "categoryCombo": {
-                    "categories": [
-                        {
                             "id": "OJ4OwOR4pwt"
                         }
                     ],
@@ -5421,25 +5018,6 @@
                 "displayName": "Safety boxes",
                 "formName": "Safety boxes - 6",
                 "id": "CCqBBZmfsTs"
-            },
-            {
-                "categoryCombo": {
-                    "categories": [
-                        {
-                            "id": "a6SQVBY9s18"
-                        },
-                        {
-                            "id": "PIicq46RZ36"
-                        }
-                    ],
-                    "code": "RVC_ANTIGEN_TYPE",
-                    "displayName": "Antigen / Type",
-                    "id": "FvWXvS5KuX0"
-                },
-                "code": "RVC_SYRINGES",
-                "displayName": "Syringes for dilution",
-                "formName": "Syringes for dilution - 5",
-                "id": "WCQHqR2RBIX"
             },
             {
                 "categoryCombo": {
@@ -5976,68 +5554,10 @@
                     "displayName": "default",
                     "id": "ZzAH6jf5jnB"
                 },
-                "code": "RVC_SYRINGES-NOPV2-PREVENTIVE",
-                "displayName": "Syringes for dilution - nOPV2 - Preventive",
-                "formName": "Syringes for dilution",
-                "id": "ekgBE8OklnH"
-            },
-            {
-                "categoryCombo": {
-                    "categories": [
-                        {
-                            "id": "OJ4OwOR4pwt"
-                        }
-                    ],
-                    "displayName": "default",
-                    "id": "ZzAH6jf5jnB"
-                },
-                "code": "RVC_SYRINGES-NOPV2-REACTIVE",
-                "displayName": "Syringes for dilution - nOPV2 - Reactive",
-                "formName": "Syringes for dilution",
-                "id": "uOQHyEOSchA"
-            },
-            {
-                "categoryCombo": {
-                    "categories": [
-                        {
-                            "id": "OJ4OwOR4pwt"
-                        }
-                    ],
-                    "displayName": "default",
-                    "id": "ZzAH6jf5jnB"
-                },
                 "code": "RVC_TOTAL_POPULATION",
                 "displayName": "Total population",
                 "formName": "Total population",
                 "id": "mOE5w8jVtuh"
-            },
-            {
-                "categoryCombo": {
-                    "categories": [
-                        {
-                            "id": "a6SQVBY9s18"
-                        },
-                        {
-                            "id": "WuatkvLRte5"
-                        },
-                        {
-                            "id": "uaaMNSXGGTT"
-                        },
-                        {
-                            "id": "gGacWJA8jIW"
-                        },
-                        {
-                            "id": "WmizOGdFRJm"
-                        }
-                    ],
-                    "code": "RVC_ANTIGEN_DOSE_AGE_GROUP_GENDER_DISTATUS",
-                    "displayName": "Antigen / Dose / Age group / Gender / Displacement Status",
-                    "id": "O0UJyI8lwvU"
-                },
-                "code": "RVC_DOSES_ADMINISTERED",
-                "displayName": "Vaccine doses administered",
-                "formName": "Vaccine doses administered - 1",
-                "id": "mkgnDxyksQS"
             },
             {
                 "categoryCombo": {
@@ -7084,115 +6604,6 @@
                     "displayName": "default",
                     "id": "ZzAH6jf5jnB"
                 },
-                "code": "RVC_DA-NOPV2-1-PREVENTIVE",
-                "displayName": "Vaccine doses administered - nOPV2 - Dose 1 - Preventive",
-                "formName": "Vaccine doses administered - Dose 1",
-                "id": "asim8JiZhFJ"
-            },
-            {
-                "categoryCombo": {
-                    "categories": [
-                        {
-                            "id": "OJ4OwOR4pwt"
-                        }
-                    ],
-                    "displayName": "default",
-                    "id": "ZzAH6jf5jnB"
-                },
-                "code": "RVC_DA-NOPV2-1-REACTIVE",
-                "displayName": "Vaccine doses administered - nOPV2 - Dose 1 - Reactive",
-                "formName": "Vaccine doses administered - Dose 1",
-                "id": "qIYjYTDTfsj"
-            },
-            {
-                "categoryCombo": {
-                    "categories": [
-                        {
-                            "id": "OJ4OwOR4pwt"
-                        }
-                    ],
-                    "displayName": "default",
-                    "id": "ZzAH6jf5jnB"
-                },
-                "code": "RVC_DA-NOPV2-2-PREVENTIVE",
-                "displayName": "Vaccine doses administered - nOPV2 - Dose 2 - Preventive",
-                "formName": "Vaccine doses administered - Dose 2",
-                "id": "OeoDNaPgDBs"
-            },
-            {
-                "categoryCombo": {
-                    "categories": [
-                        {
-                            "id": "OJ4OwOR4pwt"
-                        }
-                    ],
-                    "displayName": "default",
-                    "id": "ZzAH6jf5jnB"
-                },
-                "code": "RVC_DA-NOPV2-2-REACTIVE",
-                "displayName": "Vaccine doses administered - nOPV2 - Dose 2 - Reactive",
-                "formName": "Vaccine doses administered - Dose 2",
-                "id": "mkmbtgI31uh"
-            },
-            {
-                "categoryCombo": {
-                    "categories": [
-                        {
-                            "id": "OJ4OwOR4pwt"
-                        }
-                    ],
-                    "displayName": "default",
-                    "id": "ZzAH6jf5jnB"
-                },
-                "code": "RVC_DA-NOPV2-3-PREVENTIVE",
-                "displayName": "Vaccine doses administered - nOPV2 - Dose 3 - Preventive",
-                "formName": "Vaccine doses administered - Dose 3",
-                "id": "u6Okn9M86PM"
-            },
-            {
-                "categoryCombo": {
-                    "categories": [
-                        {
-                            "id": "OJ4OwOR4pwt"
-                        }
-                    ],
-                    "displayName": "default",
-                    "id": "ZzAH6jf5jnB"
-                },
-                "code": "RVC_DA-NOPV2-3-REACTIVE",
-                "displayName": "Vaccine doses administered - nOPV2 - Dose 3 - Reactive",
-                "formName": "Vaccine doses administered - Dose 3",
-                "id": "WccBhFVKQJO"
-            },
-            {
-                "categoryCombo": {
-                    "categories": [
-                        {
-                            "id": "a6SQVBY9s18"
-                        },
-                        {
-                            "id": "PIicq46RZ36"
-                        }
-                    ],
-                    "code": "RVC_ANTIGEN_TYPE",
-                    "displayName": "Antigen / Type",
-                    "id": "FvWXvS5KuX0"
-                },
-                "code": "RVC_DOSES_USED",
-                "displayName": "Vaccine doses used",
-                "formName": "Vaccine doses used - 2",
-                "id": "ycy4WvaTCtm"
-            },
-            {
-                "categoryCombo": {
-                    "categories": [
-                        {
-                            "id": "OJ4OwOR4pwt"
-                        }
-                    ],
-                    "displayName": "default",
-                    "id": "ZzAH6jf5jnB"
-                },
                 "code": "RVC_DU-BCG-PREVENTIVE",
                 "displayName": "Vaccine doses used - BCG - Preventive",
                 "formName": "Vaccine doses used",
@@ -7707,36 +7118,6 @@
                 "displayName": "Vaccine doses used - Yellow Fever - Reactive",
                 "formName": "Vaccine doses used",
                 "id": "CuoBOSLFqix"
-            },
-            {
-                "categoryCombo": {
-                    "categories": [
-                        {
-                            "id": "OJ4OwOR4pwt"
-                        }
-                    ],
-                    "displayName": "default",
-                    "id": "ZzAH6jf5jnB"
-                },
-                "code": "RVC_DU-NOPV2-PREVENTIVE",
-                "displayName": "Vaccine doses used - nOPV2 - Preventive",
-                "formName": "Vaccine doses used",
-                "id": "O04A0jFjIkX"
-            },
-            {
-                "categoryCombo": {
-                    "categories": [
-                        {
-                            "id": "OJ4OwOR4pwt"
-                        }
-                    ],
-                    "displayName": "default",
-                    "id": "ZzAH6jf5jnB"
-                },
-                "code": "RVC_DU-NOPV2-REACTIVE",
-                "displayName": "Vaccine doses used - nOPV2 - Reactive",
-                "formName": "Vaccine doses used",
-                "id": "uEgtI7i9jVh"
             }
         ],
         "dataSets": [
@@ -7902,22 +7283,6 @@
                 "id": "m20ODIPTvy3"
             },
             {
-                "code": "RVC_NEEDLES_RATIO-NOPV2-PREVENTIVE",
-                "id": "SmU7K7vcoWE"
-            },
-            {
-                "code": "RVC_NEEDLES_RATIO-NOPV2-REACTIVE",
-                "id": "KM0SlXfrDbg"
-            },
-            {
-                "code": "RVC_CAMPAIGN_NEEDLES_RATIO",
-                "id": "Cu0wlBNmEBX"
-            },
-            {
-                "code": "RVC_DILUTION_SYRINGES_RATIO",
-                "id": "eqMDzdX0Gug"
-            },
-            {
                 "code": "RVC_SYRINGES_RATIO-BCG-PREVENTIVE",
                 "id": "WIC2OeWiqd9"
             },
@@ -8056,14 +7421,6 @@
             {
                 "code": "RVC_SYRINGES_RATIO-YELLOW_FEVER-REACTIVE",
                 "id": "qiMZ6mEjBQj"
-            },
-            {
-                "code": "RVC_SYRINGES_RATIO-NOPV2-PREVENTIVE",
-                "id": "WEIrmq6zgSx"
-            },
-            {
-                "code": "RVC_SYRINGES_RATIO-NOPV2-REACTIVE",
-                "id": "qYgtgywvEIS"
             },
             {
                 "code": "RVC_SAFETY_BOXES",
@@ -8346,34 +7703,6 @@
                 "id": "e6OCUDCihxq"
             },
             {
-                "code": "RVC_COVERAGE-NOPV2-1-PREVENTIVE",
-                "id": "OEHx7IqkImo"
-            },
-            {
-                "code": "RVC_COVERAGE-NOPV2-1-REACTIVE",
-                "id": "eOknNJWxfsZ"
-            },
-            {
-                "code": "RVC_COVERAGE-NOPV2-2-PREVENTIVE",
-                "id": "CAKDdzKWZUh"
-            },
-            {
-                "code": "RVC_COVERAGE-NOPV2-2-REACTIVE",
-                "id": "eqMxsFecOs1"
-            },
-            {
-                "code": "RVC_COVERAGE-NOPV2-3-PREVENTIVE",
-                "id": "GKwVVCC4lXu"
-            },
-            {
-                "code": "RVC_COVERAGE-NOPV2-3-REACTIVE",
-                "id": "Sga6eLZCbpr"
-            },
-            {
-                "code": "RVC_CAMPAIGN_COVERAGE",
-                "id": "WmC8n3y13Mo"
-            },
-            {
                 "code": "RVC_DOSES_ADMINISTERED-BCG-PREVENTIVE",
                 "id": "Kkgl8mKdKlu"
             },
@@ -8514,14 +7843,6 @@
                 "id": "G0MXzsUpgYW"
             },
             {
-                "code": "RVC_DOSES_ADMINISTERED-NOPV2-PREVENTIVE",
-                "id": "mWwJwPQ3Xpm"
-            },
-            {
-                "code": "RVC_DOSES_ADMINISTERED-NOPV2-REACTIVE",
-                "id": "CUMZGllD1CZ"
-            },
-            {
                 "code": "RVC_VU-BCG-PREVENTIVE",
                 "id": "uOWKLDq6Vvy"
             },
@@ -8660,18 +7981,6 @@
             {
                 "code": "RVC_VU-YELLOW_FEVER-REACTIVE",
                 "id": "iS4x6TbYlQb"
-            },
-            {
-                "code": "RVC_VU-NOPV2-PREVENTIVE",
-                "id": "aeWm4bBv1oe"
-            },
-            {
-                "code": "RVC_VU-NOPV2-REACTIVE",
-                "id": "ekKaqKutqwr"
-            },
-            {
-                "code": "RVC_VACCINE_UTILIZATION",
-                "id": "OSqieeqbysf"
             }
         ],
         "legendSets": [

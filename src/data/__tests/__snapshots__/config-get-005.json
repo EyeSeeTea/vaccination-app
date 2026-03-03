@@ -45,7 +45,7 @@
                 "valueType": "NUMBER"
             }
         ],
-        "height": 1,
+        "height": 0,
         "metaData": {
             "dimensions": {
                 "co": [
@@ -88,13 +88,7 @@
         "rowContext": {
         },
         "rows": [
-            [
-                "mOE5w8jVtuh",
-                "20251119",
-                "lrjmTKZJUEx",
-                "1000"
-            ]
         ],
-        "width": 4
+        "width": 0
     }
 }
