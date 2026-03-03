@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2026-03-03T11:09:21.556Z\n"
-"PO-Revision-Date: 2026-03-03T11:09:21.556Z\n"
+"POT-Creation-Date: 2026-03-03T12:19:16.569Z\n"
+"PO-Revision-Date: 2026-03-03T12:19:16.569Z\n"
 
 msgid "Campaigns"
 msgstr ""
@@ -381,34 +381,6 @@ msgid "User"
 msgstr ""
 
 msgid "Action"
-msgstr ""
-
-msgid "Subtotal"
-msgstr ""
-
-msgid "Total"
-msgstr ""
-
-msgid "Doses administered"
-msgstr ""
-
-msgid "Quality and safety indicators"
-msgstr ""
-
-msgid "General Q&S"
-msgstr ""
-
-msgid ""
-"Selected period ({selectedPeriod}) is not in the campaign period range "
-"({periodStart} -> {periodEnd})"
-msgstr ""
-
-msgid ""
-"Current date ({currentDate}) is not in the campaign entry range "
-"({openingDate} -> {closingDate})"
-msgstr ""
-
-msgid "Value"
 msgstr ""
 
 msgid "Coverage by Campaign {{- period}} (do not edit this chart)"
