@@ -27,6 +27,7 @@ export type DataElementInfo = {
     categoryCombo: { name?: string; code?: string };
     newEntity?: boolean;
     storeZeroDataValues: boolean;
+    valueType: "NUMBER" | "INTEGER_ZERO_OR_POSITIVE";
 };
 
 export const dataElementsInfo: DataElementInfo[] = [
@@ -38,6 +39,7 @@ export const dataElementsInfo: DataElementInfo[] = [
         disaggregations: ["antigen", "dose", "campaignType"],
         categoryCombo: { name: "default" },
         storeZeroDataValues: true,
+        valueType: "INTEGER_ZERO_OR_POSITIVE",
     },
     {
         name: "Vaccine doses used",
@@ -46,6 +48,7 @@ export const dataElementsInfo: DataElementInfo[] = [
         disaggregations: ["antigen", "campaignType"],
         categoryCombo: { name: "default" },
         storeZeroDataValues: true,
+        valueType: "INTEGER_ZERO_OR_POSITIVE",
     },
     {
         name: "Adverse Event Following Immunization",
@@ -54,6 +57,7 @@ export const dataElementsInfo: DataElementInfo[] = [
         disaggregations: ["antigen", "campaignType"],
         categoryCombo: { code: "RVC_SEVERITY" },
         storeZeroDataValues: true,
+        valueType: "INTEGER_ZERO_OR_POSITIVE",
     },
     {
         name: "Needles for dilution",
@@ -62,6 +66,7 @@ export const dataElementsInfo: DataElementInfo[] = [
         disaggregations: ["antigen", "campaignType"],
         categoryCombo: { name: "default" },
         storeZeroDataValues: true,
+        valueType: "INTEGER_ZERO_OR_POSITIVE",
     },
     {
         name: "Syringes for dilution",
@@ -70,6 +75,7 @@ export const dataElementsInfo: DataElementInfo[] = [
         disaggregations: ["antigen", "campaignType"],
         categoryCombo: { name: "default" },
         storeZeroDataValues: true,
+        valueType: "INTEGER_ZERO_OR_POSITIVE",
     },
     // Population
     {
@@ -79,6 +85,7 @@ export const dataElementsInfo: DataElementInfo[] = [
         disaggregations: ["antigen", "dose"],
         categoryCombo: { code: "RVC_AGE_GROUP" },
         storeZeroDataValues: false,
+        valueType: "NUMBER",
     },
     // Skip data elements without disaggregation:
     //   RVC_ADS_USED

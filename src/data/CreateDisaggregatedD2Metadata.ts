@@ -15,7 +15,7 @@ import { dataElementsInfo, indicatorsInfo, DataElementInfo } from "../models/D2C
 import { cartesianProduct2, cartesianProduct3, powerSet } from "../utils/lodash-mixins";
 import { interpolate } from "../utils/strings";
 import { getUid } from "../utils/dhis2";
-import { assert, assertValue, throw_ } from "../utils/assert";
+import { assert, throw_ } from "../utils/assert";
 import fs from "fs";
 import { getId } from "../models/db.types";
 
@@ -403,9 +403,9 @@ export class CreateDisaggregatedD2Metadata {
 
                 return {
                     domainType: "AGGREGATE",
-                    valueType: "INTEGER_ZERO_OR_POSITIVE",
                     aggregationType: "SUM",
                     ...(existingDataElement ? _.omit(existingDataElement, ["created"]) : {}),
+                    valueType: dataElementConfig.valueType,
                     id: getUid("dataElement", code.replace(/-/g, "_")),
                     name: name,
                     shortName: shortName,
