@@ -141,6 +141,7 @@ export function getAntigenCodeFromSection(section: { code: Maybe<string> }): str
     // section.code: "RVC_${dataSetId}-MALARIA"
     return section.code?.split("-")[1] || "";
 }
+
 type MetadataQuery = {
     dataSets: Array<{
         id: string;
@@ -160,6 +161,7 @@ type MetadataQuery = {
         id: string;
     }>;
 };
+
 const metadataQuery = {
     dataSets: {
         fields: {

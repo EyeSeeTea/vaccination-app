@@ -4,16 +4,7 @@ import _ from "lodash";
 import "../utils/lodash-mixins";
 
 import Campaign from "./campaign";
-import { DataSetCustomForm } from "./DataSetCustomForm";
-import {
-    Maybe,
-    MetadataResponse,
-    DataEntryForm,
-    Section,
-    CategoryOption,
-    NamedRef,
-    Ref,
-} from "./db.types";
+import { Maybe, MetadataResponse, Section, CategoryOption, NamedRef, Ref } from "./db.types";
 import { Metadata, DataSet, Response } from "./db.types";
 import { formatDay } from "../utils/date";
 import {
@@ -464,27 +455,6 @@ export default class CampaignDb {
             : { dataSets: [] };
 
         return _.first(existingDataSets);
-    }
-
-    private async getDataEntryForm(
-        existingDataSet: Maybe<DataSetWithSections>,
-        cocMetadata: CocMetadata
-    ): Promise<DataEntryForm> {
-        const { campaign } = this;
-        const customForm = await DataSetCustomForm.build(campaign, cocMetadata);
-        const customFormHtml = customForm.generate();
-        const formId =
-            (existingDataSet &&
-                existingDataSet.dataEntryForm &&
-                existingDataSet.dataEntryForm.id) ||
-            getUid("dataEntryForm", campaign.name);
-
-        return {
-            id: formId,
-            name: campaign.name + " " + formId, // dataEntryForm.name must be unique
-            htmlCode: customFormHtml,
-            style: "NONE",
-        };
     }
 
     private async getDashboardMetadata(

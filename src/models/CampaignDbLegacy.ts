@@ -4,7 +4,6 @@ import _ from "lodash";
 import "../utils/lodash-mixins";
 
 import Campaign from "./campaign";
-import { DataSetCustomForm } from "./DataSetCustomForm";
 import {
     Maybe,
     MetadataResponse,
@@ -133,7 +132,6 @@ export default class CampaignDb {
         const dataInput = getDataInputFromCampaign(campaign);
         const existingDataSet = await this.getExistingDataSet();
         const metadataCoc = await campaign.antigensDisaggregation.getCocMetadata(db);
-        const dataEntryForm = await this.getDataEntryForm(existingDataSet, metadataCoc);
         const sections = await this.getSections(db, dataSetId, existingDataSet, metadataCoc);
         const sharing = await campaign.getDataSetSharing();
         const campaignOrgUnitRefs = campaign.organisationUnits.map(ou => ({ id: ou.id }));
@@ -162,7 +160,7 @@ export default class CampaignDb {
                     attribute: { id: metadataConfig.attributes.dataInputPeriods.id },
                 },
             ],
-            dataEntryForm: { id: dataEntryForm.id },
+            dataEntryForm: null,
             sections: sections.map(section => ({ id: section.id })),
             ...sharing,
         };
@@ -175,8 +173,8 @@ export default class CampaignDb {
             {
                 ...dashboardMetadata,
                 dataSets: [dataSet, ...extraDataSets],
-                dataEntryForms: [dataEntryForm],
-                sections,
+                dataEntryForms: [],
+                sections: sections,
                 categoryOptions: newTeams,
             },
             teamsToDelete
@@ -379,27 +377,6 @@ export default class CampaignDb {
             : { dataSets: [] };
 
         return _.first(existingDataSets);
-    }
-
-    private async getDataEntryForm(
-        existingDataSet: Maybe<DataSetWithSections>,
-        cocMetadata: CocMetadata
-    ): Promise<DataEntryForm> {
-        const { campaign } = this;
-        const customForm = await DataSetCustomForm.build(campaign, cocMetadata);
-        const customFormHtml = customForm.generate();
-        const formId =
-            (existingDataSet &&
-                existingDataSet.dataEntryForm &&
-                existingDataSet.dataEntryForm.id) ||
-            getUid("dataEntryForm", campaign.name);
-
-        return {
-            id: formId,
-            name: campaign.name + " " + formId, // dataEntryForm.name must be unique
-            htmlCode: customFormHtml,
-            style: "NONE",
-        };
     }
 
     private async getDashboardMetadata(
