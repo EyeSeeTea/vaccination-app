@@ -67,7 +67,8 @@ class MigrateCampaignToNewDisaggregations {
         const target = this.instances.target.legacy;
 
         const log = (msg: string) => console.debug(`[${id}] ${msg}`);
-        const campaign = await Campaign.get(source.config, source.db, id, { legacy: true });
+
+        const campaign = await new CampaignD2Repository(source.config, source.db).get(id);
         log(`Loaded campaign from ${source.db.api.baseUrl}: ${campaign.name} [${campaign.id}]`);
 
         log(`Migrating campaign to ${target.db.api.baseUrl}`);

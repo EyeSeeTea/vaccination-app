@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: i18next-conv\n"
-"POT-Creation-Date: 2025-04-11T07:52:45.509Z\n"
+"POT-Creation-Date: 2026-03-03T11:09:21.556Z\n"
 "PO-Revision-Date: 2018-10-25T09:02:35.143Z\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -298,15 +298,15 @@ msgstr "Editar campaña"
 msgid "New vaccination campaign"
 msgstr "Nueva campaña"
 
-msgid "No dashboards associated with this campaign"
-msgstr "No hay ningún tablero asociado a la campaña"
-
 msgid ""
-"It loooks like it's the first time you are accessing the dashboard for this "
+"It looks like it's the first time you are accessing the dashboard for this "
 "campaign. Generating dashboard. This may take up to a couple of minutes"
 msgstr ""
 "Parece que estás accediendo al tablero por primera vez para esta campaña. "
 "Generando el tablero. Este proceso puede tardar un par de minutos"
+
+msgid "No dashboards associated with this campaign"
+msgstr "No hay ningún tablero asociado a la campaña"
 
 msgid ""
 "Please click on the grey arrow next to the chart/table title if you want to "
@@ -432,6 +432,13 @@ msgstr ""
 "¿Esta seguro que quiere salir del Creador de Campañas? Todos sus cambios se "
 "perderán"
 
+msgid ""
+"Campaign teams (category options) could not be deleted, probably there are "
+"associated data values"
+msgstr ""
+"Los equipos de campaña (opciones de categoría) no se han podido borrar, "
+"probablemente hay datos asociados"
+
 msgid "Dose {{-indexes}}"
 msgstr "Dosis {{-indexes}}"
 
@@ -482,13 +489,6 @@ msgstr ""
 
 msgid "Value"
 msgstr "Valor"
-
-msgid ""
-"Campaign teams (category options) could not be deleted, probably there are "
-"associated data values"
-msgstr ""
-"Los equipos de campaña (opciones de categoría) no se han podido borrar, "
-"probablemente hay datos asociados"
 
 msgid "Coverage by Campaign {{- period}} (do not edit this chart)"
 msgstr "Cobertura Vacunal por Campañá {{- period}} (no edite esta gráfica)"

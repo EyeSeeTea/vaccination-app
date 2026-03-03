@@ -15,6 +15,7 @@ import DbD2 from "../../models/db-d2";
 import { getMetadataConfig } from "../../models/config";
 import { hasCurrentUserRoles } from "../../utils/permissions";
 import { isTestEnv } from "../../utils/dhis2";
+import { getCompositionRoot } from "../../CompositionRoot";
 
 class App extends Component {
     static propTypes = {
@@ -29,11 +30,13 @@ class App extends Component {
     };
 
     async componentDidMount() {
-        const { d2, appConfig } = this.props;
+        const { d2, api, appConfig } = this.props;
         const appKey = _(this.props.appConfig).get("appKey");
-        const db = new DbD2(d2);
+        const db = new DbD2(d2, api);
         const config = await getMetadataConfig(db);
-        window.config = config;
+        const compositionRoot = getCompositionRoot({ db, api, config });
+        Object.assign(window, { config, db, compositionRoot });
+
         const showFeedbackForCurrentUser = hasCurrentUserRoles(
             d2,
             config.userRoles,
@@ -48,12 +51,12 @@ class App extends Component {
             window.$.feedbackDhis2(d2, appKey, feedbackOptions);
         }
 
-        this.setState({ config, db });
+        this.setState({ config, db, compositionRoot });
     }
 
     render() {
         const { d2, appConfig, api } = this.props;
-        const { config, db } = this.state;
+        const { config, db, compositionRoot } = this.state;
         const showShareButton = _(appConfig).get("appearance.showShareButton") || false;
         const showHeader = !isTestEnv();
 
@@ -67,7 +70,13 @@ class App extends Component {
                             <div id="app" className="content">
                                 <SnackbarProvider>
                                     {config && db && (
-                                        <Root d2={d2} db={db} config={config} api={api} />
+                                        <Root
+                                            d2={d2}
+                                            db={db}
+                                            config={config}
+                                            api={api}
+                                            compositionRoot={compositionRoot}
+                                        />
                                     )}
                                 </SnackbarProvider>
                             </div>

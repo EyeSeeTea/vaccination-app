@@ -39,7 +39,8 @@ export function getDbD2SnapMock(name: string): SnapshotMock<DbD2> {
     };
 
     const mockD2 = getD2Stub(apiMock as unknown as D2ApiLegacy);
-    const dbD2 = new DbD2(mockD2);
+    const d2ApiMock = getD2ApiSnapMock(name);
+    const dbD2 = new DbD2(mockD2, d2ApiMock);
     return addMockExpectations(dbD2, [apiMock.get, apiMock.post, apiMock.update, apiMock.delete]);
 }
 
@@ -215,7 +216,9 @@ async function getRealD2(): Promise<DbD2> {
         Authorization: "Basic " + btoa(auth),
     });
 
-    const d2_ = await init({ baseUrl: baseUrl + "/api" }, { getApi: () => api });
-    realD2 = new DbD2(d2_);
+    const d2 = await init({ baseUrl: baseUrl + "/api" }, { getApi: () => api });
+    const d2Api = getD2ApiSnapMock("init");
+
+    realD2 = new DbD2(d2, d2Api);
     return realD2;
 }

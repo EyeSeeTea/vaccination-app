@@ -15,6 +15,7 @@ class Dashboard extends React.Component {
     static propTypes = {
         d2: PropTypes.object.isRequired,
         config: PropTypes.object.isRequired,
+        compositionRoot: PropTypes.object.isRequired,
         db: PropTypes.object.isRequired,
         pageVisited: PropTypes.bool,
     };
@@ -95,37 +96,30 @@ class Dashboard extends React.Component {
     };
 
     async getDashboardURL(dataSetId, config, d2) {
-        const { snackbar, loading, db } = this.props;
-        const dataSet = dataSetId ? await getDatasetById(dataSetId, d2) : null;
-        const msg = i18n.t("No dashboards associated with this campaign");
+        const { snackbar, loading, compositionRoot, db } = this.props;
 
-        if (!dataSetId) {
-            return getDhis2Url(d2, `/dhis-web-dashboard/#/`);
-        } else if (dataSet) {
-            const campaign = await Campaign.get(config, db, dataSet.id);
+        const campaign = await compositionRoot.campaigns.get.execute(dataSetId);
 
-            let dashboardId;
-            if (campaign.dashboardId) {
-                dashboardId = campaign.dashboardId;
-            } else {
-                loading.show(
-                    true,
-                    i18n.t(
-                        "It loooks like it's the first time you are accessing the dashboard for this campaign. Generating dashboard. This may take up to a couple of minutes"
-                    )
-                );
-                this.setState({ isGenerating: true });
-                dashboardId = await campaign.createDashboard();
-                loading.hide();
-                this.setState({ isGenerating: false });
-            }
-
-            if (dashboardId) {
-                return getDhis2Url(d2, `/dhis-web-dashboard/#/${dashboardId}`);
-            } else {
-                snackbar.error(msg);
-            }
+        let dashboardId;
+        if (campaign.dashboardId) {
+            dashboardId = campaign.dashboardId;
         } else {
+            loading.show(
+                true,
+                i18n.t(
+                    "It looks like it's the first time you are accessing the dashboard for this campaign. Generating dashboard. This may take up to a couple of minutes"
+                )
+            );
+            this.setState({ isGenerating: true });
+            dashboardId = await campaign.createDashboard();
+            loading.hide();
+            this.setState({ isGenerating: false });
+        }
+
+        if (dashboardId) {
+            return getDhis2Url(d2, `/dhis-web-dashboard/#/${dashboardId}`);
+        } else {
+            const msg = i18n.t("No dashboards associated with this campaign");
             snackbar.error(msg);
         }
     }

@@ -22,6 +22,7 @@ class CampaignWizard extends React.Component {
     static propTypes = {
         d2: PropTypes.object.isRequired,
         db: PropTypes.object.isRequired,
+        compositionRoot: PropTypes.object.isRequired,
         api: PropTypes.object.isRequired,
         history: PropTypes.object.isRequired,
         config: PropTypes.object.isRequired,
@@ -40,19 +41,22 @@ class CampaignWizard extends React.Component {
     }
 
     async componentDidMount() {
-        const { db, config, match } = this.props;
+        const { db, compositionRoot, config, match } = this.props;
 
         try {
             const campaign = this.isEdit()
-                ? await Campaign.get(config, db, match.params.id)
+                ? await compositionRoot.campaigns.get.execute(match.params.id)
                 : Campaign.create(config, db);
 
-            const campaignHasDataValues = await campaign.hasDataValues().catch(err => {
-                console.error(err);
-                // Could not get data values (i.e. the user has no access to the org units),
-                // so assume the worse case (that the campaign has data) and continue.
-                return true;
-            });
+            const campaignHasDataValues = Boolean(
+                campaign.id &&
+                    (await compositionRoot.campaigns.hasData.execute(campaign.id).catch(err => {
+                        console.error(err);
+                        // Could not get data values (i.e. the user has no access to the org units),
+                        // so assume the worse case (that the campaign has data) and continue.
+                        return true;
+                    }))
+            );
             this.setState({ campaign, campaignHasDataValues });
         } catch (err) {
             console.error(err);
@@ -169,7 +173,7 @@ class CampaignWizard extends React.Component {
     };
 
     render() {
-        const { d2, location } = this.props;
+        const { d2, location, compositionRoot } = this.props;
         const { campaign, dialogOpen, pagesVisited, campaignHasDataValues } = this.state;
         window.campaign = campaign;
 
@@ -185,6 +189,7 @@ class CampaignWizard extends React.Component {
             props: {
                 d2,
                 campaign,
+                compositionRoot: compositionRoot,
                 onChange: this.onChange(step),
                 onCancel: this.goToConfiguration,
                 api: this.props.api,

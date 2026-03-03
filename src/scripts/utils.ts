@@ -36,12 +36,13 @@ export async function getAppApi(options: { url: string; auth: string }): Promise
     const api = new Api();
     Object.assign(api.defaultHeaders, { Authorization: "Basic " + btoa(auth) });
 
+    const d2Api = getD2Api({ auth, baseUrl: url });
     const d2 = await init({ baseUrl: url + "/api" }, { getApi: () => api });
-    const db = new DbD2(d2);
+    const db = new DbD2(d2, d2Api);
     const config = await getMetadataConfig(db);
 
     return {
-        d2Api: getD2Api({ auth, baseUrl: url }),
+        d2Api: d2Api,
         legacy: { config, db },
     };
 }

@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2025-04-11T07:52:45.509Z\n"
-"PO-Revision-Date: 2025-04-11T07:52:45.509Z\n"
+"POT-Creation-Date: 2026-03-03T11:09:21.556Z\n"
+"PO-Revision-Date: 2026-03-03T11:09:21.556Z\n"
 
 msgid "Campaigns"
 msgstr ""
@@ -243,12 +243,12 @@ msgstr ""
 msgid "New vaccination campaign"
 msgstr ""
 
-msgid "No dashboards associated with this campaign"
+msgid ""
+"It looks like it's the first time you are accessing the dashboard for this "
+"campaign. Generating dashboard. This may take up to a couple of minutes"
 msgstr ""
 
-msgid ""
-"It loooks like it's the first time you are accessing the dashboard for this "
-"campaign. Generating dashboard. This may take up to a couple of minutes"
+msgid "No dashboards associated with this campaign"
 msgstr ""
 
 msgid ""
@@ -360,6 +360,11 @@ msgid ""
 "be lost. Are you sure you want to proceed?"
 msgstr ""
 
+msgid ""
+"Campaign teams (category options) could not be deleted, probably there are "
+"associated data values"
+msgstr ""
+
 msgid "Dose {{-indexes}}"
 msgstr ""
 
@@ -404,11 +409,6 @@ msgid ""
 msgstr ""
 
 msgid "Value"
-msgstr ""
-
-msgid ""
-"Campaign teams (category options) could not be deleted, probably there are "
-"associated data values"
 msgstr ""
 
 msgid "Coverage by Campaign {{- period}} (do not edit this chart)"

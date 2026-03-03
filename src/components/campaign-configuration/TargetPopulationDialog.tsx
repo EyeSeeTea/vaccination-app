@@ -23,16 +23,18 @@ import Campaign from "../../models/campaign";
 import { MetadataConfig } from "../../models/config";
 import { getValidationMessages } from "../../utils/validations";
 import { redirectToLandingPageIfLegacy } from "./validations";
-import { withRouter } from "react-router-dom";
+import { RouteComponentProps, withRouter } from "react-router-dom";
+import { CompositionRoot } from "../../CompositionRoot";
 
-interface Props extends WithStyles<typeof styles> {
+interface OwnProps {
     dataSet: { id: string };
     config: MetadataConfig;
+    compositionRoot: CompositionRoot;
     onClose: () => void;
     db: DbD2;
-    snackbar: any;
-    history: any;
 }
+
+type Props = OwnProps & RouteComponentProps & WithStyles<typeof styles> & { snackbar: any };
 
 interface State {
     campaign: Maybe<Campaign>;
@@ -56,10 +58,10 @@ class TargetPopulationDialog extends React.Component<Props, State> {
     };
 
     async componentDidMount() {
-        const { dataSet, db, config, onClose, snackbar, history } = this.props;
+        const { dataSet, onClose, snackbar, history, compositionRoot } = this.props;
 
         try {
-            const campaign = await Campaign.get(config, db, dataSet.id);
+            const campaign = await compositionRoot.campaigns.get.execute(dataSet.id);
             if (redirectToLandingPageIfLegacy(campaign, snackbar, history)) {
                 onClose();
                 return;
@@ -73,6 +75,7 @@ class TargetPopulationDialog extends React.Component<Props, State> {
             this.setState({ campaign: campaignWithTargetPopulation, areValuesUpdated });
         } catch (err0) {
             const err = err0 as any;
+            console.error(err);
             snackbar.error(i18n.t("Cannot load campaign") + ": " + (err.message || err));
             onClose();
         }
@@ -232,6 +235,6 @@ const styles = (_theme: Theme) =>
         },
     });
 
-const component = withSnackbar(withStyles(styles)(TargetPopulationDialog));
+const Wrapped = withSnackbar(withStyles(styles)(withRouter(TargetPopulationDialog)));
 
-export default withRouter(component as any) as any;
+export default Wrapped as unknown as React.ComponentType<OwnProps>;

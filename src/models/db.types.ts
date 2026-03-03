@@ -1,7 +1,9 @@
 import { Dictionary } from "lodash";
 export type Maybe<T> = T | undefined;
 
-export type Response<T> = { status: true } | { status: false; error: T };
+export type Response<T> =
+    | { status: true } //
+    | { status: false; error: T };
 
 export interface Pager {
     page: number;
