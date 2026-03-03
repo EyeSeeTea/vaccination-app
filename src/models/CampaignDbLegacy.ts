@@ -132,7 +132,7 @@ export default class CampaignDb {
         const dataInput = getDataInputFromCampaign(campaign);
         const existingDataSet = await this.getExistingDataSet();
         const metadataCoc = await campaign.antigensDisaggregation.getCocMetadata(db);
-        const sections = await this.getSections(db, dataSetId, existingDataSet, metadataCoc);
+        const sections = await this.getSections(dataSetId, existingDataSet, metadataCoc);
         const sharing = await campaign.getDataSetSharing();
         const campaignOrgUnitRefs = campaign.organisationUnits.map(ou => ({ id: ou.id }));
 
@@ -298,7 +298,6 @@ export default class CampaignDb {
     }
 
     private async getSections(
-        db: DbD2,
         dataSetId: string,
         existingDataSet: Maybe<DataSetWithSections>,
         cocMetadata: CocMetadata
