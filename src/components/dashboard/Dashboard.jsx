@@ -5,9 +5,7 @@ import { withSnackbar, withLoading } from "@eyeseetea/d2-ui-components";
 import ReactDOM from "react-dom";
 
 import PageHeader from "../shared/PageHeader";
-import { getDatasetById } from "../../models/datasets";
 import { getDhis2Url } from "../../utils/routes";
-import Campaign from "../../models/campaign";
 import { LinearProgress } from "@material-ui/core";
 import { withPageVisited } from "../utils/page-visited-app";
 
@@ -95,8 +93,8 @@ class Dashboard extends React.Component {
         }
     };
 
-    async getDashboardURL(dataSetId, config, d2) {
-        const { snackbar, loading, compositionRoot, db } = this.props;
+    async getDashboardURL(dataSetId, _config, d2) {
+        const { snackbar, loading, compositionRoot } = this.props;
 
         const campaign = await compositionRoot.campaigns.get.execute(dataSetId);
 
