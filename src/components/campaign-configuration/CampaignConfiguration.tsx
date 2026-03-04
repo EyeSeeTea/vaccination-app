@@ -10,11 +10,12 @@ import {
     TableState,
     TableSorting,
     TableColumn,
+    ObjectsTableDetailField,
 } from "@eyeseetea/d2-ui-components";
 import _ from "lodash";
 
 import PageHeader from "../shared/PageHeader";
-import { list, getPeriodDatesFromDataSet } from "../../models/datasets";
+import { list, getPeriodDatesFromDataSet, DataSet } from "../../models/datasets";
 import { formatDateShort } from "../../utils/date";
 import TargetPopulationDialog from "./TargetPopulationDialog";
 import { hasCurrentUserRoles } from "../../utils/permissions";
@@ -25,18 +26,9 @@ import { Dashboard, Delete, Details, Edit, LibraryBooks, People } from "@materia
 import i18n from "../../locales";
 import { CompositionRoot } from "../../CompositionRoot";
 import { D2Api } from "../../types/d2-api";
+import { MetadataConfig } from "../../models/config";
 
-type DataSetRow = {
-    id: string;
-    displayName: string;
-    publicAccess: string;
-    lastUpdated: string;
-    href: string;
-    startDate: string;
-    endDate: string;
-    created: string;
-    displayDescription: string;
-};
+type DataSetRow = DataSet;
 
 type Filters = {
     search: string;
@@ -47,7 +39,7 @@ type CampaignConfigurationProps = {
     db: any;
     api: D2Api;
     compositionRoot: CompositionRoot;
-    config: any;
+    config: MetadataConfig;
     snackbar: any;
     loading: any;
     pageVisited: boolean;
@@ -115,20 +107,21 @@ class CampaignConfiguration extends React.Component<
     detailsFields = [
         { name: "displayName" as const, text: i18n.t("Name") },
         { name: "displayDescription" as const, text: i18n.t("Description") },
-        {
-            name: "startDate" as const,
-            text: i18n.t("Start Date"),
-            getValue: (dataSet: DataSetRow) => this.getDateValue("startDate", dataSet),
-        },
-        {
-            name: "endDate" as const,
-            text: i18n.t("End Date"),
-            getValue: (dataSet: DataSetRow) => this.getDateValue("endDate", dataSet),
-        },
         { name: "created" as const, text: i18n.t("Created") },
         { name: "lastUpdated" as const, text: i18n.t("Last update") },
         { name: "id" as const, text: i18n.t("Id") },
         { name: "href" as const, text: i18n.t("API link") },
+        // startDate/endDate are virtual fields not in DataSetRow, assert to the expected types
+        {
+            name: "startDate" as const,
+            text: i18n.t("Start Date"),
+            getValue: (dataSet: DataSetRow) => this.getDateValue("startDate", dataSet),
+        } as unknown as ObjectsTableDetailField<DataSetRow>,
+        {
+            name: "endDate" as const,
+            text: i18n.t("End Date"),
+            getValue: (dataSet: DataSetRow) => this.getDateValue("endDate", dataSet),
+        } as unknown as ObjectsTableDetailField<DataSetRow>,
     ];
 
     _actions: TableAction<DataSetRow>[] = [

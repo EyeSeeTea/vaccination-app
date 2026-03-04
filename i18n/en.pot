@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2026-03-03T12:19:16.569Z\n"
-"PO-Revision-Date: 2026-03-03T12:19:16.569Z\n"
+"POT-Creation-Date: 2026-03-04T09:05:34.486Z\n"
+"PO-Revision-Date: 2026-03-04T09:05:34.486Z\n"
 
 msgid "Campaigns"
 msgstr ""
@@ -29,12 +29,6 @@ msgstr ""
 msgid "Description"
 msgstr ""
 
-msgid "Start Date"
-msgstr ""
-
-msgid "End Date"
-msgstr ""
-
 msgid "Created"
 msgstr ""
 
@@ -45,6 +39,12 @@ msgid "Id"
 msgstr ""
 
 msgid "API link"
+msgstr ""
+
+msgid "Start Date"
+msgstr ""
+
+msgid "End Date"
 msgstr ""
 
 msgid "Details"

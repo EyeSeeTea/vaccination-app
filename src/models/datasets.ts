@@ -1,6 +1,8 @@
 import _ from "lodash";
 import { getCurrentUserDataViewOrganisationUnits } from "../utils/dhis2";
 import { getCampaignPeriods } from "./CampaignDb";
+import { MetadataConfig } from "./config";
+import { D2 } from "./d2.types";
 
 const requiredFields = ["attributeValues[value, attribute[code]]", "organisationUnits[id,path]"];
 
@@ -17,6 +19,24 @@ const defaultListFields = [
     "dataInputPeriods[period[id]]",
 ];
 
+export type DataSet = {
+    id: string;
+    name: string;
+    displayName: string;
+    displayDescription: string;
+    created: string;
+    lastUpdated: string;
+    publicAccess: string;
+    user: { id: string };
+    href: string;
+    dataInputPeriods: Array<{ period: { id: string } }>;
+    attributeValues: Array<{
+        value: string;
+        attribute: { code: string };
+    }>;
+    organisationUnits: Array<{ id: string; path: string }>;
+};
+
 /* Return object with pager and array of datasets.
 
 Fields: fields.fields or listFields
@@ -30,7 +50,24 @@ Filters:
 NOTE: It's not possible to filter all in a single call, so we first make an unpaginated call,
 filter the results, and finally build the pager ({page: number, total: number}) programatically.
 */
-export async function list(config, d2, filters, pagination) {
+
+type Filters = {
+    search?: string;
+    fields?: string[];
+};
+
+type Pagination = {
+    page?: number;
+    pageSize?: number;
+    sorting?: [string, "asc" | "desc"];
+};
+
+export async function list(
+    config: MetadataConfig,
+    d2: D2,
+    filters: Filters,
+    pagination: Pagination
+) {
     const { search, fields: forcedFields } = filters || {};
     const { page = 1, pageSize = 20, sorting } = pagination || {};
 
@@ -47,10 +84,10 @@ export async function list(config, d2, filters, pagination) {
     const fields = (forcedFields || defaultListFields).concat(requiredFields).join(",");
     const listOptions = { fields, filter, pageSize: 1000, order, apiEndpoint: "/dataSets" };
 
-    const dataSetsBase = await d2.models.dataSets
+    const dataSetsBase: DataSet[] = await d2.models.dataSets
         .list(_.pickBy(listOptions, x => _.isNumber(x) || !_.isEmpty(x)))
-        .then(collection =>
-            collection.toArray().map(dataSet => ({
+        .then((collection: any) =>
+            collection.toArray().map((dataSet: any) => ({
                 ...dataSet,
                 organisationUnits: dataSet.organisationUnits.toArray(),
             }))
@@ -71,15 +108,15 @@ export async function list(config, d2, filters, pagination) {
     };
 }
 
-function isDataSetCreatedByApp(dataSet, config) {
-    const attributeValueForApp = _(dataSet.attributeValues || [])
-        .keyBy(attributeValue => (attributeValue.attribute ? attributeValue.attribute.code : null))
-        .get(config.attributeCodeForApp);
-
-    return attributeValueForApp && attributeValueForApp.value === "true";
+function isDataSetCreatedByApp(dataSet: DataSet, config: MetadataConfig) {
+    return _(dataSet.attributeValues).some(
+        attributeValue =>
+            attributeValue.attribute.code === config.attributeCodeForApp &&
+            attributeValue.value === "true"
+    );
 }
 
-function isDataSetInUserOrgUnits(d2, dataSet) {
+function isDataSetInUserOrgUnits(d2: D2, dataSet: DataSet) {
     const userOrgUnits = getCurrentUserDataViewOrganisationUnits(d2);
 
     return dataSet.organisationUnits.every(dataSetOrgUnit =>
@@ -87,7 +124,7 @@ function isDataSetInUserOrgUnits(d2, dataSet) {
     );
 }
 
-export async function getOrganisationUnitsByDataSetId(id, d2) {
+export async function getOrganisationUnitsByDataSetId(id: string, d2: D2) {
     const fields = "organisationUnits[id,name]";
     const dataSet = await d2.models.dataSets.get(id, { fields }).catch(() => undefined);
     const organisationUnits = dataSet ? dataSet.organisationUnits.toArray() : null;
@@ -95,17 +132,17 @@ export async function getOrganisationUnitsByDataSetId(id, d2) {
     return _(organisationUnits).isEmpty() ? undefined : organisationUnits[0].id;
 }
 
-export async function getPeriodDatesFromDataSetId(id, d2) {
+export async function getPeriodDatesFromDataSetId(id: string, d2: D2) {
     const fields = "attributeValues[value, attribute[code]]";
     const dataSet = await d2.models.dataSets.get(id, { fields }).catch(() => undefined);
     return dataSet ? getPeriodDatesFromDataSet(dataSet) : null;
 }
 
-export function getPeriodDatesFromDataSet(dataSet) {
+export function getPeriodDatesFromDataSet(dataSet: DataSet) {
     return getCampaignPeriods(dataSet);
 }
 
-export async function getDatasetById(id, d2) {
+export async function getDatasetById(id: string, d2: D2) {
     const fields = ["id", "attributeValues[value, attribute[code]]"].join(",");
     const dataSet = await d2.models.dataSets.get(id, { fields }).catch(() => undefined);
     return dataSet;

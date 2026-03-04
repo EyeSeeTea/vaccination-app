@@ -184,6 +184,16 @@ function getD2Stub(apiMock: D2ApiLegacy): D2 {
             strings: { add: () => {} },
             load: () => {},
         },
+        models: {
+            dataSets: {
+                list: async () => {
+                    throw new Error("D2.models.dataSets.list not implemented in D2 stub");
+                },
+                get: async () => {
+                    throw new Error("D2.models.dataSets.get not implemented in D2 stub");
+                },
+            },
+        },
     };
 }
 
