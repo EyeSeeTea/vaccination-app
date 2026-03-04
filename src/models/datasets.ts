@@ -36,7 +36,6 @@ export type DataSet = {
     }>;
     organisationUnits: Array<{ id: string; path: string }>;
 };
-
 /* Return object with pager and array of datasets.
 
 Fields: fields.fields or listFields
@@ -62,12 +61,17 @@ type Pagination = {
     sorting?: [string, "asc" | "desc"];
 };
 
+type ListResult = {
+    pager: { page: number; total: number };
+    objects: DataSet[];
+};
+
 export async function list(
     config: MetadataConfig,
     d2: D2,
     filters: Filters,
     pagination: Pagination
-) {
+): Promise<ListResult> {
     const { search, fields: forcedFields } = filters || {};
     const { page = 1, pageSize = 20, sorting } = pagination || {};
 

@@ -1,8 +1,10 @@
+import { CampaignD2Query } from "./data/CampaignD2Query";
 import { CampaignD2Repository } from "./data/CampaignD2Repository";
 import { NotificationD2Repository } from "./data/NotificationD2Repository";
 import { DeleteCampaignUseCase } from "./domain/usecases/DeleteCampaignUseCase";
 import { GetCampaignUseCase } from "./domain/usecases/GetCampaignUseCase";
 import { HasCampaignDataUseCase } from "./domain/usecases/HasCampaignDataUseCase";
+import { ListCampaignsUseCase } from "./domain/usecases/ListCampaignsUseCase";
 import { SaveCampaignUseCase } from "./domain/usecases/SaveCampaignUseCase";
 import { MetadataConfig } from "./models/config";
 import { D2LegacyGetCampaign } from "./models/D2LegacyGetCampaign";
@@ -18,8 +20,13 @@ export function getCompositionRoot(options: { db: DbD2; api: D2Api; config: Meta
         notificationRepository: new NotificationD2Repository(api),
     };
 
+    const queries = {
+        campaignQuery: new CampaignD2Query(config, db),
+    };
+
     return {
         campaigns: {
+            list: new ListCampaignsUseCase(queries),
             get: new GetCampaignUseCase(repositories),
             save: new SaveCampaignUseCase(db, repositories),
             delete: new DeleteCampaignUseCase(db, repositories),
