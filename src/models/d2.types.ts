@@ -7,6 +7,12 @@ export interface D2 {
     currentUser: {
         displayName: string;
     };
+    i18n: {
+        strings: {
+            add(key: string): void;
+        };
+        load(): Promise<void> | void;
+    };
 }
 
 export type DeleteResponse = {

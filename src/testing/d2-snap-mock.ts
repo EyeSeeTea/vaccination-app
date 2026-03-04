@@ -180,6 +180,10 @@ function getD2Stub(apiMock: D2ApiLegacy): D2 {
     return {
         Api: { getApi: () => apiMock },
         currentUser: { displayName: "John Traore" },
+        i18n: {
+            strings: { add: () => {} },
+            load: () => {},
+        },
     };
 }
 

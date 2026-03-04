@@ -1,4 +1,3 @@
-import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "@dhis2/app-runtime";
 import { init, config, getUserSettings, getManifest } from "d2";
@@ -11,16 +10,17 @@ import App from "./components/app/App";
 
 import "./locales";
 import { D2Api } from "@eyeseetea/d2-api/2.36";
+import { D2 } from "./models/d2.types";
 
 config.schemas = ["dataSet", "organisationUnit"];
 
-function isLangRTL(code) {
+function isLangRTL(code: string) {
     const langs = ["ar", "fa", "ur"];
     const prefixed = langs.map(c => `${c}-`);
     return langs.includes(code) || prefixed.filter(c => code && code.startsWith(c)).length > 0;
 }
 
-function configI18n(userSettings) {
+function configI18n(userSettings: { keyUiLocale: string }) {
     const uiLocale = userSettings.keyUiLocale;
 
     if (uiLocale && uiLocale !== "en") {
@@ -46,7 +46,7 @@ async function getBaseUrl() {
     }
 }
 
-function loadHeaderBarTranslations(d2) {
+function loadHeaderBarTranslations(d2: D2) {
     const keys = _([
         "app_search_placeholder",
         "manage_my_apps",
@@ -67,11 +67,12 @@ async function main() {
     const apiUrl = baseUrl.replace(/\/*$/, "") + "/api";
     try {
         const d2 = await init({ baseUrl: apiUrl });
-        window.d2 = d2; // Make d2 available in the console
         const api = new D2Api({ baseUrl: baseUrl });
         loadHeaderBarTranslations(d2);
+
         const userSettings = await getUserSettings();
         configI18n(userSettings);
+
         const appConfig = await fetch("app-config.json", {
             credentials: "same-origin",
         }).then(res => res.json());
@@ -86,7 +87,7 @@ async function main() {
         );
     } catch (err) {
         console.error(err);
-        const message = err.toString().match("Unable to get schemas") ? (
+        const message = String(err).match("Unable to get schemas") ? (
             <div>
                 <a rel="noopener noreferrer" target="_blank" href={baseUrl}>
                     Login
@@ -94,7 +95,7 @@ async function main() {
                 {baseUrl}
             </div>
         ) : (
-            err.toString()
+            String(err)
         );
         ReactDOM.render(<div>{message}</div>, document.getElementById("root"));
     }
