@@ -493,7 +493,7 @@ export default class DbD2 {
 
     public async getDataValues(params: GetDataValuesParams): Promise<DataValue[]> {
         const parseDate = (date: Date | undefined, daysOffset = 0) =>
-            date ? moment(date).add(daysOffset, "days").format("YYYY-MM-DD") : undefined;
+            date ? moment.utc(date).add(daysOffset, "days").format("YYYY-MM-DD") : undefined;
         const apiParams = {
             ...params,
             startDate: parseDate(params.startDate),

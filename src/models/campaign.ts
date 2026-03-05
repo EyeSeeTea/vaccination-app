@@ -352,7 +352,7 @@ export default class Campaign {
         const targetPopulationForCampaign = await targetPopulation.update(
             this.organisationUnits,
             this.getEnabledAntigensDisaggregation(),
-            this.startDate ? moment(this.startDate).format("YYYYMMDD") : "TODAY"
+            this.startDate ? moment.utc(this.startDate).format("YYYYMMDD") : "TODAY"
         );
 
         return this.update({

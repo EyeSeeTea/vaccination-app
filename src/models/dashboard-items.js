@@ -600,9 +600,9 @@ const chartConstructor = ({
         antigenCategory
     );
 
-    const periodForTitle = `${moment(periodItems[0].id).format("DD/MM/YYYY")} - ${moment(
-        _.last(periodItems).id
-    ).format("DD/MM/YYYY")}`;
+    const periodForTitle = `${moment.utc(periodItems[0].id).format("DD/MM/YYYY")} - ${moment
+        .utc(_.last(periodItems).id)
+        .format("DD/MM/YYYY")}`;
 
     const columns = _.isEmpty(disaggregations) ? allColumns : allColumns.filter(c => c.id !== "dx");
 
@@ -793,9 +793,9 @@ const tableConstructor = ({
         antigen,
         antigenCategory
     );
-    const periodForTitle = `${moment(periodItems[0].id).format("DD/MM/YYYY")} - ${moment(
-        _.last(periodItems).id
-    ).format("DD/MM/YYYY")}`;
+    const periodForTitle = `${moment.utc(periodItems[0].id).format("DD/MM/YYYY")} - ${moment
+        .utc(_.last(periodItems).id)
+        .format("DD/MM/YYYY")}`;
 
     const categoryDimensionsWithTeams = teamRowRawDimension
         ? [

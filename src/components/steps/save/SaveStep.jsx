@@ -118,9 +118,9 @@ class SaveStep extends React.Component {
 
         if (startDate && endDate) {
             return [
-                moment(campaign.startDate).format("LL"),
+                moment.utc(campaign.startDate).format("LL"),
                 "->",
-                moment(campaign.endDate).format("LL"),
+                moment.utc(campaign.endDate).format("LL"),
             ].join(" ");
         } else {
             return "-";
