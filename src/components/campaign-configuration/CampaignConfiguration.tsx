@@ -15,7 +15,6 @@ import {
 import _ from "lodash";
 
 import PageHeader from "../shared/PageHeader";
-import { list, getPeriodDatesFromDataSet, DataSet } from "../../models/datasets";
 import { formatDateShort } from "../../utils/date";
 import TargetPopulationDialog from "./TargetPopulationDialog";
 import { hasCurrentUserRoles } from "../../utils/permissions";
@@ -27,8 +26,9 @@ import i18n from "../../locales";
 import { CompositionRoot } from "../../CompositionRoot";
 import { D2Api } from "../../types/d2-api";
 import { MetadataConfig } from "../../models/config";
+import { CampaignSummary } from "../../domain/entities/CampaignSummary";
 
-type DataSetRow = DataSet;
+type DataSetRow = CampaignSummary;
 
 type Filters = {
     search: string;
@@ -242,14 +242,11 @@ class CampaignConfiguration extends React.Component<
     };
 
     getDateValue = (dateType: "startDate" | "endDate", dataSet: DataSetRow) => {
-        const periodDates = getPeriodDatesFromDataSet(dataSet);
-        if (!periodDates) return;
-
         switch (dateType) {
             case "startDate":
-                return formatDateShort(periodDates.startDate);
+                return formatDateShort(dataSet.period?.start);
             case "endDate":
-                return formatDateShort(periodDates.endDate);
+                return formatDateShort(dataSet.period?.end);
             default:
                 console.error(`Date type not supported: ${dateType}`);
                 return undefined;
@@ -269,9 +266,12 @@ class CampaignConfiguration extends React.Component<
         pagination: TablePagination,
         sorting: TableSorting<DataSetRow>
     ) => {
-        const res = await list(this.props.config, this.props.d2, filters, {
-            ...pagination,
-            sorting: [sorting.field, sorting.order],
+        const res = await this.props.compositionRoot.campaigns.list.execute({
+            filters: filters,
+            pagination: {
+                ...pagination,
+                sorting: [sorting.field, sorting.order],
+            },
         });
 
         this.setState({

@@ -13,6 +13,7 @@ import {
 import { getDhis2Url } from "../../utils/routes";
 import { LinearProgress } from "@material-ui/core";
 import { withPageVisited } from "../utils/page-visited-app";
+import { getCampaignPeriods } from "../../models/CampaignDb";
 
 class DataEntry extends React.Component {
     static propTypes = {
