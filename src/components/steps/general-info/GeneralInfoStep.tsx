@@ -2,19 +2,31 @@ import React from "react";
 import PropTypes from "prop-types";
 import i18n from "@dhis2/d2-i18n";
 import _ from "lodash";
-
-import { withStyles } from "@material-ui/core/styles";
 import { Card, CardContent } from "@material-ui/core";
-
+// @ts-ignore
 import { TextField } from "@dhis2/d2-ui-core";
+// @ts-ignore
 import { FormBuilder } from "@dhis2/d2-ui-forms";
+// @ts-ignore
 import { Validators } from "@dhis2/d2-ui-forms";
 
 import { DatePicker } from "@eyeseetea/d2-ui-components";
 import { translateError } from "../../../utils/validations";
+import { D2 } from "../../../models/d2.types";
+import Campaign from "../../../models/campaign";
 
-class GeneralInfoStep extends React.Component {
-    state = {
+type GeneralInfoStepProps = {
+    d2: D2;
+    campaign: Campaign;
+    onChange: (campaign: Campaign) => void;
+};
+
+type GeneralInfoStepState = {
+    orgUnitNames: string[] | null;
+};
+
+class GeneralInfoStep extends React.Component<GeneralInfoStepProps, GeneralInfoStepState> {
+    state: GeneralInfoStepState = {
         orgUnitNames: null,
     };
 
@@ -24,41 +36,18 @@ class GeneralInfoStep extends React.Component {
         onChange: PropTypes.func.isRequired,
     };
 
-    validateCampaignName = async name => {
+    validateCampaignName = async (name: string) => {
         const { campaign } = this.props;
-        const errors = await campaign.validateName(name);
+        const errors = await campaign.setName(name).validateName();
 
         if (!_.isEmpty(errors)) {
             throw errors.map(translateError).join(", ");
         }
     };
 
-    onUpdateField = (fieldName, newValue) => {
-        const { campaign, onChange } = this.props;
-        let newCampaign;
-
-        switch (fieldName) {
-            case "name":
-                newCampaign = campaign.setName(newValue);
-                break;
-            case "description":
-                newCampaign = campaign.setDescription(newValue);
-                break;
-            case "startDate":
-                newCampaign = campaign.setStartDate(newValue);
-                break;
-            case "endDate":
-                newCampaign = campaign.setEndDate(newValue);
-                break;
-            default:
-                console.error(`Field not implemented: ${fieldName}`);
-                newCampaign = null;
-        }
-        if (newCampaign) onChange(newCampaign);
-    };
-
     render() {
-        const { campaign } = this.props;
+        const { campaign, onChange } = this.props;
+
         const fields = [
             {
                 name: "name",
@@ -69,6 +58,7 @@ class GeneralInfoStep extends React.Component {
                     style: { width: "33%" },
                     changeEvent: "onBlur",
                     "data-field": "name",
+                    onChange: (value: string) => onChange(campaign.setName(value)),
                 },
                 validators: [
                     {
@@ -88,6 +78,7 @@ class GeneralInfoStep extends React.Component {
                     changeEvent: "onBlur",
                     "data-field": "description",
                     multiLine: true,
+                    onChange: (value: string) => onChange(campaign.setDescription(value)),
                 },
             },
             {
@@ -97,7 +88,7 @@ class GeneralInfoStep extends React.Component {
                 props: {
                     label: i18n.t("Start Date"),
                     value: campaign.startDate,
-                    onChange: value => this.onUpdateField("startDate", value),
+                    onChange: (value: Date) => onChange(campaign.setStartDate(value)),
                 },
             },
             {
@@ -107,7 +98,7 @@ class GeneralInfoStep extends React.Component {
                 props: {
                     label: i18n.t("End Date"),
                     value: campaign.endDate,
-                    onChange: value => this.onUpdateField("endDate", value),
+                    onChange: (value: Date) => onChange(campaign.setEndDate(value)),
                 },
             },
         ];
@@ -115,13 +106,11 @@ class GeneralInfoStep extends React.Component {
         return (
             <Card>
                 <CardContent>
-                    <FormBuilder fields={fields} onUpdateField={this.onUpdateField} />
+                    <FormBuilder fields={fields} />
                 </CardContent>
             </Card>
         );
     }
 }
 
-const styles = _theme => ({});
-
-export default withStyles(styles)(GeneralInfoStep);
+export default GeneralInfoStep;

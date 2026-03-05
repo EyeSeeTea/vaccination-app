@@ -235,7 +235,7 @@ export default class Campaign {
         return dataSets.some(ds => ds.id !== id && ds.name.toLowerCase() === nameLowerCase);
     }
 
-    private async validateName(): Promise<ValidationErrors> {
+    async validateName(): Promise<ValidationErrors> {
         const { maxNameLength } = this;
         const { name } = this.data;
         const trimmedName = name.trim();
