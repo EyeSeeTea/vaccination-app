@@ -119,8 +119,9 @@ export class Teams {
                 displayName: name,
                 publicAccess: "rwrw----",
                 displayShortName: name,
-                startDate: startDate.toISOString(),
-                endDate: endDate.toISOString(),
+                startDate: startDate.clone().startOf("day").utc().toISOString(),
+                // The end date is inclusive for the app, but exclusive for DHIS2, so add one day
+                endDate: endDate.clone().add(1, "day").startOf("day").utc().toISOString(),
                 dimensionItemType: "CATEGORY_OPTION",
                 categories: [
                     {

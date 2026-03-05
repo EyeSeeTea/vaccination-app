@@ -14,7 +14,7 @@
                     "dimensionItemType": "CATEGORY_OPTION",
                     "displayName": "Team 001 - 0Campaign Test",
                     "displayShortName": "Team 001 - 0Campaign Test",
-                    "endDate": "2025-11-20T22:59:59.999Z",
+                    "endDate": "2025-11-21T00:00:00.000Z",
                     "id": "CcqvFMzfomu",
                     "name": "Team 001 - 0Campaign Test",
                     "organisationUnits": [
@@ -24,7 +24,7 @@
                     ],
                     "publicAccess": "rwrw----",
                     "shortName": "Team 1_CcqvFMzfomu",
-                    "startDate": "2025-11-18T23:00:00.000Z"
+                    "startDate": "2025-11-19T00:00:00.000Z"
                 }
             ],
             "dashboards": [

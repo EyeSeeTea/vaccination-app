@@ -110,10 +110,10 @@ class DataEntry extends React.Component {
                     const optionPeriods = Array.from(selectPeriod.childNodes);
                     const formatStr = "YYYYMMDD";
                     const start = periodDates.startDate
-                        ? moment(periodDates.startDate).format(formatStr)
+                        ? moment.utc(periodDates.startDate).format(formatStr)
                         : null;
                     const end = periodDates.endDate
-                        ? moment(periodDates.endDate).format(formatStr)
+                        ? moment.utc(periodDates.endDate).format(formatStr)
                         : null;
 
                     if (start && end) {

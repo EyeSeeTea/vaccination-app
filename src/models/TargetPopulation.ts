@@ -291,10 +291,10 @@ export class TargetPopulation {
         const { config, campaign } = this;
         const { antigensDisaggregation } = this.data;
         const cocMetadata = await this.campaign.antigensDisaggregation.getCocMetadata(this.db);
-        const startPeriod = moment(campaign.startDate || new Date()).format(dailyPeriodFormat);
+        const startPeriod = moment.utc(campaign.startDate || new Date()).format(dailyPeriodFormat);
         const periods = getDaysRange(
-            moment(campaign.startDate || undefined),
-            moment(campaign.endDate || undefined)
+            moment.utc(campaign.startDate || undefined),
+            moment.utc(campaign.endDate || undefined)
         ).map(day => day.format(dailyPeriodFormat));
 
         const dataValues = _.flatMap(this.data.populationItems, targetPopulationItem => {

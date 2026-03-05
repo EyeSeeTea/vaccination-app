@@ -113,8 +113,8 @@ export default class CampaignDb {
         if (!campaign.startDate || !campaign.endDate) {
             return { status: false, error: "Campaign Dates not set" };
         }
-        const startDate = moment(campaign.startDate).startOf("day");
-        const endDate = moment(campaign.endDate).endOf("day");
+        const startDate = moment.utc(campaign.startDate).startOf("day");
+        const endDate = moment.utc(campaign.endDate).endOf("day");
         const teamsMetadata = await campaign.teamsMetadata();
 
         const teamGenerator = Teams.build(teamsMetadata);
@@ -498,8 +498,8 @@ export default class CampaignDb {
         if (!campaign.startDate || !campaign.endDate) {
             throw new Error("Campaign Dates not set");
         }
-        const startDate = moment(campaign.startDate).startOf("day");
-        const endDate = moment(campaign.endDate).endOf("day");
+        const startDate = moment.utc(campaign.startDate).startOf("day");
+        const endDate = moment.utc(campaign.endDate).endOf("day");
 
         const antigensDisaggregation = campaign.getEnabledAntigensDisaggregation();
         const sharing = await campaign.getDashboardSharing();
@@ -643,7 +643,7 @@ function getPeriodDatesFromDataInputPeriods(
     const { dataInputPeriods } = dataSet;
     if (!dataInputPeriods) return;
 
-    const getDateFromPeriodId = (periodId: string) => moment(periodId, "YYYYMMDD").toDate();
+    const getDateFromPeriodId = (periodId: string) => moment.utc(periodId, "YYYYMMDD").toDate();
     const periods = dataInputPeriods.map(dip => dip.period.id);
     const [min, max] = [_.min(periods), _.max(periods)];
     if (!min || !max) return;
