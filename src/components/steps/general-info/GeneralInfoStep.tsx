@@ -58,7 +58,9 @@ class GeneralInfoStep extends React.Component<GeneralInfoStepProps, GeneralInfoS
                     style: { width: "33%" },
                     changeEvent: "onBlur",
                     "data-field": "name",
-                    onChange: (value: string) => onChange(campaign.setName(value)),
+                    onBlur: (ev: React.FocusEvent<HTMLInputElement>) => {
+                        return onChange(campaign.setName(ev.target.value));
+                    },
                 },
                 validators: [
                     {
@@ -78,7 +80,9 @@ class GeneralInfoStep extends React.Component<GeneralInfoStepProps, GeneralInfoS
                     changeEvent: "onBlur",
                     "data-field": "description",
                     multiLine: true,
-                    onChange: (value: string) => onChange(campaign.setDescription(value)),
+                    onBlur: (ev: React.FocusEvent<HTMLInputElement>) => {
+                        onChange(campaign.setDescription(ev.target.value));
+                    },
                 },
             },
             {
@@ -106,7 +110,7 @@ class GeneralInfoStep extends React.Component<GeneralInfoStepProps, GeneralInfoS
         return (
             <Card>
                 <CardContent>
-                    <FormBuilder fields={fields} />
+                    <FormBuilder fields={fields} onUpdateField={_.noop} />
                 </CardContent>
             </Card>
         );
