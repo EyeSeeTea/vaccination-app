@@ -131,7 +131,7 @@ export const indicatorsInfo: Indicator[] = [
         denominatorDescription: "One",
     },
     {
-        name: "Vaccine Campaign coverage",
+        name: "Vaccine campaign coverage (%)",
         code: "RVC_COVERAGE",
         modelCode: "RVC_CAMPAIGN_COVERAGE",
         disaggregations: ["antigen", "dose", "campaignType"],
@@ -139,7 +139,7 @@ export const indicatorsInfo: Indicator[] = [
         denominator: "{RVC_POPULATION_BY_AGE}",
     },
     {
-        name: "Vaccine utilization",
+        name: "Vaccine utilization rate (%)",
         code: "RVC_VU",
         modelCode: "RVC_VACCINE_UTILIZATION",
         disaggregations: ["antigen", "campaignType"],
@@ -147,7 +147,7 @@ export const indicatorsInfo: Indicator[] = [
         denominator: "{RVC_DU}",
     },
     {
-        name: "Dilution syringes ratio",
+        name: "Dilution Syringe / Vaccine Vial Ratio",
         code: "RVC_SYRINGES_RATIO",
         modelCode: "RVC_DILUTION_SYRINGES_RATIO",
         disaggregations: ["antigen", "campaignType"],
@@ -155,7 +155,7 @@ export const indicatorsInfo: Indicator[] = [
         denominator: "{RVC_DU} / 10",
     },
     {
-        name: "Campaign needles ratio",
+        name: "Dilution Needle / Vaccine Vial Ratio",
         code: "RVC_NEEDLES_RATIO",
         modelCode: "RVC_CAMPAIGN_NEEDLES_RATIO",
         disaggregations: ["antigen", "campaignType"],
