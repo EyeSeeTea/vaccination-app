@@ -267,6 +267,7 @@ function getCharts({
                 disaggregations: getDisaggregations(chart, disaggregationMetadata, antigen, null),
             })
         )
+        .compact()
         .value();
 }
 
@@ -322,6 +323,7 @@ function getTables({
                 dose: doseMetadata,
             });
         })
+        .compact()
         .value();
 }
 
@@ -616,6 +618,7 @@ const chartConstructor = ({
         organisationUnitNames = organisationUnits.map(ou => ou.name).join("-");
     }
     const organisationUnitElements = getOrganisationUnitElements(organisationUnits, area);
+    if (organisationUnitElements.length === 0) return null;
 
     return {
         id,
@@ -754,14 +757,26 @@ const pathRightOffsetByType = {
     campaign: 2,
 };
 
+const levels = {
+    campaign: 4,
+    area: 5,
+    site: 6,
+};
+
 function getOrganisationUnitElements(organisationUnits, area) {
     const pathRightOffset = pathRightOffsetByType[area] || 0;
 
     return _(organisationUnits)
         .map(orgUnit => {
             const path_ids = orgUnit.parents[orgUnit.id].split("/");
-            return path_ids[path_ids.length - 1 - pathRightOffset];
+            const level = path_ids.length - 1 - pathRightOffset;
+            const visualizationOrgUnitId = path_ids[level];
+            // Problem: Old campaigns had orgUnits at level 5, so when generating visualizations for
+            // "campaign" area, the final orgUnit will be at level 3, which makes no sense.
+            // Action: Skip these orgUnits.
+            return level < levels.campaign ? null : visualizationOrgUnitId;
         })
+        .compact()
         .uniq()
         .map(orgUnitId => ({ id: orgUnitId }))
         .value();
@@ -829,6 +844,7 @@ const tableConstructor = ({
     }
     // Converts selected OrganisationUnits into their parents (Sites => Areas)
     const organisationUnitElements = getOrganisationUnitElements(organisationUnits, area);
+    if (organisationUnitElements.length === 0) return null;
 
     const subName = antigen ? antigen.name : "Global";
     const filters = filterDataBy.map(f => ({ id: f }));
