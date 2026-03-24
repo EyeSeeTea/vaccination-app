@@ -10,12 +10,1407 @@
             "deleted": 0,
             "ignored": 0,
             "importSummaries": [
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `YSBMQWPZKQ3` name to `12 - 23 m, Other`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `HL3EO9GFNZE` name to `> 14 y, Other`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `GFR6H8RCNA3` name to `9 - 59 m, Pregnant`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `HCWZ37IASGU` name to `12 - 23 m, Childbearing age`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `CUISZ5HVGGG` name to `30 - 45 y, Childbearing age`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `NXXDHGJK68C` name to `> 14 y, Childbearing age`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `Z0QZPDR8KPH` name to `30 - 45 y, Other`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `OQJNHRANOQ8` name to `5 - 7 y, Other`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `JLFGQ2DDAS5` name to `5 - 7 y, Childbearing age`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `F5N8ZQYLAL5` name to `12 - 59 m, Other`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `YPV7K3WO4MC` name to `6 - 8 m, Other`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `DTL3QJ7DNST` name to `8 - 11 m, Other`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `K174STYMS1D` name to `12 - 59 m, Childbearing age`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `IX86Y7DTEST` name to `6 - 8 m, Childbearing age`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `CRZRTZJ7HDV` name to `8 - 11 m, Childbearing age`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `PMFZTZG7S2M` name to `24 - 35 m, Pregnant`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `EPKSK7VBJWD` name to `5 - 14 y, Other`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `SA4XNZXTEW9` name to `5 - 14 y, Childbearing age`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `WGW6THGZFXZ` name to `6 - 11 m, Pregnant`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `GYFXBIJHOFH` name to `> 45 y, Pregnant`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `WWZNTTGTUMO` name to `15 - 45 y, Childbearing age`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `VQLJUZMRTUI` name to `15 - 45 y, Other`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `KPP2OI1FEEO` name to `0 - 1 m, Pregnant`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `P5UR443QEWV` name to `2 - 4 y, Childbearing age`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `SMMJU2EC4VN` name to `5 - 9 y, Pregnant`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `EFXEFWWKBVQ` name to `2 - 4 y, Other`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `LHQFOW5WBY5` name to `24 - 59 m, Pregnant`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `VJXIPH7HFMA` name to `0 - 6 w, Childbearing age`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `BCOXB6FD4QA` name to `15 - 19 y, Pregnant`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `W7VCQ6B2OVD` name to `8 - 14 y, Pregnant`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `F3OVQWJUQDL` name to `> 30 y, Other`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `KR2ABA8PZGY` name to `0 - 6 w, Other`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `JBTEMTQ1NO4` name to `> 30 y, Childbearing age`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `PPYXXWBU40G` name to `2 - 11 m, Other`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `QOO0QAUB4MD` name to `2 - 11 m, Childbearing age`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `CAPVDFNCLMW` name to `9 - 14 y, Pregnant`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `G63LGX8JRDM` name to `15 - 99 y, Other`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `VVXOYELA9LI` name to `15 - 99 y, Childbearing age`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `GL095RUN95S` name to `6 w - 11 m, Pregnant`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `RDJLX4QLCJB` name to `9 - 59 m, Other`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `ZR439HBKMR3` name to `9 - 59 m, Childbearing age`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `P1X1WOSQJDL` name to `9 - 11 m, Pregnant`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `DIMGPR5NWXT` name to `15 - 29 y, Pregnant`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `HZZU5NKGWRJ` name to `5 - 12 y, Pregnant`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `VA6JAHMMPPQ` name to `24 - 35 m, Other`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `YEUFYUQ8QKW` name to `24 - 35 m, Childbearing age`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `MW5NDPP8IPE` name to `5 - 11 m, Pregnant`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `QZJUS5GFAYU` name to `0 - 11 m, Pregnant`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `LOMCZI9KFM4` name to `6 - 11 m, Childbearing age`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `WX2XFBIBORO` name to `6 - 11 m, Other`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `OYVJLCQ3O7Z` name to `> 45 y, Other`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `GOFTQING4DN` name to `25 - 59 m, Pregnant`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `S1EJLHNISIQ` name to `> 45 y, Childbearing age`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `RKRSQYMRKXZ` name to `8 - 14 y, Childbearing age`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `LLIL8P4H5TR` name to `0 - 1 m, Other`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `ES2PY8NFQ98` name to `> 14 y, Pregnant`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `OSAFQ1QCT5B` name to `15 - 19 y, Other`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `JRLRQBCGKTM` name to `5 - 9 y, Other`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `DFWIM68ELCB` name to `0 - 1 m, Childbearing age`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `IRONG4Q0B1A` name to `12 - 23 m, Pregnant`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `EG6BKO5BFYX` name to `15 - 19 y, Childbearing age`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `AK5VQN6FKOJ` name to `24 - 59 m, Childbearing age`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `AWC3QMYZJ3U` name to `5 - 9 y, Childbearing age`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `KFYPUYISZUE` name to `24 - 59 m, Other`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `KDCCGV731XF` name to `8 - 14 y, Other`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `QQC5M8R0AKW` name to `9 - 14 y, Other`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `ONV1SFPK5AP` name to `9 - 14 y, Childbearing age`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `VICE3HTPCC9` name to `30 - 45 y, Pregnant`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `S2NANA1LJ0O` name to `5 - 7 y, Pregnant`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `UF1UCMPOYQ7` name to `6 w - 11 m, Childbearing age`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `MLX7LYKBOGQ` name to `12 - 59 m, Pregnant`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `MLC0ZY2WYUM` name to `6 - 8 m, Pregnant`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `VERZJ79H1UD` name to `6 w - 11 m, Other`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `GXIPBXAKOZQ` name to `8 - 11 m, Pregnant`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `DLGPGV8ENHS` name to `9 - 11 m, Other`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `ZRFQUQZGEXW` name to `5 - 14 y, Pregnant`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `MOSPHDVABDG` name to `15 - 29 y, Other`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `TLOLJY8CAUA` name to `5 - 12 y, Childbearing age`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `W9FSKSYHKTF` name to `9 - 11 m, Childbearing age`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `Y24IONMT2I2` name to `5 - 12 y, Other`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `USGBMPQUQAN` name to `15 - 29 y, Childbearing age`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `P5DGZ4NBMI0` name to `15 - 45 y, Pregnant`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `NCY54WAO1CA` name to `5 - 11 m, Other`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `NPWA9GCV3NR` name to `0 - 11 m, Other`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `CVOGEIJER0W` name to `2 - 4 y, Pregnant`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `A6OFC5WBMKG` name to `5 - 11 m, Childbearing age`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `JDRSMWERT1S` name to `0 - 11 m, Childbearing age`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `O9AOK1SRV7J` name to `> 30 y, Pregnant`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `J4KK00NUA3M` name to `0 - 6 w, Pregnant`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `GOWED9PHOGH` name to `25 - 59 m, Childbearing age`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `J89GNYXMB6U` name to `25 - 59 m, Other`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `VA4VHNOGRAB` name to `2 - 11 m, Pregnant`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `UEBKGRTPTM3` name to `15 - 99 y, Pregnant`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                }
             ],
             "imported": 0,
             "responseType": "ImportSummaries",
             "status": "SUCCESS",
-            "total": 0,
-            "updated": 0
+            "total": 93,
+            "updated": 93
         },
         "status": "OK"
     }

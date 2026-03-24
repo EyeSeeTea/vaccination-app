@@ -10,12 +10,1407 @@
             "deleted": 0,
             "ignored": 0,
             "importSummaries": [
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `RFZJJF3XNAZ` name to `24 - 59 m, Refugees`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `LUSSUL9SF9F` name to `9 - 14 y, Refugees`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `PZ7JGQURTL2` name to `2 - 4 y, Host`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `W3CQEHOMMZC` name to `> 30 y, Host`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `AVNKFXKF9VU` name to `0 - 6 w, Host`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `EYZ1605XFMD` name to `24 - 35 m, IDP`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `ZR2ON12E7QI` name to `2 - 11 m, Host`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `ZKMVGJRFGGI` name to `6 w - 11 m, Refugees`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `TJK0UXKPY4U` name to `15 - 99 y, Host`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `K9SNNCOMLKX` name to `6 - 11 m, IDP`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `AIWAPU4IL61` name to `> 45 y, IDP`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `ULF6D56M2FG` name to `9 - 59 m, Host`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `XVCBKLSNVZK` name to `5 - 12 y, Refugees`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `L0PF7BXSKYO` name to `0 - 1 m, IDP`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `KKAY2JX1JQ5` name to `15 - 29 y, Refugees`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `QTIPAYIE5AK` name to `9 - 11 m, Refugees`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `SK2ZEPSVET1` name to `15 - 19 y, IDP`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `LQ27WW77D0J` name to `5 - 9 y, IDP`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `VDIIFAIHPSS` name to `8 - 14 y, IDP`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `IGPX5IRWIBF` name to `24 - 59 m, IDP`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `VLEEHO0B79J` name to `5 - 11 m, Refugees`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `AP7GNE8LJU2` name to `0 - 11 m, Refugees`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `OBMDNDRD2KG` name to `9 - 14 y, IDP`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `HZ6SFSVFHFK` name to `24 - 35 m, Host`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `Y9J29HNOKXI` name to `6 w - 11 m, IDP`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `CWT3HKJWB7L` name to `25 - 59 m, Refugees`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `EVX7HD0SCPS` name to `6 - 11 m, Host`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `PZMBSSSDJTU` name to `> 45 y, Host`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `RXKOOMGMN0G` name to `12 - 23 m, Refugees`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `VVDKUBTLAYP` name to `0 - 1 m, Host`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `CS1PMHEOPHM` name to `9 - 11 m, IDP`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `YW3LVEPEYEV` name to `> 14 y, Refugees`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `X6LG5OQJ2YM` name to `15 - 29 y, IDP`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `BNPRBJKYEIQ` name to `5 - 12 y, IDP`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `FQXCGJ5KW0C` name to `15 - 19 y, Host`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `DFH7QXRIQUK` name to `8 - 14 y, Host`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `NH8UKY3RLSI` name to `30 - 45 y, Refugees`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `S0KUK6XXLMT` name to `5 - 9 y, Host`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `QMCDJNC6LJU` name to `5 - 7 y, Refugees`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `B40BGBLIWYO` name to `24 - 59 m, Host`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `CCUJHDKZQCO` name to `5 - 11 m, IDP`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `E9OMXJKDRIT` name to `9 - 14 y, Host`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `CYGPZYDFH0D` name to `0 - 11 m, IDP`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `Q6V68046K4C` name to `12 - 59 m, Refugees`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `XKNXFGU3WWR` name to `6 - 8 m, Refugees`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `DQBXNCLBDBY` name to `8 - 11 m, Refugees`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `X2LHQH9TMG1` name to `6 w - 11 m, Host`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `KVV5ADVR0WJ` name to `25 - 59 m, IDP`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `CSEALXAUDW9` name to `5 - 14 y, Refugees`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `KYOSFBKRRNF` name to `5 - 12 y, Host`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `BKIXDB3YPGP` name to `12 - 23 m, IDP`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `CJU8IEFPS4W` name to `15 - 45 y, Refugees`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `KUU0N1C9CK5` name to `9 - 11 m, Host`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `GPGWTJ8UWWN` name to `15 - 29 y, Host`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `VHEXBAEGLJ6` name to `> 14 y, IDP`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `OKL9WTT7QYJ` name to `30 - 45 y, IDP`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `A35VRQQLNDB` name to `0 - 11 m, Host`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `NRKX59JPIMJ` name to `5 - 7 y, IDP`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `QE5LCYBV9CO` name to `> 30 y, Refugees`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `W6QQKCZAXND` name to `5 - 11 m, Host`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `UZRNGBRQQV8` name to `2 - 4 y, Refugees`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `ZQ6EXGMMULA` name to `12 - 59 m, IDP`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `SOTOSMFRFW9` name to `0 - 6 w, Refugees`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `PUIR3ACG9B8` name to `6 - 8 m, IDP`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `NRW2GHNY2YT` name to `8 - 11 m, IDP`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `I4ZXH8IDAEY` name to `2 - 11 m, Refugees`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `HHZPBWKREPN` name to `15 - 99 y, Refugees`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `DABJTFR277V` name to `25 - 59 m, Host`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `MT4BHALU0ES` name to `5 - 14 y, IDP`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `GMA3QWFVLU3` name to `9 - 59 m, Refugees`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `NDQKZRBLSG2` name to `12 - 23 m, Host`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `IK0KQCWKMXV` name to `> 14 y, Host`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `NNMZMIFIQD3` name to `15 - 45 y, IDP`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `YQXNZTQ1XW5` name to `30 - 45 y, Host`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `P28KHPLL1OH` name to `5 - 7 y, Host`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `PFMYSUFFZND` name to `2 - 4 y, IDP`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `EZGPCVKKA3M` name to `12 - 59 m, Host`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `NKJRGV0FF3U` name to `0 - 6 w, IDP`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `DVPGQOVXNT8` name to `> 30 y, IDP`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `RPVCJPJJPFC` name to `24 - 35 m, Refugees`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `TW7N0ICQJHD` name to `6 - 8 m, Host`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `MZIZV3NFZMF` name to `8 - 11 m, Host`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `Z8VHMGBRHAH` name to `2 - 11 m, IDP`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `DXBOHP0RJC4` name to `15 - 99 y, IDP`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `BUIDHCSIBUT` name to `6 - 11 m, Refugees`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `FN2481S0CY6` name to `> 45 y, Refugees`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `XQ1TXMISCIC` name to `5 - 14 y, Host`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `EL33ELVWCZU` name to `9 - 59 m, IDP`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `ZSGBNH6EBHZ` name to `0 - 1 m, Refugees`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `JRK9KLFPULA` name to `15 - 45 y, Host`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `PEFGTIDBMA8` name to `15 - 19 y, Refugees`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `CHI95QE3ABF` name to `5 - 9 y, Refugees`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `THFYSJ78JYX` name to `8 - 14 y, Refugees`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                }
             ],
             "imported": 0,
             "responseType": "ImportSummaries",
             "status": "SUCCESS",
-            "total": 0,
-            "updated": 0
+            "total": 93,
+            "updated": 93
         },
         "status": "OK"
     }

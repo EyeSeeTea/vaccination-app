@@ -3806,7 +3806,29 @@
                     ],
                     "id": "K0I1bAnVnDf",
                     "name": "Malaria [Preventive]",
-                    "sortOrder": 1
+                    "sortOrder": 1,
+                    "translations": [
+                        {
+                            "locale": "es",
+                            "property": "NAME",
+                            "value": "Malaria [Preventivo]"
+                        },
+                        {
+                            "locale": "ar",
+                            "property": "NAME",
+                            "value": "Malaria [Preventive]"
+                        },
+                        {
+                            "locale": "fr",
+                            "property": "NAME",
+                            "value": "Malaria [Préventive]"
+                        },
+                        {
+                            "locale": "pt",
+                            "property": "NAME",
+                            "value": "Malaria [Preventivo]"
+                        }
+                    ]
                 },
                 {
                     "code": "RVC_CgW2JWldLHu-JPENC",
@@ -4762,7 +4784,29 @@
                     ],
                     "id": "yck1SenX6io",
                     "name": "Japanese Encephalitis [Reactive]",
-                    "sortOrder": 2
+                    "sortOrder": 2,
+                    "translations": [
+                        {
+                            "locale": "es",
+                            "property": "NAME",
+                            "value": "Encefalitis japonesa [Reactivo]"
+                        },
+                        {
+                            "locale": "ar",
+                            "property": "NAME",
+                            "value": "Japanese Encephalitis [Reactive]"
+                        },
+                        {
+                            "locale": "fr",
+                            "property": "NAME",
+                            "value": "Encéphalite japonaise [Réactif]"
+                        },
+                        {
+                            "locale": "pt",
+                            "property": "NAME",
+                            "value": "Encefalite japonesa [Reativo]"
+                        }
+                    ]
                 },
                 {
                     "dataElements": [
@@ -4781,7 +4825,19 @@
                     },
                     "id": "iszkxHh9x5r",
                     "name": "General Q&S",
-                    "sortOrder": 3
+                    "sortOrder": 3,
+                    "translations": [
+                        {
+                            "locale": "es",
+                            "property": "NAME",
+                            "value": "Q&S General"
+                        },
+                        {
+                            "locale": "fr",
+                            "property": "NAME",
+                            "value": "Indicateurs Q&S"
+                        }
+                    ]
                 }
             ],
             "visualizations": [
@@ -14612,11 +14668,11 @@
         "response": {
             "responseType": "ImportReport",
             "stats": {
-                "created": 44,
+                "created": 0,
                 "deleted": 0,
                 "ignored": 0,
                 "total": 46,
-                "updated": 2
+                "updated": 46
             },
             "status": "OK",
             "typeReports": [
@@ -14625,11 +14681,11 @@
                     "objectReports": [
                     ],
                     "stats": {
-                        "created": 1,
+                        "created": 0,
                         "deleted": 0,
                         "ignored": 0,
                         "total": 1,
-                        "updated": 0
+                        "updated": 1
                     }
                 },
                 {
@@ -14637,11 +14693,11 @@
                     "objectReports": [
                     ],
                     "stats": {
-                        "created": 38,
+                        "created": 0,
                         "deleted": 0,
                         "ignored": 0,
                         "total": 38,
-                        "updated": 0
+                        "updated": 38
                     }
                 },
                 {
@@ -14649,11 +14705,11 @@
                     "objectReports": [
                     ],
                     "stats": {
-                        "created": 1,
+                        "created": 0,
                         "deleted": 0,
                         "ignored": 0,
                         "total": 3,
-                        "updated": 2
+                        "updated": 3
                     }
                 },
                 {
@@ -14661,11 +14717,11 @@
                     "objectReports": [
                     ],
                     "stats": {
-                        "created": 1,
+                        "created": 0,
                         "deleted": 0,
                         "ignored": 0,
                         "total": 1,
-                        "updated": 0
+                        "updated": 1
                     }
                 },
                 {
@@ -14673,11 +14729,11 @@
                     "objectReports": [
                     ],
                     "stats": {
-                        "created": 3,
+                        "created": 0,
                         "deleted": 0,
                         "ignored": 0,
                         "total": 3,
-                        "updated": 0
+                        "updated": 3
                     }
                 }
             ]
