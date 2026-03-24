@@ -205,18 +205,29 @@ export class AntigensDisaggregation {
         sections: SectionForDisaggregation[]
     ): AntigensDisaggregation {
         const antigensByCode = _.keyBy(config.antigens, antigen => getAntigenCode(antigen.code));
+        const generalSection = sections.find(section => !section.code);
+
         const disaggregation = _(sections)
             .sortBy(section => section.sortOrder)
             .map(section => {
                 const antigenCode = getAntigenCodeFromSection(section);
                 const antigen = antigensByCode[antigenCode];
 
+                // Add data elements from the common general section to the current antigen section
+                const sectionWithGeneralDataElements: SectionForDisaggregation = {
+                    ...section,
+                    dataElements: _.concat(
+                        section.dataElements,
+                        generalSection ? generalSection.dataElements : []
+                    ),
+                };
+
                 if (antigen) {
                     const disaggregationForAntigen = AntigensDisaggregation.buildForAntigen(
                         config,
                         antigen.code,
                         categoryCombosMapping,
-                        section
+                        sectionWithGeneralDataElements
                     );
                     return [antigen.code, disaggregationForAntigen];
                 } else {
