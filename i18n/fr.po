@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: i18next-conv\n"
-"POT-Creation-Date: 2026-03-04T09:05:34.486Z\n"
+"POT-Creation-Date: 2026-03-24T10:31:57.009Z\n"
 "PO-Revision-Date: 2018-11-15T11:18:10.896Z\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -448,6 +448,9 @@ msgstr ""
 msgid "Dose {{-indexes}}"
 msgstr "Dose {{-indexes}}"
 
+msgid "General Q&S"
+msgstr "Indicateurs Q&S"
+
 msgid "update"
 msgstr "mettre à jour"
 
@@ -580,35 +583,3 @@ msgstr "Le nombre d'équipes doit être inférieur à {{value}}"
 
 msgid "There already exists a campaign with the same name"
 msgstr "Il existe déjà une campagne avec le même nom"
-
-#~ msgid "Subtotal"
-#~ msgstr "Sous-total"
-
-#~ msgid "Total"
-#~ msgstr "Total"
-
-#~ msgid "Doses administered"
-#~ msgstr "Doses administrées"
-
-#~ msgid "Quality and safety indicators"
-#~ msgstr "Indicateurs de qualité et de sécurité"
-
-#~ msgid "General Q&S"
-#~ msgstr "Indicateurs Q&S"
-
-#~ msgid ""
-#~ "Selected period ({selectedPeriod}) is not in the campaign period range "
-#~ "({periodStart} -> {periodEnd})"
-#~ msgstr ""
-#~ "La période sélectionnée ({selectedPeriod}) n'est pas dans la plage de "
-#~ "périodes de campagne ({periodStart} -> {periodEnd})"
-
-#~ msgid ""
-#~ "Current date ({currentDate}) is not in the campaign entry range "
-#~ "({openingDate} -> {closingDate})"
-#~ msgstr ""
-#~ "La date actuelle ({currentDate}) n'est pas dans la plage d'entrée de la "
-#~ "campagne ({openingDate} -> {closingDate})"
-
-#~ msgid "Value"
-#~ msgstr "Valeur"

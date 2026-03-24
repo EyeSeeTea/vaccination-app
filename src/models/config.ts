@@ -116,7 +116,7 @@ export interface MetadataConfig extends BaseConfig {
     defaults: {
         categoryOptionCombo: CategoryOptionCombo;
     };
-    categoryOptions: CategoryOption[];
+    categoryOptions: CategoryOptionWithTranslations[];
     categoryCombos: CategoryCombo[];
     population: {
         dataElementGroup: DataElementGroup;
@@ -135,6 +135,12 @@ export interface MetadataConfig extends BaseConfig {
         extraActivities: DataSet[];
     };
 }
+
+type CategoryOptionWithTranslations = CategoryOption & {
+    translations: Record<Locale, string>;
+};
+
+type Locale = string;
 
 export type CategoryInfo = {
     code: string;
@@ -466,7 +472,7 @@ function getAntigens(
 
             return {
                 id: categoryOption.id,
-                name: categoryOption.displayName,
+                name: categoryOption.name,
                 displayName: categoryOption.displayName,
                 code: categoryOption.code,
                 dataElements: dataElementSorted,
@@ -613,9 +619,17 @@ function getDefaults(metadata: RawMetadataConfig1): MetadataConfig["defaults"] {
     };
 }
 
+type CategoryOptionWithD2Translations = CategoryOption & {
+    translations: Array<{ property: string; locale: string; value: string }>;
+};
+
 type RawMetadataConfig1 = {
     attributes: Attribute[];
-    categories: Category[];
+    categories: Array<
+        Omit<Category, "categoryOptions"> & {
+            categoryOptions: CategoryOptionWithD2Translations[];
+        }
+    >;
     categoryCombos: CategoryCombo[];
     categoryOptionCombos: CategoryOptionCombo[];
     categoryOptionGroups: CategoryOptionGroup[];
@@ -645,7 +659,16 @@ export async function getMetadataConfig(db: DbD2): Promise<MetadataConfig> {
 
     const metadataParams1 = {
         attributes: {},
-        categories: { filters: [`code:in:[${categoryCodes.join(",")}]`] },
+        categories: {
+            fields: {
+                ...metadataFields.categories,
+                categoryOptions: {
+                    ...metadataFields.categoryOptions,
+                    translations: { property: true, locale: true, value: true },
+                },
+            },
+            filters: [`code:in:[${categoryCodes.join(",")}]`],
+        },
         categoryCombos: modelParams,
         categoryOptionGroups: {
             ...modelParams,
@@ -699,6 +722,7 @@ export async function getMetadataConfig(db: DbD2): Promise<MetadataConfig> {
         categoriesDisaggregation: getCategoriesDisaggregation(metadata.categories),
         categoryOptions: _(metadata.categories)
             .flatMap(category => category.categoryOptions)
+            .map(categoryOption => addNameTranslations(categoryOption))
             .value(),
         categoryCombos: metadata.categoryCombos,
         dataElements: _(metadata.dataElements)
@@ -752,4 +776,19 @@ function mergeMetadata<T1 extends GenericMetadata, T2 extends GenericMetadata>(
             throw new Error("Cannot merge metadata: incompatible types");
         }
     });
+}
+
+function addNameTranslations(
+    categoryOption: CategoryOptionWithD2Translations
+): CategoryOptionWithTranslations {
+    const translationsObject = _(categoryOption.translations)
+        .filter(translation => translation.property === "NAME")
+        .map(translation => [translation.locale, translation.value] as [string, string])
+        .fromPairs()
+        .value();
+
+    return {
+        ...categoryOption,
+        translations: translationsObject,
+    };
 }
