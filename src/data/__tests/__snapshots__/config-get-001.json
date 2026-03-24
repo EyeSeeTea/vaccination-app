@@ -3,7 +3,7 @@
         "/metadata",
         {
             "attributes:fields": "id,code,valueType,name",
-            "categories:fields": "id,displayName,code,dataDimensionType,dataDimension,categoryOptions[id,name,displayName,code]",
+            "categories:fields": "id,displayName,code,dataDimensionType,dataDimension,categoryOptions[id,name,displayName,code,translations[property,locale,value]]",
             "categories:filter": "code:in:[RVC_GENDER,RVC_TYPE,RVC_WS,RVC_ANTIGEN,RVC_DOSE,RVC_SEVERITY,RVC_AGE_GROUP,RVC_DISTATUS]",
             "categoryCombos:fields": "id,displayName,code,categories[id]",
             "categoryCombos:filter": "code:startsWith:RVC_",
@@ -96,13 +96,67 @@
                         "code": "F",
                         "displayName": "Female",
                         "id": "brgE94se16B",
-                        "name": "Female"
+                        "name": "Female",
+                        "translations": [
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "Femenino"
+                            },
+                            {
+                                "locale": "ar",
+                                "property": "NAME",
+                                "value": "أنثى"
+                            },
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "Féminin"
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "Feminino"
+                            },
+                            {
+                                "locale": "ar",
+                                "property": "SHORT_NAME",
+                                "value": "أنثى"
+                            }
+                        ]
                     },
                     {
                         "code": "M",
                         "displayName": "Male",
                         "id": "J9fs9THA8Wr",
-                        "name": "Male"
+                        "name": "Male",
+                        "translations": [
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "Masculino"
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "Masculino"
+                            },
+                            {
+                                "locale": "ar",
+                                "property": "NAME",
+                                "value": "ذكر"
+                            },
+                            {
+                                "locale": "ar",
+                                "property": "SHORT_NAME",
+                                "value": "ذكر"
+                            },
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "Masculin"
+                            }
+                        ]
                     }
                 ],
                 "code": "RVC_GENDER",
@@ -117,13 +171,47 @@
                         "code": "RVC_REACTIVE",
                         "displayName": "Reactive",
                         "id": "Iojd8Ab3uHa",
-                        "name": "Reactive"
+                        "name": "Reactive",
+                        "translations": [
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "Réactif"
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "Reativo"
+                            },
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "Reactivo"
+                            }
+                        ]
                     },
                     {
                         "code": "RVC_PREVENTIVE",
                         "displayName": "Preventive",
                         "id": "SEN7MlOQEVe",
-                        "name": "Preventive"
+                        "name": "Preventive",
+                        "translations": [
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "Preventivo"
+                            },
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "Préventive"
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "Preventivo"
+                            }
+                        ]
                     }
                 ],
                 "code": "RVC_TYPE",
@@ -138,18 +226,94 @@
                         "code": "CHILDBEARING_AGE",
                         "displayName": "Childbearing age",
                         "id": "h91x0QDi3rJ",
-                        "name": "Childbearing age"
+                        "name": "Childbearing age",
+                        "translations": [
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "Edad fértil"
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "Idade fértil"
+                            },
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "Âge de procréation"
+                            }
+                        ]
                     },
                     {
                         "code": "PREGNANT",
                         "displayName": "Pregnant",
                         "id": "ZvTfx0aravn",
-                        "name": "Pregnant"
+                        "name": "Pregnant",
+                        "translations": [
+                            {
+                                "locale": "ar",
+                                "property": "NAME",
+                                "value": "حامل"
+                            },
+                            {
+                                "locale": "fr",
+                                "property": "SHORT_NAME",
+                                "value": "Enceinte"
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "Grávida"
+                            },
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "Enceinte"
+                            },
+                            {
+                                "locale": "ar",
+                                "property": "SHORT_NAME",
+                                "value": "حامل"
+                            },
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "Embarazada"
+                            }
+                        ]
                     },
                     {
                         "displayName": "Other",
                         "id": "E4g61QFpOc7",
-                        "name": "Other"
+                        "name": "Other",
+                        "translations": [
+                            {
+                                "locale": "ar",
+                                "property": "NAME",
+                                "value": "أخرى"
+                            },
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "Autre"
+                            },
+                            {
+                                "locale": "ar",
+                                "property": "SHORT_NAME",
+                                "value": "أخرى"
+                            },
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "Otro"
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "Outro"
+                            }
+                        ]
                     }
                 ],
                 "code": "RVC_WS",
@@ -164,115 +328,423 @@
                         "code": "RVC_ANTIGEN_ROTAVIRUS",
                         "displayName": "Rotavirus",
                         "id": "me64QIuLAot",
-                        "name": "Rotavirus"
+                        "name": "Rotavirus",
+                        "translations": [
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "Rotavirus"
+                            },
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "Rotavirus"
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "Rotavirus"
+                            }
+                        ]
                     },
                     {
                         "code": "RVC_ANTIGEN_BCG",
                         "displayName": "BCG",
                         "id": "mM4phRN3kCa",
-                        "name": "BCG"
+                        "name": "BCG",
+                        "translations": [
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "BCG"
+                            },
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "BCG"
+                            },
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "BCG"
+                            }
+                        ]
                     },
                     {
                         "code": "RVC_ANTIGEN_HEPB_BIRTHLATE",
                         "displayName": "Hep B birth late",
                         "id": "yUHi9GAMjvc",
-                        "name": "Hep B birth late"
+                        "name": "Hep B birth late",
+                        "translations": [
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "Hépatite B naissance - Tardive "
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "Hepatite B à nascença - Tardia"
+                            },
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "Hep B al nacimiento - Tardía"
+                            }
+                        ]
                     },
                     {
                         "code": "RVC_ANTIGEN_MMR",
                         "displayName": "MMR",
                         "id": "OSjdvJEVAXa",
-                        "name": "MMR"
+                        "name": "MMR",
+                        "translations": [
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "SPR"
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "SPR"
+                            },
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "ROR"
+                            }
+                        ]
                     },
                     {
                         "code": "RVC_ANTIGEN_MR",
                         "displayName": "MR",
                         "id": "WWIbShWciFR",
-                        "name": "MR"
+                        "name": "MR",
+                        "translations": [
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "Rougeole/Rubéole"
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "Sarampo/Rubéola"
+                            },
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "Sarampión/Rubéola"
+                            }
+                        ]
                     },
                     {
                         "code": "RVC_ANTIGEN_MEASLES",
                         "displayName": "Measles",
                         "id": "GSE7Wv9OgWZ",
-                        "name": "Measles"
+                        "name": "Measles",
+                        "translations": [
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "Rougeole"
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "Sarampo"
+                            },
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "Sarampión"
+                            }
+                        ]
                     },
                     {
                         "code": "RVC_ANTIGEN_MENPOLY",
                         "displayName": "Meningitis Polysaccharide",
                         "id": "qeSkIKWujzQ",
-                        "name": "Meningitis Polysaccharide"
+                        "name": "Meningitis Polysaccharide",
+                        "translations": [
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "Meningite polissacárida"
+                            },
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "Meningitis polisacárida"
+                            },
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "Méningite polysaccharide"
+                            }
+                        ]
                     },
                     {
                         "code": "RVC_ANTIGEN_MENCONJ",
                         "displayName": "Meningitis Conjugate",
                         "id": "SAuce0HT1Ku",
-                        "name": "Meningitis Conjugate"
+                        "name": "Meningitis Conjugate",
+                        "translations": [
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "Meningitis conjugada"
+                            },
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "Méningite conjugué"
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "Meningite conjugada"
+                            }
+                        ]
                     },
                     {
                         "code": "RVC_ANTIGEN_CHOLERA",
                         "displayName": "Cholera",
                         "id": "ewichWxTceX",
-                        "name": "Cholera"
+                        "name": "Cholera",
+                        "translations": [
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "Choléra"
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "Cólera"
+                            },
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "Cólera"
+                            }
+                        ]
                     },
                     {
                         "code": "RVC_ANTIGEN_PCV",
                         "displayName": "PCV",
                         "id": "CaiQd2DHoyr",
-                        "name": "PCV"
+                        "name": "PCV",
+                        "translations": [
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "PCV"
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "PCV"
+                            },
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "PCV"
+                            }
+                        ]
                     },
                     {
                         "code": "RVC_ANTIGEN_PERTPENTA",
                         "displayName": "DTP - Hib - HEP B",
                         "id": "SkwZsuZT4sh",
-                        "name": "DTP - Hib - HEP B"
+                        "name": "DTP - Hib - HEP B",
+                        "translations": [
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "DTP - Hib - HEP B"
+                            },
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "DTP - Hib - HEP B"
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "DTP - Hib - HEP B"
+                            }
+                        ]
                     },
                     {
                         "code": "RVC_ANTIGEN_YELLOW_FEVER",
                         "displayName": "Yellow Fever",
                         "id": "ue0DAs3hYAz",
-                        "name": "Yellow Fever"
+                        "name": "Yellow Fever",
+                        "translations": [
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "Febre amarela"
+                            },
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "Fièvre jaune"
+                            },
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "Fiebre amarilla"
+                            }
+                        ]
                     },
                     {
                         "code": "RVC_ANTIGEN_JPENC",
                         "displayName": "Japanese Encephalitis",
                         "id": "yW8ynz2g8v3",
-                        "name": "Japanese Encephalitis"
+                        "name": "Japanese Encephalitis",
+                        "translations": [
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "Encéphalite japonaise"
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "Encefalite japonesa"
+                            },
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "Encefalitis japonesa"
+                            }
+                        ]
                     },
                     {
                         "code": "RVC_ANTIGEN_DENGUE",
                         "displayName": "Dengue",
                         "id": "mamKJm7THe4",
-                        "name": "Dengue"
+                        "name": "Dengue",
+                        "translations": [
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "Dengue"
+                            },
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "Dengue"
+                            },
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "Dengue"
+                            }
+                        ]
                     },
                     {
                         "code": "RVC_ANTIGEN_TYPHOID_FEVER",
                         "displayName": "Typhoid Fever",
                         "id": "OCKCfqfE3ML",
-                        "name": "Typhoid Fever"
+                        "name": "Typhoid Fever",
+                        "translations": [
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "Fiebre tifoidea"
+                            },
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "Fièvre typhoïde"
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "Febre tifoide"
+                            }
+                        ]
                     },
                     {
                         "code": "RVC_ANTIGEN_POLIO_ORAL",
                         "displayName": "Poliomyelitis Oral",
                         "id": "ec4kD1xy3eK",
-                        "name": "Poliomyelitis Oral"
+                        "name": "Poliomyelitis Oral",
+                        "translations": [
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "Poliomielitis Oral"
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "Poliomielite oral"
+                            },
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "Poliomyélite oral"
+                            }
+                        ]
                     },
                     {
                         "code": "RVC_ANTIGEN_POLIO_INJECTABLE",
                         "displayName": "Poliomyelitis Injectable",
                         "id": "KQK6cm8hchd",
-                        "name": "Poliomyelitis Injectable"
+                        "name": "Poliomyelitis Injectable",
+                        "translations": [
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "Poliomyelitis inyectable"
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "Poliomielite injetável"
+                            },
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "Poliomyélite injectable"
+                            }
+                        ]
                     },
                     {
                         "code": "RVC_ANTIGEN_TETANUS",
                         "displayName": "Tetanus containing vaccine",
                         "id": "PINwqGedYwJ",
-                        "name": "Tetanus containing vaccine"
+                        "name": "Tetanus containing vaccine",
+                        "translations": [
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "Vacina contra o tétano"
+                            },
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "Vacuna antitetánica"
+                            },
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "Vaccin antitétanique"
+                            }
+                        ]
                     },
                     {
                         "code": "RVC_ANTIGEN_MALARIA",
                         "displayName": "Malaria",
                         "id": "CVffOBBLW9c",
-                        "name": "Malaria"
+                        "name": "Malaria",
+                        "translations": [
+                        ]
                     }
                 ],
                 "code": "RVC_ANTIGEN",
@@ -286,27 +758,112 @@
                     {
                         "displayName": "Dose 1",
                         "id": "yeUyvybVBmh",
-                        "name": "Dose 1"
+                        "name": "Dose 1",
+                        "translations": [
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "Dosis 1"
+                            },
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "Dose 1"
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "Dose 1"
+                            }
+                        ]
                     },
                     {
                         "displayName": "Dose 2",
                         "id": "WvIXuDUzaPa",
-                        "name": "Dose 2"
+                        "name": "Dose 2",
+                        "translations": [
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "Dosis 2"
+                            },
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "Dose 2"
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "Dose 2"
+                            }
+                        ]
                     },
                     {
                         "displayName": "Dose 3",
                         "id": "KCOwpvGIkD1",
-                        "name": "Dose 3"
+                        "name": "Dose 3",
+                        "translations": [
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "Dose 3"
+                            },
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "Dose 3"
+                            },
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "Dosis 3"
+                            }
+                        ]
                     },
                     {
                         "displayName": "Dose 4",
                         "id": "j2p5YqZverY",
-                        "name": "Dose 4"
+                        "name": "Dose 4",
+                        "translations": [
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "Dose 4"
+                            },
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "Dose 4"
+                            },
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "Dosis 4"
+                            }
+                        ]
                     },
                     {
                         "displayName": "Dose 5",
                         "id": "Y5sdDMgS6f2",
-                        "name": "Dose 5"
+                        "name": "Dose 5",
+                        "translations": [
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "Dose 5"
+                            },
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "Dose 5"
+                            },
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "Dosis 5"
+                            }
+                        ]
                     }
                 ],
                 "code": "RVC_DOSE",
@@ -320,12 +877,46 @@
                     {
                         "displayName": "Minor",
                         "id": "q80SfcQbyXY",
-                        "name": "Minor"
+                        "name": "Minor",
+                        "translations": [
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "Menor"
+                            },
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "Mineur"
+                            },
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "Menor"
+                            }
+                        ]
                     },
                     {
                         "displayName": "Severe",
                         "id": "uWaATpJppxD",
-                        "name": "Severe"
+                        "name": "Severe",
+                        "translations": [
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "Severo"
+                            },
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "Severo"
+                            },
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "Sévère"
+                            }
+                        ]
                     }
                 ],
                 "code": "RVC_SEVERITY",
@@ -339,157 +930,739 @@
                     {
                         "displayName": "0 - 1 m",
                         "id": "u4ygmgNB0ks",
-                        "name": "0 - 1 m"
+                        "name": "0 - 1 m",
+                        "translations": [
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "0 - 1 m"
+                            },
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "0 - 1 m"
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "0 - 1 m"
+                            }
+                        ]
                     },
                     {
                         "displayName": "0 - 6 w",
                         "id": "UrNpL1aZbE4",
-                        "name": "0 - 6 w"
+                        "name": "0 - 6 w",
+                        "translations": [
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "0 - 6 s"
+                            },
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "0 - 6 s"
+                            },
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "0 - 6 s"
+                            }
+                        ]
                     },
                     {
                         "displayName": "0 - 11 m",
                         "id": "crPESHASfpI",
-                        "name": "0 - 11 m"
+                        "name": "0 - 11 m",
+                        "translations": [
+                            {
+                                "locale": "ar",
+                                "property": "NAME",
+                                "value": "⁧0 - 11 شهر⁩"
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "0 - 11 m"
+                            },
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "0 - 11 m"
+                            },
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "0 - 11 m"
+                            }
+                        ]
                     },
                     {
                         "displayName": "6 w - 11 m",
                         "id": "ia2FalGX1jy",
-                        "name": "6 w - 11 m"
+                        "name": "6 w - 11 m",
+                        "translations": [
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "6 s - 11 m"
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "6 s - 11 m"
+                            },
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "6 s - 11 m"
+                            }
+                        ]
                     },
                     {
                         "displayName": "2 - 11 m",
                         "id": "OOOeIPhGjzf",
-                        "name": "2 - 11 m"
+                        "name": "2 - 11 m",
+                        "translations": [
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "2 - 11 m"
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "2 - 11 m"
+                            },
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "2 - 11 m"
+                            }
+                        ]
                     },
                     {
                         "displayName": "5 - 11 m",
                         "id": "IHMvH38Cwgx",
-                        "name": "5 - 11 m"
+                        "name": "5 - 11 m",
+                        "translations": [
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "5 - 11 m"
+                            },
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "5 - 11 m"
+                            },
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "5 - 11 m"
+                            }
+                        ]
                     },
                     {
                         "displayName": "6 - 8 m",
                         "id": "FDdhOKnwzQ6",
-                        "name": "6 - 8 m"
+                        "name": "6 - 8 m",
+                        "translations": [
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "6 - 8 m"
+                            },
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "6 - 8 m"
+                            },
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "6 - 8 m"
+                            },
+                            {
+                                "locale": "ar",
+                                "property": "NAME",
+                                "value": "⁧6 - 8  شهر⁩"
+                            }
+                        ]
                     },
                     {
                         "displayName": "6 - 11 m",
                         "id": "aOKeL9Dc9Om",
-                        "name": "6 - 11 m"
+                        "name": "6 - 11 m",
+                        "translations": [
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "6 - 11 m"
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "6 - 11 m"
+                            },
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "6 - 11 m"
+                            }
+                        ]
                     },
                     {
                         "displayName": "8 - 11 m",
                         "id": "mKkzuzv5Ier",
-                        "name": "8 - 11 m"
+                        "name": "8 - 11 m",
+                        "translations": [
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "8 - 11 m"
+                            },
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "8 - 11 m"
+                            },
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "8 - 11 m"
+                            }
+                        ]
                     },
                     {
                         "displayName": "9 - 11 m",
                         "id": "Y86VjYO1RjK",
-                        "name": "9 - 11 m"
+                        "name": "9 - 11 m",
+                        "translations": [
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "9 - 11 m"
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "9 - 11 m"
+                            },
+                            {
+                                "locale": "ar",
+                                "property": "NAME",
+                                "value": "⁧9 - 11  شهر⁩"
+                            },
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "9 - 11 m"
+                            }
+                        ]
                     },
                     {
                         "displayName": "9 - 59 m",
                         "id": "mgeEAcULoaL",
-                        "name": "9 - 59 m"
+                        "name": "9 - 59 m",
+                        "translations": [
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "9 - 59 m"
+                            },
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "9 - 59 m"
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "9 - 59 m"
+                            }
+                        ]
                     },
                     {
                         "displayName": "12 - 23 m",
                         "id": "fnZu45UhqYW",
-                        "name": "12 - 23 m"
+                        "name": "12 - 23 m",
+                        "translations": [
+                            {
+                                "locale": "ar",
+                                "property": "NAME",
+                                "value": "⁧12 - 23  شهر⁩"
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "12 - 23 m"
+                            },
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "12 - 23 m"
+                            },
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "12 - 23 m"
+                            }
+                        ]
                     },
                     {
                         "displayName": "12 - 59 m",
                         "id": "ayCQ7FPkkhi",
-                        "name": "12 - 59 m"
+                        "name": "12 - 59 m",
+                        "translations": [
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "12 - 59 m"
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "12 - 59 m"
+                            },
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "12 - 59 m"
+                            }
+                        ]
                     },
                     {
                         "displayName": "24 - 35 m",
                         "id": "qNbalD7KAcu",
-                        "name": "24 - 35 m"
+                        "name": "24 - 35 m",
+                        "translations": [
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "24 - 35 m"
+                            },
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "24 - 35 m"
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "24 - 35 m"
+                            }
+                        ]
                     },
                     {
                         "displayName": "24 - 59 m",
                         "id": "mL5SUc8K5Zx",
-                        "name": "24 - 59 m"
+                        "name": "24 - 59 m",
+                        "translations": [
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "24 - 59 m"
+                            },
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "24 - 59 m"
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "24 - 59 m"
+                            },
+                            {
+                                "locale": "ar",
+                                "property": "NAME",
+                                "value": "⁧24 - 59 شهر⁩"
+                            }
+                        ]
                     },
                     {
                         "displayName": "2 - 4 y",
                         "id": "iqHPnnKYlF6",
-                        "name": "2 - 4 y"
+                        "name": "2 - 4 y",
+                        "translations": [
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "2 - 4 a"
+                            },
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "2 - 4 a"
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "2 - 4 a"
+                            }
+                        ]
                     },
                     {
                         "displayName": "25 - 59 m",
                         "id": "CQYU2TlembI",
-                        "name": "25 - 59 m"
+                        "name": "25 - 59 m",
+                        "translations": [
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "25 - 59 m"
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "25 - 59 m"
+                            },
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "25 - 59 m"
+                            }
+                        ]
                     },
                     {
                         "displayName": "5 - 7 y",
                         "id": "WkQrsL6dWma",
-                        "name": "5 - 7 y"
+                        "name": "5 - 7 y",
+                        "translations": [
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "5 - 7 a"
+                            },
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "5 - 7 a"
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "5 - 7 a"
+                            }
+                        ]
                     },
                     {
                         "displayName": "5 - 9 y",
                         "id": "Wy9pbFUUkx3",
-                        "name": "5 - 9 y"
+                        "name": "5 - 9 y",
+                        "translations": [
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "5 - 9 a"
+                            },
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "5 - 9 a"
+                            },
+                            {
+                                "locale": "ar",
+                                "property": "NAME",
+                                "value": "⁧5 - 9 سنة⁩"
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "5 - 9 a"
+                            }
+                        ]
                     },
                     {
                         "displayName": "5 - 12 y",
                         "id": "iSQvyRRdfg8",
-                        "name": "5 - 12 y"
+                        "name": "5 - 12 y",
+                        "translations": [
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "5 - 12 a"
+                            },
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "5 - 12 a"
+                            },
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "5 - 12 a"
+                            }
+                        ]
                     },
                     {
                         "displayName": "5 - 14 y",
                         "id": "Qeo0TBePh98",
-                        "name": "5 - 14 y"
+                        "name": "5 - 14 y",
+                        "translations": [
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "5 - 14 a"
+                            },
+                            {
+                                "locale": "ar",
+                                "property": "SHORT_NAME",
+                                "value": "5 - 14 سنة"
+                            },
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "5 - 14 a"
+                            },
+                            {
+                                "locale": "es",
+                                "property": "SHORT_NAME",
+                                "value": "5 - 14 a"
+                            },
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "5 - 14 a"
+                            },
+                            {
+                                "locale": "ar",
+                                "property": "NAME",
+                                "value": "⁧5 - 14 سنة⁩"
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "SHORT_NAME",
+                                "value": "5 - 14 a"
+                            }
+                        ]
                     },
                     {
                         "displayName": "8 - 14 y",
                         "id": "aoQHuEKd0tY",
-                        "name": "8 - 14 y"
+                        "name": "8 - 14 y",
+                        "translations": [
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "8 - 14 a"
+                            },
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "8 - 14 a"
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "8 - 14 a"
+                            }
+                        ]
                     },
                     {
                         "displayName": "9 - 14 y",
                         "id": "yawHvPkkmII",
-                        "name": "9 - 14 y"
+                        "name": "9 - 14 y",
+                        "translations": [
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "9 - 14 a"
+                            },
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "9 - 14 a"
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "9 - 14 a"
+                            }
+                        ]
                     },
                     {
                         "displayName": "> 14 y",
                         "id": "XBpMJkq8Zvo",
-                        "name": "> 14 y"
+                        "name": "> 14 y",
+                        "translations": [
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "> 14 a"
+                            },
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "> 14 a"
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "> 14 a"
+                            }
+                        ]
                     },
                     {
                         "displayName": "15 - 19 y",
                         "id": "OYaOs0KPzjK",
-                        "name": "15 - 19 y"
+                        "name": "15 - 19 y",
+                        "translations": [
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "15 - 19 a"
+                            },
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "15 - 19 a"
+                            },
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "15 - 19 a"
+                            }
+                        ]
                     },
                     {
                         "displayName": "15 - 29 y",
                         "id": "CTU4Nsrhu9T",
-                        "name": "15 - 29 y"
+                        "name": "15 - 29 y",
+                        "translations": [
+                            {
+                                "locale": "ar",
+                                "property": "NAME",
+                                "value": "⁧15 - 29 سنة⁩"
+                            },
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "15 - 29 a"
+                            },
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "15 - 29 a"
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "15 - 29 a"
+                            }
+                        ]
                     },
                     {
                         "displayName": "15 - 45 y",
                         "id": "G6mQq9nxBbt",
-                        "name": "15 - 45 y"
+                        "name": "15 - 45 y",
+                        "translations": [
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "15 - 45 a"
+                            },
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "15 - 45 a"
+                            },
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "15 - 45 a"
+                            }
+                        ]
                     },
                     {
                         "displayName": "15 - 99 y",
                         "id": "G274KynDbNg",
-                        "name": "15 - 99 y"
+                        "name": "15 - 99 y",
+                        "translations": [
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "15 - 99 a"
+                            },
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "15 - 99 a"
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "15 - 99 a"
+                            }
+                        ]
                     },
                     {
                         "displayName": "> 30 y",
                         "id": "ykuSLuR0zjf",
-                        "name": "> 30 y"
+                        "name": "> 30 y",
+                        "translations": [
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "> 30 a"
+                            },
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "> 30 a"
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "> 30 a"
+                            }
+                        ]
                     },
                     {
                         "displayName": "30 - 45 y",
                         "id": "WKsdFFi6J0q",
-                        "name": "30 - 45 y"
+                        "name": "30 - 45 y",
+                        "translations": [
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "30 - 45 a"
+                            },
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "30 - 45 a"
+                            },
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "30 - 45 a"
+                            }
+                        ]
                     },
                     {
                         "displayName": "> 45 y",
                         "id": "Bw9YRHXY2v9",
-                        "name": "> 45 y"
+                        "name": "> 45 y",
+                        "translations": [
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "> 45 a"
+                            },
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "> 45 a"
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "> 45 a"
+                            }
+                        ]
                     }
                 ],
                 "code": "RVC_AGE_GROUP",
@@ -503,17 +1676,68 @@
                     {
                         "displayName": "Host",
                         "id": "GmQjol3vR6C",
-                        "name": "Host"
+                        "name": "Host",
+                        "translations": [
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "Residente"
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "Residente"
+                            },
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "Résident"
+                            }
+                        ]
                     },
                     {
                         "displayName": "IDP",
                         "id": "mm4BlVJ2iir",
-                        "name": "IDP"
+                        "name": "IDP",
+                        "translations": [
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "Déplacés internes"
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "Deslocados internos"
+                            },
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "Desplazados internos"
+                            }
+                        ]
                     },
                     {
                         "displayName": "Refugees",
                         "id": "uOSyYksAZhC",
-                        "name": "Refugees"
+                        "name": "Refugees",
+                        "translations": [
+                            {
+                                "locale": "es",
+                                "property": "NAME",
+                                "value": "Refugiados"
+                            },
+                            {
+                                "locale": "fr",
+                                "property": "NAME",
+                                "value": "Réfugiés"
+                            },
+                            {
+                                "locale": "pt",
+                                "property": "NAME",
+                                "value": "Refugiados"
+                            }
+                        ]
                     }
                 ],
                 "code": "RVC_DISTATUS",
@@ -639,6 +1863,335 @@
                 "code": "RVC_AGE_GROUP_WS",
                 "displayName": "Age Group / Woman Status",
                 "id": "m0KXsmdiUo8"
+            },
+            {
+                "categories": [
+                    {
+                        "id": "a6SQVBY9s18"
+                    }
+                ],
+                "code": "RVC_ANTIGEN",
+                "displayName": "Antigen",
+                "id": "m6IIKizUedi"
+            },
+            {
+                "categories": [
+                    {
+                        "id": "a6SQVBY9s18"
+                    },
+                    {
+                        "id": "uaaMNSXGGTT"
+                    }
+                ],
+                "code": "RVC_ANTIGEN_AGE_GROUP",
+                "displayName": "Antigen / Age group",
+                "id": "uqionj519TF"
+            },
+            {
+                "categories": [
+                    {
+                        "id": "a6SQVBY9s18"
+                    },
+                    {
+                        "id": "WuatkvLRte5"
+                    },
+                    {
+                        "id": "uaaMNSXGGTT"
+                    }
+                ],
+                "code": "RVC_ANTIGEN_DOSE_AGE_GROUP",
+                "displayName": "Antigen / Dose / Age group",
+                "id": "uew2EWkqw22"
+            },
+            {
+                "categories": [
+                    {
+                        "id": "a6SQVBY9s18"
+                    },
+                    {
+                        "id": "WuatkvLRte5"
+                    },
+                    {
+                        "id": "uaaMNSXGGTT"
+                    },
+                    {
+                        "id": "WmizOGdFRJm"
+                    }
+                ],
+                "code": "RVC_ANTIGEN_DOSE_AGE_GROUP_DISTATUS",
+                "displayName": "Antigen / Dose / Age group / Displacement Status",
+                "id": "Kg7e04JvQ5k"
+            },
+            {
+                "categories": [
+                    {
+                        "id": "a6SQVBY9s18"
+                    },
+                    {
+                        "id": "WuatkvLRte5"
+                    },
+                    {
+                        "id": "uaaMNSXGGTT"
+                    },
+                    {
+                        "id": "gGacWJA8jIW"
+                    }
+                ],
+                "code": "RVC_ANTIGEN_DOSE_AGE_GROUP_GENDER",
+                "displayName": "Antigen / Dose / Age group / Gender",
+                "id": "SUmw2YDQDlX"
+            },
+            {
+                "categories": [
+                    {
+                        "id": "a6SQVBY9s18"
+                    },
+                    {
+                        "id": "WuatkvLRte5"
+                    },
+                    {
+                        "id": "uaaMNSXGGTT"
+                    },
+                    {
+                        "id": "gGacWJA8jIW"
+                    },
+                    {
+                        "id": "WmizOGdFRJm"
+                    }
+                ],
+                "code": "RVC_ANTIGEN_DOSE_AGE_GROUP_GENDER_DISTATUS",
+                "displayName": "Antigen / Dose / Age group / Gender / Displacement Status",
+                "id": "O0UJyI8lwvU"
+            },
+            {
+                "categories": [
+                    {
+                        "id": "a6SQVBY9s18"
+                    },
+                    {
+                        "id": "WuatkvLRte5"
+                    },
+                    {
+                        "id": "PIicq46RZ36"
+                    },
+                    {
+                        "id": "uaaMNSXGGTT"
+                    }
+                ],
+                "code": "RVC_ANTIGEN_DOSE_TYPE_AGE_GROUP",
+                "displayName": "Antigen / Dose / Type / Age group",
+                "id": "i6q79CXE1Pz"
+            },
+            {
+                "categories": [
+                    {
+                        "id": "a6SQVBY9s18"
+                    },
+                    {
+                        "id": "WuatkvLRte5"
+                    },
+                    {
+                        "id": "PIicq46RZ36"
+                    },
+                    {
+                        "id": "uaaMNSXGGTT"
+                    },
+                    {
+                        "id": "WmizOGdFRJm"
+                    }
+                ],
+                "code": "RVC_ANTIGEN_DOSE_TYPE_AGE_GROUP_DISTATUS",
+                "displayName": "Antigen / Dose / Type / Age group / Displacement Status",
+                "id": "Si8oBnQwHOa"
+            },
+            {
+                "categories": [
+                    {
+                        "id": "a6SQVBY9s18"
+                    },
+                    {
+                        "id": "WuatkvLRte5"
+                    },
+                    {
+                        "id": "PIicq46RZ36"
+                    },
+                    {
+                        "id": "uaaMNSXGGTT"
+                    },
+                    {
+                        "id": "WmizOGdFRJm"
+                    },
+                    {
+                        "id": "ERUJcCIKkY8"
+                    }
+                ],
+                "code": "RVC_ANTIGEN_DOSE_TYPE_AGE_GROUP_DISTATUS_WS",
+                "displayName": "Antigen / Dose / Type / Age group / Displacement Status / Woman Status",
+                "id": "qKqyMb6UOEA"
+            },
+            {
+                "categories": [
+                    {
+                        "id": "a6SQVBY9s18"
+                    },
+                    {
+                        "id": "WuatkvLRte5"
+                    },
+                    {
+                        "id": "PIicq46RZ36"
+                    },
+                    {
+                        "id": "uaaMNSXGGTT"
+                    },
+                    {
+                        "id": "gGacWJA8jIW"
+                    }
+                ],
+                "code": "RVC_ANTIGEN_DOSE_TYPE_AGE_GROUP_GENDER",
+                "displayName": "Antigen / Dose / Type / Age group / Gender",
+                "id": "eKqKYwt2WAZ"
+            },
+            {
+                "categories": [
+                    {
+                        "id": "a6SQVBY9s18"
+                    },
+                    {
+                        "id": "WuatkvLRte5"
+                    },
+                    {
+                        "id": "PIicq46RZ36"
+                    },
+                    {
+                        "id": "uaaMNSXGGTT"
+                    },
+                    {
+                        "id": "gGacWJA8jIW"
+                    },
+                    {
+                        "id": "WmizOGdFRJm"
+                    }
+                ],
+                "code": "RVC_ANTIGEN_DOSE_TYPE_AGE_GROUP_GENDER_DISTATUS",
+                "displayName": "Antigen / Dose / Type / Age group / Gender / Displacement Status",
+                "id": "ewqERFgIx90"
+            },
+            {
+                "categories": [
+                    {
+                        "id": "a6SQVBY9s18"
+                    },
+                    {
+                        "id": "WuatkvLRte5"
+                    },
+                    {
+                        "id": "PIicq46RZ36"
+                    },
+                    {
+                        "id": "uaaMNSXGGTT"
+                    },
+                    {
+                        "id": "gGacWJA8jIW"
+                    },
+                    {
+                        "id": "WmizOGdFRJm"
+                    },
+                    {
+                        "id": "ERUJcCIKkY8"
+                    }
+                ],
+                "code": "RVC_ANTIGEN_DOSE_TYPE_AGE_GROUP_GENDER_DISTATUS_WS",
+                "displayName": "Antigen / Dose / Type / Age group / Gender / Displacement Status / Woman Status",
+                "id": "ise2i6KE1Wt"
+            },
+            {
+                "categories": [
+                    {
+                        "id": "a6SQVBY9s18"
+                    },
+                    {
+                        "id": "WuatkvLRte5"
+                    },
+                    {
+                        "id": "PIicq46RZ36"
+                    },
+                    {
+                        "id": "uaaMNSXGGTT"
+                    },
+                    {
+                        "id": "gGacWJA8jIW"
+                    },
+                    {
+                        "id": "ERUJcCIKkY8"
+                    }
+                ],
+                "code": "RVC_ANTIGEN_DOSE_TYPE_AGE_GROUP_GENDER_WS",
+                "displayName": "Antigen / Dose / Type / Age group / Gender / Woman Status",
+                "id": "WqyC88I6BnY"
+            },
+            {
+                "categories": [
+                    {
+                        "id": "a6SQVBY9s18"
+                    },
+                    {
+                        "id": "WuatkvLRte5"
+                    },
+                    {
+                        "id": "PIicq46RZ36"
+                    },
+                    {
+                        "id": "uaaMNSXGGTT"
+                    },
+                    {
+                        "id": "ERUJcCIKkY8"
+                    }
+                ],
+                "code": "RVC_ANTIGEN_DOSE_TYPE_AGE_GROUP_WS",
+                "displayName": "Antigen / Dose / Type / Age group / Woman Status",
+                "id": "WOo1aqdwxV1"
+            },
+            {
+                "categories": [
+                    {
+                        "id": "a6SQVBY9s18"
+                    },
+                    {
+                        "id": "iemAs0M9Cnd"
+                    }
+                ],
+                "code": "RVC_ANTIGEN_SEVERITY",
+                "displayName": "Antigen / Severity",
+                "id": "Sm65ETbrxKc"
+            },
+            {
+                "categories": [
+                    {
+                        "id": "a6SQVBY9s18"
+                    },
+                    {
+                        "id": "PIicq46RZ36"
+                    }
+                ],
+                "code": "RVC_ANTIGEN_TYPE",
+                "displayName": "Antigen / Type",
+                "id": "FvWXvS5KuX0"
+            },
+            {
+                "categories": [
+                    {
+                        "id": "a6SQVBY9s18"
+                    },
+                    {
+                        "id": "PIicq46RZ36"
+                    },
+                    {
+                        "id": "iemAs0M9Cnd"
+                    }
+                ],
+                "code": "RVC_ANTIGEN_TYPE_SEVERITY",
+                "displayName": "Antigen / Type / Severity",
+                "id": "WK32tqF1Xmd"
             },
             {
                 "categories": [
@@ -802,6 +2355,18 @@
             },
             {
                 "categories": [
+                    {
+                        "id": "a6SQVBY9s18"
+                    },
+                    {
+                        "id": "WuatkvLRte5"
+                    },
+                    {
+                        "id": "PIicq46RZ36"
+                    },
+                    {
+                        "id": "uaaMNSXGGTT"
+                    }
                 ],
                 "code": "RVC_DE_DOSES_ADMINISTERED_REQUIRED",
                 "displayName": "Data Element - Vaccine doses administered - Required",
@@ -842,6 +2407,18 @@
             },
             {
                 "categories": [
+                    {
+                        "id": "a6SQVBY9s18"
+                    },
+                    {
+                        "id": "WuatkvLRte5"
+                    },
+                    {
+                        "id": "PIicq46RZ36"
+                    },
+                    {
+                        "id": "uaaMNSXGGTT"
+                    },
                     {
                         "id": "gGacWJA8jIW"
                     }
@@ -2314,13 +3891,31 @@
                         "id": "CCqBBZmfsTs"
                     },
                     {
+                        "id": "OQOgTET6NwY"
+                    },
+                    {
+                        "id": "OY40ChLj0YE"
+                    },
+                    {
+                        "id": "WCQHqR2RBIX"
+                    },
+                    {
                         "id": "e0cPRcP5XNc"
                     },
                     {
                         "id": "mOE5w8jVtuh"
                     },
                     {
+                        "id": "mcug85FSmAk"
+                    },
+                    {
+                        "id": "mkgnDxyksQS"
+                    },
+                    {
                         "id": "q0MMyiUi0Pl"
+                    },
+                    {
+                        "id": "ycy4WvaTCtm"
                     },
                     {
                         "id": "ywKG3QmCbDi"
@@ -3290,6 +4885,9 @@
                     },
                     {
                         "id": "mOE5w8jVtuh"
+                    },
+                    {
+                        "id": "mcug85FSmAk"
                     }
                 ],
                 "displayName": "RVC - Population",
@@ -3326,6 +4924,28 @@
                 "displayName": "Accidental Exposure to Blood (AEB)",
                 "formName": "Accidental Exposure to Blood (AEB) - 7",
                 "id": "q0MMyiUi0Pl"
+            },
+            {
+                "categoryCombo": {
+                    "categories": [
+                        {
+                            "id": "a6SQVBY9s18"
+                        },
+                        {
+                            "id": "PIicq46RZ36"
+                        },
+                        {
+                            "id": "iemAs0M9Cnd"
+                        }
+                    ],
+                    "code": "RVC_ANTIGEN_TYPE_SEVERITY",
+                    "displayName": "Antigen / Type / Severity",
+                    "id": "WK32tqF1Xmd"
+                },
+                "code": "RVC_AEFI",
+                "displayName": "Adverse Event Following Immunization",
+                "formName": "Adverse Event Following Immunization - 8",
+                "id": "OY40ChLj0YE"
             },
             {
                 "categoryCombo": {
@@ -3907,6 +5527,25 @@
                 "categoryCombo": {
                     "categories": [
                         {
+                            "id": "a6SQVBY9s18"
+                        },
+                        {
+                            "id": "PIicq46RZ36"
+                        }
+                    ],
+                    "code": "RVC_ANTIGEN_TYPE",
+                    "displayName": "Antigen / Type",
+                    "id": "FvWXvS5KuX0"
+                },
+                "code": "RVC_NEEDLES",
+                "displayName": "Needles for dilution",
+                "formName": "Needles for dilution - 4",
+                "id": "OQOgTET6NwY"
+            },
+            {
+                "categoryCombo": {
+                    "categories": [
+                        {
                             "id": "OJ4OwOR4pwt"
                         }
                     ],
@@ -4427,6 +6066,28 @@
                 "displayName": "Needles for dilution - Yellow Fever - Reactive",
                 "formName": "Needles for dilution",
                 "id": "m02LktmnkQf"
+            },
+            {
+                "categoryCombo": {
+                    "categories": [
+                        {
+                            "id": "a6SQVBY9s18"
+                        },
+                        {
+                            "id": "WuatkvLRte5"
+                        },
+                        {
+                            "id": "uaaMNSXGGTT"
+                        }
+                    ],
+                    "code": "RVC_ANTIGEN_DOSE_AGE_GROUP",
+                    "displayName": "Antigen / Dose / Age group",
+                    "id": "uew2EWkqw22"
+                },
+                "code": "RVC_POPULATION_BY_AGE",
+                "displayName": "Population by age",
+                "formName": "Population by age",
+                "id": "mcug85FSmAk"
             },
             {
                 "categoryCombo": {
@@ -5023,6 +6684,25 @@
                 "categoryCombo": {
                     "categories": [
                         {
+                            "id": "a6SQVBY9s18"
+                        },
+                        {
+                            "id": "PIicq46RZ36"
+                        }
+                    ],
+                    "code": "RVC_ANTIGEN_TYPE",
+                    "displayName": "Antigen / Type",
+                    "id": "FvWXvS5KuX0"
+                },
+                "code": "RVC_SYRINGES",
+                "displayName": "Syringes for dilution",
+                "formName": "Syringes for dilution - 5",
+                "id": "WCQHqR2RBIX"
+            },
+            {
+                "categoryCombo": {
+                    "categories": [
+                        {
                             "id": "OJ4OwOR4pwt"
                         }
                     ],
@@ -5558,6 +7238,34 @@
                 "displayName": "Total population",
                 "formName": "Total population",
                 "id": "mOE5w8jVtuh"
+            },
+            {
+                "categoryCombo": {
+                    "categories": [
+                        {
+                            "id": "a6SQVBY9s18"
+                        },
+                        {
+                            "id": "WuatkvLRte5"
+                        },
+                        {
+                            "id": "uaaMNSXGGTT"
+                        },
+                        {
+                            "id": "gGacWJA8jIW"
+                        },
+                        {
+                            "id": "WmizOGdFRJm"
+                        }
+                    ],
+                    "code": "RVC_ANTIGEN_DOSE_AGE_GROUP_GENDER_DISTATUS",
+                    "displayName": "Antigen / Dose / Age group / Gender / Displacement Status",
+                    "id": "O0UJyI8lwvU"
+                },
+                "code": "RVC_DOSES_ADMINISTERED",
+                "displayName": "Vaccine doses administered",
+                "formName": "Vaccine doses administered - 1",
+                "id": "mkgnDxyksQS"
             },
             {
                 "categoryCombo": {
@@ -6598,6 +8306,25 @@
                 "categoryCombo": {
                     "categories": [
                         {
+                            "id": "a6SQVBY9s18"
+                        },
+                        {
+                            "id": "PIicq46RZ36"
+                        }
+                    ],
+                    "code": "RVC_ANTIGEN_TYPE",
+                    "displayName": "Antigen / Type",
+                    "id": "FvWXvS5KuX0"
+                },
+                "code": "RVC_DOSES_USED",
+                "displayName": "Vaccine doses used",
+                "formName": "Vaccine doses used - 2",
+                "id": "ycy4WvaTCtm"
+            },
+            {
+                "categoryCombo": {
+                    "categories": [
+                        {
                             "id": "OJ4OwOR4pwt"
                         }
                     ],
@@ -7143,6 +8870,10 @@
                 "id": "COWEcXer8Wy"
             },
             {
+                "code": "RVC_CAMPAIGN_NEEDLES_RATIO",
+                "id": "Cu0wlBNmEBX"
+            },
+            {
                 "code": "RVC_NEEDLES_RATIO-BCG-PREVENTIVE",
                 "id": "au8rEPiqPyg"
             },
@@ -7281,6 +9012,10 @@
             {
                 "code": "RVC_NEEDLES_RATIO-YELLOW_FEVER-REACTIVE",
                 "id": "m20ODIPTvy3"
+            },
+            {
+                "code": "RVC_DILUTION_SYRINGES_RATIO",
+                "id": "eqMDzdX0Gug"
             },
             {
                 "code": "RVC_SYRINGES_RATIO-BCG-PREVENTIVE",
@@ -7425,6 +9160,10 @@
             {
                 "code": "RVC_SAFETY_BOXES",
                 "id": "e8w7mCxy9ia"
+            },
+            {
+                "code": "RVC_CAMPAIGN_COVERAGE",
+                "id": "WmC8n3y13Mo"
             },
             {
                 "code": "RVC_COVERAGE-BCG-1-PREVENTIVE",
@@ -7841,6 +9580,10 @@
             {
                 "code": "RVC_DOSES_ADMINISTERED-YELLOW_FEVER-REACTIVE",
                 "id": "G0MXzsUpgYW"
+            },
+            {
+                "code": "RVC_VACCINE_UTILIZATION",
+                "id": "OSqieeqbysf"
             },
             {
                 "code": "RVC_VU-BCG-PREVENTIVE",
