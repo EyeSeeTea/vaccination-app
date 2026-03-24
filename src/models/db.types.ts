@@ -1,3 +1,4 @@
+import { D2Translation } from "@eyeseetea/d2-api/schemas";
 import { Dictionary } from "lodash";
 export type Maybe<T> = T | undefined;
 
@@ -180,6 +181,7 @@ export interface Section {
         categoryOptionCombo: Ref;
         dataElement: Ref;
     }>;
+    translations?: D2Translation[];
 }
 
 export interface DataSet extends Sharing {

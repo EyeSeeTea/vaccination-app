@@ -34,6 +34,10 @@ import {
     getAntigenCode,
     getDataElementDisaggregations,
 } from "./D2CampaignMetadata";
+import { D2Translation } from "@eyeseetea/d2-api/schemas";
+import i18n from "../locales";
+
+const locales = ["es", "fr"];
 
 interface DataSetWithSections {
     sections: Array<{ id: string; name: string; dataSet: { id: string } }>;
@@ -351,11 +355,23 @@ export default class CampaignDb {
     ): Promise<Section[]> {
         const { campaign } = this;
         const disaggregationData = campaign.getEnabledAntigensDisaggregation();
+        const translations = new CategoryOptionTranslations(campaign.config);
 
         const sectionsUsed = disaggregationData.map((disaggregationDataItem, index): Section => {
             const campaignType = assert(disaggregationDataItem.type);
             const { antigen } = disaggregationDataItem;
-            const sectionName = `${antigen.name} [${campaignTypes[campaignType].name}]`;
+            const campaignTypeRef = campaignTypes[campaignType];
+            const sectionName = `${antigen.name} [${campaignTypeRef.name}]`;
+
+            const antigenSectionTranslations = translations.locales.map((locale): D2Translation => {
+                const antigenName = translations.getByCode(antigen.code, locale) || antigen.name;
+                const campaignTypeName =
+                    translations.getByCode("RVC_" + campaignTypeRef.code, locale) ||
+                    campaignTypeRef.name;
+                const translatedText = `${antigenName} [${campaignTypeName}]`;
+
+                return { property: "NAME", locale: locale, value: translatedText };
+            });
 
             const greyedFields = _(getDisaggregatedDataElements(campaign, disaggregationDataItem))
                 .flatMap(({ dataElement, formDataElement, categoryCombo }) => {
@@ -410,6 +426,7 @@ export default class CampaignDb {
                 name: sectionName,
                 dataElements: dataElements2.map(de => ({ id: de.id })),
                 greyedFields: greyedFields,
+                translations: antigenSectionTranslations,
             };
         });
 
@@ -427,6 +444,14 @@ export default class CampaignDb {
             .uniqBy(dataElement => dataElement.id)
             .value();
 
+        const qualityAndSafetySectionTranslations = locales.map(
+            (locale): D2Translation => ({
+                property: "NAME",
+                locale: locale,
+                value: i18n.t("General Q&S", { lng: locale }),
+            })
+        );
+
         const qualityAndSafetySection: Section | undefined =
             dataElements2.length > 0
                 ? {
@@ -435,6 +460,7 @@ export default class CampaignDb {
                       dataSet: { id: dataSetId },
                       dataElements: dataElements2.map(de => ({ id: de.id })),
                       sortOrder: sectionsUsed.length + 1,
+                      translations: qualityAndSafetySectionTranslations,
                   }
                 : undefined;
 
@@ -652,4 +678,25 @@ function getPeriodDatesFromDataInputPeriods(
         startDate: getDateFromPeriodId(min),
         endDate: getDateFromPeriodId(max),
     };
+}
+
+class CategoryOptionTranslations {
+    translationsByCode: Record<string, { translations: Record<string, string> }>;
+
+    constructor(private config: MetadataConfig) {
+        this.translationsByCode = _(config.categoryOptions)
+            .keyBy(categoryOption => categoryOption.code)
+            .value();
+    }
+
+    get locales() {
+        return _(this.config.categoryOptions)
+            .flatMap(co => Object.keys(co.translations))
+            .uniq()
+            .value();
+    }
+
+    getByCode(code: string, locale: string): string | undefined {
+        return this.translationsByCode[code]?.translations[locale];
+    }
 }
