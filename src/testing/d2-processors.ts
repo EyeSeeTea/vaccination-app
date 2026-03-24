@@ -128,6 +128,8 @@ export function stabilizeD2MetadataResponse(d2Response: D2MetadataResponse): D2M
 
     removeNestedPropertiesInPlace(nested, "lastUpdated");
     traverseCollectionItemsInplace<User>(nested, "users", anonymizeUser);
+    traverseObjInPlace<string>(nested, "name", anonymizeTeamName);
+
     return nested;
 }
 
@@ -158,6 +160,34 @@ function traverseCollectionItemsInplace<Item>(
                 }
             } else {
                 traverseCollectionItemsInplace(value, prop, processItem);
+            }
+        }
+    }
+}
+
+/**
+ * Recursively traverse any JS object and apply a transform to each item
+ * in any <prop> found (at any depth).
+ *
+ * const obj = {x: {y: {name: "Hello"}}}
+ * traverseObjInPlace(obj, "name", s => s.toUpperCase())
+ * // obj is now {x: {y: {name: "HELLO"}}}
+ */
+function traverseObjInPlace<Item>(
+    obj: unknown,
+    prop: string,
+    transform: (item: Item) => Item
+): void {
+    if (Array.isArray(obj)) {
+        for (const item of obj) {
+            traverseObjInPlace(item, prop, transform);
+        }
+    } else if (obj && typeof obj === "object") {
+        for (const [key, value] of Object.entries(obj)) {
+            if (key === prop) {
+                (obj as any)[key] = transform(value as Item);
+            } else {
+                traverseObjInPlace(value, prop, transform);
             }
         }
     }
@@ -196,4 +226,14 @@ function anonymizeUser(user: User): void {
     if (user.username) user.username = `user_${hash}`;
     if (user.name) user.name = `User ${hash % 10000}`;
     if (user.displayName) user.displayName = `User ${hash % 10000}`;
+}
+
+// "Team 001 - CAMPAIGN_NAME" -> "Team 001 - 1234"
+function anonymizeTeamName(name: string): string {
+    // match "Team XXX - " at the start of the string and keep it, replace the rest with a hash
+    const match = name.match(/^(Team \d+ - )/);
+    if (!match) return name;
+    const prefix = match ? match[1] : "";
+    const hash = hashString(name);
+    return prefix + (hash % 100000).toString();
 }

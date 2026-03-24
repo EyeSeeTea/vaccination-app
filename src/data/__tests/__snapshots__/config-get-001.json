@@ -642,6 +642,335 @@
             },
             {
                 "categories": [
+                    {
+                        "id": "a6SQVBY9s18"
+                    }
+                ],
+                "code": "RVC_ANTIGEN",
+                "displayName": "Antigen",
+                "id": "m6IIKizUedi"
+            },
+            {
+                "categories": [
+                    {
+                        "id": "a6SQVBY9s18"
+                    },
+                    {
+                        "id": "uaaMNSXGGTT"
+                    }
+                ],
+                "code": "RVC_ANTIGEN_AGE_GROUP",
+                "displayName": "Antigen / Age group",
+                "id": "uqionj519TF"
+            },
+            {
+                "categories": [
+                    {
+                        "id": "a6SQVBY9s18"
+                    },
+                    {
+                        "id": "WuatkvLRte5"
+                    },
+                    {
+                        "id": "uaaMNSXGGTT"
+                    }
+                ],
+                "code": "RVC_ANTIGEN_DOSE_AGE_GROUP",
+                "displayName": "Antigen / Dose / Age group",
+                "id": "uew2EWkqw22"
+            },
+            {
+                "categories": [
+                    {
+                        "id": "a6SQVBY9s18"
+                    },
+                    {
+                        "id": "WuatkvLRte5"
+                    },
+                    {
+                        "id": "uaaMNSXGGTT"
+                    },
+                    {
+                        "id": "WmizOGdFRJm"
+                    }
+                ],
+                "code": "RVC_ANTIGEN_DOSE_AGE_GROUP_DISTATUS",
+                "displayName": "Antigen / Dose / Age group / Displacement Status",
+                "id": "Kg7e04JvQ5k"
+            },
+            {
+                "categories": [
+                    {
+                        "id": "a6SQVBY9s18"
+                    },
+                    {
+                        "id": "WuatkvLRte5"
+                    },
+                    {
+                        "id": "uaaMNSXGGTT"
+                    },
+                    {
+                        "id": "gGacWJA8jIW"
+                    }
+                ],
+                "code": "RVC_ANTIGEN_DOSE_AGE_GROUP_GENDER",
+                "displayName": "Antigen / Dose / Age group / Gender",
+                "id": "SUmw2YDQDlX"
+            },
+            {
+                "categories": [
+                    {
+                        "id": "a6SQVBY9s18"
+                    },
+                    {
+                        "id": "WuatkvLRte5"
+                    },
+                    {
+                        "id": "uaaMNSXGGTT"
+                    },
+                    {
+                        "id": "gGacWJA8jIW"
+                    },
+                    {
+                        "id": "WmizOGdFRJm"
+                    }
+                ],
+                "code": "RVC_ANTIGEN_DOSE_AGE_GROUP_GENDER_DISTATUS",
+                "displayName": "Antigen / Dose / Age group / Gender / Displacement Status",
+                "id": "O0UJyI8lwvU"
+            },
+            {
+                "categories": [
+                    {
+                        "id": "a6SQVBY9s18"
+                    },
+                    {
+                        "id": "WuatkvLRte5"
+                    },
+                    {
+                        "id": "PIicq46RZ36"
+                    },
+                    {
+                        "id": "uaaMNSXGGTT"
+                    }
+                ],
+                "code": "RVC_ANTIGEN_DOSE_TYPE_AGE_GROUP",
+                "displayName": "Antigen / Dose / Type / Age group",
+                "id": "i6q79CXE1Pz"
+            },
+            {
+                "categories": [
+                    {
+                        "id": "a6SQVBY9s18"
+                    },
+                    {
+                        "id": "WuatkvLRte5"
+                    },
+                    {
+                        "id": "PIicq46RZ36"
+                    },
+                    {
+                        "id": "uaaMNSXGGTT"
+                    },
+                    {
+                        "id": "WmizOGdFRJm"
+                    }
+                ],
+                "code": "RVC_ANTIGEN_DOSE_TYPE_AGE_GROUP_DISTATUS",
+                "displayName": "Antigen / Dose / Type / Age group / Displacement Status",
+                "id": "Si8oBnQwHOa"
+            },
+            {
+                "categories": [
+                    {
+                        "id": "a6SQVBY9s18"
+                    },
+                    {
+                        "id": "WuatkvLRte5"
+                    },
+                    {
+                        "id": "PIicq46RZ36"
+                    },
+                    {
+                        "id": "uaaMNSXGGTT"
+                    },
+                    {
+                        "id": "WmizOGdFRJm"
+                    },
+                    {
+                        "id": "ERUJcCIKkY8"
+                    }
+                ],
+                "code": "RVC_ANTIGEN_DOSE_TYPE_AGE_GROUP_DISTATUS_WS",
+                "displayName": "Antigen / Dose / Type / Age group / Displacement Status / Woman Status",
+                "id": "qKqyMb6UOEA"
+            },
+            {
+                "categories": [
+                    {
+                        "id": "a6SQVBY9s18"
+                    },
+                    {
+                        "id": "WuatkvLRte5"
+                    },
+                    {
+                        "id": "PIicq46RZ36"
+                    },
+                    {
+                        "id": "uaaMNSXGGTT"
+                    },
+                    {
+                        "id": "gGacWJA8jIW"
+                    }
+                ],
+                "code": "RVC_ANTIGEN_DOSE_TYPE_AGE_GROUP_GENDER",
+                "displayName": "Antigen / Dose / Type / Age group / Gender",
+                "id": "eKqKYwt2WAZ"
+            },
+            {
+                "categories": [
+                    {
+                        "id": "a6SQVBY9s18"
+                    },
+                    {
+                        "id": "WuatkvLRte5"
+                    },
+                    {
+                        "id": "PIicq46RZ36"
+                    },
+                    {
+                        "id": "uaaMNSXGGTT"
+                    },
+                    {
+                        "id": "gGacWJA8jIW"
+                    },
+                    {
+                        "id": "WmizOGdFRJm"
+                    }
+                ],
+                "code": "RVC_ANTIGEN_DOSE_TYPE_AGE_GROUP_GENDER_DISTATUS",
+                "displayName": "Antigen / Dose / Type / Age group / Gender / Displacement Status",
+                "id": "ewqERFgIx90"
+            },
+            {
+                "categories": [
+                    {
+                        "id": "a6SQVBY9s18"
+                    },
+                    {
+                        "id": "WuatkvLRte5"
+                    },
+                    {
+                        "id": "PIicq46RZ36"
+                    },
+                    {
+                        "id": "uaaMNSXGGTT"
+                    },
+                    {
+                        "id": "gGacWJA8jIW"
+                    },
+                    {
+                        "id": "WmizOGdFRJm"
+                    },
+                    {
+                        "id": "ERUJcCIKkY8"
+                    }
+                ],
+                "code": "RVC_ANTIGEN_DOSE_TYPE_AGE_GROUP_GENDER_DISTATUS_WS",
+                "displayName": "Antigen / Dose / Type / Age group / Gender / Displacement Status / Woman Status",
+                "id": "ise2i6KE1Wt"
+            },
+            {
+                "categories": [
+                    {
+                        "id": "a6SQVBY9s18"
+                    },
+                    {
+                        "id": "WuatkvLRte5"
+                    },
+                    {
+                        "id": "PIicq46RZ36"
+                    },
+                    {
+                        "id": "uaaMNSXGGTT"
+                    },
+                    {
+                        "id": "gGacWJA8jIW"
+                    },
+                    {
+                        "id": "ERUJcCIKkY8"
+                    }
+                ],
+                "code": "RVC_ANTIGEN_DOSE_TYPE_AGE_GROUP_GENDER_WS",
+                "displayName": "Antigen / Dose / Type / Age group / Gender / Woman Status",
+                "id": "WqyC88I6BnY"
+            },
+            {
+                "categories": [
+                    {
+                        "id": "a6SQVBY9s18"
+                    },
+                    {
+                        "id": "WuatkvLRte5"
+                    },
+                    {
+                        "id": "PIicq46RZ36"
+                    },
+                    {
+                        "id": "uaaMNSXGGTT"
+                    },
+                    {
+                        "id": "ERUJcCIKkY8"
+                    }
+                ],
+                "code": "RVC_ANTIGEN_DOSE_TYPE_AGE_GROUP_WS",
+                "displayName": "Antigen / Dose / Type / Age group / Woman Status",
+                "id": "WOo1aqdwxV1"
+            },
+            {
+                "categories": [
+                    {
+                        "id": "a6SQVBY9s18"
+                    },
+                    {
+                        "id": "iemAs0M9Cnd"
+                    }
+                ],
+                "code": "RVC_ANTIGEN_SEVERITY",
+                "displayName": "Antigen / Severity",
+                "id": "Sm65ETbrxKc"
+            },
+            {
+                "categories": [
+                    {
+                        "id": "a6SQVBY9s18"
+                    },
+                    {
+                        "id": "PIicq46RZ36"
+                    }
+                ],
+                "code": "RVC_ANTIGEN_TYPE",
+                "displayName": "Antigen / Type",
+                "id": "FvWXvS5KuX0"
+            },
+            {
+                "categories": [
+                    {
+                        "id": "a6SQVBY9s18"
+                    },
+                    {
+                        "id": "PIicq46RZ36"
+                    },
+                    {
+                        "id": "iemAs0M9Cnd"
+                    }
+                ],
+                "code": "RVC_ANTIGEN_TYPE_SEVERITY",
+                "displayName": "Antigen / Type / Severity",
+                "id": "WK32tqF1Xmd"
+            },
+            {
+                "categories": [
                 ],
                 "code": "RVC_DE_ADS_USED_OPTIONAL",
                 "displayName": "Data Element - ADS (Auto Disable Syringe) used - Optional",
@@ -802,6 +1131,18 @@
             },
             {
                 "categories": [
+                    {
+                        "id": "a6SQVBY9s18"
+                    },
+                    {
+                        "id": "WuatkvLRte5"
+                    },
+                    {
+                        "id": "PIicq46RZ36"
+                    },
+                    {
+                        "id": "uaaMNSXGGTT"
+                    }
                 ],
                 "code": "RVC_DE_DOSES_ADMINISTERED_REQUIRED",
                 "displayName": "Data Element - Vaccine doses administered - Required",
@@ -842,6 +1183,18 @@
             },
             {
                 "categories": [
+                    {
+                        "id": "a6SQVBY9s18"
+                    },
+                    {
+                        "id": "WuatkvLRte5"
+                    },
+                    {
+                        "id": "PIicq46RZ36"
+                    },
+                    {
+                        "id": "uaaMNSXGGTT"
+                    },
                     {
                         "id": "gGacWJA8jIW"
                     }
@@ -2314,13 +2667,31 @@
                         "id": "CCqBBZmfsTs"
                     },
                     {
+                        "id": "OQOgTET6NwY"
+                    },
+                    {
+                        "id": "OY40ChLj0YE"
+                    },
+                    {
+                        "id": "WCQHqR2RBIX"
+                    },
+                    {
                         "id": "e0cPRcP5XNc"
                     },
                     {
                         "id": "mOE5w8jVtuh"
                     },
                     {
+                        "id": "mcug85FSmAk"
+                    },
+                    {
+                        "id": "mkgnDxyksQS"
+                    },
+                    {
                         "id": "q0MMyiUi0Pl"
+                    },
+                    {
+                        "id": "ycy4WvaTCtm"
                     },
                     {
                         "id": "ywKG3QmCbDi"
@@ -3290,6 +3661,9 @@
                     },
                     {
                         "id": "mOE5w8jVtuh"
+                    },
+                    {
+                        "id": "mcug85FSmAk"
                     }
                 ],
                 "displayName": "RVC - Population",
@@ -3326,6 +3700,28 @@
                 "displayName": "Accidental Exposure to Blood (AEB)",
                 "formName": "Accidental Exposure to Blood (AEB) - 7",
                 "id": "q0MMyiUi0Pl"
+            },
+            {
+                "categoryCombo": {
+                    "categories": [
+                        {
+                            "id": "a6SQVBY9s18"
+                        },
+                        {
+                            "id": "PIicq46RZ36"
+                        },
+                        {
+                            "id": "iemAs0M9Cnd"
+                        }
+                    ],
+                    "code": "RVC_ANTIGEN_TYPE_SEVERITY",
+                    "displayName": "Antigen / Type / Severity",
+                    "id": "WK32tqF1Xmd"
+                },
+                "code": "RVC_AEFI",
+                "displayName": "Adverse Event Following Immunization",
+                "formName": "Adverse Event Following Immunization - 8",
+                "id": "OY40ChLj0YE"
             },
             {
                 "categoryCombo": {
@@ -3907,6 +4303,25 @@
                 "categoryCombo": {
                     "categories": [
                         {
+                            "id": "a6SQVBY9s18"
+                        },
+                        {
+                            "id": "PIicq46RZ36"
+                        }
+                    ],
+                    "code": "RVC_ANTIGEN_TYPE",
+                    "displayName": "Antigen / Type",
+                    "id": "FvWXvS5KuX0"
+                },
+                "code": "RVC_NEEDLES",
+                "displayName": "Needles for dilution",
+                "formName": "Needles for dilution - 4",
+                "id": "OQOgTET6NwY"
+            },
+            {
+                "categoryCombo": {
+                    "categories": [
+                        {
                             "id": "OJ4OwOR4pwt"
                         }
                     ],
@@ -4427,6 +4842,28 @@
                 "displayName": "Needles for dilution - Yellow Fever - Reactive",
                 "formName": "Needles for dilution",
                 "id": "m02LktmnkQf"
+            },
+            {
+                "categoryCombo": {
+                    "categories": [
+                        {
+                            "id": "a6SQVBY9s18"
+                        },
+                        {
+                            "id": "WuatkvLRte5"
+                        },
+                        {
+                            "id": "uaaMNSXGGTT"
+                        }
+                    ],
+                    "code": "RVC_ANTIGEN_DOSE_AGE_GROUP",
+                    "displayName": "Antigen / Dose / Age group",
+                    "id": "uew2EWkqw22"
+                },
+                "code": "RVC_POPULATION_BY_AGE",
+                "displayName": "Population by age",
+                "formName": "Population by age",
+                "id": "mcug85FSmAk"
             },
             {
                 "categoryCombo": {
@@ -5023,6 +5460,25 @@
                 "categoryCombo": {
                     "categories": [
                         {
+                            "id": "a6SQVBY9s18"
+                        },
+                        {
+                            "id": "PIicq46RZ36"
+                        }
+                    ],
+                    "code": "RVC_ANTIGEN_TYPE",
+                    "displayName": "Antigen / Type",
+                    "id": "FvWXvS5KuX0"
+                },
+                "code": "RVC_SYRINGES",
+                "displayName": "Syringes for dilution",
+                "formName": "Syringes for dilution - 5",
+                "id": "WCQHqR2RBIX"
+            },
+            {
+                "categoryCombo": {
+                    "categories": [
+                        {
                             "id": "OJ4OwOR4pwt"
                         }
                     ],
@@ -5558,6 +6014,34 @@
                 "displayName": "Total population",
                 "formName": "Total population",
                 "id": "mOE5w8jVtuh"
+            },
+            {
+                "categoryCombo": {
+                    "categories": [
+                        {
+                            "id": "a6SQVBY9s18"
+                        },
+                        {
+                            "id": "WuatkvLRte5"
+                        },
+                        {
+                            "id": "uaaMNSXGGTT"
+                        },
+                        {
+                            "id": "gGacWJA8jIW"
+                        },
+                        {
+                            "id": "WmizOGdFRJm"
+                        }
+                    ],
+                    "code": "RVC_ANTIGEN_DOSE_AGE_GROUP_GENDER_DISTATUS",
+                    "displayName": "Antigen / Dose / Age group / Gender / Displacement Status",
+                    "id": "O0UJyI8lwvU"
+                },
+                "code": "RVC_DOSES_ADMINISTERED",
+                "displayName": "Vaccine doses administered",
+                "formName": "Vaccine doses administered - 1",
+                "id": "mkgnDxyksQS"
             },
             {
                 "categoryCombo": {
@@ -6598,6 +7082,25 @@
                 "categoryCombo": {
                     "categories": [
                         {
+                            "id": "a6SQVBY9s18"
+                        },
+                        {
+                            "id": "PIicq46RZ36"
+                        }
+                    ],
+                    "code": "RVC_ANTIGEN_TYPE",
+                    "displayName": "Antigen / Type",
+                    "id": "FvWXvS5KuX0"
+                },
+                "code": "RVC_DOSES_USED",
+                "displayName": "Vaccine doses used",
+                "formName": "Vaccine doses used - 2",
+                "id": "ycy4WvaTCtm"
+            },
+            {
+                "categoryCombo": {
+                    "categories": [
+                        {
                             "id": "OJ4OwOR4pwt"
                         }
                     ],
@@ -7143,6 +7646,10 @@
                 "id": "COWEcXer8Wy"
             },
             {
+                "code": "RVC_CAMPAIGN_NEEDLES_RATIO",
+                "id": "Cu0wlBNmEBX"
+            },
+            {
                 "code": "RVC_NEEDLES_RATIO-BCG-PREVENTIVE",
                 "id": "au8rEPiqPyg"
             },
@@ -7281,6 +7788,10 @@
             {
                 "code": "RVC_NEEDLES_RATIO-YELLOW_FEVER-REACTIVE",
                 "id": "m20ODIPTvy3"
+            },
+            {
+                "code": "RVC_DILUTION_SYRINGES_RATIO",
+                "id": "eqMDzdX0Gug"
             },
             {
                 "code": "RVC_SYRINGES_RATIO-BCG-PREVENTIVE",
@@ -7425,6 +7936,10 @@
             {
                 "code": "RVC_SAFETY_BOXES",
                 "id": "e8w7mCxy9ia"
+            },
+            {
+                "code": "RVC_CAMPAIGN_COVERAGE",
+                "id": "WmC8n3y13Mo"
             },
             {
                 "code": "RVC_COVERAGE-BCG-1-PREVENTIVE",
@@ -7841,6 +8356,10 @@
             {
                 "code": "RVC_DOSES_ADMINISTERED-YELLOW_FEVER-REACTIVE",
                 "id": "G0MXzsUpgYW"
+            },
+            {
+                "code": "RVC_VACCINE_UTILIZATION",
+                "id": "OSqieeqbysf"
             },
             {
                 "code": "RVC_VU-BCG-PREVENTIVE",
