@@ -71,7 +71,7 @@ export const baseConfig = {
     dataElementCodeForAgeDistribution: "RVC_AGE_DISTRIBUTION",
     dataElementCodeForPopulationByAge: "RVC_POPULATION_BY_AGE",
     dataSetDashboardCodePrefix: "RVC_CAMPAIGN",
-    dataSetExtraIdentifiables: ["DS_NSd_3", "SrPi5dzhNcD"],
+    dataSetExtraIdentifiables: ["AdRfEJo79yD", "SrPi5dzhNcD"],
     userRoleNames: {
         manager: [userRoles.campaignManager],
         feedback: [userRoles.feedback],
@@ -685,7 +685,7 @@ export async function getMetadataConfig(db: DbD2): Promise<MetadataConfig> {
         indicators: { fields: { id: true, code: true }, filters: [codeFilter] },
         dataSets: {
             fields: { id: true, name: true, code: true },
-            filters: [`identifiable:in:[${baseConfig.dataSetExtraIdentifiables.join(",")}]`],
+            filters: [`code:in:[${baseConfig.dataSetExtraIdentifiables.join(",")}]`],
         },
         legendSets: { fields: { id: true, code: true }, filters: [codeFilter] },
         organisationUnitLevels: {},
