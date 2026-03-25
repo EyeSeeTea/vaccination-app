@@ -23,18 +23,26 @@ export interface NamedObject {
     name: string;
 }
 
-export interface Access {
-    id: string;
-    access: string;
-    displayName?: string;
-}
+type Id = string;
 
-export interface Sharing {
-    publicAccess: string;
-    externalAccess: boolean;
-    userAccesses: Access[];
-    userGroupAccesses: Access[];
-}
+// e.g. "rw-w----" means [read/write] access for metadata and [read] for data
+export type SharingAccess = string;
+
+export type Sharing = {
+    public: SharingAccess;
+    external: boolean;
+    users: AccessRef;
+    userGroups: AccessRef;
+};
+
+export type AccessRef = Record<
+    Id,
+    {
+        displayName?: string;
+        access: SharingAccess;
+        id: Id;
+    }
+>;
 
 export interface User {
     id: string;

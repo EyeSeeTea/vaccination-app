@@ -9,6 +9,7 @@ import {
     getId,
     NamedRef,
     getRef,
+    Sharing,
 } from "./db.types";
 import { MetadataConfig } from "./config";
 import { getUid } from "../utils/dhis2";
@@ -16,10 +17,8 @@ import { getUid } from "../utils/dhis2";
 export interface CategoryOptionTeam {
     id: string;
     name: string;
+    sharing: Sharing;
     shortName: string;
-    displayName: string;
-    publicAccess: string;
-    displayShortName: string;
     startDate: string;
     endDate: string;
     dimensionItemType: "CATEGORY_OPTION";
@@ -113,12 +112,10 @@ export class Teams {
             const name = getTeamName(campaignName, nameOffset + i, teams);
             const id = getUid("team", name);
             const categoryOption: CategoryOptionTeam = {
-                id,
-                name,
+                id: id,
+                name: name,
                 shortName: `Team ${nameOffset + i}_${id}`,
-                displayName: name,
-                publicAccess: "rwrw----",
-                displayShortName: name,
+                sharing: { public: "rwrw----", external: false, users: {}, userGroups: {} },
                 startDate: startDate.clone().startOf("day").utc().toISOString(),
                 // The end date is inclusive for the app, but exclusive for DHIS2, so add one day
                 endDate: endDate.clone().add(1, "day").startOf("day").utc().toISOString(),

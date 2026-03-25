@@ -181,7 +181,7 @@ export const metadataFields: MetadataFields = {
         id: true,
         name: true,
         description: true,
-        publicAccess: true,
+        sharing: { public: true },
         periodType: true,
         categoryCombo: ref,
         dataElementDecoration: true,
@@ -315,9 +315,9 @@ export default class DbD2 {
         Array<{ id: string; categoryOptionCombos: Array<{ id: string; categoryOptions: Ref[] }> }>
     > {
         // User identifiable instead of code, as the default category combo has no code
-        const filter = `identifiable:in:[${_.uniq(codes).join(",")}]`;
+        const filter = `code:in:[${_.uniq(codes).join(",")}]`;
 
-        const { categoryCombos } = await this.getMetadata<{
+        const { categoryCombos: categoryCombos1 } = await this.getMetadata<{
             categoryCombos: Array<{
                 id: string;
                 code: string;
@@ -339,6 +339,33 @@ export default class DbD2 {
                 filters: [filter],
             },
         });
+
+        // Temporal, get default
+
+        const { categoryCombos: categoryCombos2 } = await this.getMetadata<{
+            categoryCombos: Array<{
+                id: string;
+                code: string;
+                categoryOptionCombos: Array<{
+                    id: string;
+                    categoryOptions: Array<{ id: string }>;
+                }>;
+            }>;
+        }>({
+            categoryCombos: {
+                fields: {
+                    id: true,
+                    code: true,
+                    categoryOptionCombos: {
+                        id: true,
+                        categoryOptions: { id: true },
+                    },
+                },
+                filters: [`name:eq:default`],
+            },
+        });
+
+        const categoryCombos = _.concat(categoryCombos1, categoryCombos2);
 
         const missingCodes = _(codes)
             .difference(categoryCombos.map(cc => cc.code))
