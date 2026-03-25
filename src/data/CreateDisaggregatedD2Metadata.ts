@@ -9,7 +9,7 @@ import {
     D2ValidationRule,
     MetadataPick,
     PartialPersistedModel,
-} from "@eyeseetea/d2-api/2.36";
+} from "../types/d2-api";
 import { CampaignType } from "../models/AntigensDisaggregationLegacy";
 import { dataElementsInfo, indicatorsInfo, DataElementInfo } from "../models/D2CampaignMetadata";
 import { cartesianProduct2, cartesianProduct3, powerSet } from "../utils/lodash-mixins";
