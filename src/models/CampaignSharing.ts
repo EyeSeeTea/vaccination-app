@@ -58,18 +58,16 @@ export type SharingFilter =
 interface User {
     id: string;
     displayName: string;
-    userCredentials?: {
-        userRoles: Array<{
-            id: string;
-            name: string;
-        }>;
-    };
+    userRoles: Array<{
+        id: string;
+        name: string;
+    }>;
 }
 
 const userFields = {
     id: true,
     displayName: true,
-    userCredentials: { userRoles: { id: true, name: true } },
+    userRoles: { id: true, name: true },
 };
 
 interface UserGroup {
@@ -306,9 +304,9 @@ function getAccesses<K extends keyof UserAndGroupAccesses>(
 function getUserAccessesFilteredByRoles(
     users: User[],
     sharing: { userRoles: Array<string[]>; permission: ObjectPermission }
-) {
+): Access[] {
     const userMatchesUserRoles = (user: User) => {
-        const userRoles = user.userCredentials ? user.userCredentials.userRoles : [];
+        const userRoles = user.userRoles || [];
         const userRoleNames = userRoles.map(userRole => userRole.name);
         return sharing.userRoles.every(
             expectedUserRoles => _.intersection(userRoleNames, expectedUserRoles).length > 0
