@@ -10,12 +10,267 @@
             "deleted": 0,
             "ignored": 0,
             "importSummaries": [
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `JERJUMQW4QV` name to `15 - 29 y`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `UQH8NGGIYQN` name to `5 - 12 y`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `NKEGI7N2KUB` name to `5 - 14 y`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `DWUSUI0STTC` name to `15 - 45 y`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `J78BBZYYW5C` name to `> 45 y`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `MXBVNLVBCBU` name to `2 - 4 y`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `L9O3DECPIG2` name to `15 - 19 y`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `BCLXEXCM0TL` name to `> 30 y`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `OBDBAVNDFF8` name to `0 - 6 w`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `VE6JWYVBYSB` name to `5 - 9 y`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `DXRKECORFHH` name to `8 - 14 y`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `CBTZRCKQHQD` name to `15 - 99 y`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `JYPCE4UQMQ2` name to `9 - 14 y`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `OAFN55Y0CH3` name to `> 14 y`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `TWUXJTY3RTQ` name to `30 - 45 y`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `DZCNEXBHORK` name to `6 w - 11 m`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `ZH8LTDVBS2K` name to `5 - 7 y`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                }
             ],
             "imported": 0,
             "responseType": "ImportSummaries",
             "status": "SUCCESS",
-            "total": 0,
-            "updated": 0
+            "total": 17,
+            "updated": 17
         },
         "status": "OK"
     }

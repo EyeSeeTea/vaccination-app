@@ -393,6 +393,10 @@ function getAntigens(
 
                 const dataElementsForType = _(dataElementsForType0)
                     .map(dataElement => {
+                        // Disaggregated dataElements use "-" as separator (ie. "RVC_DA-BCG-1-PREVENTIVE")
+                        const isDisaggregated = dataElement.code.includes("-");
+                        if (!isDisaggregated) return dataElement;
+
                         const codePrefix = assert(dataElement.code.split("-")[0]);
                         const deInfo = dataElementsInfo.find(de => de.code.startsWith(codePrefix));
                         // For disaggregated data elements, use modelCode as domain ID (as
