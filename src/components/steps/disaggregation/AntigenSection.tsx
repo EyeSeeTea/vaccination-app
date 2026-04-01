@@ -15,10 +15,11 @@ import {
 import { createStyles, WithStyles, Theme } from "@material-ui/core";
 
 import i18n from "../../../locales";
-import { AntigenDisaggregation, CampaignType } from "../../../models/AntigensDisaggregation";
+import { CampaignType } from "../../../models/AntigensDisaggregationLegacy";
 import SimpleCheckbox from "../../forms/SimpleCheckBox";
 import DataElement from "./DataElement";
 import { memoize } from "../../../utils/memoize";
+import { AntigenDisaggregation } from "../../../models/AntigensDisaggregation";
 
 type Path = Array<number | string>;
 

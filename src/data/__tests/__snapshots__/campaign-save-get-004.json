@@ -1,0 +1,54 @@
+{
+    "args": [
+        "/metadata",
+        {
+            "translate": true,
+            "users:fields": "id,displayName,userCredentials[userRoles[id,name]]",
+            "users:filter": "dataViewOrganisationUnits.id:in:[wY8HiLmETeU]"
+        }
+    ],
+    "returnValue": {
+        "users": [
+            {
+                "displayName": "User 3097",
+                "id": "M8wM88OFDzD",
+                "userCredentials": {
+                    "userRoles": [
+                        {
+                            "id": "A44s8cOcMP4",
+                            "name": "Position: Ops Staff (non-medical)"
+                        },
+                        {
+                            "id": "N4dxeOVu7aN",
+                            "name": "Position: Field User"
+                        }
+                    ]
+                }
+            },
+            {
+                "displayName": "User 4472",
+                "id": "yHSEQsKSpYH",
+                "userCredentials": {
+                    "userRoles": [
+                        {
+                            "id": "Oyu401YFLyv",
+                            "name": "RVC App: Access"
+                        },
+                        {
+                            "id": "eCY3RWokKlH",
+                            "name": "RVC App: Campaign Manager"
+                        },
+                        {
+                            "id": "gmOkgYI46ny",
+                            "name": "Position: Medical Focal Point"
+                        },
+                        {
+                            "id": "mnIBssgDVSC",
+                            "name": "Data Entry: Online Edit"
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}

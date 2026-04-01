@@ -6,7 +6,7 @@ import { createStyles, WithStyles, Theme } from "@material-ui/core";
 import { IconButton, Icon } from "@material-ui/core";
 
 import i18n from "../../../locales";
-import { AntigenDisaggregationCategoriesData } from "../../../models/AntigensDisaggregation";
+import { AntigenDisaggregationCategoriesData } from "../../../models/AntigensDisaggregationLegacy";
 import SimpleCheckbox from "../../forms/SimpleCheckBox";
 import OptionGroup from "./OptionGroup";
 

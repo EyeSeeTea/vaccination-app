@@ -8,7 +8,7 @@ export function formatDateLong(inputDate: string | Date | Moment | undefined): s
     if (!inputDate) {
         return "";
     } else {
-        const date = moment(inputDate);
+        const date = moment.utc(inputDate);
         return date.format("YYYY-MM-DD HH:mm:ss");
     }
 }
@@ -17,7 +17,7 @@ export function formatDateShort(inputDate: string | Date | Moment | undefined): 
     if (!inputDate) {
         return "";
     } else {
-        const date = moment(inputDate);
+        const date = moment.utc(inputDate);
         return date.format("YYYY-MM-DD");
     }
 }

@@ -1,6 +1,6 @@
 import _ from "lodash";
 import "../utils/lodash-mixins";
-import DbD2 from "./db-d2";
+import DbD2, { metadataFields } from "./db-d2";
 import {
     Category,
     DataElementGroup,
@@ -20,6 +20,8 @@ import {
 } from "./db.types";
 import { sortAgeGroups } from "../utils/age-groups";
 import { interpolate } from "../utils/strings";
+import { assert } from "../utils/assert";
+import { dataElementsInfo, indicatorsInfo } from "./D2CampaignMetadata";
 
 export const userRoles = {
     app: "RVC App: Access",
@@ -29,6 +31,17 @@ export const userRoles = {
     medicalFocalPoint: "Position: Medical Focal Point",
     onlineDataEntry: "Data Entry: Online Edit",
 };
+
+const categoryCodes = [
+    "RVC_GENDER",
+    "RVC_TYPE",
+    "RVC_WS",
+    "RVC_ANTIGEN",
+    "RVC_DOSE",
+    "RVC_SEVERITY",
+    "RVC_AGE_GROUP",
+    "RVC_DISTATUS",
+];
 
 export const baseConfig = {
     expirationDays: 8,
@@ -70,6 +83,13 @@ export const baseConfig = {
     },
 };
 
+export const baseCategoriesForDosesAdministered = [
+    baseConfig.categoryCodeForAntigens,
+    baseConfig.categoryCodeForDoses,
+    baseConfig.categoryCodeForCampaignType,
+    baseConfig.categoryCodeForAgeGroup,
+];
+
 type BaseConfig = typeof baseConfig;
 
 export interface MetadataConfig extends BaseConfig {
@@ -96,22 +116,16 @@ export interface MetadataConfig extends BaseConfig {
     defaults: {
         categoryOptionCombo: CategoryOptionCombo;
     };
-    categoryOptions: CategoryOption[];
+    categoryOptions: CategoryOptionWithTranslations[];
     categoryCombos: CategoryCombo[];
     population: {
         dataElementGroup: DataElementGroup;
         totalPopulationDataElement: DataElement;
         ageDistributionDataElement: DataElement;
-        populationByAgeDataElement: DataElement;
         ageGroupCategory: Category;
     };
     dataElements: DataElement[];
-    dataElementsDisaggregation: Array<{
-        name: string;
-        code: string;
-        id: string;
-        categories: Record<AntigenCode, Array<{ code: string; optional: boolean }>>;
-    }>;
+    dataElementsDisaggregation: Array<DataElementDisaggregation>;
     indicators: Indicator[];
     antigens: Array<AntigenConfig>;
     legendSets: Array<{
@@ -121,6 +135,24 @@ export interface MetadataConfig extends BaseConfig {
         extraActivities: DataSet[];
     };
 }
+
+type CategoryOptionWithTranslations = CategoryOption & {
+    translations: Record<Locale, string>;
+};
+
+type Locale = string;
+
+export type CategoryInfo = {
+    code: string;
+    optional: boolean;
+};
+
+export type DataElementDisaggregation = {
+    name: string;
+    code: string;
+    id: string;
+    categories: Record<AntigenCode, Array<CategoryInfo>>;
+};
 
 export type AntigenConfig = {
     id: string;
@@ -209,6 +241,25 @@ function getFromRefs<T>(refs: Ref[], objects: T[]): T[] {
     return refs.map(ref => _(objectsById).getOrFail(ref.id));
 }
 
+const dataElementsFromInfo = () =>
+    dataElementsInfo.map(
+        (deInfo): DataElement => ({
+            id: deInfo.modelCode,
+            code: deInfo.modelCode,
+            displayName: deInfo.name,
+            categoryCombo: { id: "VIRTUAL" },
+            formName: deInfo.name,
+        })
+    );
+
+const indicatorsFromInfo = () =>
+    indicatorsInfo.map(
+        (indicatorInfo): Indicator => ({
+            id: indicatorInfo.modelCode,
+            code: indicatorInfo.modelCode,
+        })
+    );
+
 function getConfigDataElementsDisaggregation(
     antigens: MetadataConfig["antigens"],
     dataElementGroups: DataElementGroup[],
@@ -218,10 +269,16 @@ function getConfigDataElementsDisaggregation(
 ): MetadataConfig["dataElementsDisaggregation"] {
     const groupsByCode = _.keyBy(dataElementGroups, getCode);
     const catCombosByCode = _.keyBy(categoryCombos, getCode);
-    const dataElementsForAntigens = getFromRefs(
+
+    const dataElementsFromGroup = getFromRefs(
         _(groupsByCode).getOrFail(baseConfig.dataElementGroupCodeForAntigens).dataElements,
         dataElements
     );
+
+    const dataElementsForAntigens = _(dataElementsFromGroup)
+        .concat(dataElementsFromInfo())
+        .uniqBy(de => de.code)
+        .value();
 
     return dataElementsForAntigens.map(
         (dataElement): MetadataConfig["dataElementsDisaggregation"][0] => {
@@ -246,7 +303,9 @@ function getConfigDataElementsDisaggregation(
 
             const requiredCategoriesDefault = getCategories("REQUIRED");
             const optionalCategoriesDefault = getCategories("OPTIONAL");
+            const categoriesByCode = _.keyBy(categories, getCode);
 
+            // Categories can be customized by antigen
             const categoriesByAntigen = _(antigens)
                 .map(antigen => {
                     const requiredCategories = _(
@@ -261,7 +320,22 @@ function getConfigDataElementsDisaggregation(
                         .map(category => ({ code: category.code, optional: true }))
                         .value();
 
-                    const categories = _.concat(requiredCategories, optionalCategories);
+                    // Special case for 'Doses administered': to reduce the number of categories in
+                    // the category combo (which generates COCs), add inconditionally categories
+                    // that are always present for this data element.
+                    const baseCategories =
+                        dataElement.code === baseConfig.dataElementDosesAdministeredCode
+                            ? _(categoriesByCode)
+                                  .at(baseCategoriesForDosesAdministered)
+                                  .map(category => ({ code: category.code, optional: false }))
+                                  .value()
+                            : [];
+
+                    const categories = _(baseCategories)
+                        .concat(requiredCategories)
+                        .concat(optionalCategories)
+                        .uniqBy(getCode)
+                        .value();
 
                     return [antigen.code, categories] as [typeof antigen.code, typeof categories];
                 })
@@ -277,6 +351,17 @@ function getConfigDataElementsDisaggregation(
         }
     );
 }
+
+const dataElementsOrderByCode = [
+    "RVC_DOSES_ADMINISTERED", //
+    "RVC_DOSES_USED",
+    "RVC_ADS_USED",
+    "RVC_NEEDLES",
+    "RVC_SYRINGES",
+    "RVC_SAFETY_BOXES",
+    "RVC_AEB",
+    "RVC_AEFI",
+];
 
 function getAntigens(
     dataElementGroups: DataElementGroup[],
@@ -301,16 +386,33 @@ function getAntigens(
         (categoryOption): MetadataConfig["antigens"][0] => {
             const getDataElements = (typeString: string) => {
                 const code = getRvcCode([categoryOption.code, typeString]);
-                const dataElementsForType = getFromRefs(
+                const dataElementsForType0 = getFromRefs(
                     _(dataElementGroupsByCode).getOrFail(code).dataElements,
                     dataElements
                 );
-                // formName: Name - INDEX
+
+                const dataElementsForType = _(dataElementsForType0)
+                    .map(dataElement => {
+                        // Disaggregated dataElements use "-" as separator (ie. "RVC_DA-BCG-1-PREVENTIVE")
+                        const isDisaggregated = dataElement.code.includes("-");
+                        if (!isDisaggregated) return dataElement;
+
+                        const codePrefix = assert(dataElement.code.split("-")[0]);
+                        const deInfo = dataElementsInfo.find(de => de.code.startsWith(codePrefix));
+                        // For disaggregated data elements, use modelCode as domain ID (as
+                        // we don't have actual objects in the database)
+                        return deInfo
+                            ? { id: deInfo.modelCode, code: deInfo.modelCode }
+                            : { id: dataElement.id, code: dataElement.code };
+                    })
+                    .uniqBy(de => de.code)
+                    .value();
+
                 return dataElementsForType.map(de => ({
                     id: de.id,
                     code: de.code,
                     optional: typeString === "OPTIONAL",
-                    order: parseInt(de.formName.split(" - ")[1] || "0"),
+                    order: dataElementsOrderByCode.indexOf(de.code) ?? Number.MAX_VALUE,
                 }));
             };
 
@@ -374,7 +476,7 @@ function getAntigens(
 
             return {
                 id: categoryOption.id,
-                name: categoryOption.displayName,
+                name: categoryOption.name,
                 displayName: categoryOption.displayName,
                 code: categoryOption.code,
                 dataElements: dataElementSorted,
@@ -485,9 +587,6 @@ function getPopulationMetadata(
     const ageDistributionDataElement = dataElementsByCode.getOrFail(
         baseConfig.dataElementCodeForAgeDistribution
     );
-    const populationByAgeDataElement = dataElementsByCode.getOrFail(
-        baseConfig.dataElementCodeForPopulationByAge
-    );
 
     const ageGroupCategory = _(categories)
         .keyBy("code")
@@ -500,7 +599,6 @@ function getPopulationMetadata(
     return {
         totalPopulationDataElement: totalPopulationDataElement,
         ageDistributionDataElement: ageDistributionDataElement,
-        populationByAgeDataElement: populationByAgeDataElement,
         ageGroupCategory,
         dataElementGroup: populationGroup,
     };
@@ -517,7 +615,7 @@ function getAttributes(attributes: Attribute[]) {
     };
 }
 
-function getDefaults(metadata: RawMetadataConfig): MetadataConfig["defaults"] {
+function getDefaults(metadata: RawMetadataConfig1): MetadataConfig["defaults"] {
     return {
         categoryOptionCombo: _(metadata.categoryOptionCombos)
             .keyBy(coc => coc.displayName)
@@ -525,9 +623,17 @@ function getDefaults(metadata: RawMetadataConfig): MetadataConfig["defaults"] {
     };
 }
 
-interface RawMetadataConfig {
+type CategoryOptionWithD2Translations = CategoryOption & {
+    translations: Array<{ property: string; locale: string; value: string }>;
+};
+
+type RawMetadataConfig1 = {
     attributes: Attribute[];
-    categories: Category[];
+    categories: Array<
+        Omit<Category, "categoryOptions"> & {
+            categoryOptions: CategoryOptionWithD2Translations[];
+        }
+    >;
     categoryCombos: CategoryCombo[];
     categoryOptionCombos: CategoryOptionCombo[];
     categoryOptionGroups: CategoryOptionGroup[];
@@ -538,7 +644,11 @@ interface RawMetadataConfig {
     organisationUnitLevels: OrganisationUnitLevel[];
     userRoles: NamedObject[];
     legendSets: Ref[];
-}
+};
+
+type RawMetadataConfig2 = {
+    categories: Omit<Category, "categoryOptions">[];
+};
 
 export async function getMetadataConfig(db: DbD2): Promise<MetadataConfig> {
     const userRoleNames = _(baseConfig.userRoleNames as _.Dictionary<string[]>)
@@ -551,9 +661,18 @@ export async function getMetadataConfig(db: DbD2): Promise<MetadataConfig> {
     const codeFilter = "code:startsWith:RVC_";
     const modelParams = { filters: [codeFilter] };
 
-    const metadataParams = {
+    const metadataParams1 = {
         attributes: {},
-        categories: modelParams,
+        categories: {
+            fields: {
+                ...metadataFields.categories,
+                categoryOptions: {
+                    ...metadataFields.categoryOptions,
+                    translations: { property: true, locale: true, value: true },
+                },
+            },
+            filters: [`code:in:[${categoryCodes.join(",")}]`],
+        },
         categoryCombos: modelParams,
         categoryOptionGroups: {
             ...modelParams,
@@ -577,7 +696,20 @@ export async function getMetadataConfig(db: DbD2): Promise<MetadataConfig> {
         userRoles: { fields: namedObjectFields, filters: [userRolesFilter] },
     };
 
-    const metadata = await db.getMetadata<RawMetadataConfig>(metadataParams);
+    // Second request with different fields to avoid fetching too much data
+    const metadataParams2 = {
+        categories: {
+            fields: _.omit(metadataFields.categories, ["categoryOptions"]),
+            filters: ["code:in:[RVC_TEAM]"],
+        },
+    };
+
+    const metadata1 = await db.getMetadata<RawMetadataConfig1>(metadataParams1);
+    const metadata2 = await db.getMetadata<RawMetadataConfig2>(metadataParams2);
+    const metadata2b: Pick<RawMetadataConfig1, "categories"> = {
+        categories: metadata2.categories.map(category => ({ ...category, categoryOptions: [] })),
+    };
+    const metadata = mergeMetadata(metadata1, metadata2b);
 
     const antigens = getAntigens(
         metadata.dataElementGroups,
@@ -594,9 +726,17 @@ export async function getMetadataConfig(db: DbD2): Promise<MetadataConfig> {
         categoriesDisaggregation: getCategoriesDisaggregation(metadata.categories),
         categoryOptions: _(metadata.categories)
             .flatMap(category => category.categoryOptions)
+            .map(categoryOption => addNameTranslations(categoryOption))
             .value(),
         categoryCombos: metadata.categoryCombos,
-        dataElements: metadata.dataElements,
+        dataElements: _(metadata.dataElements)
+            .concat(dataElementsFromInfo())
+            .uniqBy(de => de.code)
+            .value(),
+        indicators: _(metadata.indicators)
+            .concat(indicatorsFromInfo())
+            .uniqBy(ind => ind.code)
+            .value(),
         dataElementsDisaggregation: getConfigDataElementsDisaggregation(
             antigens,
             metadata.dataElementGroups,
@@ -613,7 +753,6 @@ export async function getMetadataConfig(db: DbD2): Promise<MetadataConfig> {
         ),
         userRoles: metadata.userRoles,
         legendSets: metadata.legendSets,
-        indicators: metadata.indicators,
         dataSets: { extraActivities: metadata.dataSets },
     };
 
@@ -621,3 +760,39 @@ export async function getMetadataConfig(db: DbD2): Promise<MetadataConfig> {
 }
 
 type AntigenCode = string;
+
+type GenericMetadata = Record<string, unknown[]>;
+
+// Merges two metadata objects, concatenating arrays (omit special "system" property)
+function mergeMetadata<T1 extends GenericMetadata, T2 extends GenericMetadata>(
+    metadata1: T1,
+    metadata2: T2
+): T1 & T2 {
+    const clean = <T extends GenericMetadata>(obj: T) => _.omit(obj, ["system"]) as T;
+
+    return _.mergeWith({}, clean(metadata1), clean(metadata2), (objValue, srcValue) => {
+        if (
+            (Array.isArray(objValue) || objValue === undefined) &&
+            (Array.isArray(srcValue) || srcValue === undefined)
+        ) {
+            return [...(objValue || []), ...(srcValue || [])];
+        } else {
+            throw new Error("Cannot merge metadata: incompatible types");
+        }
+    });
+}
+
+function addNameTranslations(
+    categoryOption: CategoryOptionWithD2Translations
+): CategoryOptionWithTranslations {
+    const translationsObject = _(categoryOption.translations)
+        .filter(translation => translation.property === "NAME")
+        .map(translation => [translation.locale, translation.value] as [string, string])
+        .fromPairs()
+        .value();
+
+    return {
+        ...categoryOption,
+        translations: translationsObject,
+    };
+}
