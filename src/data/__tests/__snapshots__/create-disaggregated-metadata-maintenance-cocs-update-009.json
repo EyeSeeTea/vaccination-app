@@ -10,12 +10,42 @@
             "deleted": 0,
             "ignored": 0,
             "importSummaries": [
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `SCFIZMCCMIH` name to `Severe`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                },
+                {
+                    "conflicts": [
+                    ],
+                    "description": "Update category option combo `HAVEUQKWK6W` name to `Minor`",
+                    "importCount": {
+                        "deleted": 0,
+                        "ignored": 0,
+                        "imported": 0,
+                        "updated": 1
+                    },
+                    "rejectedIndexes": [
+                    ],
+                    "responseType": "ImportSummary",
+                    "status": "SUCCESS"
+                }
             ],
             "imported": 0,
             "responseType": "ImportSummaries",
             "status": "SUCCESS",
-            "total": 0,
-            "updated": 0
+            "total": 2,
+            "updated": 2
         },
         "status": "OK"
     }

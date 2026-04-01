@@ -18,6 +18,7 @@ import { getUid } from "../utils/dhis2";
 import { assert, throw_ } from "../utils/assert";
 import fs from "fs";
 import { getId } from "../models/db.types";
+import { D2Translation } from "@eyeseetea/d2-api/schemas";
 
 export class CreateDisaggregatedD2Metadata {
     campaignTypes = {
@@ -111,6 +112,8 @@ export class CreateDisaggregatedD2Metadata {
             ],
         };
 
+        const translations = this.getTranslations(metadata);
+
         const indicators = indicatorsInfo.flatMap(indicatorConfig => {
             const existingIndicator = metadata.indicators.find(
                 ind => ind.code === indicatorConfig.modelCode
@@ -131,18 +134,25 @@ export class CreateDisaggregatedD2Metadata {
                 ]);
 
                 return combos.map(([doseNum, campaignType]): PartialPersistedModel<D2Indicator> => {
-                    const name = _.compact([
+                    const nameParts = _.compact([
                         indicatorConfig.name,
                         antigen?.antigen.name,
                         doseNum ? `Dose ${doseNum.toString()}` : null,
                         campaignType ? this.campaignTypes[campaignType].name : null,
-                    ]).join(" - ");
+                    ]);
+
+                    const name = nameParts.join(" - ");
 
                     // Keep only the dose number (if present) in the form name
-                    const formName = _.compact([
+                    const formNameParts = _.compact([
                         indicatorConfig.name,
                         doseNum ? `Dose ${doseNum.toString()}` : null,
-                    ]).join(" - ");
+                    ]);
+
+                    const indTranslations = translate(translations, [
+                        ["NAME", nameParts],
+                        ["DESCRIPTION", nameParts],
+                    ]);
 
                     const code = _.compact([
                         indicatorConfig.code,
@@ -187,17 +197,20 @@ export class CreateDisaggregatedD2Metadata {
                     const existingIndicator2 = metadata.indicators.find(
                         indicator => indicator.code === code
                     );
+
                     return {
                         indicatorType: { id: "cpUX4dfC0mL" },
                         ..._.omit(existingIndicator, ["created"]),
                         id: getUid("indicator", code.replace(/-/g, "_")),
                         ..._.omit(existingIndicator2, ["created"]),
+                        translations: indTranslations,
                         name: name,
+                        description: name,
                         shortName: shortName,
                         numerator: interpolate(indicatorConfig.numerator, namespace),
                         denominator: interpolate(indicatorConfig.denominator, namespace),
                         code: code,
-                        formName: formName,
+                        formName: formNameParts.join(" - "),
                     };
                 });
             });
@@ -249,6 +262,41 @@ export class CreateDisaggregatedD2Metadata {
         fs.writeFileSync(payloadOutput, JSON.stringify(payload2, null, 4), "utf-8");
 
         return res;
+    }
+
+    private getTranslations(metadata: Metadata): Translations {
+        const categoryCodes = ["RVC_TYPE", "RVC_ANTIGEN", "RVC_DOSE"];
+        const dataElementCodes = dataElementsInfo.map(de => de.modelCode);
+        const indicatorCodes = indicatorsInfo.map(ind => ind.modelCode);
+
+        const dataElements = _(metadata.dataElements)
+            .filter(de => Boolean(de.code && dataElementCodes.includes(de.code)))
+            .value();
+
+        const indicators = _(metadata.indicators)
+            .filter(ind => Boolean(ind.code && indicatorCodes.includes(ind.code)))
+            .value();
+
+        const categoryOptions = _(metadata.categories)
+            .filter(category => categoryCodes.includes(category.code))
+            .flatMap(category => category.categoryOptions)
+            .value();
+
+        const objects = _.concat(dataElements, indicators, categoryOptions);
+
+        const translations = _(objects)
+            .map(object => {
+                return [object.name, object.translations] as [string, typeof object.translations];
+            })
+            .fromPairs()
+            .value();
+
+        const locales = _(translations)
+            .flatMap(translations => translations.map(t => t.locale))
+            .uniq()
+            .value();
+
+        return { locales: locales, translations: translations };
     }
 
     // Replace global DEs by disaggregated DEs in groups "RVC - Antigen - ANTIGEN - REQUIRED|OPTIONAL"
@@ -370,24 +418,34 @@ export class CreateDisaggregatedD2Metadata {
                 : [null],
         ]);
 
+        const translations = this.getTranslations(metadata);
+
         return combos.map(
             ([antigen, doseNum, campaignType]): PartialPersistedModel<D2DataElement> => {
                 const existingDataElement = metadata.dataElements.find(
                     de => de.code === dataElementConfig.modelCode
                 );
 
-                const name = _.compact([
+                const nameParts = _.compact([
                     dataElementConfig.name,
                     antigen ? antigen.antigen.name : null,
                     doseNum ? `Dose ${doseNum.toString()}` : null,
                     campaignType ? this.campaignTypes[campaignType].name : null,
-                ]).join(" - ");
+                ]);
+
+                const name = nameParts.join(" - ");
 
                 // Keep only the dose number (if present) in the form name
-                const formName = _.compact([
+                const formNameParts = _.compact([
                     dataElementConfig.name,
                     doseNum ? `Dose ${doseNum.toString()}` : null,
-                ]).join(" - ");
+                ]);
+
+                const deTranslations = translate(translations, [
+                    ["NAME", nameParts],
+                    ["DESCRIPTION", nameParts],
+                    ["FORM_NAME", formNameParts],
+                ]);
 
                 const code = _.compact([
                     dataElementConfig.code,
@@ -405,11 +463,13 @@ export class CreateDisaggregatedD2Metadata {
                     domainType: "AGGREGATE",
                     aggregationType: "SUM",
                     ...(existingDataElement ? _.omit(existingDataElement, ["created"]) : {}),
+                    translations: deTranslations,
                     valueType: dataElementConfig.valueType,
                     id: getUid("dataElement", code.replace(/-/g, "_")),
                     name: name,
+                    description: name,
                     shortName: shortName,
-                    formName: formName,
+                    formName: formNameParts.join(" - "),
                     code: code,
                     zeroIsSignificant: dataElementConfig.storeZeroDataValues,
                     categoryCombo: assert(
@@ -629,7 +689,10 @@ const metadataQuery = {
             id: true,
             name: true,
             code: true,
-            categoryOptions: { id: true },
+            categoryOptions: {
+                name: true,
+                translations: { locale: true, property: true, value: true },
+            },
         },
     },
     categoryCombos: {
@@ -669,3 +732,34 @@ type AntigenInfo = {
         campaignType: CampaignType[];
     };
 };
+
+type Translations = {
+    locales: string[];
+    translations: Record<string, Array<{ locale: string; property: string; value: string }>>;
+};
+
+function translate(
+    translations: Translations,
+    parts: Array<["NAME" | "DESCRIPTION" | "FORM_NAME", string[]]>
+): Array<{ locale: string; property: string; value: string }> {
+    return translations.locales.flatMap((locale): D2Translation[] => {
+        return parts.map(([prop, partsForProp]) => {
+            const partsTranslated = partsForProp.map(part => {
+                const translationsForPart = translations.translations[part];
+                const translationForProp = translationsForPart?.find(
+                    t => t.locale === locale && t.property === prop
+                );
+                const translationForName = translationsForPart?.find(
+                    t => t.locale === locale && t.property === "NAME"
+                );
+                return translationForProp?.value || translationForName?.value || part;
+            });
+
+            return {
+                locale: locale,
+                property: prop,
+                value: partsTranslated.join(" - "),
+            };
+        });
+    });
+}
