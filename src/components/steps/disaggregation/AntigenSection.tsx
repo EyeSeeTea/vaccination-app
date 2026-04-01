@@ -20,7 +20,7 @@ import SimpleCheckbox from "../../forms/SimpleCheckBox";
 import DataElement from "./DataElement";
 import { memoize } from "../../../utils/memoize";
 
-type Path = (number | string)[];
+type Path = Array<number | string>;
 
 interface AntigenSectionProps extends WithStyles<typeof styles> {
     antigen: AntigenDisaggregation;
@@ -51,8 +51,9 @@ class AntigenSection extends React.Component<AntigenSectionProps, Disaggregation
         const { antigen, antigenCode, classes, update, setCampaignType } = this.props;
         const { isTypeSelectable } = this.props.antigen;
 
+        // Use antigen as view key to avoid problems on DOM updates (ie. radio tags not being updated)
         return (
-            <Table className={classes.table}>
+            <Table className={classes.table} key={antigen.id}>
                 <TableBody>
                     {isTypeSelectable && (
                         <TypeSelect antigen={antigen} setCampaignType={setCampaignType} />

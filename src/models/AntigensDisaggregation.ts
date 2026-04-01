@@ -1,10 +1,11 @@
 import { Category, CategoryOption, DataElement, getCode, Maybe, Ref } from "./db.types";
 import _ from "lodash";
-import { MetadataConfig, getRvcCode, baseConfig } from "./config";
+import { MetadataConfig, getRvcCode, baseConfig, AntigenConfig, Dose } from "./config";
 import { Antigen } from "./campaign";
 import "../utils/lodash-mixins";
 import DbD2 from "./db-d2";
 import { Struct } from "./Struct";
+import i18n from "../locales";
 
 const fp = require("lodash/fp");
 
@@ -30,6 +31,7 @@ interface AntigenDisaggregationData {
             optional: boolean;
             selected: boolean;
             visible: boolean;
+            restrictForOptionIds: string[] | undefined;
 
             options: Array<{
                 indexSelected: number;
@@ -49,7 +51,7 @@ export class AntigenDisaggregation extends Struct<AntigenDisaggregationData>() {
 
     get type(): Maybe<CampaignType> {
         const selectedList = _(this.dataElements)
-            .filter(de => de.code === "RVC_DOSES_ADMINISTERED")
+            .filter(de => de.code === baseConfig.dataElementDosesAdministeredCode)
             .flatMap(de => de.categories.filter(category => category.code === "RVC_TYPE"))
             .flatMap(category => category.options)
             .flatMap(options => options.values)
@@ -100,38 +102,53 @@ export interface SectionForDisaggregation {
     dataElements: Ref[];
     dataSet: { id: string };
     sortOrder: number;
-    greyedFields: Array<{
-        categoryOptionCombo: {
-            id: string;
-            categoryOptions: Array<{
-                id: string;
-                name: string;
-                displayName: string;
-                categories: Ref[];
-            }>;
-        };
-        dataElement: Ref;
-    }>;
+    greyedFields: Array<GreyedField>;
 }
+
+type GreyedField = {
+    categoryOptionCombo: {
+        id: string;
+        categoryOptions: GreyedFieldCategoryOption[];
+    };
+    dataElement: Ref;
+};
+
+type GreyedFieldCategoryOption = {
+    id: string;
+    name: string;
+    displayName: string;
+    categories: Ref[];
+};
 
 export type AntigenDisaggregationDataElement = AntigenDisaggregation["dataElements"][0];
 
 export type AntigenDisaggregationCategoriesData =
     AntigenDisaggregation["dataElements"][0]["categories"];
 
+type CategoryData = AntigenDisaggregationCategoriesData[0];
+
 export type AntigenDisaggregationOptionGroup = AntigenDisaggregationCategoriesData[0]["options"][0];
 
 export type AntigenDisaggregationEnabled = Array<{
-    type: CampaignType;
+    type: Maybe<CampaignType>;
     antigen: Antigen;
     ageGroups: Array<CategoryOption>;
-    dataElements: Array<{
-        id: string;
-        name: string;
-        code: string;
-        categories: Array<{ code: string; categoryOptions: CategoryOption[] }>;
-    }>;
+    dataElements: AntigenDisaggregationEnabledDataElement[];
 }>;
+
+export type AntigenDisaggregationEnabledDataElement = {
+    id: string;
+    name: string;
+    code: string;
+    categories: Array<{
+        code: string;
+        categoryOptions: CategoryOption[];
+        onlyForCategoryOptionIds: string[] | undefined;
+    }>;
+};
+
+export type AntigenDisaggregationEnabledDataElementCategory =
+    AntigenDisaggregationEnabledDataElement["categories"][0];
 
 export type CocMetadata = {
     getByOptions(categoryOptions: Ref[]): Maybe<string>;
@@ -210,7 +227,9 @@ export class AntigensDisaggregation {
     }
 
     public validate(): Array<{ key: string; namespace: _.Dictionary<string> }> {
-        const errors = _(this.getEnabled())
+        const enabled = this.getEnabled();
+
+        const errors1 = _(enabled)
             .flatMap(antigen => antigen.dataElements)
             .flatMap(dataElement => dataElement.categories)
             .map(category =>
@@ -221,7 +240,20 @@ export class AntigensDisaggregation {
             .compact()
             .value();
 
-        return errors;
+        const errors2 = _(enabled)
+            .filter(antigen => !antigen.type)
+            .map(antigen =>
+                antigen.type
+                    ? null
+                    : {
+                          key: "antigen_has_no_selected_type",
+                          namespace: { antigen: antigen.antigen.displayName },
+                      }
+            )
+            .compact()
+            .value();
+
+        return _.concat(errors1, errors2);
     }
 
     static getCategories(
@@ -236,8 +268,7 @@ export class AntigensDisaggregation {
         if (!categoriesForAntigen)
             throw new Error(`No categories defined for antigen: ${antigenConfig.code}`);
 
-        return categoriesForAntigen.map((categoryRef): AntigenDisaggregationCategoriesData[0] => {
-            const optional = categoryRef.optional;
+        return categoriesForAntigen.flatMap((categoryRef): CategoryData[] => {
             const category = _(categoriesByCode).getOrFail(categoryRef.code);
             const isDosesCategory = category.code === config.categoryCodeForDoses;
             const isAntigensCategory = category.code === config.categoryCodeForAntigens;
@@ -248,55 +279,56 @@ export class AntigensDisaggregation {
                 ...categoryAttributes
             } = _(config.categoriesDisaggregation).keyBy(getCode).getOrFail(categoryRef.code);
 
-            let groups: CategoryOption[][][];
+            let groups: Group[];
+
             if ($categoryOptions.kind === "fromAgeGroups") {
-                groups = antigenConfig.ageGroups;
+                groups = getGroupsForAgeGroups(antigenConfig);
             } else if ($categoryOptions.kind === "fromAntigens") {
-                groups = config.antigens.map(antigen => [[antigen]]);
+                groups = [{ categoryOptions: config.antigens.map(antigen => [[antigen]]) }];
             } else if ($categoryOptions.kind === "fromDoses") {
-                groups = antigenConfig.doses.map(dose => [[dose]]);
+                groups = [{ categoryOptions: antigenConfig.doses.map(dose => [[dose]]) }];
             } else {
-                groups = $categoryOptions.values.map(option => [[option]]);
+                groups = [{ categoryOptions: $categoryOptions.values.map(option => [[option]]) }];
             }
 
-            const categoryOptionsEnabled = _(section ? section.greyedFields : [])
-                .flatMap(greyedField => {
-                    return greyedField.categoryOptionCombo.categoryOptions.filter(
-                        categoryOption => {
-                            return categoryOption.categories.some(
-                                greyedFieldCategory => greyedFieldCategory.id === category.id
-                            );
-                        }
-                    );
-                })
-                .uniq()
-                .value();
+            // Create a category for each group of category options
+            // Example: Malaria will have separate dose categories by age groups
+            return groups.map((group): CategoryData => {
+                const categoryOptionsEnabled = _(section ? section.greyedFields : [])
+                    .flatMap(greyedField =>
+                        getGreyedFieldCategoryOptions(group, greyedField, category)
+                    )
+                    .uniq()
+                    .value();
 
-            const wasCategorySelected = !_(categoryOptionsEnabled).isEmpty();
+                const wasCategorySelected = !_(categoryOptionsEnabled).isEmpty();
 
-            const options = getCategoryOptions(
-                antigenConfig,
-                category,
-                groups,
-                categoryOptionsEnabled
-            );
+                const options = getCategoryOptions(
+                    antigenConfig,
+                    category,
+                    group.categoryOptions,
+                    categoryOptionsEnabled
+                );
 
-            const selected = wasCategorySelected ? true : !optional;
+                const optional = group.optional ?? categoryRef.optional;
+                const selected = wasCategorySelected ? true : !optional;
 
-            // Example: _23.6 Displacement Status
-            const cleanCategoryName = categoryName
-                .replace(/^[_\d.\s]+/, "")
-                .replace("RVC", "")
-                .trim();
+                // Example: _23.6 Displacement Status
+                const cleanCategoryName = categoryName
+                    .replace(/^[_\d.\s]+/, "")
+                    .replace("RVC", "")
+                    .trim();
 
-            return {
-                ...categoryAttributes,
-                name: cleanCategoryName,
-                optional: optional,
-                selected: selected,
-                options: options,
-                visible: !(isDosesCategory || isAntigensCategory || isCampaignTypeCategory),
-            };
+                return {
+                    ...categoryAttributes,
+                    name: cleanCategoryName + (group.name ? ` (${group.name})` : ""),
+                    optional: optional,
+                    selected: selected,
+                    options: options,
+                    visible: !(isDosesCategory || isAntigensCategory || isCampaignTypeCategory),
+                    restrictForOptionIds: group.onlyForCategoryOptionIds,
+                };
+            });
         });
     }
 
@@ -313,15 +345,16 @@ export class AntigensDisaggregation {
                     .map(dataElement => {
                         const categories = _(dataElement.categories)
                             .filter(category => category.selected)
-                            .map(category => {
-                                const categoryOptions = _(category.options)
-                                    .flatMap(({ values, indexSelected }) => values[indexSelected])
-                                    .compact()
-                                    .filter(categoryOption => categoryOption.selected)
-                                    .value();
+                            .map((category): AntigenDisaggregationEnabledDataElementCategory => {
+                                const categoryOptions = this.getCategoryOptions(
+                                    category,
+                                    antigenDisaggregation
+                                );
+
                                 return {
                                     code: category.code,
-                                    categoryOptions: categoryOptions.map(obj => obj.option),
+                                    categoryOptions: categoryOptions,
+                                    onlyForCategoryOptionIds: category.restrictForOptionIds,
                                 };
                             })
                             .value();
@@ -339,11 +372,12 @@ export class AntigensDisaggregation {
                     .flatMap(dataElement => dataElement.categories)
                     .filter(category => category.code === this.config.categoryCodeForAgeGroup)
                     .flatMap(category => category.categoryOptions)
+                    .uniqBy(ageGroup => ageGroup.id)
                     .value();
 
                 return {
                     ageGroups: ageGroups,
-                    type: antigenDisaggregation.type || defaultCampaignType,
+                    type: antigenDisaggregation.type,
                     antigen: {
                         code: antigenDisaggregation.code,
                         name: antigenDisaggregation.name,
@@ -357,6 +391,29 @@ export class AntigensDisaggregation {
         );
 
         return enabled;
+    }
+
+    private getCategoryOptions(
+        category: CategoryData,
+        antigenDisaggregation: AntigenDisaggregation
+    ) {
+        const isDoses = category.code === this.config.categoryCodeForDoses;
+
+        const categoryOptionsList = _(category.options)
+            .flatMap(({ values, indexSelected }) => values[indexSelected])
+            .compact()
+            // For the Doses category, we want all the category options (doses), even if they are
+            // not selected, the selection will be done in the corresponding Age group category.
+            .filter(categoryOption => isDoses || categoryOption.selected)
+            .value();
+
+        const isAntigen = category.code === this.config.categoryCodeForAntigens;
+
+        const categoryOptions = categoryOptionsList.map(obj => obj.option);
+
+        return isAntigen
+            ? categoryOptions.filter(co => co.code === antigenDisaggregation.code)
+            : categoryOptions;
     }
 
     static buildForAntigen(
@@ -403,7 +460,7 @@ export class AntigensDisaggregation {
             isTypeSelectable: antigenConfig.isTypeSelectable,
         });
 
-        if (!disaggregation.isTypeSelectable || !disaggregation.type) {
+        if (!disaggregation.isTypeSelectable && !disaggregation.type) {
             return disaggregation.updateCampaignType(defaultCampaignType);
         } else {
             return disaggregation;
@@ -414,11 +471,14 @@ export class AntigensDisaggregation {
         const categoryComboCodes = _(this.getEnabled())
             .flatMap(disaggregation => disaggregation.dataElements)
             .filter(dataElement => !_(dataElement.categories).isEmpty())
-            .map(dataElement => getRvcCode(dataElement.categories.map(category => category.code)))
+            .map(dataElement =>
+                getRvcCode(_.uniq(dataElement.categories.map(category => category.code)))
+            )
             .uniq()
             .value();
 
         // Add age groups required by target population data values
+
         const allCategoryComboCodes = [
             ...categoryComboCodes,
             this.config.categoryCodeForAgeGroup,
@@ -443,6 +503,56 @@ export class AntigensDisaggregation {
 
         return { getByOptions: getCocIdByCategoryOptions };
     }
+}
+
+type Group = {
+    categoryOptions: CategoryOption[][][];
+    optional?: boolean;
+    name?: string;
+    // Currently, this is used only to model age groups by doses
+    onlyForCategoryOptionIds?: string[];
+    doseId?: string;
+};
+
+function getGreyedFieldCategoryOptions(
+    group: Group,
+    greyedField: GreyedField,
+    category: Category
+): GreyedFieldCategoryOption[] {
+    const { categoryOptions } = greyedField.categoryOptionCombo;
+
+    // As the Doses category is split, we have to perform an extra check: the greyed field
+    // should belong to the dose category option we are processing.
+    const matchesCategoryOption =
+        !group.doseId || categoryOptions.some(categoryOption => categoryOption.id === group.doseId);
+
+    if (matchesCategoryOption) {
+        return greyedField.categoryOptionCombo.categoryOptions.filter(categoryOption => {
+            return categoryOption.categories.some(category_ => category_.id === category.id);
+        });
+    } else {
+        return [];
+    }
+}
+
+function getGroupsForAgeGroups(antigenConfig: AntigenConfig): Group[] {
+    return _(antigenConfig.doses)
+        .groupBy(dose => JSON.stringify(dose.ageGroups))
+        .values()
+        .map((doses): Group => {
+            const dose = doses[0];
+            if (!dose) throw new Error();
+            const dosesIndexes = doses.map(dose => dose.name.match(/\d+/)?.[0]).join("/");
+
+            return {
+                name: i18n.t("Dose {{-indexes}}", { indexes: dosesIndexes }),
+                categoryOptions: dose.ageGroups.options,
+                optional: dose.ageGroups.optional,
+                onlyForCategoryOptionIds: doses.map(dose => dose.id),
+                doseId: dose.id,
+            };
+        })
+        .value();
 }
 
 function getCategoryOptions(
@@ -508,4 +618,32 @@ export function getDataElements(
         .uniq()
         .map(deCode => dataElementsByCode.getOrFail(deCode))
         .value();
+}
+
+export function isAgeGroupIncluded(
+    ageGroup: Ref,
+    disaggregation: AntigenDisaggregationEnabled[0],
+    dose: Dose
+): boolean {
+    const dosesAdministeredDataElement = disaggregation.dataElements.find(dataElement => {
+        return dataElement.code === baseConfig.dataElementDosesAdministeredCode;
+    });
+
+    if (!dosesAdministeredDataElement) {
+        console.error(`Data element not found: ${baseConfig.dataElementDosesAdministeredCode}`);
+        return false;
+    }
+
+    const ageGroupIds = dosesAdministeredDataElement.categories
+        .filter(category => category.code === baseConfig.categoryCodeForAgeGroup)
+        .filter(ageGroupCategory => {
+            return (
+                !ageGroupCategory.onlyForCategoryOptionIds ||
+                ageGroupCategory.onlyForCategoryOptionIds.includes(dose.id)
+            );
+        })
+        .flatMap(item => item.categoryOptions)
+        .map(categoryOption => categoryOption.id);
+
+    return ageGroupIds.includes(ageGroup.id);
 }

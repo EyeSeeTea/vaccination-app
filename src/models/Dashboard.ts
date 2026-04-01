@@ -16,8 +16,8 @@ import {
 import { Antigen } from "./campaign";
 import { Moment } from "moment";
 import { getDaysRange } from "../utils/date";
-import { AntigenDisaggregationEnabled } from "./AntigensDisaggregation";
-import { MetadataConfig } from "./config";
+import { AntigenDisaggregationEnabled, isAgeGroupIncluded } from "./AntigensDisaggregation";
+import { AntigenConfig, MetadataConfig } from "./config";
 
 type DashboardItem = {
     type: string;
@@ -128,9 +128,17 @@ export class Dashboard {
                     categoryId: allCategoryIds.teams,
                     elements: teamIds,
                 }),
-                ageGroups: (antigen: Ref) => ({
+                ageGroups: (
+                    antigen: AntigenConfig,
+                    dose: { categoryId: string; doseId: string; name: string } | null
+                ) => ({
                     categoryId: allCategoryIds.ageGroup,
-                    elements: ageGroupsByAntigen[antigen.id],
+                    elements: getAgeGroupIds(
+                        antigensDisaggregation,
+                        antigen,
+                        dose,
+                        ageGroupsByAntigen
+                    ),
                 }),
                 doses: (antigen: Ref) => ({
                     categoryId: allCategoryIds.doses,
@@ -275,6 +283,27 @@ export class Dashboard {
         };
 
         return dashboardData;
+    }
+}
+
+function getAgeGroupIds(
+    antigensDisaggregation: AntigenDisaggregationEnabled,
+    antigen: AntigenConfig,
+    dose: { categoryId: string; doseId: string; name: string } | null,
+    ageGroupsByAntigen: _.Dictionary<string[]>
+): string[] {
+    const antigenDisaggregation = antigensDisaggregation.find(disaggregation => {
+        return disaggregation.antigen.id === antigen.id;
+    });
+    const doseConfig = dose ? antigen.doses.find(d => d.id === dose.doseId) : null;
+    const antigenAgeGroups = ageGroupsByAntigen[antigen.id] || [];
+
+    if (antigenDisaggregation && doseConfig) {
+        return antigenAgeGroups.filter(ageGroupId => {
+            return isAgeGroupIncluded({ id: ageGroupId }, antigenDisaggregation, doseConfig);
+        });
+    } else {
+        return antigenAgeGroups;
     }
 }
 

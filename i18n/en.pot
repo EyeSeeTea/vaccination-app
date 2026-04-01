@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2024-11-05T08:11:47.684Z\n"
-"PO-Revision-Date: 2024-11-05T08:11:47.684Z\n"
+"POT-Creation-Date: 2025-04-11T07:52:45.509Z\n"
+"PO-Revision-Date: 2025-04-11T07:52:45.509Z\n"
 
 msgid "Campaigns"
 msgstr ""
@@ -360,6 +360,9 @@ msgid ""
 "be lost. Are you sure you want to proceed?"
 msgstr ""
 
+msgid "Dose {{-indexes}}"
+msgstr ""
+
 msgid "update"
 msgstr ""
 
@@ -472,6 +475,9 @@ msgid "Select at least one antigen"
 msgstr ""
 
 msgid "You must select at least one category option"
+msgstr ""
+
+msgid "You must select the type for antigen {{antigen}}"
 msgstr ""
 
 msgid "No target population defined"
