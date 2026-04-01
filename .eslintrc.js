@@ -22,9 +22,11 @@ module.exports = {
         "@typescript-eslint/no-this-alias": ["off"],
         "unused-imports/no-unused-imports": "off",
         "@typescript-eslint/no-unnecessary-type-constraint": ["off"],
+        "no-unused-vars": "off",
         "@typescript-eslint/no-unused-vars": [
             "warn",
             {
+                args: "all",
                 argsIgnorePattern: "^_",
                 varsIgnorePattern: "^_",
                 caughtErrorsIgnorePattern: "^_",

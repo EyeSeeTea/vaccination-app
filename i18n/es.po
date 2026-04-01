@@ -29,12 +29,6 @@ msgstr "Última actualización"
 msgid "Description"
 msgstr "Descripción"
 
-msgid "Start Date"
-msgstr "Fecha de inicio"
-
-msgid "End Date"
-msgstr "Fecha de fin"
-
 msgid "Created"
 msgstr "Fecha de creación"
 
@@ -46,6 +40,12 @@ msgstr "Identificador"
 
 msgid "API link"
 msgstr "Link API"
+
+msgid "Start Date"
+msgstr "Fecha de inicio"
+
+msgid "End Date"
+msgstr "Fecha de fin"
 
 msgid "Details"
 msgstr "Detalles"
@@ -298,15 +298,15 @@ msgstr "Editar campaña"
 msgid "New vaccination campaign"
 msgstr "Nueva campaña"
 
-msgid "No dashboards associated with this campaign"
-msgstr "No hay ningún tablero asociado a la campaña"
-
 msgid ""
-"It loooks like it's the first time you are accessing the dashboard for this "
+"It looks like it's the first time you are accessing the dashboard for this "
 "campaign. Generating dashboard. This may take up to a couple of minutes"
 msgstr ""
 "Parece que estás accediendo al tablero por primera vez para esta campaña. "
 "Generando el tablero. Este proceso puede tardar un par de minutos"
+
+msgid "No dashboards associated with this campaign"
+msgstr "No hay ningún tablero asociado a la campaña"
 
 msgid ""
 "Please click on the grey arrow next to the chart/table title if you want to "
@@ -432,6 +432,13 @@ msgstr ""
 "¿Esta seguro que quiere salir del Creador de Campañas? Todos sus cambios se "
 "perderán"
 
+msgid ""
+"Campaign teams (category options) could not be deleted, probably there are "
+"associated data values"
+msgstr ""
+"Los equipos de campaña (opciones de categoría) no se han podido borrar, "
+"probablemente hay datos asociados"
+
 msgid "Dose {{-indexes}}"
 msgstr "Dosis {{-indexes}}"
 
@@ -453,45 +460,6 @@ msgstr "Usuario"
 
 msgid "Action"
 msgstr "Acción"
-
-msgid "Subtotal"
-msgstr "Subtotal"
-
-msgid "Total"
-msgstr "Total"
-
-msgid "Doses administered"
-msgstr "Dosis administradas"
-
-msgid "Quality and safety indicators"
-msgstr "Indicadores de calidad y seguridad"
-
-msgid "General Q&S"
-msgstr "Q&S General"
-
-msgid ""
-"Selected period ({selectedPeriod}) is not in the campaign period range "
-"({periodStart} -> {periodEnd})"
-msgstr ""
-"El periodo seleccionado ({selectedPeriod}) no está en el rango de entrada de "
-"datos de la campaña ({periodStart} -> {periodEnd})"
-
-msgid ""
-"Current date ({currentDate}) is not in the campaign entry range "
-"({openingDate} -> {closingDate})"
-msgstr ""
-"La fecha actual ({currentDate}) no está en el rango de entrada de datos de "
-"la campaña ({openingDate} -> {closingDate})"
-
-msgid "Value"
-msgstr "Valor"
-
-msgid ""
-"Campaign teams (category options) could not be deleted, probably there are "
-"associated data values"
-msgstr ""
-"Los equipos de campaña (opciones de categoría) no se han podido borrar, "
-"probablemente hay datos asociados"
 
 msgid "Coverage by Campaign {{- period}} (do not edit this chart)"
 msgstr "Cobertura Vacunal por Campañá {{- period}} (no edite esta gráfica)"

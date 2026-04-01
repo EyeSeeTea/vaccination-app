@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import { HeaderBar } from "@dhis2/ui";
 import { MuiThemeProvider } from "@material-ui/core/styles";
+// @ts-ignore
 import OldMuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import { SnackbarProvider, LoadingProvider } from "@eyeseetea/d2-ui-components";
 import _ from "lodash";
@@ -12,28 +12,40 @@ import "./App.css";
 import Root from "./Root";
 import Share from "../share/Share";
 import DbD2 from "../../models/db-d2";
-import { getMetadataConfig } from "../../models/config";
+import { getMetadataConfig, MetadataConfig } from "../../models/config";
 import { hasCurrentUserRoles } from "../../utils/permissions";
 import { isTestEnv } from "../../utils/dhis2";
+import { CompositionRoot, getCompositionRoot } from "../../CompositionRoot";
+import { D2Api } from "../../types/d2-api";
+import { D2 } from "../../models/d2.types";
 
-class App extends Component {
-    static propTypes = {
-        d2: PropTypes.object.isRequired,
-        appConfig: PropTypes.object.isRequired,
-        api: PropTypes.object.isRequired,
-    };
+type AppProps = {
+    d2: D2;
+    appConfig: AppConfig;
+    api: D2Api;
+};
 
-    state = {
+type AppState = {
+    config: MetadataConfig | null;
+    db: DbD2 | null;
+    compositionRoot: CompositionRoot | null;
+};
+
+class App extends Component<AppProps, AppState> {
+    state: AppState = {
         config: null,
         db: null,
+        compositionRoot: null,
     };
 
     async componentDidMount() {
-        const { d2, appConfig } = this.props;
-        const appKey = _(this.props.appConfig).get("appKey");
-        const db = new DbD2(d2);
+        const { d2, api, appConfig } = this.props;
+        const appKey = this.props.appConfig.appKey;
+        const db = new DbD2(d2, api);
         const config = await getMetadataConfig(db);
-        window.config = config;
+        const compositionRoot = getCompositionRoot({ db, api, config });
+        Object.assign(window, { config, db, compositionRoot });
+
         const showFeedbackForCurrentUser = hasCurrentUserRoles(
             d2,
             config.userRoles,
@@ -48,12 +60,12 @@ class App extends Component {
             window.$.feedbackDhis2(d2, appKey, feedbackOptions);
         }
 
-        this.setState({ config, db });
+        this.setState({ config, db, compositionRoot });
     }
 
     render() {
         const { d2, appConfig, api } = this.props;
-        const { config, db } = this.state;
+        const { config, db, compositionRoot } = this.state;
         const showShareButton = _(appConfig).get("appearance.showShareButton") || false;
         const showHeader = !isTestEnv();
 
@@ -66,8 +78,14 @@ class App extends Component {
 
                             <div id="app" className="content">
                                 <SnackbarProvider>
-                                    {config && db && (
-                                        <Root d2={d2} db={db} config={config} api={api} />
+                                    {config && db && compositionRoot && (
+                                        <Root
+                                            d2={d2}
+                                            db={db}
+                                            config={config}
+                                            api={api}
+                                            compositionRoot={compositionRoot}
+                                        />
                                     )}
                                 </SnackbarProvider>
                             </div>
@@ -80,5 +98,42 @@ class App extends Component {
         );
     }
 }
+
+declare global {
+    interface Window {
+        config: MetadataConfig;
+        db: DbD2;
+        compositionRoot: CompositionRoot;
+        $: {
+            feedbackDhis2: (
+                d2: D2,
+                appKey: string,
+                feedbackOptions: AppConfig["feedback"] & { i18nPath: string }
+            ) => void;
+        };
+    }
+}
+
+type AppConfig = {
+    appKey: string;
+    appearance: {
+        showShareButton?: boolean;
+    };
+    feedback: {
+        token: [string, string];
+        createIssue: boolean;
+        sendToDhis2UserGroups: string[];
+        issues: {
+            repository: string;
+            title: string;
+            body: string;
+        };
+        snapshots: {
+            repository: string;
+            branch: string;
+        };
+        feedbackOptions: Record<string, unknown>;
+    };
+};
 
 export default App;

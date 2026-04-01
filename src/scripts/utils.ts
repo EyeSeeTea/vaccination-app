@@ -6,13 +6,9 @@ import { getMetadataConfig, MetadataConfig } from "../models/config";
 import DbD2 from "../models/db-d2";
 import { default as Api } from "d2/api/Api";
 import { assert } from "../utils/assert";
-import { list } from "../models/datasets";
 import { setupLogs } from "./logging";
-import {
-    DataSetWithDataInputPeriods,
-    getCampaignPeriods,
-    ModelWithAttributes,
-} from "../models/CampaignDbLegacy";
+import { CampaignD2Query } from "../data/CampaignD2Query";
+import { CampaignSummary } from "../domain/entities/CampaignSummary";
 
 export function getD2Api(options: { auth: string; baseUrl: string }) {
     const { auth, baseUrl } = options;
@@ -36,12 +32,13 @@ export async function getAppApi(options: { url: string; auth: string }): Promise
     const api = new Api();
     Object.assign(api.defaultHeaders, { Authorization: "Basic " + btoa(auth) });
 
+    const d2Api = getD2Api({ auth, baseUrl: url });
     const d2 = await init({ baseUrl: url + "/api" }, { getApi: () => api });
-    const db = new DbD2(d2);
+    const db = new DbD2(d2, d2Api);
     const config = await getMetadataConfig(db);
 
     return {
-        d2Api: getD2Api({ auth, baseUrl: url }),
+        d2Api: d2Api,
         legacy: { config, db },
     };
 }
@@ -86,34 +83,16 @@ export function getSourceTargetD2Args() {
     };
 }
 
-type CampaignDataSetRes = {
-    id: string;
-    name: string;
-    organisationUnits: Array<{ id: string }>;
-} & ModelWithAttributes &
-    DataSetWithDataInputPeriods;
-
-export type CampaignDataSet = {
-    id: string;
-    name: string;
-    organisationUnits: Array<{ id: string }>;
-    startDate: Date;
-    endDate: Date;
-};
-
 export async function getCampaignDataSets(options: {
     config: MetadataConfig;
     db: DbD2;
-}): Promise<CampaignDataSet[]> {
-    const res = await list(options.config, options.db.d2, {}, { pageSize: 1_000 });
+}): Promise<CampaignSummary[]> {
+    const res = await new CampaignD2Query(options.config, options.db).list({
+        filters: {},
+        pagination: { page: 1, pageSize: 1000 },
+    });
 
-    return _(res.objects as CampaignDataSetRes[])
-        .map(dataSet => {
-            const periods = getCampaignPeriods(dataSet);
-            if (!periods)
-                throw new Error(`Dataset ${dataSet.name} [${dataSet.id}] has no valid periods`);
-            return { ...dataSet, ...periods };
-        })
+    const campaigns = _(res.objects)
         .reject(dataSet =>
             Boolean(
                 dataSet.name.match(/\btest\b/) ||
@@ -122,6 +101,16 @@ export async function getCampaignDataSets(options: {
             )
         )
         .value();
+
+    const campaignsWithoutPeriods = campaigns.filter(campaign => !campaign.period);
+    if (campaignsWithoutPeriods.length > 0) {
+        console.warn(
+            "The following campaigns do not have a period defined and will be ignored:",
+            campaignsWithoutPeriods.map(c => c.name)
+        );
+    }
+
+    return campaigns;
 }
 
 export function getLogsArguments() {

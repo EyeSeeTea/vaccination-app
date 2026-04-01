@@ -137,11 +137,11 @@ export class HideGreyedOutColumnsForForm {
             //   headerGroup: [a1, b1, c1], valueGroup: [v1, v7]
             //   headerGroup: [a1, b1, c2], valueGroup: [v2, v8]
             //   ...
-            const allCellValuesAreDisabled = valueGroup.every(tr => {
-                const input = tr.querySelector("input");
-                return Boolean(!input || input.getAttribute("disabled"));
+            const allValueCellsAreDisabled = valueGroup.every(cell => {
+                const formField = cell.querySelector("input, select, textarea");
+                return Boolean(formField && formField.getAttribute("disabled"));
             });
-            return allCellValuesAreDisabled ? [...headerGroup, ...valueGroup] : [];
+            return allValueCellsAreDisabled ? [...headerGroup, ...valueGroup] : [];
         });
 
         // Create a count of how many times a cell was marked as disabled

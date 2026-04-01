@@ -1,9 +1,9 @@
-import { OrganisationUnit, Maybe, Ref, MetadataResponse, Sharing } from "./db.types";
+import { OrganisationUnit, Maybe, Ref, Sharing } from "./db.types";
 import _, { Dictionary } from "lodash";
 import moment from "moment";
 
 import { PaginatedObjects, OrganisationUnitPathOnly, Response } from "./db.types";
-import DbD2, { ApiResponse, toStatusResponse } from "./db-d2";
+import DbD2 from "./db-d2";
 import {
     AntigensDisaggregationLegacy,
     CampaignType,
@@ -15,15 +15,13 @@ import {
     TargetPopulation,
     TargetPopulationData as TargetPopulationData_,
 } from "./TargetPopulation";
-import { promiseMap } from "../utils/promises";
 import i18n from "../locales";
 import { TeamsMetadata, getTeamsForCampaign, filterTeamsByNames } from "./Teams";
 import CampaignSharing from "./CampaignSharing";
-import { CampaignNotification } from "./CampaignNotification";
-import { CampaignD2Repository } from "../data/CampaignD2Repository";
 import { AntigensDisaggregation } from "./AntigensDisaggregation";
 import CampaignDb from "./CampaignDb";
-import { D2LegacyGetCampaign } from "./D2LegacyGetCampaign";
+
+export type CampaignId = string;
 
 export type TargetPopulationData = TargetPopulationData_;
 
@@ -61,13 +59,13 @@ function getError(key: string, namespace: Maybe<Dictionary<string>> = undefined)
     return namespace ? [{ key, namespace }] : [{ key }];
 }
 
-interface DataSetWithOrgUnits {
+export interface DataSetWithOrgUnits {
     id?: string;
     name: string;
     organisationUnits: Ref[];
 }
 
-interface DashboardWithResources {
+export interface DashboardWithResources {
     id: string;
     name: string;
     dashboardItems: {
@@ -132,19 +130,6 @@ export default class Campaign {
         return new Campaign(db, config, initialData);
     }
 
-    public static async get(
-        config: MetadataConfig,
-        db: DbD2,
-        dataSetId: string,
-        options?: { legacy: boolean }
-    ): Promise<Campaign> {
-        if (options?.legacy) {
-            return new D2LegacyGetCampaign(config, db).get(dataSetId);
-        } else {
-            return new CampaignD2Repository(config, db).get(dataSetId);
-        }
-    }
-
     public update(newData: Partial<Data>): Campaign {
         return new Campaign(this.db, this.config, { ...this.data, ...newData });
     }
@@ -155,93 +140,6 @@ export default class Campaign {
         return _(this.organisationUnits).some(
             ou => !_(this.selectableLevels).includes(getLevel(ou))
         );
-    }
-
-    public async notifyOnUpdateIfData(options: { isEdit: boolean }): Promise<boolean> {
-        const { db } = this;
-
-        if (options.isEdit && (await this.hasDataValues())) {
-            const notification = new CampaignNotification(db);
-            return notification.sendOnUpdateOrDelete([this.getDataSet()], "update");
-        } else {
-            return false;
-        }
-    }
-
-    public static async delete(
-        config: MetadataConfig,
-        db: DbD2,
-        dataSets: DataSetWithOrgUnits[]
-    ): Promise<Response<{ level: string; message: string }>> {
-        const modelReferencesToDelete = await this.getResources(config, db, dataSets);
-        const dataSetsWithDataValues = _.compact(
-            await promiseMap(dataSets, dataSet => {
-                return Campaign.hasDataValues(db, config, dataSet).then(hasDataValues =>
-                    hasDataValues ? dataSet : null
-                );
-            })
-        );
-
-        // If we try to delete all objects all at once, we get this error from the /metadata endpoint:
-        // "Could not delete due to association with another object: CategoryDimension"
-        // It does work, however, if we delete the objects in this order:
-        // 1) Dashboards, 2) Everything else except Category options 3) Category options (teams),
-        const keys = ["dashboards", "other", "teams"];
-
-        const referencesGroups = _(modelReferencesToDelete)
-            .groupBy(({ model }) => {
-                if (model === "dashboards") {
-                    return "dashboards";
-                } else if (model === "categoryOptions") {
-                    return "teams";
-                } else {
-                    return "other";
-                }
-            })
-            .toPairs()
-            .sortBy(([key, _group]) => _.indexOf(keys, key))
-            .value();
-
-        const results: Array<[string, ApiResponse<MetadataResponse>]> = await promiseMap(
-            referencesGroups,
-            async ([key, references]) => {
-                const metadata = _(references)
-                    .groupBy("model")
-                    .mapValues(groups => groups.map(group => ({ id: group.id })))
-                    .value();
-                const response = await db.postMetadata(metadata, { importStrategy: "DELETE" });
-                return [key, toStatusResponse(response)] as [string, ApiResponse<MetadataResponse>];
-            }
-        );
-
-        const [keysWithErrors, errors = []] = _(results)
-            .map(([key, result]) => (result.status ? null : [key, result.error]))
-            .compact()
-            .unzip()
-            .value();
-
-        const sendNotification = () => {
-            const notification = new CampaignNotification(db);
-            return notification.sendOnUpdateOrDelete(dataSetsWithDataValues, "delete");
-        };
-
-        if (_.isEmpty(keysWithErrors)) {
-            sendNotification();
-            return { status: true };
-        } else if (_.isEqual(keysWithErrors, ["teams"])) {
-            sendNotification();
-            return {
-                status: false,
-                error: {
-                    level: "warning",
-                    message: i18n.t(
-                        "Campaign teams (category options) could not be deleted, probably there are associated data values"
-                    ),
-                },
-            };
-        } else {
-            return { status: false, error: { level: "error", message: errors.join("\n") } };
-        }
     }
 
     public async validate(
@@ -337,7 +235,7 @@ export default class Campaign {
         return dataSets.some(ds => ds.id !== id && ds.name.toLowerCase() === nameLowerCase);
     }
 
-    private async validateName(): Promise<ValidationErrors> {
+    async validateName(): Promise<ValidationErrors> {
         const { maxNameLength } = this;
         const { name } = this.data;
         const trimmedName = name.trim();
@@ -484,44 +382,6 @@ export default class Campaign {
         };
     }
 
-    public async hasDataValues(): Promise<boolean> {
-        return Campaign.hasDataValues(this.db, this.config, this.getDataSet());
-    }
-
-    static async hasDataValues(
-        db: DbD2,
-        config: MetadataConfig,
-        dataSet: DataSetWithOrgUnits
-    ): Promise<boolean> {
-        if (!dataSet.id) {
-            return false;
-        } else {
-            const { categories, categoryComboCodeForTeams } = config;
-            const orgUnitIds = dataSet.organisationUnits.map(ou => ou.id);
-            const teamsCategoryId = getByIndex(categories, "code", categoryComboCodeForTeams).id;
-            const teams = await getTeamsForCampaign(db, orgUnitIds, teamsCategoryId, dataSet.name);
-
-            const dataValues = await db.getDataValues({
-                dataSet: [dataSet.id],
-                orgUnit: dataSet.organisationUnits.map(ou => ou.id),
-                lastUpdated: "1970",
-                includeDeleted: true,
-            });
-
-            // Returned data values are not really specific for this dataset, so let's
-            // apply an extra filter by team.
-            const teamsCocs = new Set(
-                _.flatMap(teams, team => team.categoryOptionCombos.map(coc => coc.id))
-            );
-
-            return dataValues.some(
-                dataValue =>
-                    !!dataValue.attributeOptionCombo &&
-                    teamsCocs.has(dataValue.attributeOptionCombo)
-            );
-        }
-    }
-
     /* Dashboard */
 
     public get dashboardId(): Maybe<string> {
@@ -580,17 +440,7 @@ export default class Campaign {
         return dataSets.length > 0;
     }
 
-    public async save(): Promise<Response<string>> {
-        const isEdit = await this.isEdit();
-        const saveResponse = await new CampaignD2Repository(this.config, this.db).save(this);
-        this.notifyOnUpdateIfData({ isEdit });
-        return saveResponse;
-    }
-
-    public async reload(): Promise<Maybe<Campaign>> {
-        return this.id ? Campaign.get(this.config, this.db, this.id) : undefined;
-    }
-
+    // @deprecated
     public static async getResources(
         config: MetadataConfig,
         db: DbD2,

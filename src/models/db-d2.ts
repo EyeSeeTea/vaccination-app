@@ -24,6 +24,7 @@ import {
 import "../utils/lodash-mixins";
 import { promiseMap } from "../utils/promises";
 import { User } from "./config";
+import { D2Api } from "../types/d2-api";
 
 function getDbFields(modelFields: ModelFields): string[] {
     return _(modelFields)
@@ -252,10 +253,12 @@ export type ModelReference = { model: string; id: string };
 export default class DbD2 {
     d2: D2;
     api: D2ApiLegacy;
+    d2Api: D2Api;
 
-    constructor(d2: D2) {
+    constructor(d2: D2, d2api: D2Api) {
         this.d2 = d2;
         this.api = d2.Api.getApi();
+        this.d2Api = d2api;
     }
 
     public async getMetadata<T>(params: MetadataGetParams): Promise<T> {

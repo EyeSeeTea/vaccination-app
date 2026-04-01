@@ -7,6 +7,26 @@ export interface D2 {
     currentUser: {
         displayName: string;
     };
+    i18n: {
+        strings: {
+            add(key: string): void;
+        };
+        load(): Promise<void> | void;
+    };
+    models: {
+        dataSets: {
+            list(
+                options: Partial<{
+                    fields: string;
+                    filter: string[];
+                    pageSize: number;
+                    order: string;
+                    apiEndpoint: string;
+                }>
+            ): Promise<any>;
+            get(id: string, options: Partial<{ fields: string }>): Promise<any>;
+        };
+    };
 }
 
 export type DeleteResponse = {
