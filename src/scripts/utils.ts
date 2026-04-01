@@ -1,5 +1,4 @@
 import _ from "lodash";
-import { D2Api } from "@eyeseetea/d2-api/2.36";
 import { option, optional, string } from "cmd-ts";
 import { init } from "d2";
 import { getMetadataConfig, MetadataConfig } from "../models/config";
@@ -9,6 +8,7 @@ import { assert } from "../utils/assert";
 import { setupLogs } from "./logging";
 import { CampaignD2Query } from "../data/CampaignD2Query";
 import { CampaignSummary } from "../domain/entities/CampaignSummary";
+import { D2Api } from "../types/d2-api";
 
 export function getD2Api(options: { auth: string; baseUrl: string }) {
     const { auth, baseUrl } = options;

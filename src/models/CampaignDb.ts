@@ -308,11 +308,16 @@ export default class CampaignDb {
             }
         }
         // Update Team Category with new categoryOptions (teams)
-        await Teams.updateTeamCategory(db, allMetadata.categoryOptions, teamsToDelete, config);
+        const { categoryOptions } = allMetadata;
+        const teamsRes = await Teams.updateTeamCategory(db, categoryOptions, teamsToDelete, config);
 
-        if (!result.status) {
-            return { status: false, error: result.error };
-        } else if (result.value.status !== "OK") {
+        const error =
+            (result.status ? null : { message: result.error }) ||
+            (teamsRes.status ? null : { message: teamsRes.error });
+
+        if (error) {
+            return { status: false, error: error.message };
+        } else if (result.status && result.value.status !== "OK") {
             return {
                 status: false,
                 error: JSON.stringify(result.value.typeReports, null, 2),
