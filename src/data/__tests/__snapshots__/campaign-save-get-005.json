@@ -1,0 +1,294 @@
+{
+    "args": [
+        "/metadata",
+        {
+            "translate": true,
+            "users:fields": "id,displayName,userCredentials[userRoles[id,name]]",
+            "users:filter": "dataViewOrganisationUnits.id:in:[o9PqPy9YOvf]"
+        }
+    ],
+    "returnValue": {
+        "users": [
+            {
+                "displayName": "User 5703",
+                "id": "Aly6afiZd9S",
+                "userCredentials": {
+                    "userRoles": [
+                        {
+                            "id": "imjx3wfUjCJ",
+                            "name": "Position: TesaCo"
+                        }
+                    ]
+                }
+            },
+            {
+                "displayName": "User 7787",
+                "id": "FBjVeNd8xW0",
+                "userCredentials": {
+                    "userRoles": [
+                        {
+                            "id": "eANTPuEwDDF",
+                            "name": "Position: Analyst"
+                        }
+                    ]
+                }
+            },
+            {
+                "displayName": "User 4182",
+                "id": "NMTfQgDxnwN",
+                "userCredentials": {
+                    "userRoles": [
+                        {
+                            "id": "GdIbF2MxRBn",
+                            "name": "Maps: Access and Edit"
+                        },
+                        {
+                            "id": "IQ6i3gWsYYa",
+                            "name": "Position: MedCo"
+                        }
+                    ]
+                }
+            },
+            {
+                "displayName": "User 435",
+                "id": "NmI3ukJYJUa",
+                "userCredentials": {
+                    "userRoles": [
+                        {
+                            "id": "GdIbF2MxRBn",
+                            "name": "Maps: Access and Edit"
+                        },
+                        {
+                            "id": "NvJp3ED8MT8",
+                            "name": "Analysis: Individual Apps"
+                        },
+                        {
+                            "id": "Oyu401YFLyv",
+                            "name": "RVC App: Access"
+                        },
+                        {
+                            "id": "eANTPuEwDDF",
+                            "name": "Position: Analyst"
+                        }
+                    ]
+                }
+            },
+            {
+                "displayName": "User 1464",
+                "id": "QPNB7wFWJgs",
+                "userCredentials": {
+                    "userRoles": [
+                        {
+                            "id": "A44s8cOcMP4",
+                            "name": "Position: Ops Staff (non-medical)"
+                        },
+                        {
+                            "id": "GdIbF2MxRBn",
+                            "name": "Maps: Access and Edit"
+                        }
+                    ]
+                }
+            },
+            {
+                "displayName": "User 6221",
+                "id": "Uuu90L1StFZ",
+                "userCredentials": {
+                    "userRoles": [
+                        {
+                            "id": "Oyu401YFLyv",
+                            "name": "RVC App: Access"
+                        },
+                        {
+                            "id": "eANTPuEwDDF",
+                            "name": "Position: Analyst"
+                        },
+                        {
+                            "id": "eCY3RWokKlH",
+                            "name": "RVC App: Campaign Manager"
+                        },
+                        {
+                            "id": "mnIBssgDVSC",
+                            "name": "Data Entry: Online Edit"
+                        }
+                    ]
+                }
+            },
+            {
+                "displayName": "User 8500",
+                "id": "bu1Qa4rPzHB",
+                "userCredentials": {
+                    "userRoles": [
+                        {
+                            "id": "eANTPuEwDDF",
+                            "name": "Position: Analyst"
+                        }
+                    ]
+                }
+            },
+            {
+                "displayName": "User 2547",
+                "id": "fLbDGgBmVpW",
+                "userCredentials": {
+                    "userRoles": [
+                        {
+                            "id": "GdIbF2MxRBn",
+                            "name": "Maps: Access and Edit"
+                        },
+                        {
+                            "id": "IQ6i3gWsYYa",
+                            "name": "Position: MedCo"
+                        },
+                        {
+                            "id": "NvJp3ED8MT8",
+                            "name": "Analysis: Individual Apps"
+                        },
+                        {
+                            "id": "Oyu401YFLyv",
+                            "name": "RVC App: Access"
+                        },
+                        {
+                            "id": "eCY3RWokKlH",
+                            "name": "RVC App: Campaign Manager"
+                        }
+                    ]
+                }
+            },
+            {
+                "displayName": "User 1308",
+                "id": "htlpceIorFi",
+                "userCredentials": {
+                    "userRoles": [
+                        {
+                            "id": "eANTPuEwDDF",
+                            "name": "Position: Analyst"
+                        }
+                    ]
+                }
+            },
+            {
+                "displayName": "User 4829",
+                "id": "mJsPEpfX1EG",
+                "userCredentials": {
+                    "userRoles": [
+                        {
+                            "id": "eANTPuEwDDF",
+                            "name": "Position: Analyst"
+                        }
+                    ]
+                }
+            },
+            {
+                "displayName": "User 9835",
+                "id": "nBZeB3pVjnp",
+                "userCredentials": {
+                    "userRoles": [
+                        {
+                            "id": "eANTPuEwDDF",
+                            "name": "Position: Analyst"
+                        }
+                    ]
+                }
+            },
+            {
+                "displayName": "User 5903",
+                "id": "pBbgF5AuDnR",
+                "userCredentials": {
+                    "userRoles": [
+                        {
+                            "id": "eANTPuEwDDF",
+                            "name": "Position: Analyst"
+                        }
+                    ]
+                }
+            },
+            {
+                "displayName": "User 8008",
+                "id": "pYMdq6Qm9Kx",
+                "userCredentials": {
+                    "userRoles": [
+                        {
+                            "id": "GdIbF2MxRBn",
+                            "name": "Maps: Access and Edit"
+                        },
+                        {
+                            "id": "IQ6i3gWsYYa",
+                            "name": "Position: MedCo"
+                        },
+                        {
+                            "id": "NvJp3ED8MT8",
+                            "name": "Analysis: Individual Apps"
+                        },
+                        {
+                            "id": "Oyu401YFLyv",
+                            "name": "RVC App: Access"
+                        }
+                    ]
+                }
+            },
+            {
+                "displayName": "User 6228",
+                "id": "t6SaSNhpRTf",
+                "userCredentials": {
+                    "userRoles": [
+                        {
+                            "id": "eANTPuEwDDF",
+                            "name": "Position: Analyst"
+                        }
+                    ]
+                }
+            },
+            {
+                "displayName": "User 435",
+                "id": "u3zhQoV2eAk",
+                "userCredentials": {
+                    "userRoles": [
+                        {
+                            "id": "GdIbF2MxRBn",
+                            "name": "Maps: Access and Edit"
+                        },
+                        {
+                            "id": "NvJp3ED8MT8",
+                            "name": "Analysis: Individual Apps"
+                        },
+                        {
+                            "id": "Oyu401YFLyv",
+                            "name": "RVC App: Access"
+                        },
+                        {
+                            "id": "eANTPuEwDDF",
+                            "name": "Position: Analyst"
+                        }
+                    ]
+                }
+            },
+            {
+                "displayName": "User 3901",
+                "id": "xywTylUgF4d",
+                "userCredentials": {
+                    "userRoles": [
+                        {
+                            "id": "GdIbF2MxRBn",
+                            "name": "Maps: Access and Edit"
+                        },
+                        {
+                            "id": "NvJp3ED8MT8",
+                            "name": "Analysis: Individual Apps"
+                        },
+                        {
+                            "id": "Oyu401YFLyv",
+                            "name": "RVC App: Access"
+                        },
+                        {
+                            "id": "eANTPuEwDDF",
+                            "name": "Position: Analyst"
+                        },
+                        {
+                            "id": "eCY3RWokKlH",
+                            "name": "RVC App: Campaign Manager"
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}

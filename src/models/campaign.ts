@@ -1,22 +1,27 @@
-import { OrganisationUnit, Maybe, Ref, MetadataResponse, Sharing } from "./db.types";
+import { OrganisationUnit, Maybe, Ref, Sharing } from "./db.types";
 import _, { Dictionary } from "lodash";
 import moment from "moment";
 
 import { PaginatedObjects, OrganisationUnitPathOnly, Response } from "./db.types";
-import DbD2, { ApiResponse, toStatusResponse } from "./db-d2";
-import { AntigensDisaggregation, SectionForDisaggregation } from "./AntigensDisaggregation";
+import DbD2 from "./db-d2";
+import {
+    AntigensDisaggregationLegacy,
+    CampaignType,
+    SectionForDisaggregation,
+} from "./AntigensDisaggregationLegacy";
 import { MetadataConfig, getDashboardCode, getByIndex, DataSet } from "./config";
-import { AntigenDisaggregationEnabled } from "./AntigensDisaggregation";
+import { AntigenDisaggregationEnabled } from "./AntigensDisaggregationLegacy";
 import {
     TargetPopulation,
     TargetPopulationData as TargetPopulationData_,
 } from "./TargetPopulation";
-import CampaignDb, { getCampaignPeriods } from "./CampaignDb";
-import { promiseMap } from "../utils/promises";
 import i18n from "../locales";
 import { TeamsMetadata, getTeamsForCampaign, filterTeamsByNames } from "./Teams";
 import CampaignSharing from "./CampaignSharing";
-import { CampaignNotification } from "./CampaignNotification";
+import { AntigensDisaggregation } from "./AntigensDisaggregation";
+import CampaignDb from "./CampaignDb";
+
+export type CampaignId = string;
 
 export type TargetPopulationData = TargetPopulationData_;
 
@@ -26,6 +31,7 @@ export interface Antigen {
     name: string;
     code: string;
     doses: { id: string; name: string }[];
+    isTypeSelectable: boolean;
 }
 
 export interface Data {
@@ -37,11 +43,11 @@ export interface Data {
     endDate: Date | null;
     antigens: Antigen[];
     extraDataSets: DataSet[];
-    antigensDisaggregation: AntigensDisaggregation;
+    antigensDisaggregation: AntigensDisaggregation | AntigensDisaggregationLegacy;
     targetPopulation: Maybe<TargetPopulation>;
     teams: Maybe<number>;
-    teamsMetadata: TeamsMetadata;
     dashboardId: Maybe<string>;
+    sections: SectionForDisaggregation[];
 }
 
 type ValidationErrors = Array<{
@@ -53,13 +59,13 @@ function getError(key: string, namespace: Maybe<Dictionary<string>> = undefined)
     return namespace ? [{ key, namespace }] : [{ key }];
 }
 
-interface DataSetWithOrgUnits {
+export interface DataSetWithOrgUnits {
     id?: string;
     name: string;
     organisationUnits: Ref[];
 }
 
-interface DashboardWithResources {
+export interface DashboardWithResources {
     id: string;
     name: string;
     dashboardItems: {
@@ -83,7 +89,7 @@ export default class Campaign {
         antigensDisaggregation: this.validateAntigensDisaggregation,
     };
 
-    constructor(public db: DbD2, public config: MetadataConfig, private data: Data) {}
+    constructor(public db: DbD2, public config: MetadataConfig, public data: Data) {}
 
     public get extraDataSets() {
         return this.data.extraDataSets;
@@ -110,7 +116,7 @@ export default class Campaign {
             startDate: null,
             endDate: null,
             antigens: antigens,
-            antigensDisaggregation: AntigensDisaggregation.build(config, antigens, []),
+            antigensDisaggregation: AntigensDisaggregation.build(config, antigens, {}, []),
             targetPopulation: undefined,
             teams: undefined,
             teamsMetadata: {
@@ -118,110 +124,7 @@ export default class Campaign {
             },
             dashboardId: undefined,
             extraDataSets: [],
-        };
-
-        return new Campaign(db, config, initialData);
-    }
-
-    public static async get(
-        config: MetadataConfig,
-        db: DbD2,
-        dataSetId: string
-    ): Promise<Campaign> {
-        const extraDataSetIds = config.dataSets.extraActivities.map(ds => ds.id);
-
-        const {
-            dataSets,
-            dashboards: [dashboard],
-        } = await db.getMetadata<{
-            dataSets: Array<{
-                id: string;
-                name: string;
-                code: string;
-                description: string;
-                organisationUnits: Array<OrganisationUnitPathOnly>;
-                dataInputPeriods: Array<{ period: { id: string } }>;
-                sections: Array<SectionForDisaggregation>;
-                attributeValues: Array<{ attribute: { code: string }; value: string }>;
-            }>;
-            dashboards: Array<{
-                id: string;
-            }>;
-        }>({
-            dataSets: {
-                fields: {
-                    id: true,
-                    name: true,
-                    code: true,
-                    description: true,
-                    organisationUnits: { id: true, path: true },
-                    dataInputPeriods: { period: { id: true } },
-                    attributeValues: { attribute: { code: true }, value: true },
-                    sections: {
-                        id: true,
-                        name: true,
-                        dataSet: { id: true },
-                        dataElements: { id: true },
-                        sortOrder: true,
-                        greyedFields: {
-                            categoryOptionCombo: {
-                                id: true,
-                                categoryOptions: {
-                                    id: true,
-                                    name: true,
-                                    displayName: true,
-                                    categories: { id: true },
-                                },
-                            },
-                            dataElement: { id: true },
-                        },
-                    },
-                },
-                filters: [`id:in:[${[dataSetId, ...extraDataSetIds].join(",")}]`],
-            },
-            dashboards: {
-                fields: { id: true },
-                filters: [`code:eq:${getDashboardCode(config, dataSetId)}`],
-            },
-        });
-
-        const [campaignDataSets, extraDataSets = []] = _.partition(
-            dataSets,
-            ds => ds.id === dataSetId
-        );
-        const dataSet = campaignDataSets?.[0];
-
-        if (!dataSet) throw new Error(`Dataset id=${dataSetId} not found`);
-
-        const antigensByCode = _.keyBy(config.antigens, "code");
-        const antigens = _(dataSet.sections)
-            .map(section => antigensByCode[section.name])
-            .compact()
-            .value();
-
-        const periods = getCampaignPeriods(dataSet);
-
-        const { categoryComboCodeForTeams } = config;
-        const { name, sections } = dataSet;
-        const ouIds = dataSet.organisationUnits.map(ou => ou.id);
-        const teamsCategoyId = getByIndex(config.categories, "code", categoryComboCodeForTeams).id;
-        const teamsMetadata = await getTeamsForCampaign(db, ouIds, teamsCategoyId, name);
-        const antigensDisaggregation = AntigensDisaggregation.build(config, antigens, sections);
-
-        const initialData: Data = {
-            id: dataSet.id,
-            name: dataSet.name,
-            description: dataSet.description,
-            organisationUnits: dataSet.organisationUnits,
-            startDate: periods ? periods.startDate : null,
-            endDate: periods ? periods.endDate : null,
-            antigens: antigens,
-            antigensDisaggregation,
-            targetPopulation: undefined,
-            teams: _.size(teamsMetadata),
-            teamsMetadata: { elements: teamsMetadata },
-            dashboardId: dashboard ? dashboard.id : undefined,
-            extraDataSets: getExtraDataSetsIntersectingWithCampaignOrgUnits(extraDataSets, dataSet),
+            sections: [],
         };
 
         return new Campaign(db, config, initialData);
@@ -237,93 +140,6 @@ export default class Campaign {
         return _(this.organisationUnits).some(
             ou => !_(this.selectableLevels).includes(getLevel(ou))
         );
-    }
-
-    public async notifyOnUpdateIfData(): Promise<boolean> {
-        const { db } = this;
-
-        if (this.isEdit() && (await this.hasDataValues())) {
-            const notification = new CampaignNotification(db);
-            return notification.sendOnUpdateOrDelete([this.getDataSet()], "update");
-        } else {
-            return false;
-        }
-    }
-
-    public static async delete(
-        config: MetadataConfig,
-        db: DbD2,
-        dataSets: DataSetWithOrgUnits[]
-    ): Promise<Response<{ level: string; message: string }>> {
-        const modelReferencesToDelete = await this.getResources(config, db, dataSets);
-        const dataSetsWithDataValues = _.compact(
-            await promiseMap(dataSets, dataSet => {
-                return Campaign.hasDataValues(db, config, dataSet).then(hasDataValues =>
-                    hasDataValues ? dataSet : null
-                );
-            })
-        );
-
-        // If we try to delete all objects all at once, we get this error from the /metadata endpoint:
-        // "Could not delete due to association with another object: CategoryDimension"
-        // It does work, however, if we delete the objects in this order:
-        // 1) Dashboards, 2) Everything else except Category options 3) Category options (teams),
-        const keys = ["dashboards", "other", "teams"];
-
-        const referencesGroups = _(modelReferencesToDelete)
-            .groupBy(({ model }) => {
-                if (model === "dashboards") {
-                    return "dashboards";
-                } else if (model === "categoryOptions") {
-                    return "teams";
-                } else {
-                    return "other";
-                }
-            })
-            .toPairs()
-            .sortBy(([key, _group]) => _.indexOf(keys, key))
-            .value();
-
-        const results: Array<[string, ApiResponse<MetadataResponse>]> = await promiseMap(
-            referencesGroups,
-            async ([key, references]) => {
-                const metadata = _(references)
-                    .groupBy("model")
-                    .mapValues(groups => groups.map(group => ({ id: group.id })))
-                    .value();
-                const response = await db.postMetadata(metadata, { importStrategy: "DELETE" });
-                return [key, toStatusResponse(response)] as [string, ApiResponse<MetadataResponse>];
-            }
-        );
-
-        const [keysWithErrors, errors = []] = _(results)
-            .map(([key, result]) => (result.status ? null : [key, result.error]))
-            .compact()
-            .unzip()
-            .value();
-
-        const sendNotification = () => {
-            const notification = new CampaignNotification(db);
-            return notification.sendOnUpdateOrDelete(dataSetsWithDataValues, "delete");
-        };
-
-        if (_.isEmpty(keysWithErrors)) {
-            sendNotification();
-            return { status: true };
-        } else if (_.isEqual(keysWithErrors, ["teams"])) {
-            sendNotification();
-            return {
-                status: false,
-                error: {
-                    level: "warning",
-                    message: i18n.t(
-                        "Campaign teams (category options) could not be deleted, probably there are associated data values"
-                    ),
-                },
-            };
-        } else {
-            return { status: false, error: { level: "error", message: errors.join("\n") } };
-        }
     }
 
     public async validate(
@@ -419,7 +235,7 @@ export default class Campaign {
         return dataSets.some(ds => ds.id !== id && ds.name.toLowerCase() === nameLowerCase);
     }
 
-    private async validateName(): Promise<ValidationErrors> {
+    async validateName(): Promise<ValidationErrors> {
         const { maxNameLength } = this;
         const { name } = this.data;
         const trimmedName = name.trim();
@@ -492,12 +308,19 @@ export default class Campaign {
 
     /* Antigens disaggregation */
 
-    public get antigensDisaggregation(): AntigensDisaggregation {
+    public get antigensDisaggregation(): AntigensDisaggregation | AntigensDisaggregationLegacy {
         return this.data.antigensDisaggregation;
     }
 
-    public setAntigensDisaggregation(antigensDisaggregation: AntigensDisaggregation): Campaign {
+    public setAntigensDisaggregation(
+        antigensDisaggregation: AntigensDisaggregation | AntigensDisaggregationLegacy
+    ): Campaign {
         return this.update({ ...this.data, antigensDisaggregation });
+    }
+
+    public setCampaignTypeForAntigen(antigen: Antigen, type: CampaignType): Campaign {
+        const updated = this.antigensDisaggregation.setCampaignType(antigen, type);
+        return this.setAntigensDisaggregation(updated);
     }
 
     public getEnabledAntigensDisaggregation(): AntigenDisaggregationEnabled {
@@ -529,7 +352,7 @@ export default class Campaign {
         const targetPopulationForCampaign = await targetPopulation.update(
             this.organisationUnits,
             this.getEnabledAntigensDisaggregation(),
-            this.startDate ? moment(this.startDate).format("YYYYMMDD") : "TODAY"
+            this.startDate ? moment.utc(this.startDate).format("YYYYMMDD") : "TODAY"
         );
 
         return this.update({
@@ -559,44 +382,6 @@ export default class Campaign {
         };
     }
 
-    public async hasDataValues(): Promise<boolean> {
-        return Campaign.hasDataValues(this.db, this.config, this.getDataSet());
-    }
-
-    static async hasDataValues(
-        db: DbD2,
-        config: MetadataConfig,
-        dataSet: DataSetWithOrgUnits
-    ): Promise<boolean> {
-        if (!dataSet.id) {
-            return false;
-        } else {
-            const { categories, categoryComboCodeForTeams } = config;
-            const orgUnitIds = dataSet.organisationUnits.map(ou => ou.id);
-            const teamsCategoryId = getByIndex(categories, "code", categoryComboCodeForTeams).id;
-            const teams = await getTeamsForCampaign(db, orgUnitIds, teamsCategoryId, dataSet.name);
-
-            const dataValues = await db.getDataValues({
-                dataSet: [dataSet.id],
-                orgUnit: dataSet.organisationUnits.map(ou => ou.id),
-                lastUpdated: "1970",
-                includeDeleted: true,
-            });
-
-            // Returned data values are not really specific for this dataset, so let's
-            // apply an extra filter by team.
-            const teamsCocs = new Set(
-                _.flatMap(teams, team => team.categoryOptionCombos.map(coc => coc.id))
-            );
-
-            return dataValues.some(
-                dataValue =>
-                    !!dataValue.attributeOptionCombo &&
-                    teamsCocs.has(dataValue.attributeOptionCombo)
-            );
-        }
-    }
-
     /* Dashboard */
 
     public get dashboardId(): Maybe<string> {
@@ -621,27 +406,41 @@ export default class Campaign {
         return this.update({ ...this.data, teams });
     }
 
-    public get teamsMetadata(): TeamsMetadata {
-        return this.data.teamsMetadata;
+    public async teamsMetadata(): Promise<TeamsMetadata> {
+        return Campaign.teamsMetadata(this);
+    }
+
+    static async teamsMetadata(options: {
+        config: MetadataConfig;
+        db: DbD2;
+        organisationUnits: Ref[];
+        name: string;
+    }) {
+        const { config, organisationUnits, db, name } = options;
+        const { categoryComboCodeForTeams } = config;
+        const ouIds = organisationUnits.map(ou => ou.id);
+        const teamsCategoyId = getByIndex(config.categories, "code", categoryComboCodeForTeams).id;
+
+        return {
+            elements: await getTeamsForCampaign(db, ouIds, teamsCategoyId, name),
+        };
     }
 
     /* Save */
 
-    isEdit(): boolean {
-        return !!this.id;
+    async isEdit(): Promise<boolean> {
+        const { dataSets } = await this.db.api.get<{ dataSets: Array<{ id: string }> }>(
+            "/dataSets",
+            {
+                fields: ["id"],
+                filter: `id:eq:${this.id}`,
+            }
+        );
+
+        return dataSets.length > 0;
     }
 
-    public async save(): Promise<Response<string>> {
-        const campaignDb = new CampaignDb(this);
-        const saveResponse = await campaignDb.save();
-        this.notifyOnUpdateIfData();
-        return saveResponse;
-    }
-
-    public async reload(): Promise<Maybe<Campaign>> {
-        return this.id ? Campaign.get(this.config, this.db, this.id) : undefined;
-    }
-
+    // @deprecated
     public static async getResources(
         config: MetadataConfig,
         db: DbD2,
@@ -702,7 +501,7 @@ export default class Campaign {
     }
 }
 
-function getExtraDataSetsIntersectingWithCampaignOrgUnits<
+export function getExtraDataSetsIntersectingWithCampaignOrgUnits<
     DataSet extends { organisationUnits: Ref[] }
 >(extraDataSets: DataSet[], campaignDataSet: DataSet): DataSet[] {
     return extraDataSets.filter(

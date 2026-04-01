@@ -23,7 +23,7 @@ declare module "lodash" {
     }
 }
 
-function cartesianProduct<T>(arr: T[][]): T[][] {
+export function cartesianProduct<T>(arr: T[][]): T[][] {
     return arr.reduce(
         (a, b) => {
             return a
@@ -57,6 +57,79 @@ function isNotEmpty(obj: any): boolean {
     return !_.isEmpty(obj);
 }
 
-_.mixin({ cartesianProduct });
+_.mixin({
+    cartesianProduct: cartesianProduct,
+});
 
 _.mixin({ getOrFail, isNotEmpty }, { chain: false });
+
+export function cartesianProduct2<T1, T2>(groups: [T1[], T2[]]): Array<[T1, T2]> {
+    const [group1, group2] = groups;
+    const result: Array<[T1, T2]> = [];
+
+    for (const a of group1) {
+        for (const b of group2) {
+            result.push([a, b]);
+        }
+    }
+
+    return result;
+}
+
+export function cartesianProduct3<T1, T2, T3>(groups: [T1[], T2[], T3[]]): Array<[T1, T2, T3]> {
+    const [group1, group2, group3] = groups;
+    const result: Array<[T1, T2, T3]> = [];
+
+    for (const a of group1) {
+        for (const b of group2) {
+            for (const c of group3) {
+                result.push([a, b, c]);
+            }
+        }
+    }
+
+    return result;
+}
+
+// Generate the power set of an array
+// E.g., powerSet([1,2,3]) => [[], [1], [2], [3], [1,2], [1,3], [2,3], [1,2,3]]
+export function powerSet<T>(array: T[]): T[][] {
+    return _.reduce(
+        array,
+        (subsets: T[][], value: T) => {
+            const withValue = subsets.map(subset => [...subset, value]);
+            return [...subsets, ...withValue];
+        },
+        [[]] as T[][] // start with the empty set
+    );
+}
+
+type Zipped<T extends unknown[][]> = {
+    [K in keyof T]: T[K] extends (infer U)[] ? U : never;
+};
+
+export function zipShortest<T extends unknown[][]>(...arrays: T): Zipped<T>[] {
+    if (arrays.length === 0) return [];
+
+    const minLen = Math.min(...arrays.map(a => a.length));
+    const result: Zipped<T>[] = [];
+
+    for (let i = 0; i < minLen; i++) {
+        // We know i < length of every array, so arr[i] is safe.
+        // TS can’t prove it, so we cast the row.
+        const row = arrays.map(arr => arr[i] as unknown) as Zipped<T>;
+        result.push(row);
+    }
+
+    return result;
+}
+
+export function fromPairs<K extends string | number | symbol, V>(
+    pairs: Array<[K, V]>
+): Record<K, V> {
+    const result: Record<K, V> = {} as Record<K, V>;
+    for (const [key, value] of pairs) {
+        result[key] = value;
+    }
+    return result;
+}

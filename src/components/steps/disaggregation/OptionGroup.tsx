@@ -4,7 +4,7 @@ import _ from "lodash";
 import { withStyles } from "@material-ui/core/styles";
 import { createStyles, WithStyles, Theme } from "@material-ui/core";
 
-import { AntigenDisaggregationOptionGroup } from "../../../models/AntigensDisaggregation";
+import { AntigenDisaggregationOptionGroup } from "../../../models/AntigensDisaggregationLegacy";
 import SimpleCheckbox from "../../forms/SimpleCheckBox";
 import SimpleSelect from "../../forms/SimpleSelect";
 

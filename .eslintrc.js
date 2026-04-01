@@ -13,6 +13,8 @@ module.exports = {
         "no-console": ["warn", { allow: ["debug", "warn", "error"] }],
         "@typescript-eslint/camelcase": "off",
         "@typescript-eslint/prefer-as-const": "off",
+        "@typescript-eslint/triple-slash-reference": "off",
+        "@typescript-eslint/no-namespace": "off",
         "react/no-find-dom-node": "off",
         "react/no-string-refs": "off",
         "import/no-webpack-loader-syntax": "off",
@@ -20,9 +22,11 @@ module.exports = {
         "@typescript-eslint/no-this-alias": ["off"],
         "unused-imports/no-unused-imports": "off",
         "@typescript-eslint/no-unnecessary-type-constraint": ["off"],
+        "no-unused-vars": "off",
         "@typescript-eslint/no-unused-vars": [
             "warn",
             {
+                args: "all",
                 argsIgnorePattern: "^_",
                 varsIgnorePattern: "^_",
                 caughtErrorsIgnorePattern: "^_",

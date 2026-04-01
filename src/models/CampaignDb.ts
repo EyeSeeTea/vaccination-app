@@ -1,30 +1,34 @@
 import DbD2, { ApiResponse, ModelReference } from "./db-d2";
-import { generateUid } from "d2/uid";
 import moment from "moment";
 import _ from "lodash";
 import "../utils/lodash-mixins";
 
 import Campaign from "./campaign";
-import { DataSetCustomForm } from "./DataSetCustomForm";
-import {
-    Maybe,
-    MetadataResponse,
-    DataEntryForm,
-    Section,
-    CategoryOption,
-    NamedRef,
-} from "./db.types";
+import { Maybe, MetadataResponse, Section, CategoryOption, NamedRef, Ref } from "./db.types";
 import { Metadata, DataSet, Response } from "./db.types";
 import { formatDay } from "../utils/date";
 import {
-    getDataElements,
     CocMetadata,
     AntigenDisaggregationEnabledDataElement,
     AntigenDisaggregationEnabledDataElementCategory,
-} from "./AntigensDisaggregation";
+} from "./AntigensDisaggregationLegacy";
 import { Dashboard, DashboardMetadata } from "./Dashboard";
 import { Teams, CategoryOptionTeam } from "./Teams";
-import { getDashboardCode, getByIndex, baseConfig } from "./config";
+import { getDashboardCode, getByIndex, baseConfig, MetadataConfig } from "./config";
+import { assert } from "../utils/assert";
+import { getUid } from "../utils/dhis2";
+import {
+    getDisaggregatedDataElements,
+    campaignTypes,
+    categoriesInDataElement,
+    dataElementsInfo,
+    getAntigenCode,
+    getDataElementDisaggregations,
+} from "./D2CampaignMetadata";
+import { D2Translation } from "@eyeseetea/d2-api/schemas";
+import i18n from "../locales";
+
+const locales = ["es", "fr"];
 
 interface DataSetWithSections {
     sections: Array<{ id: string; name: string; dataSet: { id: string } }>;
@@ -49,7 +53,6 @@ interface PostSaveMetadata {
     visualizations: object[];
     dashboards: object[];
     dataSets: DataSet[];
-    dataEntryForms: DataEntryForm[];
     sections: Section[];
     categoryOptions: NamedRef[];
 }
@@ -66,7 +69,7 @@ export default class CampaignDb {
         const { categoryCodeForTeams, categoryCodeForDoses, categoryCodeForAntigens } =
             campaign.config;
         const { categoryComboCodeForTeams } = campaign.config;
-        const categoriesByCode = _(categories).keyBy("code");
+        const categoriesByCode = _(categories).keyBy(category => category.code);
 
         this.ageGroupCategoryId = categoriesByCode.getOrFail(categoryCodeForAgeGroup).id;
         this.teamsCategoryId = categoriesByCode.getOrFail(categoryCodeForTeams).id;
@@ -77,16 +80,16 @@ export default class CampaignDb {
 
     public async createDashboard(): Promise<string> {
         if (!this.campaign.id) throw new Error("Cannot create dashboard for unpersisted campaign");
-        const teamIds = this.campaign.teamsMetadata.elements.map(t => t.id);
+        const teamsMetadata = await this.campaign.teamsMetadata();
+        const teamIds = teamsMetadata.elements.map(t => t.id);
         const dashboardMetadata = await this.getDashboardMetadata(this.campaign.id, teamIds);
         const metadata: PostSaveMetadata = {
             ...dashboardMetadata,
             dataSets: [],
-            dataEntryForms: [],
             sections: [],
             categoryOptions: [],
         };
-        const response = await this.postSave(metadata, []);
+        const response = await this.postSave(metadata, {});
         const dashboard = dashboardMetadata.dashboards[0];
 
         if (!response.status || !dashboard || !dashboard.id) {
@@ -98,14 +101,16 @@ export default class CampaignDb {
 
     public async save(): Promise<Response<string>> {
         const { campaign } = this;
-        const { db, config: metadataConfig, teamsMetadata } = campaign;
-        const dataSetId = campaign.id || generateUid();
+        const { db, config: metadataConfig } = campaign;
+        const dataSetId = campaign.id || getUid("dataSet", campaign.name);
+        console.debug(`Saving campaign with dataSetId=${dataSetId}`);
 
         if (!campaign.startDate || !campaign.endDate) {
             return { status: false, error: "Campaign Dates not set" };
         }
-        const startDate = moment(campaign.startDate).startOf("day");
-        const endDate = moment(campaign.endDate).endOf("day");
+        const startDate = moment.utc(campaign.startDate).startOf("day");
+        const endDate = moment.utc(campaign.endDate).endOf("day");
+        const teamsMetadata = await campaign.teamsMetadata();
 
         const teamGenerator = Teams.build(teamsMetadata);
         const newTeams = teamGenerator.getTeams({
@@ -115,25 +120,40 @@ export default class CampaignDb {
             teamsCategoyId: this.teamsCategoryId,
             startDate,
             endDate,
-            isEdit: campaign.isEdit(),
+            isEdit: await campaign.isEdit(),
         });
 
+        const teamIds = newTeams.map(team => team.id);
+        const dashboardMetadata = await this.getDashboardMetadata(dataSetId, teamIds);
+
         const teamsToDelete = _.differenceBy(teamsMetadata.elements, newTeams, "id");
-
         const disaggregationData = campaign.getEnabledAntigensDisaggregation();
-        const dataElements = getDataElements(metadataConfig, disaggregationData);
 
-        const dataSetElements = dataElements.map(dataElement => ({
-            dataSet: { id: dataSetId },
-            dataElement: { id: dataElement.id },
-            categoryCombo: { id: dataElement.categoryCombo.id },
-        }));
+        type DataSetElement = {
+            dataSet: { id: string };
+            dataElement: { id: string };
+            categoryCombo: { id: string };
+        };
+
+        const dataSetElements = _(disaggregationData)
+            .flatMap((dd): DataSetElement[] => {
+                return getDisaggregatedDataElements(campaign, dd).map(
+                    ({ formDataElement, categoryCombo }) => {
+                        return {
+                            dataSet: { id: dataSetId },
+                            dataElement: { id: formDataElement.id },
+                            categoryCombo: { id: categoryCombo.id },
+                        };
+                    }
+                );
+            })
+            .uniqBy(dse => dse.dataElement.id)
+            .value();
 
         const dataInput = getDataInputFromCampaign(campaign);
         const existingDataSet = await this.getExistingDataSet();
         const metadataCoc = await campaign.antigensDisaggregation.getCocMetadata(db);
-        const dataEntryForm = await this.getDataEntryForm(existingDataSet, metadataCoc);
-        const sections = await this.getSections(db, dataSetId, existingDataSet, metadataCoc);
+        const sections = await this.getSections(dataSetId, metadataCoc);
         const sharing = await campaign.getDataSetSharing();
         const campaignOrgUnitRefs = campaign.organisationUnits.map(ou => ({ id: ou.id }));
 
@@ -147,7 +167,7 @@ export default class CampaignDb {
             dataElementDecoration: true,
             renderAsTabs: true,
             organisationUnits: campaignOrgUnitRefs,
-            dataSetElements,
+            dataSetElements: dataSetElements,
             openFuturePeriods: 1,
             timelyDays: 0,
             expiryDays: 0,
@@ -161,24 +181,21 @@ export default class CampaignDb {
                     attribute: { id: metadataConfig.attributes.dataInputPeriods.id },
                 },
             ],
-            dataEntryForm: { id: dataEntryForm.id },
+            dataEntryForm: null,
             sections: sections.map(section => ({ id: section.id })),
             ...sharing,
         };
 
-        const teamIds = newTeams.map(team => team.id);
-        const dashboardMetadata = await this.getDashboardMetadata(dataSetId, teamIds);
         const extraDataSets = await this.getExtraDataSets();
 
         return this.postSave(
             {
                 ...dashboardMetadata,
                 dataSets: [dataSet, ...extraDataSets],
-                dataEntryForms: [dataEntryForm],
-                sections,
+                sections: sections,
                 categoryOptions: newTeams,
             },
-            teamsToDelete
+            { teamsToDelete, existingDataSet }
         );
     }
 
@@ -235,15 +252,21 @@ export default class CampaignDb {
 
     private async postSave(
         allMetadata: PostSaveMetadata,
-        teamsToDelete: CategoryOptionTeam[]
+        options: {
+            teamsToDelete?: CategoryOptionTeam[];
+            existingDataSet?: DataSetWithSections;
+        }
     ): Promise<Response<string>> {
         const { campaign } = this;
         const { db, config } = campaign;
+        const { teamsToDelete = [], existingDataSet } = options;
         const { sections, ...nonSectionsMetadata } = allMetadata;
         let metadata;
-        let modelReferencesToDelete: ModelReference[];
+        let existingModels: ModelReference[];
 
-        if (campaign.isEdit()) {
+        const isEdit = await campaign.isEdit();
+
+        if (isEdit) {
             // The saving of existing sections on DHIS2 is buggy: /metadata
             // often responds with a 500 Server Error when a data set and their sections are
             // posted on the same request. Workaround: post the sections on a separate request.
@@ -256,16 +279,28 @@ export default class CampaignDb {
                 }
             }
             metadata = nonSectionsMetadata;
-            modelReferencesToDelete = await Campaign.getResources(config, db, allMetadata.dataSets);
+            existingModels = await Campaign.getResources(config, db, allMetadata.dataSets);
         } else {
             metadata = allMetadata;
-            modelReferencesToDelete = [];
+            existingModels = [];
+        }
+
+        if (existingDataSet) {
+            await this.campaign.db.postMetadata(
+                {
+                    sections: _.difference(
+                        existingDataSet.sections.map(section => section.id),
+                        allMetadata.sections.map(section => section.id)
+                    ).map(id => ({ id })),
+                },
+                { importStrategy: "DELETE" }
+            );
         }
 
         const result: ApiResponse<MetadataResponse> = await db.postMetadata<Metadata>(metadata);
 
-        if (campaign.isEdit()) {
-            await this.cleanUpDashboardItems(db, modelReferencesToDelete);
+        if (isEdit) {
+            await this.cleanUpDashboardItems(db, metadata, existingModels);
 
             // Teams must be deleted after all asociated dashboard and dashboard items (favorites) are deleted
             if (!_.isEmpty(teamsToDelete)) {
@@ -289,70 +324,136 @@ export default class CampaignDb {
 
     private async cleanUpDashboardItems(
         db: DbD2,
+        metadata: Omit<PostSaveMetadata, "sections">,
         modelReferencesToDelete: ModelReference[]
     ): Promise<Response<string>> {
+        const idsInMetadata = _(metadata.visualizations)
+            .map(dashboard => (dashboard as Ref).id)
+            .compact()
+            .value();
+
         const dashboardItems = _(modelReferencesToDelete)
-            .filter(o => _.includes(["visualizations"], o.model))
+            .filter(o => o.model === "visualizations" && !idsInMetadata.includes(o.id))
             .value();
 
         return await db.deleteMany(dashboardItems);
     }
 
-    private async getSections(
-        db: DbD2,
-        dataSetId: string,
-        existingDataSet: Maybe<DataSetWithSections>,
-        cocMetadata: CocMetadata
-    ): Promise<Section[]> {
+    private async getSections(dataSetId: string, cocMetadata: CocMetadata): Promise<Section[]> {
         const { campaign } = this;
-        const existingSections = existingDataSet ? existingDataSet.sections : [];
-        const existingSectionsByName = _.keyBy(existingSections, "name");
         const disaggregationData = campaign.getEnabledAntigensDisaggregation();
+        const translations = new CategoryOptionTranslations(campaign.config);
 
-        const sectionsUsed: Section[] = disaggregationData.map((disaggregationData, index) => {
-            const sectionName = disaggregationData.antigen.code;
-            // !NAME -> Old unused section
-            const existingSection =
-                existingSectionsByName[sectionName] || existingSectionsByName["!" + sectionName];
+        const sectionsUsed = disaggregationData.map((disaggregationDataItem, index): Section => {
+            const campaignType = assert(disaggregationDataItem.type);
+            const { antigen } = disaggregationDataItem;
+            const campaignTypeRef = campaignTypes[campaignType];
+            const sectionName = `${antigen.name} [${campaignTypeRef.name}]`;
 
-            const greyedFields = _(disaggregationData.dataElements)
-                .flatMap(dataElementDis => {
-                    const disaggregations = getDisaggregations(dataElementDis);
+            const antigenSectionTranslations = translations.locales.map((locale): D2Translation => {
+                const antigenName = translations.getByCode(antigen.code, locale) || antigen.name;
+                const campaignTypeName =
+                    translations.getByCode("RVC_" + campaignTypeRef.code, locale) ||
+                    campaignTypeRef.name;
+                const translatedText = `${antigenName} [${campaignTypeName}]`;
 
-                    return disaggregations.map(disaggregation => {
-                        const cocId = cocMetadata.getByOptions(disaggregation);
-                        if (!cocId) {
-                            const cocInfo = disaggregation.map(coc => coc.name).join(", ");
-                            throw new Error(`coc not found: ${cocInfo}`);
-                        }
+                return { property: "NAME", locale: locale, value: translatedText };
+            });
 
+            const greyedFields = _(getDisaggregatedDataElements(campaign, disaggregationDataItem))
+                .flatMap(({ dataElement, formDataElement, categoryCombo }) => {
+                    const disaggregations = getDisaggregations(
+                        campaign.config,
+                        dataElement,
+                        formDataElement
+                    );
+
+                    const cocIdsEnabled = _(disaggregations)
+                        .map(disaggregation => {
+                            const categoryOptions2 = disaggregation.filter(dis => {
+                                return !categoriesInDataElement.includes(dis.categoryCode);
+                            });
+                            return cocMetadata.getByOptions(categoryOptions2);
+                        })
+                        .compact()
+                        .uniq()
+                        .value();
+
+                    const cocIdsAllForCategoryCombo = cocMetadata.getByCategoryCombo(categoryCombo);
+                    const cocIdsToDisable = _.difference(cocIdsAllForCategoryCombo, cocIdsEnabled);
+
+                    return cocIdsToDisable.map(cocIdToDisable => {
                         return {
-                            dataElement: { id: dataElementDis.id },
-                            categoryOptionCombo: { id: cocId },
+                            dataElement: { id: formDataElement.id },
+                            categoryOptionCombo: { id: cocIdToDisable },
                         };
                     });
                 })
+                .sortBy(gf => [gf.dataElement.id, gf.categoryOptionCombo.id].join("."))
                 .value();
 
+            const dataElements2 = getDisaggregatedDataElements(campaign, disaggregationDataItem)
+                .map(de => de.formDataElement)
+                .filter(dataElement => {
+                    const isDataElementByAntigen = dataElementsInfo.some(
+                        de =>
+                            dataElement.code.startsWith(de.code) &&
+                            de.disaggregations.includes("antigen")
+                    );
+                    return isDataElementByAntigen;
+                });
+
             return {
-                id: existingSection ? existingSection.id : generateUid(),
+                id: getUid("section", dataSetId + antigen.id),
+                // Sections code must be uniq across all datasets.
+                // Make it unique by prefixing the antigen with dataset id
+                code: `RVC_${dataSetId}-${getAntigenCode(antigen.code)}`,
                 dataSet: { id: dataSetId },
-                sortOrder: index,
+                sortOrder: index + 1,
                 name: sectionName,
-                dataElements: disaggregationData.dataElements.map(de => ({ id: de.id })),
-                // Use grey fields with inverted logic: set the used dataElement.cocId.
-                greyedFields,
+                dataElements: dataElements2.map(de => ({ id: de.id })),
+                greyedFields: greyedFields,
+                translations: antigenSectionTranslations,
             };
         });
 
-        const existingSectionsUnused = _(existingSections)
-            .differenceBy(sectionsUsed, "id")
-            .map(section =>
-                section.name.startsWith("!") ? section : { ...section, name: "!" + section.name }
-            )
+        const dataElements2 = _(disaggregationData)
+            .flatMap(dd => {
+                return getDisaggregatedDataElements(campaign, dd);
+            })
+            .map(de => de.formDataElement)
+            .filter(dataElement => {
+                const isDataElementByAntigen = dataElementsInfo.some(de =>
+                    dataElement.code.startsWith(de.code)
+                );
+                return !isDataElementByAntigen;
+            })
+            .uniqBy(dataElement => dataElement.id)
             .value();
 
-        return _.concat(sectionsUsed, existingSectionsUnused);
+        const qualityAndSafetySectionTranslations = locales.map(
+            (locale): D2Translation => ({
+                property: "NAME",
+                locale: locale,
+                value: i18n.t("General Q&S", { lng: locale }),
+            })
+        );
+
+        const qualityAndSafetySection: Section | undefined =
+            dataElements2.length > 0
+                ? {
+                      id: getUid("section", dataSetId),
+                      name: "General Q&S",
+                      dataSet: { id: dataSetId },
+                      dataElements: dataElements2.map(de => ({ id: de.id })),
+                      sortOrder: sectionsUsed.length + 1,
+                      translations: qualityAndSafetySectionTranslations,
+                  }
+                : undefined;
+
+        const sectionsUsed2 = _.compact([...sectionsUsed, qualityAndSafetySection]);
+
+        return _.concat(sectionsUsed2);
     }
 
     private async getExistingDataSet(): Promise<Maybe<DataSetWithSections>> {
@@ -378,27 +479,6 @@ export default class CampaignDb {
         return _.first(existingDataSets);
     }
 
-    private async getDataEntryForm(
-        existingDataSet: Maybe<DataSetWithSections>,
-        cocMetadata: CocMetadata
-    ): Promise<DataEntryForm> {
-        const { campaign } = this;
-        const customForm = await DataSetCustomForm.build(campaign, cocMetadata);
-        const customFormHtml = customForm.generate();
-        const formId =
-            (existingDataSet &&
-                existingDataSet.dataEntryForm &&
-                existingDataSet.dataEntryForm.id) ||
-            generateUid();
-
-        return {
-            id: formId,
-            name: campaign.name + " " + formId, // dataEntryForm.name must be unique
-            htmlCode: customFormHtml,
-            style: "NONE",
-        };
-    }
-
     private async getDashboardMetadata(
         dataSetId: string,
         teamIds: string[]
@@ -410,13 +490,14 @@ export default class CampaignDb {
         if (!campaign.startDate || !campaign.endDate) {
             throw new Error("Campaign Dates not set");
         }
-        const startDate = moment(campaign.startDate).startOf("day");
-        const endDate = moment(campaign.endDate).endOf("day");
+        const startDate = moment.utc(campaign.startDate).startOf("day");
+        const endDate = moment.utc(campaign.endDate).endOf("day");
 
         const antigensDisaggregation = campaign.getEnabledAntigensDisaggregation();
         const sharing = await campaign.getDashboardSharing();
 
         return dashboardGenerator.create({
+            campaign: campaign,
             dashboardId: campaign.dashboardId,
             datasetName: campaign.name,
             organisationUnits: campaign.organisationUnits,
@@ -451,26 +532,40 @@ type DataSetWithDataInputPeriods = {
 
 type CampaignPeriods = { startDate: Date; endDate: Date };
 
+type CategoryOptionWithCategory = CategoryOption & { categoryCode: string };
+
 type Reference = {
     category: AntigenDisaggregationEnabledDataElementCategory;
-    categoryOption: CategoryOption;
+    categoryOption: CategoryOptionWithCategory;
     restrictForOptionIds: string[] | undefined;
 };
 
 // Return disaggregations, taking in account that some categories restrict
-// the options that can be selected together (for now this is used to allow age groups by dose)
+// the options that can be selected together (this is used to model age groups by dose)
 function getDisaggregations(
-    dataElementDis: AntigenDisaggregationEnabledDataElement
-): CategoryOption[][] {
-    const referencesGroups = dataElementDis.categories.map(category =>
-        category.categoryOptions.map(
-            (categoryOption): Reference => ({
-                category: category,
-                categoryOption: categoryOption,
-                restrictForOptionIds: category.onlyForCategoryOptionIds,
-            })
-        )
-    );
+    config: MetadataConfig,
+    dataElementDis: AntigenDisaggregationEnabledDataElement,
+    formDataElement: { code: string }
+): CategoryOptionWithCategory[][] {
+    const dis = getDataElementDisaggregations(formDataElement, config);
+    const referencesGroups = _(dataElementDis.categories)
+        .map(category => {
+            const keep =
+                !category.onlyForCategoryOptionIds ||
+                !dis.dose?.categoryOption.id ||
+                category.onlyForCategoryOptionIds.includes(dis.dose?.categoryOption.id);
+            if (!keep) return null;
+
+            return category.categoryOptions.map((categoryOption): Reference => {
+                return {
+                    category: category,
+                    categoryOption: { ...categoryOption, categoryCode: category.code },
+                    restrictForOptionIds: category.onlyForCategoryOptionIds,
+                };
+            });
+        })
+        .compact()
+        .value();
 
     return _.cartesianProduct(referencesGroups).map(references => {
         const optionsIds = references.flatMap(ref => ref.categoryOption.id);
@@ -540,7 +635,7 @@ function getPeriodDatesFromDataInputPeriods(
     const { dataInputPeriods } = dataSet;
     if (!dataInputPeriods) return;
 
-    const getDateFromPeriodId = (periodId: string) => moment(periodId, "YYYYMMDD").toDate();
+    const getDateFromPeriodId = (periodId: string) => moment.utc(periodId, "YYYYMMDD").toDate();
     const periods = dataInputPeriods.map(dip => dip.period.id);
     const [min, max] = [_.min(periods), _.max(periods)];
     if (!min || !max) return;
@@ -549,4 +644,25 @@ function getPeriodDatesFromDataInputPeriods(
         startDate: getDateFromPeriodId(min),
         endDate: getDateFromPeriodId(max),
     };
+}
+
+class CategoryOptionTranslations {
+    translationsByCode: Record<string, { translations: Record<string, string> }>;
+
+    constructor(private config: MetadataConfig) {
+        this.translationsByCode = _(config.categoryOptions)
+            .keyBy(categoryOption => categoryOption.code)
+            .value();
+    }
+
+    get locales() {
+        return _(this.config.categoryOptions)
+            .flatMap(co => Object.keys(co.translations))
+            .uniq()
+            .value();
+    }
+
+    getByCode(code: string, locale: string): string | undefined {
+        return this.translationsByCode[code]?.translations[locale];
+    }
 }

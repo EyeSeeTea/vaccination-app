@@ -22,6 +22,7 @@ class CampaignWizard extends React.Component {
     static propTypes = {
         d2: PropTypes.object.isRequired,
         db: PropTypes.object.isRequired,
+        compositionRoot: PropTypes.object.isRequired,
         api: PropTypes.object.isRequired,
         history: PropTypes.object.isRequired,
         config: PropTypes.object.isRequired,
@@ -40,19 +41,22 @@ class CampaignWizard extends React.Component {
     }
 
     async componentDidMount() {
-        const { db, config, match } = this.props;
+        const { db, compositionRoot, config, match } = this.props;
 
         try {
             const campaign = this.isEdit()
-                ? await Campaign.get(config, db, match.params.id)
+                ? await compositionRoot.campaigns.get.execute(match.params.id)
                 : Campaign.create(config, db);
 
-            const campaignHasDataValues = await campaign.hasDataValues().catch(err => {
-                console.error(err);
-                // Could not get data values (i.e. the user has no access to the org units),
-                // so assume the worse case (that the campaign has data) and continue.
-                return true;
-            });
+            const campaignHasDataValues = Boolean(
+                campaign.id &&
+                    (await compositionRoot.campaigns.hasData.execute(campaign.id).catch(err => {
+                        console.error(err);
+                        // Could not get data values (i.e. the user has no access to the org units),
+                        // so assume the worse case (that the campaign has data) and continue.
+                        return true;
+                    }))
+            );
             this.setState({ campaign, campaignHasDataValues });
         } catch (err) {
             console.error(err);
@@ -110,7 +114,7 @@ class CampaignWizard extends React.Component {
                 label: i18n.t("Configure Indicators"),
                 component: DisaggregationStep,
                 validationKeys: ["antigensDisaggregation"],
-                validationKeysLive: ["antigensDisaggregation"],
+                validationKeysLive: [],
                 description: i18n.t(
                     `Select the indicators and breakdowns that you wish to monitor for each antigen in your campaign.\n\n                Standard age groups for each antigen appear by default. In some cases, you may click on an age group to select subdivisions if that information is important for your campaign. Compulsory indicators may not be un-selected.`
                 ),
@@ -169,7 +173,7 @@ class CampaignWizard extends React.Component {
     };
 
     render() {
-        const { d2, location } = this.props;
+        const { d2, location, compositionRoot } = this.props;
         const { campaign, dialogOpen, pagesVisited, campaignHasDataValues } = this.state;
         window.campaign = campaign;
 
@@ -185,6 +189,7 @@ class CampaignWizard extends React.Component {
             props: {
                 d2,
                 campaign,
+                compositionRoot: compositionRoot,
                 onChange: this.onChange(step),
                 onCancel: this.goToConfiguration,
                 api: this.props.api,
