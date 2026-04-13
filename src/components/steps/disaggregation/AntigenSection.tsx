@@ -15,7 +15,7 @@ import {
 import { createStyles, WithStyles, Theme } from "@material-ui/core";
 
 import i18n from "../../../locales";
-import { CampaignType } from "../../../models/AntigensDisaggregation";
+import { CampaignType } from "../../../models/AntigensDisaggregationLegacy";
 import SimpleCheckbox from "../../forms/SimpleCheckBox";
 import DataElement from "./DataElement";
 import { memoize } from "../../../utils/memoize";

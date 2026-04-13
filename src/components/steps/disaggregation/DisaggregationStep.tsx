@@ -18,7 +18,7 @@ import "./DisaggregationStep.css";
 import i18n from "../../../locales";
 import SimpleCheckbox from "../../forms/SimpleCheckBox";
 import { DataSet } from "../../../models/config";
-import { CampaignType } from "../../../models/AntigensDisaggregation";
+import { CampaignType } from "../../../models/AntigensDisaggregationLegacy";
 
 const { Sidebar } = require("@dhis2/d2-ui-core"); // Untyped
 

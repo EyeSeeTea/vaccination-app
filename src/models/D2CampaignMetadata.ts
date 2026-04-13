@@ -10,7 +10,7 @@ import {
     CampaignType,
     AntigenDisaggregationEnabledDataElement,
     AntigenDisaggregationEnabled,
-} from "./AntigensDisaggregation";
+} from "./AntigensDisaggregationLegacy";
 import Campaign from "./campaign";
 import { getRvcCode, MetadataConfig, baseConfig, Dose } from "./config";
 import { Ref } from "./db.types";
