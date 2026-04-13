@@ -7,7 +7,6 @@ import { HasCampaignDataUseCase } from "./domain/usecases/HasCampaignDataUseCase
 import { ListCampaignsUseCase } from "./domain/usecases/ListCampaignsUseCase";
 import { SaveCampaignUseCase } from "./domain/usecases/SaveCampaignUseCase";
 import { MetadataConfig } from "./models/config";
-import { D2LegacyGetCampaign } from "./models/D2LegacyGetCampaign";
 import DbD2 from "./models/db-d2";
 import { D2Api } from "./types/d2-api";
 
@@ -16,7 +15,6 @@ export function getCompositionRoot(options: { db: DbD2; api: D2Api; config: Meta
 
     const repositories = {
         campaignRepository: new CampaignD2Repository(config, db),
-        campaignRepositoryOld: new D2LegacyGetCampaign(config, db),
         notificationRepository: new NotificationD2Repository(api),
     };
 
