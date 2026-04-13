@@ -1,0 +1,94 @@
+{
+    "args": [
+        "/analytics",
+        {
+            "dimension": [
+                "dx:mOE5w8jVtuh",
+                "pe:20251119",
+                "ou:lrjmTKZJUEx"
+            ]
+        }
+    ],
+    "returnValue": {
+        "headerWidth": 4,
+        "headers": [
+            {
+                "column": "Data",
+                "hidden": false,
+                "meta": true,
+                "name": "dx",
+                "type": "java.lang.String",
+                "valueType": "TEXT"
+            },
+            {
+                "column": "Period",
+                "hidden": false,
+                "meta": true,
+                "name": "pe",
+                "type": "java.lang.String",
+                "valueType": "TEXT"
+            },
+            {
+                "column": "Organisation unit",
+                "hidden": false,
+                "meta": true,
+                "name": "ou",
+                "type": "java.lang.String",
+                "valueType": "TEXT"
+            },
+            {
+                "column": "Value",
+                "hidden": false,
+                "meta": false,
+                "name": "value",
+                "type": "java.lang.Double",
+                "valueType": "NUMBER"
+            }
+        ],
+        "height": 0,
+        "metaData": {
+            "dimensions": {
+                "co": [
+                    "AOPzxwWACxk"
+                ],
+                "dx": [
+                    "mOE5w8jVtuh"
+                ],
+                "ou": [
+                    "lrjmTKZJUEx"
+                ],
+                "pe": [
+                    "20251119"
+                ]
+            },
+            "items": {
+                "20251119": {
+                    "name": "2025-11-19"
+                },
+                "AOPzxwWACxk": {
+                    "name": "default"
+                },
+                "dx": {
+                    "name": "Data"
+                },
+                "lrjmTKZJUEx": {
+                    "name": "External Consultations"
+                },
+                "mOE5w8jVtuh": {
+                    "name": "Total population"
+                },
+                "ou": {
+                    "name": "Organisation unit"
+                },
+                "pe": {
+                    "name": "Period"
+                }
+            }
+        },
+        "rowContext": {
+        },
+        "rows": [
+        ],
+        "width": 0
+    }
+}

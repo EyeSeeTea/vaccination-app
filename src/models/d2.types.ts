@@ -2,10 +2,30 @@ import { Dictionary } from "lodash";
 
 export interface D2 {
     Api: {
-        getApi(): D2Api;
+        getApi(): D2ApiLegacy;
     };
     currentUser: {
         displayName: string;
+    };
+    i18n: {
+        strings: {
+            add(key: string): void;
+        };
+        load(): Promise<void> | void;
+    };
+    models: {
+        dataSets: {
+            list(
+                options: Partial<{
+                    fields: string;
+                    filter: string[];
+                    pageSize: number;
+                    order: string;
+                    apiEndpoint: string;
+                }>
+            ): Promise<any>;
+            get(id: string, options: Partial<{ fields: string }>): Promise<any>;
+        };
     };
 }
 
@@ -16,7 +36,7 @@ export type DeleteResponse = {
     message?: string;
 };
 
-export interface D2Api {
+export interface D2ApiLegacy {
     get(url: string, data: Dictionary<any>): Promise<Dictionary<any>>;
     get<T>(url: string, data: Dictionary<any>): Promise<T>;
     post(url: string, data: Dictionary<any>): Promise<Dictionary<any>>;
@@ -24,3 +44,8 @@ export interface D2Api {
     delete(url: string): Promise<DeleteResponse>;
     baseUrl: string;
 }
+
+export type D2ApiLegacyGetNoGeneric = (
+    url: string,
+    data: Dictionary<any>
+) => Promise<Dictionary<any>>;

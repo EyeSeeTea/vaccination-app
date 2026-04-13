@@ -10,13 +10,12 @@ import {
     TableState,
     TableSorting,
     TableColumn,
+    ObjectsTableDetailField,
 } from "@eyeseetea/d2-ui-components";
 import _ from "lodash";
 
 import PageHeader from "../shared/PageHeader";
-import { list, getPeriodDatesFromDataSet } from "../../models/datasets";
 import { formatDateShort } from "../../utils/date";
-import Campaign from "../../models/campaign";
 import TargetPopulationDialog from "./TargetPopulationDialog";
 import { hasCurrentUserRoles } from "../../utils/permissions";
 import { withPageVisited } from "../utils/page-visited-app";
@@ -24,8 +23,12 @@ import "./CampaignConfiguration.css";
 import { Button } from "@material-ui/core";
 import { Dashboard, Delete, Details, Edit, LibraryBooks, People } from "@material-ui/icons";
 import i18n from "../../locales";
+import { CompositionRoot } from "../../CompositionRoot";
+import { D2Api } from "../../types/d2-api";
+import { MetadataConfig } from "../../models/config";
+import { CampaignSummary } from "../../domain/entities/CampaignSummary";
 
-type DataSetRow = any;
+type DataSetRow = CampaignSummary;
 
 type Filters = {
     search: string;
@@ -34,7 +37,9 @@ type Filters = {
 type CampaignConfigurationProps = {
     d2: any;
     db: any;
-    config: any;
+    api: D2Api;
+    compositionRoot: CompositionRoot;
+    config: MetadataConfig;
     snackbar: any;
     loading: any;
     pageVisited: boolean;
@@ -45,7 +50,7 @@ type CampaignConfigurationState = {
     rows: DataSetRow[];
     pagination: TablePagination;
     sorting: TableSorting<DataSetRow>;
-    dataSetsToDelete: any;
+    dataSetsToDelete: DataSetRow[] | null;
     targetPopulationDataSet: any;
     objectsTableKey: any;
     filters: any;
@@ -100,22 +105,23 @@ class CampaignConfiguration extends React.Component<
     initialSorting = { field: "displayName" as "displayName", order: "asc" as "asc" };
 
     detailsFields = [
-        { name: "displayName", text: i18n.t("Name") },
-        { name: "displayDescription", text: i18n.t("Description") },
+        { name: "displayName" as const, text: i18n.t("Name") },
+        { name: "displayDescription" as const, text: i18n.t("Description") },
+        { name: "created" as const, text: i18n.t("Created") },
+        { name: "lastUpdated" as const, text: i18n.t("Last update") },
+        { name: "id" as const, text: i18n.t("Id") },
+        { name: "href" as const, text: i18n.t("API link") },
+        // startDate/endDate are virtual fields not in DataSetRow, assert to the expected types
         {
-            name: "startDate",
+            name: "startDate" as const,
             text: i18n.t("Start Date"),
             getValue: (dataSet: DataSetRow) => this.getDateValue("startDate", dataSet),
-        },
+        } as unknown as ObjectsTableDetailField<DataSetRow>,
         {
-            name: "endDate",
+            name: "endDate" as const,
             text: i18n.t("End Date"),
             getValue: (dataSet: DataSetRow) => this.getDateValue("endDate", dataSet),
-        },
-        { name: "created", text: i18n.t("Created") },
-        { name: "lastUpdated", text: i18n.t("Last update") },
-        { name: "id", text: i18n.t("Id") },
-        { name: "href", text: i18n.t("API link") },
+        } as unknown as ObjectsTableDetailField<DataSetRow>,
     ];
 
     _actions: TableAction<DataSetRow>[] = [
@@ -162,7 +168,7 @@ class CampaignConfiguration extends React.Component<
             icon: <People />,
             multiple: false,
             isActive: () => this.canCurrentUserSetTargetPopulation,
-            onClick: ids => this.openTargetPopulation(this.getDataSet(ids)),
+            onClick: ids => this.openTargetPopulation(this.getFirstSelectedDataSet(ids)),
         },
     ];
 
@@ -170,8 +176,13 @@ class CampaignConfiguration extends React.Component<
         return this.state.rows.filter(row => ids.includes(row.id));
     };
 
-    getDataSet = (ids: string[]): DataSetRow | undefined => {
-        return this.state.rows.find(row => row.id === ids[0]);
+    getFirstSelectedDataSet = (ids: string[]): DataSetRow => {
+        const firstId = ids[0];
+        const row = this.state.rows.find(row => row.id === firstId);
+        if (!row) {
+            throw new Error("No dataset found for id " + firstId);
+        }
+        return row;
     };
 
     actions = _(this._actions)
@@ -196,40 +207,46 @@ class CampaignConfiguration extends React.Component<
         this.setState({ dataSetsToDelete: null });
     };
 
+    reloadList = () => {
+        this.list(this.state.filters, this.state.pagination, this.state.sorting);
+        this.setState({ objectsTableKey: new Date() });
+    };
+
     delete = async () => {
-        const { config, db, snackbar, loading } = this.props;
+        const { compositionRoot, snackbar, loading } = this.props;
         const { dataSetsToDelete } = this.state;
+
+        if (!dataSetsToDelete) return;
 
         loading.show(true, i18n.t("Deleting campaign(s). This may take a while, please wait"), {
             count: dataSetsToDelete.length,
         });
         this.closeDeleteConfirmation();
-        const response = await Campaign.delete(config, db, dataSetsToDelete);
+        const campaignIds = dataSetsToDelete.map(ds => ds.id);
+        const response = await compositionRoot.campaigns.delete.execute(campaignIds);
         loading.hide();
 
         if (response.status) {
             snackbar.success(i18n.t("Campaign(s) deleted"));
-            this.setState({ objectsTableKey: new Date() });
+            this.reloadList();
         } else {
             const { level, message } = response.error;
+
             if (level === "warning") {
                 snackbar.warning(message);
+                this.reloadList();
             } else {
                 snackbar.error(`${i18n.t("Error deleting campaign(s)")}:\n${message}`);
             }
-            this.setState({ objectsTableKey: new Date() });
         }
     };
 
     getDateValue = (dateType: "startDate" | "endDate", dataSet: DataSetRow) => {
-        const periodDates = getPeriodDatesFromDataSet(dataSet);
-        if (!periodDates) return;
-
         switch (dateType) {
             case "startDate":
-                return formatDateShort(periodDates.startDate);
+                return formatDateShort(dataSet.period?.start);
             case "endDate":
-                return formatDateShort(periodDates.endDate);
+                return formatDateShort(dataSet.period?.end);
             default:
                 console.error(`Date type not supported: ${dateType}`);
                 return undefined;
@@ -249,9 +266,12 @@ class CampaignConfiguration extends React.Component<
         pagination: TablePagination,
         sorting: TableSorting<DataSetRow>
     ) => {
-        const res = await list(this.props.config, this.props.d2, filters, {
-            ...pagination,
-            sorting: [sorting.field, sorting.order],
+        const res = await this.props.compositionRoot.campaigns.list.execute({
+            filters: filters,
+            pagination: {
+                ...pagination,
+                sorting: [sorting.field, sorting.order],
+            },
         });
 
         this.setState({
@@ -351,6 +371,7 @@ Click the three dots on the right side of the screen if you wish to perform any 
                 {targetPopulationDataSet && (
                     <TargetPopulationDialog
                         db={db}
+                        compositionRoot={this.props.compositionRoot}
                         config={config}
                         dataSet={targetPopulationDataSet}
                         onClose={this.closeTargetPopulation}

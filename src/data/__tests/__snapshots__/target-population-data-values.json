@@ -1,0 +1,421 @@
+[
+    {
+        "period": "20251119",
+        "orgUnit": "lrjmTKZJUEx",
+        "dataElement": "mOE5w8jVtuh",
+        "value": "1000"
+    },
+    {
+        "period": "20251119",
+        "orgUnit": "lrjmTKZJUEx",
+        "dataElement": "e0cPRcP5XNc",
+        "categoryOptionCombo": "Cf2S11GgvyM",
+        "value": "1"
+    },
+    {
+        "period": "20251119",
+        "orgUnit": "lrjmTKZJUEx",
+        "dataElement": "e0cPRcP5XNc",
+        "categoryOptionCombo": "ekehdmjV2sG",
+        "value": "4"
+    },
+    {
+        "period": "20251119",
+        "orgUnit": "lrjmTKZJUEx",
+        "dataElement": "e0cPRcP5XNc",
+        "categoryOptionCombo": "lX9SqhZm23s",
+        "value": "2"
+    },
+    {
+        "period": "20251119",
+        "orgUnit": "lrjmTKZJUEx",
+        "dataElement": "e0cPRcP5XNc",
+        "categoryOptionCombo": "NjNKDBJ1Svq",
+        "value": "3"
+    },
+    {
+        "period": "20251119",
+        "orgUnit": "lrjmTKZJUEx",
+        "dataElement": "e0cPRcP5XNc",
+        "categoryOptionCombo": "jeRJuMqW4QV",
+        "value": "5"
+    },
+    {
+        "period": "20251119",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "Cf2S11GgvyM",
+        "value": "10.00",
+        "dataElement": "O66fuWUHtAJ"
+    },
+    {
+        "period": "20251120",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "Cf2S11GgvyM",
+        "value": "10.00",
+        "dataElement": "O66fuWUHtAJ"
+    },
+    {
+        "period": "20251119",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "Cf2S11GgvyM",
+        "value": "10.00",
+        "dataElement": "euKK57QsUpS"
+    },
+    {
+        "period": "20251120",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "Cf2S11GgvyM",
+        "value": "10.00",
+        "dataElement": "euKK57QsUpS"
+    },
+    {
+        "period": "20251119",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "Cf2S11GgvyM",
+        "value": "10.00",
+        "dataElement": "uiCWZiu6b2J"
+    },
+    {
+        "period": "20251120",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "Cf2S11GgvyM",
+        "value": "10.00",
+        "dataElement": "uiCWZiu6b2J"
+    },
+    {
+        "period": "20251119",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "Cf2S11GgvyM",
+        "value": "0.00",
+        "dataElement": "m6OWeNONwit"
+    },
+    {
+        "period": "20251120",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "Cf2S11GgvyM",
+        "value": "0.00",
+        "dataElement": "m6OWeNONwit"
+    },
+    {
+        "period": "20251119",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "Cf2S11GgvyM",
+        "value": "0.00",
+        "dataElement": "miKMi6I05U6"
+    },
+    {
+        "period": "20251120",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "Cf2S11GgvyM",
+        "value": "0.00",
+        "dataElement": "miKMi6I05U6"
+    },
+    {
+        "period": "20251119",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "lX9SqhZm23s",
+        "value": "20.00",
+        "dataElement": "O66fuWUHtAJ"
+    },
+    {
+        "period": "20251120",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "lX9SqhZm23s",
+        "value": "20.00",
+        "dataElement": "O66fuWUHtAJ"
+    },
+    {
+        "period": "20251119",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "lX9SqhZm23s",
+        "value": "20.00",
+        "dataElement": "euKK57QsUpS"
+    },
+    {
+        "period": "20251120",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "lX9SqhZm23s",
+        "value": "20.00",
+        "dataElement": "euKK57QsUpS"
+    },
+    {
+        "period": "20251119",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "lX9SqhZm23s",
+        "value": "20.00",
+        "dataElement": "uiCWZiu6b2J"
+    },
+    {
+        "period": "20251120",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "lX9SqhZm23s",
+        "value": "20.00",
+        "dataElement": "uiCWZiu6b2J"
+    },
+    {
+        "period": "20251119",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "lX9SqhZm23s",
+        "value": "20.00",
+        "dataElement": "m6OWeNONwit"
+    },
+    {
+        "period": "20251120",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "lX9SqhZm23s",
+        "value": "20.00",
+        "dataElement": "m6OWeNONwit"
+    },
+    {
+        "period": "20251119",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "lX9SqhZm23s",
+        "value": "0.00",
+        "dataElement": "miKMi6I05U6"
+    },
+    {
+        "period": "20251120",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "lX9SqhZm23s",
+        "value": "0.00",
+        "dataElement": "miKMi6I05U6"
+    },
+    {
+        "period": "20251119",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "NjNKDBJ1Svq",
+        "value": "0.00",
+        "dataElement": "O66fuWUHtAJ"
+    },
+    {
+        "period": "20251120",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "NjNKDBJ1Svq",
+        "value": "0.00",
+        "dataElement": "O66fuWUHtAJ"
+    },
+    {
+        "period": "20251119",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "NjNKDBJ1Svq",
+        "value": "0.00",
+        "dataElement": "euKK57QsUpS"
+    },
+    {
+        "period": "20251120",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "NjNKDBJ1Svq",
+        "value": "0.00",
+        "dataElement": "euKK57QsUpS"
+    },
+    {
+        "period": "20251119",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "NjNKDBJ1Svq",
+        "value": "0.00",
+        "dataElement": "uiCWZiu6b2J"
+    },
+    {
+        "period": "20251120",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "NjNKDBJ1Svq",
+        "value": "0.00",
+        "dataElement": "uiCWZiu6b2J"
+    },
+    {
+        "period": "20251119",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "NjNKDBJ1Svq",
+        "value": "30.00",
+        "dataElement": "m6OWeNONwit"
+    },
+    {
+        "period": "20251120",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "NjNKDBJ1Svq",
+        "value": "30.00",
+        "dataElement": "m6OWeNONwit"
+    },
+    {
+        "period": "20251119",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "NjNKDBJ1Svq",
+        "value": "0.00",
+        "dataElement": "miKMi6I05U6"
+    },
+    {
+        "period": "20251120",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "NjNKDBJ1Svq",
+        "value": "0.00",
+        "dataElement": "miKMi6I05U6"
+    },
+    {
+        "period": "20251119",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "ekehdmjV2sG",
+        "value": "40.00",
+        "dataElement": "mEOmE1BZlyb"
+    },
+    {
+        "period": "20251120",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "ekehdmjV2sG",
+        "value": "40.00",
+        "dataElement": "mEOmE1BZlyb"
+    },
+    {
+        "period": "20251119",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "ekehdmjV2sG",
+        "value": "40.00",
+        "dataElement": "ig8QdKd31Xt"
+    },
+    {
+        "period": "20251120",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "ekehdmjV2sG",
+        "value": "40.00",
+        "dataElement": "ig8QdKd31Xt"
+    },
+    {
+        "period": "20251119",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "onOCGaKWYs4",
+        "value": "0.00",
+        "dataElement": "mEOmE1BZlyb"
+    },
+    {
+        "period": "20251120",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "onOCGaKWYs4",
+        "value": "0.00",
+        "dataElement": "mEOmE1BZlyb"
+    },
+    {
+        "period": "20251119",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "onOCGaKWYs4",
+        "value": "0.00",
+        "dataElement": "ig8QdKd31Xt"
+    },
+    {
+        "period": "20251120",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "onOCGaKWYs4",
+        "value": "0.00",
+        "dataElement": "ig8QdKd31Xt"
+    },
+    {
+        "period": "20251119",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "J6952sjszkA",
+        "value": "0.00",
+        "dataElement": "mEOmE1BZlyb"
+    },
+    {
+        "period": "20251120",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "J6952sjszkA",
+        "value": "0.00",
+        "dataElement": "mEOmE1BZlyb"
+    },
+    {
+        "period": "20251119",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "J6952sjszkA",
+        "value": "0.00",
+        "dataElement": "ig8QdKd31Xt"
+    },
+    {
+        "period": "20251120",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "J6952sjszkA",
+        "value": "0.00",
+        "dataElement": "ig8QdKd31Xt"
+    },
+    {
+        "period": "20251119",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "VRX1b1p3Ba2",
+        "value": "0.00",
+        "dataElement": "mEOmE1BZlyb"
+    },
+    {
+        "period": "20251120",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "VRX1b1p3Ba2",
+        "value": "0.00",
+        "dataElement": "mEOmE1BZlyb"
+    },
+    {
+        "period": "20251119",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "VRX1b1p3Ba2",
+        "value": "0.00",
+        "dataElement": "ig8QdKd31Xt"
+    },
+    {
+        "period": "20251120",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "VRX1b1p3Ba2",
+        "value": "0.00",
+        "dataElement": "ig8QdKd31Xt"
+    },
+    {
+        "period": "20251119",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "nkEGI7N2kUB",
+        "value": "0.00",
+        "dataElement": "mEOmE1BZlyb"
+    },
+    {
+        "period": "20251120",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "nkEGI7N2kUB",
+        "value": "0.00",
+        "dataElement": "mEOmE1BZlyb"
+    },
+    {
+        "period": "20251119",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "nkEGI7N2kUB",
+        "value": "0.00",
+        "dataElement": "ig8QdKd31Xt"
+    },
+    {
+        "period": "20251120",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "nkEGI7N2kUB",
+        "value": "0.00",
+        "dataElement": "ig8QdKd31Xt"
+    },
+    {
+        "period": "20251119",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "jeRJuMqW4QV",
+        "value": "50.00",
+        "dataElement": "mEOmE1BZlyb"
+    },
+    {
+        "period": "20251120",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "jeRJuMqW4QV",
+        "value": "50.00",
+        "dataElement": "mEOmE1BZlyb"
+    },
+    {
+        "period": "20251119",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "jeRJuMqW4QV",
+        "value": "50.00",
+        "dataElement": "ig8QdKd31Xt"
+    },
+    {
+        "period": "20251120",
+        "orgUnit": "lrjmTKZJUEx",
+        "categoryOptionCombo": "jeRJuMqW4QV",
+        "value": "50.00",
+        "dataElement": "ig8QdKd31Xt"
+    }
+]

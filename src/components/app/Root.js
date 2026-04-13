@@ -13,11 +13,12 @@ class Root extends React.Component {
     static propTypes = {
         d2: PropTypes.object.isRequired,
         db: PropTypes.object.isRequired,
+        compositionRoot: PropTypes.object.isRequired,
     };
 
     render() {
-        const { d2, config, db, api } = this.props;
-        const base = { d2, config, db, api };
+        const { d2, config, db, api, compositionRoot } = this.props;
+        const base = { d2, config, db, api, compositionRoot };
         i18n.setDefaultNamespace("vaccination-app");
         if (!config) return null;
 

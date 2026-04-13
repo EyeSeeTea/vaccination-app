@@ -1,0 +1,278 @@
+{
+    "args": [
+        "/metadata",
+        {
+            "translate": true,
+            "userGroups:fields": "id,name,users[id,displayName,userCredentials[userRoles[id,name]]]",
+            "userGroups:filter": "name:in:[Vaccination Referents,HMIS Officers]"
+        }
+    ],
+    "returnValue": {
+        "userGroups": [
+            {
+                "id": "TeNDx28ih4i",
+                "name": "HMIS Officers",
+                "users": [
+                    {
+                        "code": null,
+                        "displayName": "User 2680",
+                        "id": "rcukGYwGVwe",
+                        "name": "User 2680",
+                        "username": "user_1527202680"
+                    },
+                    {
+                        "code": null,
+                        "displayName": "User 2214",
+                        "id": "PaFxtYBdWsb",
+                        "name": "User 2214",
+                        "username": "user_1227272214"
+                    },
+                    {
+                        "code": null,
+                        "displayName": "User 8662",
+                        "id": "zQ8DKlCGogJ",
+                        "name": "User 8662",
+                        "username": "user_1546958662"
+                    },
+                    {
+                        "code": null,
+                        "displayName": "User 3709",
+                        "id": "eajzdFj6KEb",
+                        "name": "User 3709",
+                        "username": "user_134953709"
+                    },
+                    {
+                        "code": null,
+                        "displayName": "User 8049",
+                        "id": "bSgMOYl8fwE",
+                        "name": "User 8049",
+                        "username": "user_713058049"
+                    },
+                    {
+                        "code": null,
+                        "displayName": "User 778",
+                        "id": "s45cWyqbBEO",
+                        "name": "User 778",
+                        "username": "user_1036320778"
+                    },
+                    {
+                        "code": null,
+                        "displayName": "User 9503",
+                        "id": "lDmx9DoqXFA",
+                        "name": "User 9503",
+                        "username": "user_1595749503"
+                    },
+                    {
+                        "code": null,
+                        "displayName": "User 4886",
+                        "id": "Bm71Pi73pwD",
+                        "name": "User 4886",
+                        "username": "user_854784886"
+                    },
+                    {
+                        "code": null,
+                        "displayName": "User 5924",
+                        "id": "aR8CPUjDFSW",
+                        "name": "User 5924",
+                        "username": "user_614705924"
+                    },
+                    {
+                        "code": null,
+                        "displayName": "User 8963",
+                        "id": "ouyVQFYUVbH",
+                        "name": "User 8963",
+                        "username": "user_682118963"
+                    },
+                    {
+                        "code": null,
+                        "displayName": "User 808",
+                        "id": "QrQsnXCjWXF",
+                        "name": "User 808",
+                        "username": "user_1036320808"
+                    },
+                    {
+                        "code": null,
+                        "displayName": "User 4333",
+                        "id": "QgmLN3I3Z7m",
+                        "name": "User 4333",
+                        "username": "user_1276584333"
+                    },
+                    {
+                        "code": null,
+                        "displayName": "User 9323",
+                        "id": "PGMgyPlCSrC",
+                        "name": "User 9323",
+                        "username": "user_282929323"
+                    },
+                    {
+                        "code": null,
+                        "displayName": "User 9080",
+                        "id": "Kep8R4HpGJB",
+                        "name": "User 9080",
+                        "username": "user_1193459080"
+                    },
+                    {
+                        "code": null,
+                        "displayName": "User 5109",
+                        "id": "pIlnsOxu3Cf",
+                        "name": "User 5109",
+                        "username": "user_1775005109"
+                    },
+                    {
+                        "code": null,
+                        "displayName": "User 7995",
+                        "id": "bNAGtQsi8UQ",
+                        "name": "User 7995",
+                        "username": "user_1978407995"
+                    },
+                    {
+                        "code": null,
+                        "displayName": "User 1257",
+                        "id": "rvvGs2oeF62",
+                        "name": "User 1257",
+                        "username": "user_378911257"
+                    },
+                    {
+                        "code": null,
+                        "displayName": "User 5355",
+                        "id": "tUqeNhlv4jX",
+                        "name": "User 5355",
+                        "username": "user_152835355"
+                    },
+                    {
+                        "code": null,
+                        "displayName": "User 1894",
+                        "id": "C1TDvoIYZL7",
+                        "name": "User 1894",
+                        "username": "user_1752631894"
+                    },
+                    {
+                        "code": null,
+                        "displayName": "User 1582",
+                        "id": "gHicZtUhdv9",
+                        "name": "User 1582",
+                        "username": "user_596401582"
+                    },
+                    {
+                        "code": null,
+                        "displayName": "User 7535",
+                        "id": "Frtrwz4UaRr",
+                        "name": "User 7535",
+                        "username": "user_774717535"
+                    },
+                    {
+                        "code": null,
+                        "displayName": "User 3071",
+                        "id": "sMk60ye6LVF",
+                        "name": "User 3071",
+                        "username": "user_835813071"
+                    },
+                    {
+                        "code": null,
+                        "displayName": "User 8844",
+                        "id": "BpDuF87wgn5",
+                        "name": "User 8844",
+                        "username": "user_1041778844"
+                    },
+                    {
+                        "code": null,
+                        "displayName": "User 5711",
+                        "id": "SRGw9xWqMtf",
+                        "name": "User 5711",
+                        "username": "user_2143105711"
+                    },
+                    {
+                        "code": null,
+                        "displayName": "User 8603",
+                        "id": "DkwEYlJgFFj",
+                        "name": "User 8603",
+                        "username": "user_497938603"
+                    },
+                    {
+                        "code": null,
+                        "displayName": "User 9745",
+                        "id": "gkqisAJkOGa",
+                        "name": "User 9745",
+                        "username": "user_1571089745"
+                    },
+                    {
+                        "code": null,
+                        "displayName": "User 6195",
+                        "id": "Tx07t5N2pQN",
+                        "name": "User 6195",
+                        "username": "user_917766195"
+                    },
+                    {
+                        "code": null,
+                        "displayName": "User 8608",
+                        "id": "cZ8xeBTRCay",
+                        "name": "User 8608",
+                        "username": "user_442928608"
+                    },
+                    {
+                        "code": null,
+                        "displayName": "User 5130",
+                        "id": "ClVNwNdTUBF",
+                        "name": "User 5130",
+                        "username": "user_1290055130"
+                    }
+                ]
+            },
+            {
+                "id": "AnQDBhyc5R1",
+                "name": "Vaccination Referents",
+                "users": [
+                    {
+                        "code": null,
+                        "displayName": "User 6868",
+                        "id": "lPanqLVKGgB",
+                        "name": "User 6868",
+                        "username": "user_1981556868"
+                    },
+                    {
+                        "code": null,
+                        "displayName": "User 8946",
+                        "id": "TQlHw4sh6sg",
+                        "name": "User 8946",
+                        "username": "user_21428946"
+                    },
+                    {
+                        "code": null,
+                        "displayName": "User 876",
+                        "id": "lFGMXeLrO3a",
+                        "name": "User 876",
+                        "username": "user_95630876"
+                    },
+                    {
+                        "code": null,
+                        "displayName": "User 8218",
+                        "id": "HqebM3irM3d",
+                        "name": "User 8218",
+                        "username": "user_1905858218"
+                    },
+                    {
+                        "code": null,
+                        "displayName": "User 3726",
+                        "id": "WGbRwqz2yn2",
+                        "name": "User 3726",
+                        "username": "user_684103726"
+                    },
+                    {
+                        "code": null,
+                        "displayName": "User 3850",
+                        "id": "OhnyANP6n9N",
+                        "name": "User 3850",
+                        "username": "user_684103850"
+                    },
+                    {
+                        "code": null,
+                        "displayName": "User 7663",
+                        "id": "gD8pnhtlC3X",
+                        "name": "User 7663",
+                        "username": "user_1804527663"
+                    }
+                ]
+            }
+        ]
+    }
+}

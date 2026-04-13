@@ -2,6 +2,7 @@ import _ from "lodash";
 import { NamedObject } from "./db.types";
 import i18n from "../locales";
 import DbD2 from "./db-d2";
+import { NotificationRepository } from "../domain/repositories/NotificationRepository";
 
 interface DataSetWithName {
     name: string;
@@ -16,7 +17,7 @@ export class CampaignNotification {
         },
     };
 
-    constructor(private db: DbD2) {}
+    constructor(private db: DbD2, private notificationRepository: NotificationRepository) {}
 
     public async sendOnUpdateOrDelete(
         dataSets: DataSetWithName[],
@@ -39,7 +40,7 @@ export class CampaignNotification {
 
         if (_.isEmpty(userGroups)) return false;
 
-        await db.sendMessage({
+        await this.notificationRepository.send({
             subject: i18n.t("[RVC] User {{userName}} modified a campaign with data ({{action}})", {
                 userName,
                 action: actionName,
@@ -53,7 +54,7 @@ export class CampaignNotification {
                         ? campaignNames[0]
                         : "\n" + campaignNames.map(name => `  - ${name}`).join("\n")),
             ].join("\n"),
-            userGroups,
+            userGroupIds: userGroups.map(group => group.id),
         });
 
         return true;

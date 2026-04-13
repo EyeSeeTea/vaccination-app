@@ -32,6 +32,7 @@ class SaveStep extends React.Component {
 
     static propTypes = {
         d2: PropTypes.object.isRequired,
+        compositionRoot: PropTypes.object.isRequired,
         campaign: PropTypes.object.isRequired,
         snackbar: PropTypes.object.isRequired,
         classes: PropTypes.object.isRequired,
@@ -44,14 +45,14 @@ class SaveStep extends React.Component {
     }
 
     save = async () => {
-        const { campaign } = this.props;
+        const { campaign, compositionRoot } = this.props;
         const { isSaving } = this.state;
         if (isSaving) return;
 
         this.setState({ isSaving: true, errorMessage: "" });
 
         try {
-            const saveResponse = await campaign.save();
+            const saveResponse = await compositionRoot.campaigns.save.execute(campaign);
             this.setState({ isSaving: false });
 
             if (saveResponse.status) {
@@ -117,9 +118,9 @@ class SaveStep extends React.Component {
 
         if (startDate && endDate) {
             return [
-                moment(campaign.startDate).format("LL"),
+                moment.utc(campaign.startDate).format("LL"),
                 "->",
-                moment(campaign.endDate).format("LL"),
+                moment.utc(campaign.endDate).format("LL"),
             ].join(" ");
         } else {
             return "-";

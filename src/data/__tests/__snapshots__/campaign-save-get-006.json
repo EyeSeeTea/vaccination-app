@@ -1,0 +1,205 @@
+{
+    "args": [
+        "/metadata",
+        {
+            "organisationUnitGroupSets:fields": "id,name,organisationUnitGroups[name,organisationUnits[id]]",
+            "organisationUnitGroupSets:filter": "name:eq:4. Operational Cells",
+            "translate": true
+        }
+    ],
+    "returnValue": {
+        "organisationUnitGroupSets": [
+            {
+                "id": "d7YIIJqBsjs",
+                "name": "4. Operational Cells",
+                "organisationUnitGroups": [
+                    {
+                        "name": "Asia Unit",
+                        "organisationUnits": [
+                            {
+                                "id": "Oe3de1oAjGV"
+                            },
+                            {
+                                "id": "MURY6qb1EkS"
+                            },
+                            {
+                                "id": "siM8btWR1fS"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "UE",
+                        "organisationUnits": [
+                            {
+                                "id": "chqcY3wGtcn"
+                            },
+                            {
+                                "id": "J1tZadFU6MO"
+                            },
+                            {
+                                "id": "VaDaMQ8yUep"
+                            },
+                            {
+                                "id": "S25qbeZcn6L"
+                            },
+                            {
+                                "id": "lmZXqfteYUh"
+                            },
+                            {
+                                "id": "zY8TI50Q7R7"
+                            },
+                            {
+                                "id": "I46t2SsUg9L"
+                            },
+                            {
+                                "id": "UW9Vu5zUriP"
+                            },
+                            {
+                                "id": "A3TmvpzK4ol"
+                            },
+                            {
+                                "id": "sSnBtgb01S6"
+                            },
+                            {
+                                "id": "LBAEotn4pBE"
+                            },
+                            {
+                                "id": "uu7kPV6MUCJ"
+                            },
+                            {
+                                "id": "BguQYLnX55X"
+                            },
+                            {
+                                "id": "w9ML55LKGTB"
+                            },
+                            {
+                                "id": "kFvOJ31VPZy"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Cell 4",
+                        "organisationUnits": [
+                            {
+                                "id": "VuVrsguqGku"
+                            },
+                            {
+                                "id": "CaVmz8V2Fgd"
+                            },
+                            {
+                                "id": "LBAEotn4pBE"
+                            },
+                            {
+                                "id": "C39klCtdfCp"
+                            },
+                            {
+                                "id": "XkSj3C6JFXc"
+                            },
+                            {
+                                "id": "GRGY3EHSFbF"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Cell 1",
+                        "organisationUnits": [
+                            {
+                                "id": "dx2rlgJnLCq"
+                            },
+                            {
+                                "id": "UW9Vu5zUriP"
+                            },
+                            {
+                                "id": "sSDpUBqhilA"
+                            },
+                            {
+                                "id": "uH4aCWNGyJe"
+                            },
+                            {
+                                "id": "w82ydGtPAE0"
+                            },
+                            {
+                                "id": "ikMcPgRCGBV"
+                            },
+                            {
+                                "id": "dv5zoIPpxcA"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Cell 5",
+                        "organisationUnits": [
+                            {
+                                "id": "aNZm8vuaG8e"
+                            },
+                            {
+                                "id": "KqRV6K9NgL5"
+                            },
+                            {
+                                "id": "w9ML55LKGTB"
+                            },
+                            {
+                                "id": "MHrBPl6PGzu"
+                            },
+                            {
+                                "id": "lmelleX7G5X"
+                            },
+                            {
+                                "id": "Y8aSs3nnUTA"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Cell 2",
+                        "organisationUnits": [
+                            {
+                                "id": "pmROYBZA9SI"
+                            },
+                            {
+                                "id": "YkTHZJgj3Nq"
+                            },
+                            {
+                                "id": "J1tZadFU6MO"
+                            },
+                            {
+                                "id": "niOL8ZkaJvU"
+                            },
+                            {
+                                "id": "hIqAlyS17QZ"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Cell 3",
+                        "organisationUnits": [
+                            {
+                                "id": "Oe3de1oAjGV"
+                            },
+                            {
+                                "id": "xkdDNBdrSIg"
+                            },
+                            {
+                                "id": "GmACUqa2vxe"
+                            },
+                            {
+                                "id": "l27gXxXWib7"
+                            },
+                            {
+                                "id": "o9PqPy9YOvf"
+                            },
+                            {
+                                "id": "gQ5GWHyjC29"
+                            },
+                            {
+                                "id": "siM8btWR1fS"
+                            },
+                            {
+                                "id": "gX87dKfU4lS"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}

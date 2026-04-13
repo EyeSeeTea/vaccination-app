@@ -12,12 +12,12 @@ import {
     Sharing,
     CategoryOption,
 } from "./db.types";
-import { Antigen } from "./campaign";
+import Campaign, { Antigen } from "./campaign";
 import { Moment } from "moment";
 import { getDaysRange } from "../utils/date";
-import { AntigenDisaggregationEnabled } from "./AntigensDisaggregation";
-import { MetadataConfig } from "./config";
-import { generateUid } from "../utils/dhis2";
+import { AntigenDisaggregationEnabled, isAgeGroupIncluded } from "./AntigensDisaggregation";
+import { AntigenConfig, MetadataConfig } from "./config";
+import { getUid } from "../utils/dhis2";
 
 type DashboardItem = {
     type: string;
@@ -61,13 +61,14 @@ export class Dashboard {
         metadataConfig: MetadataConfig,
         allCategoryIds: { ageGroup: string; doses: string; teams: string; antigen: string }
     ) {
-        const orgUnitsId = _(organisationUnitsPathOnly).map("id");
-        const { organisationUnits: organisationUnitsWithName } = await this.db.api.get<{
+        const orgUnitsId = _(organisationUnitsPathOnly).map("id").value();
+        const res = await this.db.api.get<{
             organisationUnits?: { id: string; displayName: string; path: string }[];
         }>("/metadata", {
             "organisationUnits:fields": "id,displayName,path",
             "organisationUnits:filter": `id:in:[${orgUnitsId}]`,
         });
+        const { organisationUnits: organisationUnitsWithName } = res;
         const antigenCodes = antigens.map(an => an.code);
         const antigensMeta = _.filter(metadataConfig.antigens, an =>
             _.includes(antigenCodes, an.code)
@@ -128,9 +129,17 @@ export class Dashboard {
                     categoryId: allCategoryIds.teams,
                     elements: teamIds,
                 }),
-                ageGroups: (antigen: Ref) => ({
+                ageGroups: (
+                    antigen: AntigenConfig,
+                    dose: { categoryId: string; doseId: string; name: string } | null
+                ) => ({
                     categoryId: allCategoryIds.ageGroup,
-                    elements: ageGroupsByAntigen[antigen.id],
+                    elements: getAgeGroupIds(
+                        antigensDisaggregation,
+                        antigen,
+                        dose,
+                        ageGroupsByAntigen
+                    ),
                 }),
                 doses: (antigen: Ref) => ({
                     categoryId: allCategoryIds.doses,
@@ -143,6 +152,7 @@ export class Dashboard {
     }
 
     public async create({
+        campaign,
         dashboardId,
         datasetName,
         organisationUnits,
@@ -156,6 +166,7 @@ export class Dashboard {
         sharing,
         allCategoryIds,
     }: {
+        campaign: Campaign;
         dashboardId?: string;
         datasetName: string;
         organisationUnits: OrganisationUnitPathOnly[];
@@ -179,6 +190,8 @@ export class Dashboard {
         );
 
         const dashboardItems = this.createDashboardItems(
+            campaign,
+            dashboardCode,
             datasetName,
             startDate,
             endDate,
@@ -193,7 +206,7 @@ export class Dashboard {
             .value();
 
         const dashboard = {
-            id: dashboardId || generateUid(),
+            id: dashboardId || getUid("dashboard", dashboardCode),
             name: `${datasetName}`,
             code: dashboardCode,
             dashboardItems: items,
@@ -206,6 +219,8 @@ export class Dashboard {
     }
 
     createDashboardItems(
+        campaign: Campaign,
+        dashboardCode: string,
         datasetName: String,
         startDate: Moment,
         endDate: Moment,
@@ -243,6 +258,7 @@ export class Dashboard {
             .value();
 
         const dashboardItems = buildDashboardItems(
+            campaign,
             antigensMeta,
             datasetName,
             organisationUnitsMetadata,
@@ -259,11 +275,13 @@ export class Dashboard {
         const reportTableIds = reportTables.map(table => table.id);
 
         const dashboardCharts = chartIds.map((id: string) => ({
+            id: getUid("dashboardItem", dashboardCode, id),
             type: "VISUALIZATION",
             visualization: { id },
         }));
 
         const dashboardTables = reportTableIds.map((id: string) => ({
+            id: getUid("dashboardItem", dashboardCode, id),
             type: "VISUALIZATION",
             visualization: { id },
         }));
@@ -275,6 +293,27 @@ export class Dashboard {
         };
 
         return dashboardData;
+    }
+}
+
+function getAgeGroupIds(
+    antigensDisaggregation: AntigenDisaggregationEnabled,
+    antigen: AntigenConfig,
+    dose: { categoryId: string; doseId: string; name: string } | null,
+    ageGroupsByAntigen: _.Dictionary<string[]>
+): string[] {
+    const antigenDisaggregation = antigensDisaggregation.find(disaggregation => {
+        return disaggregation.antigen.id === antigen.id;
+    });
+    const doseConfig = dose ? antigen.doses.find(d => d.id === dose.doseId) : null;
+    const antigenAgeGroups = ageGroupsByAntigen[antigen.id] || [];
+
+    if (antigenDisaggregation && doseConfig) {
+        return antigenAgeGroups.filter(ageGroupId => {
+            return isAgeGroupIncluded({ id: ageGroupId }, antigenDisaggregation, doseConfig);
+        });
+    } else {
+        return antigenAgeGroups;
     }
 }
 

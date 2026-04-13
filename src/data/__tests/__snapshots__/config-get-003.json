@@ -1,0 +1,16 @@
+{
+    "args": [
+        "/me",
+        {
+            "fields": [
+                "id",
+                "name"
+            ],
+            "paging": false
+        }
+    ],
+    "returnValue": {
+        "id": "ouyVQFYUVbH",
+        "name": "pentaho pentaho"
+    }
+}

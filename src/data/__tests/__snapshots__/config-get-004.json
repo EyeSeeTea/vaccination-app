@@ -1,0 +1,152 @@
+{
+    "args": [
+        "/metadata",
+        {
+            "organisationUnits:fields": "id,displayName,path,level,ancestors[id,displayName,path,level]",
+            "organisationUnits:filter": "id:in:[,zOyMxdCLXBM,G7g4TvbjFlX,o9PqPy9YOvf,wY8HiLmETeU,BaEwEdzSA6G,lrjmTKZJUEx]",
+            "translate": true
+        }
+    ],
+    "returnValue": {
+        "organisationUnits": [
+            {
+                "ancestors": [
+                    {
+                        "displayName": "MSF",
+                        "id": "zOyMxdCLXBM",
+                        "level": 1,
+                        "path": "/zOyMxdCLXBM"
+                    },
+                    {
+                        "displayName": "OCBA",
+                        "id": "G7g4TvbjFlX",
+                        "level": 2,
+                        "path": "/zOyMxdCLXBM/G7g4TvbjFlX"
+                    },
+                    {
+                        "displayName": "DRC_SK",
+                        "id": "o9PqPy9YOvf",
+                        "level": 3,
+                        "path": "/zOyMxdCLXBM/G7g4TvbjFlX/o9PqPy9YOvf"
+                    },
+                    {
+                        "displayName": "ZZZ_RUSK_211201_Bikenge, Rougeole_CLOSED",
+                        "id": "wY8HiLmETeU",
+                        "level": 4,
+                        "path": "/zOyMxdCLXBM/G7g4TvbjFlX/o9PqPy9YOvf/wY8HiLmETeU"
+                    }
+                ],
+                "displayName": "CDS MBUTU",
+                "id": "BaEwEdzSA6G",
+                "level": 5,
+                "path": "/zOyMxdCLXBM/G7g4TvbjFlX/o9PqPy9YOvf/wY8HiLmETeU/BaEwEdzSA6G"
+            },
+            {
+                "ancestors": [
+                    {
+                        "displayName": "MSF",
+                        "id": "zOyMxdCLXBM",
+                        "level": 1,
+                        "path": "/zOyMxdCLXBM"
+                    },
+                    {
+                        "displayName": "OCBA",
+                        "id": "G7g4TvbjFlX",
+                        "level": 2,
+                        "path": "/zOyMxdCLXBM/G7g4TvbjFlX"
+                    }
+                ],
+                "displayName": "DRC_SK",
+                "id": "o9PqPy9YOvf",
+                "level": 3,
+                "path": "/zOyMxdCLXBM/G7g4TvbjFlX/o9PqPy9YOvf"
+            },
+            {
+                "ancestors": [
+                    {
+                        "displayName": "MSF",
+                        "id": "zOyMxdCLXBM",
+                        "level": 1,
+                        "path": "/zOyMxdCLXBM"
+                    },
+                    {
+                        "displayName": "OCBA",
+                        "id": "G7g4TvbjFlX",
+                        "level": 2,
+                        "path": "/zOyMxdCLXBM/G7g4TvbjFlX"
+                    },
+                    {
+                        "displayName": "DRC_SK",
+                        "id": "o9PqPy9YOvf",
+                        "level": 3,
+                        "path": "/zOyMxdCLXBM/G7g4TvbjFlX/o9PqPy9YOvf"
+                    },
+                    {
+                        "displayName": "ZZZ_RUSK_211201_Bikenge, Rougeole_CLOSED",
+                        "id": "wY8HiLmETeU",
+                        "level": 4,
+                        "path": "/zOyMxdCLXBM/G7g4TvbjFlX/o9PqPy9YOvf/wY8HiLmETeU"
+                    },
+                    {
+                        "displayName": "CDS MBUTU",
+                        "id": "BaEwEdzSA6G",
+                        "level": 5,
+                        "path": "/zOyMxdCLXBM/G7g4TvbjFlX/o9PqPy9YOvf/wY8HiLmETeU/BaEwEdzSA6G"
+                    }
+                ],
+                "displayName": "External Consultations",
+                "id": "lrjmTKZJUEx",
+                "level": 6,
+                "path": "/zOyMxdCLXBM/G7g4TvbjFlX/o9PqPy9YOvf/wY8HiLmETeU/BaEwEdzSA6G/lrjmTKZJUEx"
+            },
+            {
+                "ancestors": [
+                ],
+                "displayName": "MSF",
+                "id": "zOyMxdCLXBM",
+                "level": 1,
+                "path": "/zOyMxdCLXBM"
+            },
+            {
+                "ancestors": [
+                    {
+                        "displayName": "MSF",
+                        "id": "zOyMxdCLXBM",
+                        "level": 1,
+                        "path": "/zOyMxdCLXBM"
+                    }
+                ],
+                "displayName": "OCBA",
+                "id": "G7g4TvbjFlX",
+                "level": 2,
+                "path": "/zOyMxdCLXBM/G7g4TvbjFlX"
+            },
+            {
+                "ancestors": [
+                    {
+                        "displayName": "MSF",
+                        "id": "zOyMxdCLXBM",
+                        "level": 1,
+                        "path": "/zOyMxdCLXBM"
+                    },
+                    {
+                        "displayName": "OCBA",
+                        "id": "G7g4TvbjFlX",
+                        "level": 2,
+                        "path": "/zOyMxdCLXBM/G7g4TvbjFlX"
+                    },
+                    {
+                        "displayName": "DRC_SK",
+                        "id": "o9PqPy9YOvf",
+                        "level": 3,
+                        "path": "/zOyMxdCLXBM/G7g4TvbjFlX/o9PqPy9YOvf"
+                    }
+                ],
+                "displayName": "ZZZ_RUSK_211201_Bikenge, Rougeole_CLOSED",
+                "id": "wY8HiLmETeU",
+                "level": 4,
+                "path": "/zOyMxdCLXBM/G7g4TvbjFlX/o9PqPy9YOvf/wY8HiLmETeU"
+            }
+        ]
+    }
+}

@@ -1,7 +1,10 @@
+import { D2Translation } from "@eyeseetea/d2-api/schemas";
 import { Dictionary } from "lodash";
 export type Maybe<T> = T | undefined;
 
-export type Response<T> = { status: true } | { status: false; error: T };
+export type Response<T> =
+    | { status: true } //
+    | { status: false; error: T };
 
 export interface Pager {
     page: number;
@@ -174,11 +177,13 @@ export interface Section {
     showRowTotals?: boolean;
     showColumnTotals?: boolean;
     dataSet?: Ref;
+    sortOrder?: number;
     dataElements?: Ref[];
     greyedFields?: Array<{
         categoryOptionCombo: Ref;
         dataElement: Ref;
     }>;
+    translations?: D2Translation[];
 }
 
 export interface DataSet extends Sharing {
@@ -200,7 +205,7 @@ export interface DataSet extends Sharing {
     dataInputPeriods: DataInputPeriod[];
     attributeValues: AttributeValue[];
     formType: "DEFAULT" | "CUSTOM";
-    dataEntryForm?: Ref;
+    dataEntryForm: Ref | null;
 }
 
 export interface DataSetElement {
@@ -293,7 +298,7 @@ export interface Dashboard extends Sharing {
     }>;
 }
 
-export interface DataValue {
+export type DataValue = {
     dataSet?: string;
     completeDate?: string;
     period?: string;
@@ -304,7 +309,7 @@ export interface DataValue {
     categoryOptionCombo?: string;
     value: string;
     comment?: string;
-}
+};
 
 export interface DataValueToPost {
     dataSet?: string;

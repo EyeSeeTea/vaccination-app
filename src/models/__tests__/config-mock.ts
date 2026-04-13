@@ -123,13 +123,6 @@ const metadataConfig: MetadataConfig = {
             categoryCombo: { id: "1" },
             formName: "",
         },
-        populationByAgeDataElement: {
-            id: "3",
-            code: "CODE",
-            displayName: "Population By age",
-            categoryCombo: { id: "1" },
-            formName: "",
-        },
         ageGroupCategory: {
             id: "1",
             code: "RVC_AGE_GROUP",

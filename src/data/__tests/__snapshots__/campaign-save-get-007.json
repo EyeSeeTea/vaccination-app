@@ -1,0 +1,111 @@
+{
+    "args": [
+        "/metadata",
+        {
+            "translate": true,
+            "userGroups:fields": "id,name,users[id,displayName,userCredentials[userRoles[id,name]]]",
+            "userGroups:filter": "name:in:[Cell 3]"
+        }
+    ],
+    "returnValue": {
+        "userGroups": [
+            {
+                "id": "PoFDLo61E8R",
+                "name": "Cell 3",
+                "users": [
+                    {
+                        "code": null,
+                        "displayName": "User 6868",
+                        "id": "lPanqLVKGgB",
+                        "name": "User 6868",
+                        "username": "user_1981556868"
+                    },
+                    {
+                        "code": null,
+                        "displayName": "User 239",
+                        "id": "qtCGMcZQQn5",
+                        "name": "User 239",
+                        "username": "user_147590239"
+                    },
+                    {
+                        "code": null,
+                        "displayName": "User 8218",
+                        "id": "HqebM3irM3d",
+                        "name": "User 8218",
+                        "username": "user_1905858218"
+                    },
+                    {
+                        "code": null,
+                        "displayName": "User 9100",
+                        "id": "jq756QHVaPW",
+                        "name": "User 9100",
+                        "username": "user_1167519100"
+                    },
+                    {
+                        "code": null,
+                        "displayName": "User 9261",
+                        "id": "Z7bqIrNccr3",
+                        "name": "User 9261",
+                        "username": "user_602769261"
+                    },
+                    {
+                        "code": null,
+                        "displayName": "User 4350",
+                        "id": "NPfqT9nCzaJ",
+                        "name": "User 4350",
+                        "username": "user_1510804350"
+                    },
+                    {
+                        "code": null,
+                        "displayName": "User 3181",
+                        "id": "xk5rAvBeOH5",
+                        "name": "User 3181",
+                        "username": "user_1814193181"
+                    },
+                    {
+                        "code": null,
+                        "displayName": "User 8771",
+                        "id": "KAo8jCiRT4l",
+                        "name": "User 8771",
+                        "username": "user_1333098771"
+                    },
+                    {
+                        "code": null,
+                        "displayName": "User 6494",
+                        "id": "iVu8cX6jcLt",
+                        "name": "User 6494",
+                        "username": "user_1949116494"
+                    },
+                    {
+                        "code": null,
+                        "displayName": "User 1817",
+                        "id": "mEF9ND8R5HD",
+                        "name": "User 1817",
+                        "username": "user_1679571817"
+                    },
+                    {
+                        "code": null,
+                        "displayName": "User 3861",
+                        "id": "BDOfKszGgVB",
+                        "name": "User 3861",
+                        "username": "user_9213861"
+                    },
+                    {
+                        "code": null,
+                        "displayName": "User 2449",
+                        "id": "PrThPTYl0mj",
+                        "name": "User 2449",
+                        "username": "user_1496002449"
+                    },
+                    {
+                        "code": null,
+                        "displayName": "User 4149",
+                        "id": "nOAvzZ4wq0u",
+                        "name": "User 4149",
+                        "username": "user_1294924149"
+                    }
+                ]
+            }
+        ]
+    }
+}

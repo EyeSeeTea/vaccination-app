@@ -15,10 +15,11 @@ import {
 import { createStyles, WithStyles, Theme } from "@material-ui/core";
 
 import i18n from "../../../locales";
-import { AntigenDisaggregation, CampaignType } from "../../../models/AntigensDisaggregation";
+import { CampaignType } from "../../../models/AntigensDisaggregation";
 import SimpleCheckbox from "../../forms/SimpleCheckBox";
 import DataElement from "./DataElement";
 import { memoize } from "../../../utils/memoize";
+import { AntigenDisaggregation } from "../../../models/AntigensDisaggregation";
 
 type Path = Array<number | string>;
 
@@ -51,8 +52,9 @@ class AntigenSection extends React.Component<AntigenSectionProps, Disaggregation
         const { antigen, antigenCode, classes, update, setCampaignType } = this.props;
         const { isTypeSelectable } = this.props.antigen;
 
+        // Use antigen as view key to avoid problems on DOM updates (ie. radio tags not being updated)
         return (
-            <Table className={classes.table}>
+            <Table className={classes.table} key={antigen.id}>
                 <TableBody>
                     {isTypeSelectable && (
                         <TypeSelect antigen={antigen} setCampaignType={setCampaignType} />

@@ -1,7 +1,7 @@
 import moment from "moment";
 import _ from "lodash";
 
-import { D2, D2Api, DeleteResponse } from "./d2.types";
+import { D2, D2ApiLegacy, DeleteResponse } from "./d2.types";
 import {
     OrganisationUnit,
     PaginatedObjects,
@@ -24,6 +24,7 @@ import {
 import "../utils/lodash-mixins";
 import { promiseMap } from "../utils/promises";
 import { User } from "./config";
+import { D2Api } from "../types/d2-api";
 
 function getDbFields(modelFields: ModelFields): string[] {
     return _(modelFields)
@@ -91,6 +92,7 @@ export interface AnalyticsResponse {
 // https://docs.dhis2.org/2.30/en/developer/html/dhis2_developer_manual_full.html#webapi_reading_data_values
 export interface GetDataValuesParams {
     dataSet?: string[];
+    dataElement?: string[];
     dataElementGroup?: string[];
     orgUnit: string[];
     period?: string[];
@@ -250,11 +252,13 @@ export type ModelReference = { model: string; id: string };
 
 export default class DbD2 {
     d2: D2;
-    api: D2Api;
+    api: D2ApiLegacy;
+    d2Api: D2Api;
 
-    constructor(d2: D2) {
+    constructor(d2: D2, d2api: D2Api) {
         this.d2 = d2;
         this.api = d2.Api.getApi();
+        this.d2Api = d2api;
     }
 
     public async getMetadata<T>(params: MetadataGetParams): Promise<T> {
@@ -307,11 +311,15 @@ export default class DbD2 {
 
     public async getCocsByCategoryComboCode(
         codes: string[]
-    ): Promise<Array<{ id: string; categoryOptions: Ref[] }>> {
-        const filter = `code:in:[${codes.join(",")}]`;
+    ): Promise<
+        Array<{ id: string; categoryOptionCombos: Array<{ id: string; categoryOptions: Ref[] }> }>
+    > {
+        // User identifiable instead of code, as the default category combo has no code
+        const filter = `identifiable:in:[${_.uniq(codes).join(",")}]`;
 
         const { categoryCombos } = await this.getMetadata<{
             categoryCombos: Array<{
+                id: string;
                 code: string;
                 categoryOptionCombos: Array<{
                     id: string;
@@ -321,6 +329,7 @@ export default class DbD2 {
         }>({
             categoryCombos: {
                 fields: {
+                    id: true,
                     code: true,
                     categoryOptionCombos: {
                         id: true,
@@ -333,15 +342,14 @@ export default class DbD2 {
 
         const missingCodes = _(codes)
             .difference(categoryCombos.map(cc => cc.code))
+            .remove("default")
             .value();
 
         if (!_(missingCodes).isEmpty()) {
-            console.error(`categoryCombo codes not found: ${missingCodes.join(", ")}`);
+            console.debug(`categoryCombo codes not found: ${missingCodes.join(", ")}`);
         }
 
-        return _(categoryCombos)
-            .flatMap(categoryCombo => categoryCombo.categoryOptionCombos)
-            .value();
+        return categoryCombos;
     }
 
     public async postMetadata<Metadata extends object>(
@@ -355,14 +363,34 @@ export default class DbD2 {
                   .map((value, key) => `${key}=${value}`)
                   .join("&");
         try {
+            console.debug(
+                `POST /metadata${queryString}: ${(
+                    JSON.stringify(metadata, null, 4).length / 1024
+                ).toFixed(0)} KB`
+            );
             const response = (await this.api.post(
                 "/metadata" + queryString,
                 metadata
             )) as MetadataResponse;
-            return { status: true, value: response };
+
+            if (response.status === "OK") {
+                console.debug("Response:", JSON.stringify((response as any).response.stats));
+                return { status: true, value: response };
+            } else {
+                console.debug("Request", JSON.stringify(metadata, null, 4));
+                console.debug("Response:", JSON.stringify(response, null, 4));
+                return { status: false, error: JSON.stringify(response) };
+            }
         } catch (err0) {
             const err = err0 as any;
-            return { status: false, error: err.message || err.toString() };
+            if (err.constructor.name === "JestAssertionError") throw err;
+            console.error(
+                "Error posting metadata:",
+                err,
+                JSON.stringify(metadata, null, 4),
+                JSON.stringify(err, null, 4)
+            );
+            return { status: false, error: JSON.stringify(err) };
         }
     }
 
@@ -465,7 +493,7 @@ export default class DbD2 {
 
     public async getDataValues(params: GetDataValuesParams): Promise<DataValue[]> {
         const parseDate = (date: Date | undefined, daysOffset = 0) =>
-            date ? moment(date).add(daysOffset, "days").format("YYYY-MM-DD") : undefined;
+            date ? moment.utc(date).add(daysOffset, "days").format("YYYY-MM-DD") : undefined;
         const apiParams = {
             ...params,
             startDate: parseDate(params.startDate),
