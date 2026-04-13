@@ -208,9 +208,11 @@ declare global {
     interface JQuery {
         on(
             event: "dhis2.de.event.formLoaded",
-            handler: (ev: JQuery.Event, dataSetId: string) => void
+            handler: (ev: unknown, dataSetId: string) => void
         ): JQuery;
     }
+
+    function $(selector: unknown): JQuery;
 }
 
 function debug(msg: string): void {
