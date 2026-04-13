@@ -32,3 +32,4 @@ src/locales/
 cypress/screenshots/
 cypress/videos/
 
+src/scripts/dev/
