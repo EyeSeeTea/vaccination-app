@@ -11,7 +11,7 @@ import {
     CocMetadata,
     AntigenDisaggregationEnabledDataElement,
     AntigenDisaggregationEnabledDataElementCategory,
-} from "./AntigensDisaggregationLegacy";
+} from "./AntigensDisaggregation";
 import { Dashboard, DashboardMetadata } from "./Dashboard";
 import { Teams, CategoryOptionTeam } from "./Teams";
 import { getDashboardCode, getByIndex, baseConfig, MetadataConfig } from "./config";

@@ -5,7 +5,7 @@ import DbD2 from "./db-d2";
 import { AntigenConfig, baseConfig, Dose, MetadataConfig } from "./config";
 import { Maybe, DataValue, CategoryOption, DataValueToPost } from "./db.types";
 import { OrganisationUnit, OrganisationUnitPathOnly, OrganisationUnitLevel } from "./db.types";
-import { AntigenDisaggregationEnabled, isAgeGroupIncluded } from "./AntigensDisaggregationLegacy";
+import { AntigenDisaggregationEnabled, isAgeGroupIncluded } from "./AntigensDisaggregation";
 import { sortAgeGroups } from "../utils/age-groups";
 import Campaign from "./campaign";
 import { getDaysRange } from "../utils/date";
