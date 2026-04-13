@@ -17,8 +17,8 @@ export function setupLogs(options: SetupLoggingOptions) {
 
         stream.write = (
             chunk: string | Uint8Array,
-            encodingOrCb?: BufferEncoding | ((err?: Error) => void),
-            cb?: (err?: Error) => void
+            encodingOrCb?: BufferEncoding | ((err?: Error | null) => void),
+            cb?: (err?: Error | null) => void
         ): boolean => {
             if (prefix) logStream.write(prefix());
             logStream.write(chunk);
