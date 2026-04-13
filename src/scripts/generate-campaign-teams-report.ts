@@ -7,6 +7,8 @@ import { Maybe } from "../models/db.types";
 import { getCampaignPeriods } from "../models/periods";
 import { command, string, optional, option, run } from "cmd-ts";
 import { unparse } from "papaparse";
+import { dataElementsInfo } from "../models/D2CampaignMetadata";
+import { assert } from "../utils/assert";
 
 const generateCampaignsReport = command({
     name: "detect-external-orgunits",
@@ -33,6 +35,7 @@ const generateCampaignsReport = command({
         const api = new D2Api({
             baseUrl: args.url,
             auth: { username: username, password: password },
+            backend: "xhr",
         });
 
         await new UnusedTeamsReport(api).run(args);
@@ -128,12 +131,12 @@ export class UnusedTeamsReport {
             .getSet({
                 dataSet: [],
                 dataElementGroup: [],
-                startDate: "1950",
-                endDate: "2050",
+                startDate: "2000",
+                endDate: (new Date().getFullYear() + 10).toString(),
                 orgUnit: ["zOyMxdCLXBM"],
                 children: true,
-                // @ts-expect-error: dataElement not in this version of d2-api
-                dataElement: "mkgnDxyksQS", // Vaccine doses administered
+                // Include all "doses administered" data elements
+                ["dataElement" as string]: metadata.dataElements.map(de => de.id),
             })
             .getData();
 
@@ -148,7 +151,8 @@ export class UnusedTeamsReport {
 
         return _(dataValues)
             .filter(dv => dv.value !== "0")
-            .countBy(dv => _(categoryOptionByCocId).getOrFail(dv.attributeOptionCombo))
+            .groupBy(dv => _(categoryOptionByCocId).getOrFail(dv.attributeOptionCombo))
+            .mapValues(dvs => _.sum(dvs.map(dv => parseInt(dv.value))))
             .value();
     }
 
@@ -185,6 +189,10 @@ type Row = {
     dosesAdministeredCount: number;
 };
 
+const dataElementAdministered = assert(
+    dataElementsInfo.find(de => de.modelCode === "RVC_DOSES_ADMINISTERED")
+);
+
 const query = {
     dataSets: {
         fields: {
@@ -214,6 +222,14 @@ const query = {
         } as const,
         filter: {
             "categories.code": { eq: baseConfig.categoryCodeForTeams },
+        },
+    },
+    dataElements: {
+        fields: {
+            id: true,
+        },
+        filter: {
+            code: { $like: dataElementAdministered.code },
         },
     },
 };
