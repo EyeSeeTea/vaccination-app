@@ -26,7 +26,7 @@ export function getCurrentUserDataViewOrganisationUnits(d2: D2) {
 }
 
 export function isTestEnv() {
-    return !!process.env.REACT_APP_CYPRESS;
+    return !!process.env.CYPRESS_E2E;
 }
 
 // DHIS2 UID :: /^[a-zA-Z][a-zA-Z0-9]{10}$/
