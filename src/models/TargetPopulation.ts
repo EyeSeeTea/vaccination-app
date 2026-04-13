@@ -12,7 +12,7 @@ import { getDaysRange } from "../utils/date";
 import { assert } from "../utils/assert";
 import { getDataElements } from "./D2CampaignMetadata";
 
-const fp = require("lodash/fp");
+import fp from "lodash/fp";
 
 const dailyPeriodFormat = "YYYYMMDD";
 

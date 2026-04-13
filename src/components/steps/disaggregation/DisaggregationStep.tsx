@@ -20,7 +20,7 @@ import SimpleCheckbox from "../../forms/SimpleCheckBox";
 import { DataSet } from "../../../models/config";
 import { CampaignType } from "../../../models/AntigensDisaggregationLegacy";
 
-const { Sidebar } = require("@dhis2/d2-ui-core"); // Untyped
+import { Sidebar } from "@dhis2/d2-ui-core"; // Untyped
 
 type Path = (number | string)[];
 
