@@ -22,7 +22,7 @@ import DisaggregationStep from "../steps/disaggregation/DisaggregationStep";
 import { memoize } from "../../utils/memoize";
 import ExitWizardButton from "../wizard/ExitWizardButton";
 import { getVisitedAndUpdate } from "../utils/page-visited";
-import { assertValue } from "../../utils/assert";
+import { assert } from "../../utils/assert";
 
 type RouteParams = {
     id?: string;
@@ -73,11 +73,8 @@ class CampaignWizard extends React.Component<CampaignWizardProps, CampaignWizard
         const { db, compositionRoot, config, match } = this.props;
 
         try {
-            const campaignId = match.params.id;
-            assertValue(campaignId, "Missing campaign ID");
-
             const campaign = this.isEdit()
-                ? await compositionRoot.campaigns.get.execute(campaignId)
+                ? await compositionRoot.campaigns.get.execute(assert(match.params.id, "Missing campaign ID"))
                 : Campaign.create(config, db);
 
             const campaignHasDataValues = Boolean(
