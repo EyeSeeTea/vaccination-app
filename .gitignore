@@ -10,7 +10,7 @@
 # production
 manifest.webapp
 /build
-vaccination-app.zip
+vaccination-app*.zip
 
 # misc
 .DS_Store
