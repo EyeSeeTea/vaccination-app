@@ -22,7 +22,7 @@ import DisaggregationStep from "../steps/disaggregation/DisaggregationStep";
 import { memoize } from "../../utils/memoize";
 import ExitWizardButton from "../wizard/ExitWizardButton";
 import { getVisitedAndUpdate } from "../utils/page-visited";
-import { assert, assertValue } from "../../utils/assert";
+import { assertValue } from "../../utils/assert";
 
 type RouteParams = {
     id?: string;
