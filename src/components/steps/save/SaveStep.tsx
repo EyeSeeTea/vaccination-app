@@ -10,7 +10,6 @@ import { withSnackbar, SnackbarState } from "@eyeseetea/d2-ui-components";
 import { OrganisationUnit } from "../../../models/db.types";
 import { getFullOrgUnitName } from "../../../models/organisation-units";
 import { CompositionRoot } from "../../../CompositionRoot";
-import { D2 } from "../../../models/d2.types";
 import Campaign from "../../../models/campaign";
 import ExitWizardButton from "../../wizard/ExitWizardButton";
 
@@ -27,7 +26,6 @@ const styles = (_theme: Theme) =>
     });
 
 type SaveStepOwnProps = {
-    d2: D2;
     compositionRoot: CompositionRoot;
     campaign: Campaign;
     onCancel: () => void;
