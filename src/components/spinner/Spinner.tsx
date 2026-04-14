@@ -1,12 +1,11 @@
 import React from "react";
-import PropTypes from "prop-types";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
-class Spinner extends React.Component {
-    static propTypes = {
-        isLoading: PropTypes.bool.isRequired,
-    };
+type SpinnerProps = {
+    isLoading: boolean;
+};
 
+class Spinner extends React.Component<SpinnerProps> {
     render() {
         const { isLoading } = this.props;
         return isLoading ? <CircularProgress /> : null;

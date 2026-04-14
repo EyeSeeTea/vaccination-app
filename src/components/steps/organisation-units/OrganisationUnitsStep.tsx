@@ -1,13 +1,16 @@
 import React from "react";
-import PropTypes from "prop-types";
 import _ from "lodash";
 import i18n from "@dhis2/d2-i18n";
-import { OrgUnitsSelector, withSnackbar } from "@eyeseetea/d2-ui-components";
+import { OrgUnitsSelector, withSnackbar, SnackbarState } from "@eyeseetea/d2-ui-components";
 import { FormBuilder } from "@dhis2/d2-ui-forms";
 import { TextField } from "@dhis2/d2-ui-core";
 import { Validators } from "@dhis2/d2-ui-forms";
 
+import { D2 } from "../../../models/d2.types";
+import { D2Api } from "../../../types/d2-api";
+import Campaign from "../../../models/campaign";
 import { getCurrentUserDataViewOrganisationUnits } from "../../../utils/dhis2";
+import { makeStyles } from "../../../utils/react";
 
 /*
     HACK: Use css to hide all selector boxes in tree except for those of level 6.
@@ -15,15 +18,15 @@ import { getCurrentUserDataViewOrganisationUnits } from "../../../utils/dhis2";
     a prop hideCheckboxes, but it's an all or nothing bool (ideally, it should get a predicate).
 */
 
-class OrganisationUnitsStep extends React.Component {
-    static propTypes = {
-        d2: PropTypes.object.isRequired,
-        api: PropTypes.object.isRequired,
-        campaign: PropTypes.object.isRequired,
-        onChange: PropTypes.func.isRequired,
-        snackbar: PropTypes.object.isRequired,
-    };
+type OrganisationUnitsStepProps = {
+    d2: D2;
+    api: D2Api;
+    campaign: Campaign;
+    onChange: (campaign: Campaign) => void;
+    snackbar: SnackbarState;
+};
 
+class OrganisationUnitsStep extends React.Component<OrganisationUnitsStepProps> {
     listParams = { maxLevel: 6 };
 
     controls = {
@@ -32,7 +35,9 @@ class OrganisationUnitsStep extends React.Component {
         selectAll: false,
     };
 
-    constructor(props) {
+    rootIds: string[];
+
+    constructor(props: OrganisationUnitsStepProps) {
         super(props);
         const orgUnitIds = getCurrentUserDataViewOrganisationUnits(this.props.d2);
         this.rootIds = orgUnitIds;
@@ -46,9 +51,9 @@ class OrganisationUnitsStep extends React.Component {
         }
     }
 
-    setOrgUnits = orgUnitsPaths => {
+    setOrgUnits = (orgUnitsPaths: string[]) => {
         const orgUnits = orgUnitsPaths.map(path => ({
-            id: _.last(path.split("/")),
+            id: _.last(path.split("/")) || "",
             level: path.split("/").length - 1,
             path,
         }));
@@ -59,7 +64,7 @@ class OrganisationUnitsStep extends React.Component {
         this.props.onChange(newCampaign);
     };
 
-    onUpdateField = (fieldName, newValue) => {
+    onUpdateField = (fieldName: string, newValue: string) => {
         const { campaign, onChange } = this.props;
         if (fieldName === "teams") {
             const newCampaign = campaign.setTeams(parseInt(newValue));
@@ -85,13 +90,13 @@ class OrganisationUnitsStep extends React.Component {
                 validators: [
                     {
                         message: i18n.t("Field cannot be blank"),
-                        validator(value) {
+                        validator(value: string) {
                             return Validators.isRequired(value);
                         },
                     },
                     {
                         message: i18n.t("Number of teams must be positive"),
-                        validator(value) {
+                        validator(value: string) {
                             return Validators.isPositiveNumber(parseInt(value));
                         },
                     },
@@ -121,8 +126,8 @@ class OrganisationUnitsStep extends React.Component {
     }
 }
 
-const styles = {
+const styles = makeStyles({
     formBuilder: { marginBottom: 20 },
-};
+});
 
 export default withSnackbar(OrganisationUnitsStep);

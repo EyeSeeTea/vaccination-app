@@ -1,24 +1,45 @@
 import React from "react";
-import PropTypes from "prop-types";
 import i18n from "@dhis2/d2-i18n";
-import { withSnackbar, withLoading } from "@eyeseetea/d2-ui-components";
+import { withSnackbar, withLoading, SnackbarState, LoadingState } from "@eyeseetea/d2-ui-components";
 import ReactDOM from "react-dom";
 
 import PageHeader from "../shared/PageHeader";
 import { getDhis2Url } from "../../utils/routes";
 import { LinearProgress } from "@material-ui/core";
 import { withPageVisited } from "../utils/page-visited-app";
+import { D2 } from "../../models/d2.types";
+import { MetadataConfig } from "../../models/config";
+import { CompositionRoot } from "../../CompositionRoot";
+import DbD2 from "../../models/db-d2";
+import { Maybe } from "../../models/db.types";
+import { makeStyles } from "../../utils/react";
 
-class Dashboard extends React.Component {
-    static propTypes = {
-        d2: PropTypes.object.isRequired,
-        config: PropTypes.object.isRequired,
-        compositionRoot: PropTypes.object.isRequired,
-        db: PropTypes.object.isRequired,
-        pageVisited: PropTypes.bool,
-    };
+type DashboardOwnProps = {
+    d2: D2;
+    config: MetadataConfig;
+    compositionRoot: CompositionRoot;
+    db: DbD2;
+    pageVisited: Maybe<boolean>;
+};
 
-    state = {
+type RouteParams = {
+    id?: string;
+};
+
+type DashboardProps = DashboardOwnProps & {
+    snackbar: SnackbarState;
+    loading: LoadingState;
+    match: { params: RouteParams };
+    history: { push: (path: string) => void };
+};
+
+type DashboardState = {
+    iFrameSrc: string;
+    isGenerating: boolean;
+};
+
+class Dashboard extends React.Component<DashboardProps, DashboardState> {
+    state: DashboardState = {
         iFrameSrc: "",
         isGenerating: false,
     };
@@ -34,11 +55,13 @@ class Dashboard extends React.Component {
         const dataSetId = params.id;
 
         try {
+            if (!dataSetId) throw new Error("No dataset ID provided");
             const dashboardURL = await this.getDashboardURL(dataSetId, config, d2);
-            this.setState({ iFrameSrc: dashboardURL }, () => {
+            this.setState({ iFrameSrc: dashboardURL || "" }, () => {
                 const { iFrameSrc } = this.state;
                 if (iFrameSrc) {
-                    const iframe = ReactDOM.findDOMNode(this.refs.iframe);
+                    // eslint-disable-next-line react/no-find-dom-node
+                    const iframe = ReactDOM.findDOMNode(this.refs.iframe) as HTMLIFrameElement;
                     iframe.addEventListener(
                         "load",
                         this.setDashboardStyling.bind(this, iframe, dataSetId)
@@ -47,13 +70,14 @@ class Dashboard extends React.Component {
             });
         } catch (err) {
             loading.hide();
-            snackbar.error(err.message || err);
+            const message = err instanceof Error ? err.message : String(err);
+            snackbar.error(message);
             this.backCampaignConfiguration();
         }
     }
 
-    waitforElementToLoad(iframeDocument, selector) {
-        return new Promise(resolve => {
+    waitforElementToLoad(iframeDocument: Document, selector: string) {
+        return new Promise<void>(resolve => {
             const check = () => {
                 if (iframeDocument.querySelector(selector)) {
                     resolve();
@@ -66,7 +90,8 @@ class Dashboard extends React.Component {
         });
     }
 
-    async setDashboardStyling(iframe, dataSetId) {
+    async setDashboardStyling(iframe: HTMLIFrameElement, dataSetId: string) {
+        if (!iframe.contentWindow) return;
         const iframeDocument = iframe.contentWindow.document;
         await this.waitforElementToLoad(iframeDocument, "[data-test='title-bar']");
         remove(iframeDocument, "header");
@@ -93,12 +118,12 @@ class Dashboard extends React.Component {
         }
     };
 
-    async getDashboardURL(dataSetId, _config, d2) {
+    async getDashboardURL(dataSetId: string, _config: MetadataConfig, d2: D2) {
         const { snackbar, loading, compositionRoot } = this.props;
 
         const campaign = await compositionRoot.campaigns.get.execute(dataSetId);
 
-        let dashboardId;
+        let dashboardId: Maybe<string>;
         if (campaign.dashboardId) {
             dashboardId = campaign.dashboardId;
         } else {
@@ -143,7 +168,7 @@ class Dashboard extends React.Component {
                             ref="iframe"
                             title={i18n.t("Dashboard")}
                             src={iFrameSrc}
-                            style={styles.iframe}
+                            style={iframeStyles.iframe}
                         />
                     ) : (
                         !isGenerating && <LinearProgress />
@@ -154,11 +179,11 @@ class Dashboard extends React.Component {
     }
 }
 
-const styles = {
+const iframeStyles = makeStyles({
     iframe: { width: "100%", height: "calc(100vh - 140px)" },
-};
+});
 
-function remove(document, selector) {
+function remove(document: Document, selector: string) {
     const el = document.querySelector(selector);
     if (el) el.remove();
 }

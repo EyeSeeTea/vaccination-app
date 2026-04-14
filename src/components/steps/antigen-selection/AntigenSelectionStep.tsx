@@ -1,24 +1,33 @@
 import React from "react";
-import PropTypes from "prop-types";
 import _ from "lodash";
 import { MultiSelector } from "@eyeseetea/d2-ui-components";
 
-class AntigenSelectionStep extends React.Component {
-    state = { antigens: null };
+import Campaign, { Antigen } from "../../../models/campaign";
+import { D2 } from "../../../models/d2.types";
 
-    static propTypes = {
-        d2: PropTypes.object.isRequired,
-        campaign: PropTypes.object.isRequired,
-        onChange: PropTypes.func.isRequired,
-    };
+type AntigenSelectionStepProps = {
+    d2: D2;
+    campaign: Campaign;
+    onChange: (campaign: Campaign) => void;
+};
 
-    async componentDidMount() {
+type AntigenSelectionStepState = {
+    antigens: Antigen[] | null;
+};
+
+class AntigenSelectionStep extends React.Component<
+    AntigenSelectionStepProps,
+    AntigenSelectionStepState
+> {
+    state: AntigenSelectionStepState = { antigens: null };
+
+    componentDidMount() {
         const { campaign } = this.props;
-        const antigens = await campaign.getAvailableAntigens();
+        const antigens = campaign.getAvailableAntigens();
         this.setState({ antigens });
     }
 
-    onChange = selected => {
+    onChange = (selected: string[]) => {
         const antigens = _(this.state.antigens).keyBy("code").at(selected).value();
         const newCampaign = this.props.campaign.setAntigens(antigens);
         this.props.onChange(newCampaign);

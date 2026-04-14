@@ -1,41 +1,55 @@
 import React from "react";
-import PropTypes from "prop-types";
 import i18n from "@dhis2/d2-i18n";
 import _ from "lodash";
 import moment from "moment";
-import { withRouter } from "react-router-dom";
-import { withStyles } from "@material-ui/core/styles";
+import { RouteComponentProps, withRouter } from "react-router-dom";
+import { withStyles, WithStyles, createStyles, Theme } from "@material-ui/core/styles";
 import { Button, LinearProgress } from "@material-ui/core";
-import { withSnackbar } from "@eyeseetea/d2-ui-components";
+import { withSnackbar, SnackbarState } from "@eyeseetea/d2-ui-components";
 
+import { OrganisationUnit } from "../../../models/db.types";
 import { getFullOrgUnitName } from "../../../models/organisation-units";
+import { CompositionRoot } from "../../../CompositionRoot";
+import { D2 } from "../../../models/d2.types";
+import Campaign from "../../../models/campaign";
 import ExitWizardButton from "../../wizard/ExitWizardButton";
 
-const styles = _theme => ({
-    wrapper: {
-        padding: 5,
-    },
-    saveButton: {
-        margin: 10,
-        backgroundColor: "#2b98f0",
-        color: "white",
-    },
-});
+const styles = (_theme: Theme) =>
+    createStyles({
+        wrapper: {
+            padding: 5,
+        },
+        saveButton: {
+            margin: 10,
+            backgroundColor: "#2b98f0",
+            color: "white",
+        },
+    });
 
-class SaveStep extends React.Component {
-    state = {
+type SaveStepOwnProps = {
+    d2: D2;
+    compositionRoot: CompositionRoot;
+    campaign: Campaign;
+    onCancel: () => void;
+};
+
+type SaveStepProps = SaveStepOwnProps &
+    RouteComponentProps &
+    WithStyles<typeof styles> & { snackbar: SnackbarState };
+
+type SaveStepState = {
+    isSaving: boolean;
+    orgUnits: OrganisationUnit[] | null;
+    errorMessage: string;
+    dialogOpen: boolean;
+};
+
+class SaveStep extends React.Component<SaveStepProps, SaveStepState> {
+    state: SaveStepState = {
         isSaving: false,
         orgUnits: null,
-        errorMessage: [],
+        errorMessage: "",
         dialogOpen: false,
-    };
-
-    static propTypes = {
-        d2: PropTypes.object.isRequired,
-        compositionRoot: PropTypes.object.isRequired,
-        campaign: PropTypes.object.isRequired,
-        snackbar: PropTypes.object.isRequired,
-        classes: PropTypes.object.isRequired,
     };
 
     async componentDidMount() {
@@ -59,12 +73,13 @@ class SaveStep extends React.Component {
                 this.props.snackbar.success(`${i18n.t("Campaign created")} ${campaign.name}`);
                 this.props.history.push("/campaign-configuration");
             } else {
-                this.setState({ errorMessage: saveResponse.error });
+                this.setState({ errorMessage: saveResponse.error || "" });
                 this.props.snackbar.error(i18n.t("Error saving campaign"));
             }
         } catch (err) {
             console.error(err);
-            this.props.snackbar.error(err.message || err.toString());
+            const message = err instanceof Error ? err.message : String(err);
+            this.props.snackbar.error(message);
             this.setState({ isSaving: false });
         }
     };
@@ -82,26 +97,15 @@ class SaveStep extends React.Component {
         this.setState({ dialogOpen: false });
     };
 
-    getMessageFromPaginated(paginatedObjects) {
-        if (!paginatedObjects) {
-            return i18n.t("Loading...");
-        } else {
-            const { pager, objects } = paginatedObjects;
-            const othersCount = pager.total - objects.length;
-            const names = _(objects).sortBy().join(", ") || i18n.t("[None]");
-            if (othersCount > 0) {
-                return i18n.t("[{{total}}] {{names}} and {{othersCount}} other(s)", {
-                    total: pager.total,
-                    names,
-                    othersCount,
-                });
-            } else {
-                return `[${pager.total}] ${names}`;
-            }
-        }
-    }
-
-    renderLiEntry = ({ label, value, children }) => {
+    renderLiEntry = ({
+        label,
+        value,
+        children,
+    }: {
+        label: string;
+        value?: React.ReactNode;
+        children?: React.ReactNode;
+    }) => {
         return (
             <li key={label}>
                 {label}
@@ -127,7 +131,7 @@ class SaveStep extends React.Component {
         }
     };
 
-    renderDataElements(dataElements) {
+    renderDataElements(dataElements: Array<{ code: string; name: string }>) {
         const LiEntry = this.renderLiEntry;
 
         return dataElements.map(dataElement => {
@@ -135,13 +139,17 @@ class SaveStep extends React.Component {
         });
     }
 
-    renderOrgUnit = orgUnit => {
+    renderOrgUnit = (orgUnit: OrganisationUnit) => {
         const LiEntry = this.renderLiEntry;
 
         return <LiEntry key={orgUnit.id} label={getFullOrgUnitName(orgUnit)} />;
     };
 
-    renderAntigenInfo(antigen, type, ageGroups) {
+    renderAntigenInfo(
+        antigen: { name: string; doses: { id: string; name: string }[] },
+        type: string | undefined,
+        ageGroups: Array<{ displayName: string }>
+    ) {
         return [
             antigen.name + " ",
             "(",

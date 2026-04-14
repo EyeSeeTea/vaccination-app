@@ -1,12 +1,17 @@
 import React from "react";
-import PropTypes from "prop-types";
 import i18n from "@dhis2/d2-i18n";
-import { withRouter } from "react-router";
+import { withRouter, RouteComponentProps } from "react-router-dom";
 import _ from "lodash";
-import { withSnackbar, Wizard } from "@eyeseetea/d2-ui-components";
+import { withSnackbar, Wizard, SnackbarState, WizardStep } from "@eyeseetea/d2-ui-components";
+import { ReactComponentLike } from "prop-types";
 import { LinearProgress } from "@material-ui/core";
 
 import Campaign from "../../models/campaign";
+import { D2 } from "../../models/d2.types";
+import { D2Api } from "../../types/d2-api";
+import { MetadataConfig } from "../../models/config";
+import { CompositionRoot } from "../../CompositionRoot";
+import DbD2 from "../../models/db-d2";
 import PageHeader from "../shared/PageHeader";
 import OrganisationUnitsStep from "../steps/organisation-units/OrganisationUnitsStep";
 import SaveStep from "../steps/save/SaveStep";
@@ -17,19 +22,43 @@ import DisaggregationStep from "../steps/disaggregation/DisaggregationStep";
 import { memoize } from "../../utils/memoize";
 import ExitWizardButton from "../wizard/ExitWizardButton";
 import { getVisitedAndUpdate } from "../utils/page-visited";
+import { assert, assertValue } from "../../utils/assert";
 
-class CampaignWizard extends React.Component {
-    static propTypes = {
-        d2: PropTypes.object.isRequired,
-        db: PropTypes.object.isRequired,
-        compositionRoot: PropTypes.object.isRequired,
-        api: PropTypes.object.isRequired,
-        history: PropTypes.object.isRequired,
-        config: PropTypes.object.isRequired,
-        snackbar: PropTypes.object.isRequired,
-    };
+type RouteParams = {
+    id?: string;
+};
 
-    constructor(props) {
+type CampaignWizardOwnProps = {
+    d2: D2;
+    db: DbD2;
+    compositionRoot: CompositionRoot;
+    api: D2Api;
+    config: MetadataConfig;
+};
+
+type CampaignWizardProps = CampaignWizardOwnProps &
+    RouteComponentProps<RouteParams> & { snackbar: SnackbarState };
+
+type Step = {
+    key: string;
+    label: string;
+    component: ReactComponentLike;
+    validationKeys: string[];
+    validationKeysLive?: string[];
+    description: string;
+    help?: string;
+};
+
+type CampaignWizardState = {
+    campaign: Campaign | null;
+    dialogOpen: boolean;
+    pagesVisited: Record<string, boolean>;
+    isCampaignUpdated: boolean;
+    campaignHasDataValues?: boolean;
+};
+
+class CampaignWizard extends React.Component<CampaignWizardProps, CampaignWizardState> {
+    constructor(props: CampaignWizardProps) {
         super(props);
 
         this.state = {
@@ -44,8 +73,11 @@ class CampaignWizard extends React.Component {
         const { db, compositionRoot, config, match } = this.props;
 
         try {
+            const campaignId = match.params.id;
+            assertValue(campaignId, "Missing campaign ID");
+
             const campaign = this.isEdit()
-                ? await compositionRoot.campaigns.get.execute(match.params.id)
+                ? await compositionRoot.campaigns.get.execute(campaignId)
                 : Campaign.create(config, db);
 
             const campaignHasDataValues = Boolean(
@@ -60,7 +92,8 @@ class CampaignWizard extends React.Component {
             this.setState({ campaign, campaignHasDataValues });
         } catch (err) {
             console.error(err);
-            this.props.snackbar.error(i18n.t("Cannot load campaign") + `: ${err.message || err}`);
+            const message = err instanceof Error ? err.message : String(err);
+            this.props.snackbar.error(i18n.t("Cannot load campaign") + `: ${message}`);
             this.props.history.push("/campaign-configuration");
         }
     }
@@ -69,7 +102,7 @@ class CampaignWizard extends React.Component {
         return !!this.props.match.params.id;
     }
 
-    getStepsBaseInfo(campaign) {
+    getStepsBaseInfo(campaign: Campaign | null): Step[] {
         return [
             {
                 key: "general-info",
@@ -152,7 +185,7 @@ class CampaignWizard extends React.Component {
         this.setState({ dialogOpen: false });
     };
 
-    onChange = memoize(step => async campaign => {
+    onChange = memoize((step: Step) => async (campaign: Campaign) => {
         const errors = await getValidationMessages(campaign, step.validationKeysLive || []);
         this.setState({ campaign, isCampaignUpdated: true });
 
@@ -161,11 +194,14 @@ class CampaignWizard extends React.Component {
         }
     });
 
-    onStepChangeRequest = async currentStep => {
-        return await getValidationMessages(this.state.campaign, currentStep.validationKeys);
+    onStepChangeRequest = async (currentStep: WizardStep, _newStep: WizardStep) => {
+        const { campaign } = this.state;
+        if (!campaign) return [];
+        const step = currentStep as unknown as Step;
+        return await getValidationMessages(campaign, step.validationKeys);
     };
 
-    onStepChange = async stepKey => {
+    onStepChange = async (stepKey: string) => {
         const { d2 } = this.props;
         const { pagesVisited } = this.state;
         const visited = await getVisitedAndUpdate(d2, "vaccination-app", "wizard-" + stepKey);
@@ -175,7 +211,7 @@ class CampaignWizard extends React.Component {
     render() {
         const { d2, location, compositionRoot } = this.props;
         const { campaign, dialogOpen, pagesVisited, campaignHasDataValues } = this.state;
-        window.campaign = campaign;
+        (window as unknown as Record<string, unknown>).campaign = campaign;
 
         const steps = this.getStepsBaseInfo(campaign).map(step => ({
             ...step,
@@ -183,7 +219,7 @@ class CampaignWizard extends React.Component {
                 ? i18n.t(
                       "This campaign has data values. Editing a campaign with data values can create several problems, please contact the administrator."
                   )
-                : null,
+                : undefined,
             helpDialogIsInitialOpen:
                 pagesVisited[step.key] === undefined ? undefined : !pagesVisited[step.key],
             props: {
