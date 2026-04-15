@@ -18,6 +18,7 @@ import { isTestEnv } from "../../utils/dhis2";
 import { CompositionRoot, getCompositionRoot } from "../../CompositionRoot";
 import { D2Api } from "../../types/d2-api";
 import { D2 } from "../../models/d2.types";
+import { Routes } from "./Routes";
 
 type AppProps = {
     d2: D2;
@@ -44,7 +45,7 @@ class App extends Component<AppProps, AppState> {
         const db = new DbD2(d2, api);
         const config = await getMetadataConfig(db);
         const compositionRoot = getCompositionRoot({ db, api, config });
-        Object.assign(window, { config, db, compositionRoot });
+        Object.assign(window, { api, config, db, compositionRoot });
 
         const showFeedbackForCurrentUser = hasCurrentUserRoles(
             d2,
@@ -68,6 +69,7 @@ class App extends Component<AppProps, AppState> {
         const { config, db, compositionRoot } = this.state;
         const showShareButton = _(appConfig).get("appearance.showShareButton") || false;
         const showHeader = !isTestEnv();
+        const routes = new Routes(api.baseUrl);
 
         return (
             <React.Fragment>
@@ -84,6 +86,7 @@ class App extends Component<AppProps, AppState> {
                                             db={db}
                                             config={config}
                                             api={api}
+                                            routes={routes}
                                             compositionRoot={compositionRoot}
                                         />
                                     )}

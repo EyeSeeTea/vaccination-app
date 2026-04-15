@@ -9,19 +9,18 @@ import {
 import ReactDOM from "react-dom";
 
 import PageHeader from "../shared/PageHeader";
-import { getDhis2Url } from "../../utils/routes";
 import { LinearProgress } from "@material-ui/core";
 import { withPageVisited } from "../utils/page-visited-app";
-import { D2 } from "../../models/d2.types";
 import { MetadataConfig } from "../../models/config";
 import { CompositionRoot } from "../../CompositionRoot";
 import DbD2 from "../../models/db-d2";
 import { Maybe } from "../../models/db.types";
 import { makeStyles } from "../../utils/react";
+import { Routes } from "../app/Routes";
 
 type DashboardOwnProps = {
-    d2: D2;
     config: MetadataConfig;
+    routes: Routes;
     compositionRoot: CompositionRoot;
     db: DbD2;
     pageVisited: Maybe<boolean>;
@@ -50,18 +49,12 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
     };
 
     async componentDidMount() {
-        const {
-            d2,
-            match: { params },
-            config,
-            snackbar,
-            loading,
-        } = this.props;
-        const dataSetId = params.id;
+        const { match, snackbar, loading } = this.props;
+        const dataSetId = match.params.id;
 
         try {
             if (!dataSetId) throw new Error("No dataset ID provided");
-            const dashboardURL = await this.getDashboardURL(dataSetId, config, d2);
+            const dashboardURL = await this.getDashboardURL(dataSetId);
             this.setState({ iFrameSrc: dashboardURL || "" }, () => {
                 const { iFrameSrc } = this.state;
                 if (iFrameSrc) {
@@ -123,7 +116,7 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
         }
     };
 
-    async getDashboardURL(dataSetId: string, _config: MetadataConfig, d2: D2) {
+    async getDashboardURL(dataSetId: string) {
         const { snackbar, loading, compositionRoot } = this.props;
 
         const campaign = await compositionRoot.campaigns.get.execute(dataSetId);
@@ -145,7 +138,7 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
         }
 
         if (dashboardId) {
-            return getDhis2Url(d2, `/dhis-web-dashboard/#/${dashboardId}`);
+            return this.props.routes.getDashboardUrl({ id: dashboardId });
         } else {
             const msg = i18n.t("No dashboards associated with this campaign");
             snackbar.error(msg);
