@@ -21,7 +21,6 @@ import AntigenSelectionStep from "../steps/antigen-selection/AntigenSelectionSte
 import DisaggregationStep from "../steps/disaggregation/DisaggregationStep";
 import { memoize } from "../../utils/memoize";
 import ExitWizardButton from "../wizard/ExitWizardButton";
-import { getVisitedAndUpdate } from "../utils/page-visited";
 import { assert } from "../../utils/assert";
 
 type RouteParams = {
@@ -201,10 +200,10 @@ class CampaignWizard extends React.Component<CampaignWizardProps, CampaignWizard
     };
 
     onStepChange = async (stepKey: string) => {
-        const { d2 } = this.props;
         const { pagesVisited } = this.state;
-        const visited = await getVisitedAndUpdate(d2, "vaccination-app", "wizard-" + stepKey);
-        this.setState({ pagesVisited: { ...pagesVisited, [stepKey]: visited } });
+        const pageKey = "wizard-" + stepKey;
+        const visited = await this.props.compositionRoot.pages.markAsVisited.execute(pageKey);
+        this.setState({ pagesVisited: { ...pagesVisited, [stepKey]: visited.previousValue } });
     };
 
     render() {

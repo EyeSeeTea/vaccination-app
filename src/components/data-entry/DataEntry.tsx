@@ -17,6 +17,7 @@ import { MetadataConfig } from "../../models/config";
 import { Maybe } from "../../models/db.types";
 import { makeStyles } from "../../utils/react";
 import { assert } from "../../utils/assert";
+import { CompositionRoot } from "../../CompositionRoot";
 
 type DataEntryOwnProps = {
     d2: D2;
@@ -29,6 +30,7 @@ type RouteParams = {
 };
 
 type DataEntryProps = DataEntryOwnProps & {
+    compositionRoot: CompositionRoot;
     snackbar: SnackbarState;
     match: { params: RouteParams };
     history: { push: (path: string) => void };
