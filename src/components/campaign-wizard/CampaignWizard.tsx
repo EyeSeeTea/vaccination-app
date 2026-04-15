@@ -22,6 +22,7 @@ import DisaggregationStep from "../steps/disaggregation/DisaggregationStep";
 import { memoize } from "../../utils/memoize";
 import ExitWizardButton from "../wizard/ExitWizardButton";
 import { assert } from "../../utils/assert";
+import { Routes } from "../app/Routes";
 
 type RouteParams = {
     id?: string;
@@ -33,6 +34,7 @@ type CampaignWizardOwnProps = {
     compositionRoot: CompositionRoot;
     api: D2Api;
     config: MetadataConfig;
+    routes: Routes;
 };
 
 type CampaignWizardProps = CampaignWizardOwnProps &
@@ -209,7 +211,6 @@ class CampaignWizard extends React.Component<CampaignWizardProps, CampaignWizard
     render() {
         const { d2, location, compositionRoot } = this.props;
         const { campaign, dialogOpen, pagesVisited, campaignHasDataValues } = this.state;
-        (window as unknown as Record<string, unknown>).campaign = campaign;
 
         const steps = this.getStepsBaseInfo(campaign).map(step => ({
             ...step,
@@ -223,10 +224,12 @@ class CampaignWizard extends React.Component<CampaignWizardProps, CampaignWizard
             props: {
                 d2,
                 campaign,
+                config: this.props.config,
                 compositionRoot: compositionRoot,
                 onChange: this.onChange(step),
                 onCancel: this.goToConfiguration,
                 api: this.props.api,
+                routes: this.props.routes,
             },
         }));
 

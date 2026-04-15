@@ -6,11 +6,10 @@ import { FormBuilder } from "@dhis2/d2-ui-forms";
 import { TextField } from "@dhis2/d2-ui-core";
 import { Validators } from "@dhis2/d2-ui-forms";
 
-import { D2 } from "../../../models/d2.types";
 import { D2Api } from "../../../types/d2-api";
 import Campaign from "../../../models/campaign";
-import { getCurrentUserDataViewOrganisationUnits } from "../../../utils/dhis2";
 import { makeStyles } from "../../../utils/react";
+import { MetadataConfig } from "../../../models/config";
 
 /*
     HACK: Use css to hide all selector boxes in tree except for those of level 6.
@@ -19,8 +18,8 @@ import { makeStyles } from "../../../utils/react";
 */
 
 type OrganisationUnitsStepProps = {
-    d2: D2;
     api: D2Api;
+    config: MetadataConfig;
     campaign: Campaign;
     onChange: (campaign: Campaign) => void;
     snackbar: SnackbarState;
@@ -39,7 +38,7 @@ class OrganisationUnitsStep extends React.Component<OrganisationUnitsStepProps> 
 
     constructor(props: OrganisationUnitsStepProps) {
         super(props);
-        const orgUnitIds = getCurrentUserDataViewOrganisationUnits(this.props.d2);
+        const orgUnitIds = this.props.config.currentUser.orgUnitIds;
         this.rootIds = orgUnitIds;
     }
 
@@ -73,7 +72,7 @@ class OrganisationUnitsStep extends React.Component<OrganisationUnitsStepProps> 
     };
 
     render() {
-        const { d2, campaign } = this.props;
+        const { campaign } = this.props;
         const fields = [
             {
                 name: "teams",
@@ -112,7 +111,6 @@ class OrganisationUnitsStep extends React.Component<OrganisationUnitsStepProps> 
                     onUpdateField={this.onUpdateField}
                 />
                 <OrgUnitsSelector
-                    d2={d2}
                     api={this.props.api}
                     onChange={this.setOrgUnits}
                     selected={campaign.organisationUnits.map(ou => ou.path)}

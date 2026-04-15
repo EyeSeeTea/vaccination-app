@@ -21,10 +21,6 @@ export function getCurrentUserRoles(d2: D2) {
     return getCurrentUserSymbol(d2, "userRoles", []);
 }
 
-export function getCurrentUserDataViewOrganisationUnits(d2: D2) {
-    return getCurrentUserSymbol(d2, "dataViewOrganisationUnits", []);
-}
-
 export function isTestEnv() {
     return !!process.env.CYPRESS_E2E;
 }

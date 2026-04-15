@@ -306,7 +306,20 @@ export default class DbD2 {
     }
 
     public async getCurrentUser(): Promise<User> {
-        return this.api.get<User>("/me", { paging: false, fields: ["id", "name"] });
+        const res = await this.d2Api.currentUser
+            .get({
+                fields: {
+                    id: true,
+                    name: true,
+                    dataViewOrganisationUnits: { id: true },
+                },
+            })
+            .getData();
+
+        return {
+            ...res,
+            orgUnitIds: res.dataViewOrganisationUnits.map(ou => ou.id),
+        };
     }
 
     public async getCocsByCategoryComboCode(
