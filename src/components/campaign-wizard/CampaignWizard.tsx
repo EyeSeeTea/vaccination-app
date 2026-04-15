@@ -74,7 +74,9 @@ class CampaignWizard extends React.Component<CampaignWizardProps, CampaignWizard
 
         try {
             const campaign = this.isEdit()
-                ? await compositionRoot.campaigns.get.execute(assert(match.params.id, "Missing campaign ID"))
+                ? await compositionRoot.campaigns.get.execute(
+                      assert(match.params.id, "Missing campaign ID")
+                  )
                 : Campaign.create(config, db);
 
             const campaignHasDataValues = Boolean(

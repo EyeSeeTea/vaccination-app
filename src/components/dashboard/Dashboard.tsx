@@ -1,6 +1,11 @@
 import React from "react";
 import i18n from "@dhis2/d2-i18n";
-import { withSnackbar, withLoading, SnackbarState, LoadingState } from "@eyeseetea/d2-ui-components";
+import {
+    withSnackbar,
+    withLoading,
+    SnackbarState,
+    LoadingState,
+} from "@eyeseetea/d2-ui-components";
 import ReactDOM from "react-dom";
 
 import PageHeader from "../shared/PageHeader";

@@ -130,7 +130,11 @@ class DataEntry extends React.Component<DataEntryProps, DataEntryState> {
             option.selected = true;
 
             if (iframe.contentWindow)
-                (iframe.contentWindow as unknown as Record<string, unknown> & { dataSetSelected: () => void }).dataSetSelected();
+                (
+                    iframe.contentWindow as unknown as Record<string, unknown> & {
+                        dataSetSelected: () => void;
+                    }
+                ).dataSetSelected();
 
             // Remove non-valid periods
             const periodDates = await getPeriodDatesFromDataSetId(assert(dataSetId), d2);
@@ -144,7 +148,9 @@ class DataEntry extends React.Component<DataEntryProps, DataEntryState> {
                     const selectPeriod = iframeDocument.querySelector(
                         "#selectedPeriodId"
                     ) as HTMLSelectElement;
-                    const optionPeriods = Array.from(selectPeriod.childNodes) as HTMLOptionElement[];
+                    const optionPeriods = Array.from(
+                        selectPeriod.childNodes
+                    ) as HTMLOptionElement[];
                     const formatStr = "YYYYMMDD";
                     const start = periodDates.startDate
                         ? moment.utc(periodDates.startDate).format(formatStr)
