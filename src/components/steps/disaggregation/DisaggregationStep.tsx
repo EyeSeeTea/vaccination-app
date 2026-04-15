@@ -5,7 +5,6 @@ import { withStyles } from "@material-ui/core/styles";
 import { createStyles, WithStyles, Theme } from "@material-ui/core";
 import { MuiThemeProvider } from "@material-ui/core";
 
-import { D2 } from "../../../models/d2.types";
 import Campaign, { Antigen } from "../../../models/campaign";
 import { memoize } from "../../../utils/memoize";
 import { createMuiThemeOverrides } from "../../../utils/styles";
@@ -25,7 +24,6 @@ import { Sidebar } from "@dhis2/d2-ui-core"; // Untyped
 type Path = (number | string)[];
 
 interface DisaggregationStepProps extends WithStyles<typeof styles> {
-    d2: D2;
     campaign: Campaign;
     onChange: (campaign: Campaign) => void;
 }

@@ -3,10 +3,8 @@ import _ from "lodash";
 import { MultiSelector } from "@eyeseetea/d2-ui-components";
 
 import Campaign, { Antigen } from "../../../models/campaign";
-import { D2 } from "../../../models/d2.types";
 
 type AntigenSelectionStepProps = {
-    d2: D2;
     campaign: Campaign;
     onChange: (campaign: Campaign) => void;
 };
@@ -34,7 +32,7 @@ class AntigenSelectionStep extends React.Component<
     };
 
     render() {
-        const { d2, campaign } = this.props;
+        const { campaign } = this.props;
         const { antigens } = this.state;
 
         if (!antigens) return null;
@@ -45,7 +43,6 @@ class AntigenSelectionStep extends React.Component<
         return (
             <div>
                 <MultiSelector
-                    d2={d2}
                     height={300}
                     onChange={this.onChange}
                     options={options}
