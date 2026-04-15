@@ -1,70 +1,69 @@
 import React from "react";
-import PropTypes from "prop-types";
 import i18n from "@dhis2/d2-i18n";
 import Paper from "@material-ui/core/Paper";
-import FontIcon from "material-ui/FontIcon";
+import Icon from "@material-ui/core/Icon";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import { withStyles } from "@material-ui/core/styles";
-import { withRouter } from "react-router";
-import { goToDhis2Url } from "../../utils/routes";
+import { WithStyles, withStyles, createStyles, Theme } from "@material-ui/core/styles";
+import { RouteComponentProps, withRouter } from "react-router-dom";
+import { Routes } from "./Routes";
 
 const lightGray = "#7a7a7a";
-const styles = _theme => ({
-    root: {
-        display: "flex",
-        justifyContent: "center",
-    },
-    paper: {
-        width: "90%",
-        padding: 10,
-    },
-    listItem: {
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        textDecoration: "none",
-        "&:hover": {
-            backgroundColor: "#f9f9f9",
+
+const styles = (_theme: Theme) =>
+    createStyles({
+        root: {
+            display: "flex",
+            justifyContent: "center",
         },
-        cursor: "pointer",
-    },
-    title: {
-        color: lightGray,
-        marginTop: 10,
-        marginBottom: 10,
-        marginLeft: 20,
-        fontSize: 20,
-    },
-    icons: {
-        fontSize: "60px !important",
-        marginTop: 10,
-        marginBottom: 10,
-        color: `${lightGray} !important`,
-    },
-});
+        paper: {
+            width: "90%",
+            padding: 10,
+        },
+        listItem: {
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            textDecoration: "none",
+            "&:hover": {
+                backgroundColor: "#f9f9f9",
+            },
+            cursor: "pointer",
+        },
+        title: {
+            color: lightGray,
+            marginTop: 10,
+            marginBottom: 10,
+            marginLeft: 20,
+            fontSize: 20,
+        },
+        icons: {
+            fontSize: "60px !important",
+            marginTop: 10,
+            marginBottom: 10,
+            color: `${lightGray} !important`,
+        },
+    });
 
-class LandingPage extends React.Component {
-    static propTypes = {
-        d2: PropTypes.object.isRequired,
-    };
+type LandingPageOwnProps = {
+    routes: Routes;
+};
 
-    onClick = key => {
-        const { history, d2 } = this.props;
+type LandingPageProps = LandingPageOwnProps & RouteComponentProps & WithStyles<typeof styles>;
+
+class LandingPage extends React.Component<LandingPageProps> {
+    onClick = (key: string) => {
+        const { history, routes } = this.props;
         switch (key) {
             case "campaign-configuration":
-                history.push("/" + key);
-                break;
             case "data-entry":
-                history.push("/" + key);
-                break;
             case "dashboard":
                 history.push("/" + key);
                 break;
             case "maintenance":
-                goToDhis2Url(d2, "/dhis-web-maintenance/index.html");
+                window.location.href = routes.getMaintenanceUrl();
                 break;
             default:
                 throw new Error(`Unsupported page key: ${key}`);
@@ -73,7 +72,7 @@ class LandingPage extends React.Component {
 
     render() {
         const { classes } = this.props;
-        const items = [
+        const items: Array<[key: string, title: string, icon: string]> = [
             ["campaign-configuration", i18n.t("Campaigns"), "edit"],
             ["data-entry", i18n.t("Data Entry"), "library_books"],
             ["dashboard", i18n.t("Dashboard"), "dashboard"],
@@ -86,7 +85,7 @@ class LandingPage extends React.Component {
                 className={classes.listItem}
             >
                 <ListItemIcon>
-                    <FontIcon className={`material-icons ${classes.icons}`}>{icon}</FontIcon>
+                    <Icon className={classes.icons}>{icon}</Icon>
                 </ListItemIcon>
                 <ListItemText primary={title} classes={{ primary: classes.title }} />
             </ListItem>

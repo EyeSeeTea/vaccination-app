@@ -1,12 +1,29 @@
+import { Maybe } from "../../models/db.types";
+
+type Url = string;
+
 export class Routes {
     constructor(private baseUrl: string) {}
 
-    async getDashboardUrl(options: { id: string }) {
-        return this.getUrl(`/dhis-web-dashboard/#/${options.id}`);
+    getDashboardUrl(options: { id: Maybe<string> }): Url {
+        if (options.id) {
+            return this.getUrl(`/dhis-web-dashboard/index.html#/${options.id}`);
+        } else {
+            return this.getUrl("/dhis-web-dashboard/index.html");
+        }
     }
 
-    private getUrl(path: string) {
+    getDataEntryUrl(): Url {
+        return this.getUrl(`/dhis-web-dataentry/index.action`);
+    }
+
+    getMaintenanceUrl(): Url {
+        return this.getUrl("/dhis-web-maintenance/index.html");
+    }
+
+    private getUrl(path: string): Url {
         const cleanBaseUrl = this.baseUrl.replace(/\/+$/, "");
-        return `${cleanBaseUrl}/${path}`;
+        const cleanPath = path.replace(/^\/+/, "");
+        return `${cleanBaseUrl}/${cleanPath}`;
     }
 }

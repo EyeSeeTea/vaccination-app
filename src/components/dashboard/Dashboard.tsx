@@ -53,10 +53,12 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
         const dataSetId = match.params.id;
 
         try {
-            if (!dataSetId) throw new Error("No dataset ID provided");
-            const dashboardURL = await this.getDashboardURL(dataSetId);
-            this.setState({ iFrameSrc: dashboardURL || "" }, () => {
+            const dashboardURL = await this.getDashboardURL({ dataSetId: dataSetId });
+            if (!dashboardURL) return;
+
+            this.setState({ iFrameSrc: dashboardURL }, () => {
                 const { iFrameSrc } = this.state;
+
                 if (iFrameSrc) {
                     // eslint-disable-next-line react/no-find-dom-node
                     const iframe = ReactDOM.findDOMNode(this.refs.iframe) as HTMLIFrameElement;
@@ -88,7 +90,7 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
         });
     }
 
-    async setDashboardStyling(iframe: HTMLIFrameElement, dataSetId: string) {
+    async setDashboardStyling(iframe: HTMLIFrameElement, dataSetId: Maybe<string>) {
         if (!iframe.contentWindow) return;
         const iframeDocument = iframe.contentWindow.document;
         await this.waitforElementToLoad(iframeDocument, "[data-test='title-bar']");
@@ -116,8 +118,13 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
         }
     };
 
-    async getDashboardURL(dataSetId: string) {
+    async getDashboardURL(options: { dataSetId: Maybe<string> }): Promise<Maybe<string>> {
         const { snackbar, loading, compositionRoot } = this.props;
+        const { dataSetId } = options;
+
+        if (!dataSetId) {
+            return this.props.routes.getDashboardUrl({ id: undefined });
+        }
 
         const campaign = await compositionRoot.campaigns.get.execute(dataSetId);
 

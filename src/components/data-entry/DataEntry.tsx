@@ -9,7 +9,6 @@ import {
     getOrganisationUnitsByDataSetId,
     getPeriodDatesFromDataSetId,
 } from "../../models/datasets";
-import { getDhis2Url } from "../../utils/routes";
 import { LinearProgress } from "@material-ui/core";
 import { withPageVisited } from "../utils/page-visited-app";
 import { D2 } from "../../models/d2.types";
@@ -18,9 +17,12 @@ import { Maybe } from "../../models/db.types";
 import { makeStyles } from "../../utils/react";
 import { assert } from "../../utils/assert";
 import { CompositionRoot } from "../../CompositionRoot";
+import { Routes } from "../app/Routes";
 
 type DataEntryOwnProps = {
     d2: D2;
+    compositionRoot: CompositionRoot;
+    routes: Routes;
     config: MetadataConfig;
     pageVisited: Maybe<boolean>;
 };
@@ -30,7 +32,6 @@ type RouteParams = {
 };
 
 type DataEntryProps = DataEntryOwnProps & {
-    compositionRoot: CompositionRoot;
     snackbar: SnackbarState;
     match: { params: RouteParams };
     history: { push: (path: string) => void };
@@ -196,8 +197,8 @@ class DataEntry extends React.Component<DataEntryProps, DataEntryState> {
 
     render() {
         const { isDataEntryIdValid } = this.state;
-        const { d2, pageVisited } = this.props;
-        const dataEntryUrl = getDhis2Url(d2, "/dhis-web-dataentry/index.action");
+        const { pageVisited } = this.props;
+        const dataEntryUrl = this.props.routes.getDataEntryUrl();
         const help =
             i18n.t(`Select a) site where vaccination was performed, b) Reactive vaccination data set available at site level c) date of vaccination d) team that performed vaccination.
 

@@ -56,14 +56,10 @@ class Root extends React.Component<RootProps> {
                     render={props => <Dashboard {...base} {...props} />}
                 />
 
-                <Route render={() => <LandingPage_ d2={this.props.d2} />} />
+                <Route render={() => <LandingPage routes={this.props.routes} />} />
             </Switch>
         );
     }
 }
-
-const LandingPage_ = LandingPage as unknown as React.ComponentType<{
-    d2: D2;
-}>;
 
 export default Root;
