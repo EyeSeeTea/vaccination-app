@@ -25,13 +25,13 @@ const styles = (_theme: Theme) =>
         },
     });
 
-type SaveStepOwnProps = {
+export type SaveStepProps = {
     compositionRoot: CompositionRoot;
     campaign: Campaign;
     onCancel: () => void;
 };
 
-type SaveStepProps = SaveStepOwnProps &
+type SaveStepAllProps = SaveStepProps &
     RouteComponentProps &
     WithStyles<typeof styles> & { snackbar: SnackbarState };
 
@@ -42,7 +42,7 @@ type SaveStepState = {
     dialogOpen: boolean;
 };
 
-class SaveStep extends React.Component<SaveStepProps, SaveStepState> {
+class SaveStep extends React.Component<SaveStepAllProps, SaveStepState> {
     state: SaveStepState = {
         isSaving: false,
         orgUnits: null,

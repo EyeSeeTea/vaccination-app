@@ -14,7 +14,7 @@ import { DatePicker } from "@eyeseetea/d2-ui-components";
 import { translateError } from "../../../utils/validations";
 import Campaign from "../../../models/campaign";
 
-type GeneralInfoStepProps = {
+export type GeneralInfoStepProps = {
     campaign: Campaign;
     onChange: (campaign: Campaign) => void;
 };

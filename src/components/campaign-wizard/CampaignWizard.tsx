@@ -3,33 +3,37 @@ import i18n from "@dhis2/d2-i18n";
 import { withRouter, RouteComponentProps } from "react-router-dom";
 import _ from "lodash";
 import { withSnackbar, Wizard, SnackbarState, WizardStep } from "@eyeseetea/d2-ui-components";
-import { ReactComponentLike } from "prop-types";
 import { LinearProgress } from "@material-ui/core";
 
 import Campaign from "../../models/campaign";
-import { D2 } from "../../models/d2.types";
 import { D2Api } from "../../types/d2-api";
 import { MetadataConfig } from "../../models/config";
 import { CompositionRoot } from "../../CompositionRoot";
 import DbD2 from "../../models/db-d2";
 import PageHeader from "../shared/PageHeader";
-import OrganisationUnitsStep from "../steps/organisation-units/OrganisationUnitsStep";
-import SaveStep from "../steps/save/SaveStep";
+import OrganisationUnitsStep, {
+    OrganisationUnitsStepProps,
+} from "../steps/organisation-units/OrganisationUnitsStep";
+import SaveStep, { SaveStepProps } from "../steps/save/SaveStep";
 import { getValidationMessages } from "../../utils/validations";
-import GeneralInfoStep from "../steps/general-info/GeneralInfoStep";
-import AntigenSelectionStep from "../steps/antigen-selection/AntigenSelectionStep";
-import DisaggregationStep from "../steps/disaggregation/DisaggregationStep";
+import GeneralInfoStep, { GeneralInfoStepProps } from "../steps/general-info/GeneralInfoStep";
+import AntigenSelectionStep, {
+    AntigenSelectionStepProps,
+} from "../steps/antigen-selection/AntigenSelectionStep";
+import DisaggregationStep, {
+    DisaggregationStepProps,
+} from "../steps/disaggregation/DisaggregationStep";
 import { memoize } from "../../utils/memoize";
 import ExitWizardButton from "../wizard/ExitWizardButton";
 import { assert } from "../../utils/assert";
 import { Routes } from "../app/Routes";
+import { Maybe } from "../../models/db.types";
 
 type RouteParams = {
     id?: string;
 };
 
 type CampaignWizardOwnProps = {
-    d2: D2;
     db: DbD2;
     compositionRoot: CompositionRoot;
     api: D2Api;
@@ -40,10 +44,17 @@ type CampaignWizardOwnProps = {
 type CampaignWizardProps = CampaignWizardOwnProps &
     RouteComponentProps<RouteParams> & { snackbar: SnackbarState };
 
+type StepComponent =
+    | typeof GeneralInfoStep
+    | typeof OrganisationUnitsStep
+    | typeof AntigenSelectionStep
+    | typeof DisaggregationStep
+    | typeof SaveStep;
+
 type Step = {
     key: string;
     label: string;
-    component: ReactComponentLike;
+    component: StepComponent;
     validationKeys: string[];
     validationKeysLive?: string[];
     description: string;
@@ -102,7 +113,7 @@ class CampaignWizard extends React.Component<CampaignWizardProps, CampaignWizard
         return !!this.props.match.params.id;
     }
 
-    getStepsBaseInfo(campaign: Campaign | null): Step[] {
+    getStepsBaseInfo(campaign: Campaign): Step[] {
         return [
             {
                 key: "general-info",
@@ -124,7 +135,7 @@ class CampaignWizard extends React.Component<CampaignWizardProps, CampaignWizard
                 label: i18n.t("Organisation Units"),
                 component: OrganisationUnitsStep,
                 validationKeys: _.compact([
-                    campaign && !campaign.isLegacy() ? "organisationUnits" : null,
+                    !campaign.isLegacy() ? "organisationUnits" : null,
                     "teams",
                 ]),
                 description: i18n.t(
@@ -209,29 +220,31 @@ class CampaignWizard extends React.Component<CampaignWizardProps, CampaignWizard
     };
 
     render() {
-        const { d2, location, compositionRoot } = this.props;
+        const { location, compositionRoot } = this.props;
         const { campaign, dialogOpen, pagesVisited, campaignHasDataValues } = this.state;
+        if (!campaign) return <LinearProgress />;
 
-        const steps = this.getStepsBaseInfo(campaign).map(step => ({
-            ...step,
-            warning: campaignHasDataValues
-                ? i18n.t(
-                      "This campaign has data values. Editing a campaign with data values can create several problems, please contact the administrator."
-                  )
-                : undefined,
-            helpDialogIsInitialOpen:
-                pagesVisited[step.key] === undefined ? undefined : !pagesVisited[step.key],
-            props: {
-                d2,
-                campaign,
-                config: this.props.config,
-                compositionRoot: compositionRoot,
-                onChange: this.onChange(step),
-                onCancel: this.goToConfiguration,
-                api: this.props.api,
-                routes: this.props.routes,
-            },
-        }));
+        const steps = this.getStepsBaseInfo(campaign).map(
+            (step): FullStep => ({
+                ...step,
+                warning: campaignHasDataValues
+                    ? i18n.t(
+                          "This campaign has data values. Editing a campaign with data values can create several problems, please contact the administrator."
+                      )
+                    : undefined,
+                helpDialogIsInitialOpen:
+                    pagesVisited[step.key] === undefined ? undefined : !pagesVisited[step.key],
+                props: {
+                    snackbar: this.props.snackbar,
+                    campaign: campaign,
+                    config: this.props.config,
+                    compositionRoot: compositionRoot,
+                    onChange: this.onChange(step),
+                    onCancel: this.goToConfiguration,
+                    api: this.props.api,
+                },
+            })
+        );
 
         const urlHash = location.hash.slice(1);
         const stepExists = steps.find(step => step.key === urlHash);
@@ -269,5 +282,15 @@ class CampaignWizard extends React.Component<CampaignWizardProps, CampaignWizard
         );
     }
 }
+
+type FullStep = Step & {
+    warning: Maybe<string>;
+    helpDialogIsInitialOpen?: Maybe<boolean>;
+    props: GeneralInfoStepProps &
+        OrganisationUnitsStepProps &
+        AntigenSelectionStepProps &
+        DisaggregationStepProps &
+        SaveStepProps;
+};
 
 export default withSnackbar(withRouter(CampaignWizard));

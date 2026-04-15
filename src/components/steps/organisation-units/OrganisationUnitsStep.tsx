@@ -17,7 +17,7 @@ import { MetadataConfig } from "../../../models/config";
     a prop hideCheckboxes, but it's an all or nothing bool (ideally, it should get a predicate).
 */
 
-type OrganisationUnitsStepProps = {
+export type OrganisationUnitsStepProps = {
     api: D2Api;
     config: MetadataConfig;
     campaign: Campaign;

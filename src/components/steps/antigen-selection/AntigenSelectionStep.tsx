@@ -4,7 +4,7 @@ import { MultiSelector } from "@eyeseetea/d2-ui-components";
 
 import Campaign, { Antigen } from "../../../models/campaign";
 
-type AntigenSelectionStepProps = {
+export type AntigenSelectionStepProps = {
     campaign: Campaign;
     onChange: (campaign: Campaign) => void;
 };

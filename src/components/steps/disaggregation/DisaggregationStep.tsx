@@ -23,7 +23,7 @@ import { Sidebar } from "@dhis2/d2-ui-core"; // Untyped
 
 type Path = (number | string)[];
 
-interface DisaggregationStepProps extends WithStyles<typeof styles> {
+export interface DisaggregationStepProps {
     campaign: Campaign;
     onChange: (campaign: Campaign) => void;
 }
@@ -34,7 +34,12 @@ interface DisaggregationStepState {
     currentTab: Tab;
 }
 
-class DisaggregationStep extends React.Component<DisaggregationStepProps, DisaggregationStepState> {
+type DisaggregationStepPropsWithStyles = DisaggregationStepProps & WithStyles<typeof styles>;
+
+class DisaggregationStep extends React.Component<
+    DisaggregationStepPropsWithStyles,
+    DisaggregationStepState
+> {
     firstAntigen = this.props.campaign.antigens[0];
 
     state: DisaggregationStepState = {
