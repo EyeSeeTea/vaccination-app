@@ -15,7 +15,7 @@ import {
 import Campaign, { Antigen } from "./campaign";
 import { Moment } from "moment";
 import { getDaysRange } from "../utils/date";
-import { AntigenDisaggregationEnabled, isAgeGroupIncluded } from "./AntigensDisaggregationLegacy";
+import { AntigenDisaggregationEnabled, isAgeGroupIncluded } from "./AntigensDisaggregation";
 import { AntigenConfig, MetadataConfig } from "./config";
 import { getUid } from "../utils/dhis2";
 
