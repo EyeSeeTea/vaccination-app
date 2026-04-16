@@ -1,7 +1,8 @@
-import { OrganisationUnit, Maybe, Ref, Sharing } from "./db.types";
+import { Maybe, Ref, Sharing } from "./db.types";
+import { OrganisationUnit } from "../domain/entities/OrganisationUnit";
 import _, { Dictionary } from "lodash";
 
-import { PaginatedObjects, OrganisationUnitPathOnly } from "./db.types";
+import { OrganisationUnitPathOnly } from "./db.types";
 import DbD2 from "./db-d2";
 import { CampaignType, SectionForDisaggregation } from "./AntigensDisaggregation";
 import { MetadataConfig, getDashboardCode, getByIndex, DataSet } from "./config";
@@ -176,11 +177,6 @@ export default class Campaign {
         ];
 
         return _(errorsList).flatten().compact().value();
-    }
-
-    public async getOrganisationUnitsWithName(): Promise<PaginatedObjects<OrganisationUnit>> {
-        const ids = this.data.organisationUnits.map(ou => ou.id);
-        return this.db.getOrganisationUnitsFromIds(ids, { pageSize: 100 });
     }
 
     public setOrganisationUnits(organisationUnits: OrganisationUnitPathOnly[]): Campaign {

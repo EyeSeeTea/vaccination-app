@@ -18,11 +18,11 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 import { memoize } from "../../utils/memoize";
 
-import { Maybe, OrganisationUnit } from "../../models/db.types";
+import { Maybe } from "../../models/db.types";
+import { OrganisationUnit } from "../../domain/entities/OrganisationUnit";
 import TotalPopulation from "./TotalPopulation";
 import { createMuiThemeOverrides } from "../../utils/styles";
 import PopulationDistribution from "./PopulationDistribution";
-import { getFullOrgUnitName } from "../../models/organisation-units";
 import { groupTargetPopulationByArea, TargetPopulation } from "../../models/TargetPopulation";
 import i18n from "../../locales";
 
@@ -104,7 +104,7 @@ class TargetPopulationComponent extends React.Component<
                             <Typography className={classes.expansionPanelHeading}>
                                 {i18n.t("Health Area")}
                                 <br />
-                                {getFullOrgUnitName(area)} [{items.length}]
+                                {area.getFullOrgUnitName()} [{items.length}]
                             </Typography>
                         </ExpansionPanelSummary>
 
@@ -128,7 +128,7 @@ class TargetPopulationComponent extends React.Component<
                                 .map(item => ({ ouId: item.organisationUnit.id, item }))
                                 .map(({ ouId, item }) => (
                                     <div key={ouId}>
-                                        <h4>{getFullOrgUnitName(item.organisationUnit)}</h4>
+                                        <h4>{item.organisationUnit.getFullOrgUnitName()}</h4>
 
                                         <Card className={classes.card}>
                                             <CardContent>

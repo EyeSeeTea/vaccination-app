@@ -1,10 +1,12 @@
 import { CampaignD2Query } from "./data/CampaignD2Query";
 import { CampaignD2Repository } from "./data/CampaignD2Repository";
 import { NotificationD2Repository } from "./data/NotificationD2Repository";
+import { OrganisationUnitD2Repository } from "./data/OrganisationUnitD2Repository";
 import { PageVisitedD2Repository } from "./data/PageVisitedD2Repository";
 import { TargetPopulationD2Repository } from "./data/TargetPopulationD2Repository";
 import { DeleteCampaignUseCase } from "./domain/usecases/DeleteCampaignUseCase";
 import { GetCampaignUseCase } from "./domain/usecases/GetCampaignUseCase";
+import { GetOrganisationUnitsUseCase } from "./domain/usecases/GetOrganisationUnitsUseCase";
 import { GetTargetPopulationUseCase } from "./domain/usecases/GetTargetPopulationUseCase";
 import { HasCampaignDataUseCase } from "./domain/usecases/HasCampaignDataUseCase";
 import { ListCampaignsUseCase } from "./domain/usecases/ListCampaignsUseCase";
@@ -22,6 +24,7 @@ export function getCompositionRoot(options: { db: DbD2; api: D2Api; config: Meta
         campaignRepository: new CampaignD2Repository(config, db),
         notificationRepository: new NotificationD2Repository(api),
         targetPopulationRepository: new TargetPopulationD2Repository(db),
+        organisationUnitRepository: new OrganisationUnitD2Repository(api),
         pageVisitedRepository: new PageVisitedD2Repository(api, {
             dataStoreNamespace: "vaccination-app",
             dataStoreKey: "pages-visited",
@@ -39,6 +42,9 @@ export function getCompositionRoot(options: { db: DbD2; api: D2Api; config: Meta
             save: new SaveCampaignUseCase(db, repositories),
             delete: new DeleteCampaignUseCase(db, repositories),
             hasData: new HasCampaignDataUseCase(repositories),
+        },
+        organisationUnits: {
+            get: new GetOrganisationUnitsUseCase(repositories),
         },
         pages: {
             markAsVisited: new MarkPageAsVisitedUseCase(repositories),

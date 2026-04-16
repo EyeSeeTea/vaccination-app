@@ -3,8 +3,6 @@ import _ from "lodash";
 
 import { D2, D2ApiLegacy, DeleteResponse } from "./d2.types";
 import {
-    OrganisationUnit,
-    PaginatedObjects,
     CategoryOption,
     CategoryCombo,
     MetadataResponse,
@@ -67,14 +65,14 @@ function toDbParams(metadataParams: MetadataGetParams): _.Dictionary<string> {
         .value();
 }
 
-export interface AnalyticsRequest {
+interface AnalyticsRequest {
     dimension: string[];
     filter?: string[];
     skipMeta?: boolean;
     skipRounding?: boolean;
 }
 
-export interface AnalyticsResponse {
+interface AnalyticsResponse {
     headers: Array<{
         name: "dx" | "dy";
         column: "Data";
@@ -90,7 +88,7 @@ export interface AnalyticsResponse {
 }
 
 // https://docs.dhis2.org/2.30/en/developer/html/dhis2_developer_manual_full.html#webapi_reading_data_values
-export interface GetDataValuesParams {
+interface GetDataValuesParams {
     dataSet?: string[];
     dataElement?: string[];
     dataElementGroup?: string[];
@@ -267,20 +265,6 @@ export default class DbD2 {
         const emptyRecords = _.mapValues(params, () => []);
         const metadataWithEmptyRecords = { ...emptyRecords, ...metadata };
         return metadataWithEmptyRecords as T;
-    }
-
-    public async getOrganisationUnitsFromIds(
-        ids: string[],
-        options: { pageSize?: number }
-    ): Promise<PaginatedObjects<OrganisationUnit>> {
-        const { pager, organisationUnits } = await this.api.get("/organisationUnits", {
-            paging: true,
-            pageSize: options.pageSize || 10,
-            filter: [`id:in:[${_(ids).take(options.pageSize).join(",")}]`],
-            fields: ["id", "displayName", "path", "level", "ancestors[id,displayName,path,level]"],
-        });
-        const newPager = { ...pager, total: ids.length };
-        return { pager: newPager, objects: organisationUnits };
     }
 
     public async getCategoryOptionsByCategoryCode(code: string): Promise<CategoryOption[]> {

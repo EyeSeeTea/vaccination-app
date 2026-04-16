@@ -58,14 +58,6 @@ export interface OrganisationUnitPathOnly {
     path: string;
 }
 
-export interface OrganisationUnit {
-    id: string;
-    displayName: string;
-    level: number;
-    path: string;
-    ancestors: Maybe<OrganisationUnit[]>;
-}
-
 export interface OrganisationUnitGroupSet {
     id: string;
     name: string;

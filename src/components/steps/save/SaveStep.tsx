@@ -7,8 +7,7 @@ import { withStyles, WithStyles, createStyles, Theme } from "@material-ui/core/s
 import { Button, LinearProgress } from "@material-ui/core";
 import { withSnackbar, SnackbarState } from "@eyeseetea/d2-ui-components";
 
-import { OrganisationUnit } from "../../../models/db.types";
-import { getFullOrgUnitName } from "../../../models/organisation-units";
+import { OrganisationUnit } from "../../../domain/entities/OrganisationUnit";
 import { CompositionRoot } from "../../../CompositionRoot";
 import Campaign from "../../../models/campaign";
 import ExitWizardButton from "../../wizard/ExitWizardButton";
@@ -52,7 +51,8 @@ class SaveStep extends React.Component<SaveStepAllProps, SaveStepState> {
 
     async componentDidMount() {
         const { campaign } = this.props;
-        const { objects: orgUnits } = await campaign.getOrganisationUnitsWithName();
+        const orgUnitIds = campaign.data.organisationUnits.map(ou => ou.id);
+        const orgUnits = await this.props.compositionRoot.organisationUnits.get.execute(orgUnitIds);
         this.setState({ orgUnits });
     }
 
@@ -140,7 +140,7 @@ class SaveStep extends React.Component<SaveStepAllProps, SaveStepState> {
     renderOrgUnit = (orgUnit: OrganisationUnit) => {
         const LiEntry = this.renderLiEntry;
 
-        return <LiEntry key={orgUnit.id} label={getFullOrgUnitName(orgUnit)} />;
+        return <LiEntry key={orgUnit.id} label={orgUnit.getFullOrgUnitName()} />;
     };
 
     renderAntigenInfo(
