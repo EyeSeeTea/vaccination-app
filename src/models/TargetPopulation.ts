@@ -72,14 +72,20 @@ export class TargetPopulation {
         this.config = campaign.config;
     }
 
-    static build(campaign: Campaign): TargetPopulation {
-        return new TargetPopulation(campaign, {
+    static build(campaign: Campaign): Promise<TargetPopulation> {
+        const targetPopulation = new TargetPopulation(campaign, {
             organisationUnitLevels: campaign.config.organisationUnitLevels,
             populationItems: {},
             antigensDisaggregation: [],
             ageGroups: [],
             ageDistributionByOrgUnit: {},
         });
+
+        return targetPopulation.update(
+            campaign.organisationUnits,
+            campaign.getEnabledAntigensDisaggregation(),
+            campaign.startDate ? moment.utc(campaign.startDate).format("YYYYMMDD") : "TODAY"
+        );
     }
 
     get antigensDisaggregation() {

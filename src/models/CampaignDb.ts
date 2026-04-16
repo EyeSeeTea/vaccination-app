@@ -229,27 +229,6 @@ export default class CampaignDb {
         });
     }
 
-    public async saveTargetPopulation(): Promise<Response<string>> {
-        const { campaign } = this;
-        const { targetPopulation } = this.campaign;
-
-        if (!targetPopulation) {
-            return { status: false, error: "There is no target population in campaign" };
-        } else {
-            const dataValues = await targetPopulation.getDataValues();
-            const populationResult = await campaign.db.postDataValues(dataValues);
-
-            if (!populationResult.status) {
-                return {
-                    status: false,
-                    error: JSON.stringify(populationResult.error, null, 2),
-                };
-            } else {
-                return { status: true };
-            }
-        }
-    }
-
     private async postSave(
         allMetadata: PostSaveMetadata,
         options: {

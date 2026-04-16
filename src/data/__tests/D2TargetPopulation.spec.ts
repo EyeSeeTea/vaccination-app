@@ -1,16 +1,26 @@
-import { assert } from "../../utils/assert";
 import { getConfig } from "./campaign-test-helpers";
 import { getCampaign } from "./getCampaign";
 import path from "path";
+import { getCompositionRoot } from "../../CompositionRoot";
+import { getD2ApiSnapMock, getDbD2SnapMock } from "../../testing/d2-snap-mock";
 
 describe("TargetPopulation", () => {
     describe("getDataValues", () => {
         it("should post metadata", async () => {
-            const { config, mockD2 } = await getConfig();
-            const campaign = getCampaign(config, mockD2);
+            const { config } = await getConfig();
 
-            const campaignWithPopulation = await campaign.withTargetPopulation();
-            const targetPopulation = assert(campaignWithPopulation.targetPopulation);
+            const mockD2 = getDbD2SnapMock("target-population-d2-get");
+            const mockD2Api = getD2ApiSnapMock("target-population-d2-api-get");
+            const campaign = getCampaign(config, mockD2);
+            const compositionRoot = getCompositionRoot({
+                config: config,
+                db: mockD2,
+                api: mockD2Api,
+            });
+
+            const targetPopulation = await compositionRoot.targetPopulation.getForCampaign.execute(
+                campaign
+            );
 
             // MSF -> OCBA -> DRC_SK -> ZZZ_RUSK_211201_Bikenge, Rougeole_CLOSED -> CDS MBUTU
             const targetPopulationUpdated = targetPopulation

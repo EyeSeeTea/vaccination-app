@@ -7,7 +7,7 @@ export class GetCampaignUseCase {
         }
     ) {}
 
-    execute(dataSetId: string) {
-        return this.repositories.campaignRepository.get(dataSetId);
+    execute(campaignId: string) {
+        return this.repositories.campaignRepository.get(campaignId);
     }
 }

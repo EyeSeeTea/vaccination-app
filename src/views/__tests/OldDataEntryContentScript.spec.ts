@@ -1,3 +1,6 @@
+/**
+ * @jest-environment node
+ */
 import { HideGreyedOutColumnsForForm, ReorderTablesForAntigen } from "../OldDataEntryContentScript";
 import fs from "fs";
 import path from "path";

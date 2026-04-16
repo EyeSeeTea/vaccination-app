@@ -1,6 +1,5 @@
 import React from "react";
 import Linkify from "react-linkify";
-import _ from "lodash";
 import { withSnackbar, ConfirmationDialog } from "@eyeseetea/d2-ui-components";
 import { withStyles } from "@material-ui/core/styles";
 import {
@@ -18,10 +17,11 @@ import {
 import i18n from "../../locales";
 import { Maybe } from "../../models/db.types";
 import TargetPopulation from "../target-population/TargetPopulation";
+import { TargetPopulation as TargetPopulationModel } from "../../models/TargetPopulation";
 import DbD2 from "../../models/db-d2";
 import Campaign from "../../models/campaign";
 import { MetadataConfig } from "../../models/config";
-import { getValidationMessages } from "../../utils/validations";
+
 import { redirectToLandingPageIfLegacy } from "./validations";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import { CompositionRoot } from "../../CompositionRoot";
@@ -36,17 +36,19 @@ interface OwnProps {
 
 type Props = OwnProps & RouteComponentProps & WithStyles<typeof styles> & { snackbar: any };
 
-interface State {
+type State = {
     campaign: Maybe<Campaign>;
+    targetPopulation: Maybe<TargetPopulationModel>;
     isSaving: boolean;
     changed: boolean;
     confirmClose: boolean;
     areValuesUpdated: boolean;
-}
+};
 
 class TargetPopulationDialog extends React.Component<Props, State> {
     state: State = {
         campaign: undefined,
+        targetPopulation: undefined,
         isSaving: false,
         changed: false,
         confirmClose: false,
@@ -62,17 +64,23 @@ class TargetPopulationDialog extends React.Component<Props, State> {
 
         try {
             const campaign = await compositionRoot.campaigns.get.execute(dataSet.id);
+
             if (redirectToLandingPageIfLegacy(campaign, snackbar, history)) {
                 onClose();
                 return;
             }
 
-            const campaignWithTargetPopulation = await campaign.withTargetPopulation();
-            const { targetPopulation } = campaignWithTargetPopulation;
+            const targetPopulation = await compositionRoot.targetPopulation.getForCampaign.execute(
+                campaign
+            );
             const areValuesUpdated = targetPopulation
                 ? await targetPopulation.areDataValuesUpTodate()
                 : false;
-            this.setState({ campaign: campaignWithTargetPopulation, areValuesUpdated });
+            this.setState({
+                campaign: campaign,
+                areValuesUpdated: areValuesUpdated,
+                targetPopulation: targetPopulation,
+            });
         } catch (err0) {
             const err = err0 as any;
             console.error(err);
@@ -83,39 +91,27 @@ class TargetPopulationDialog extends React.Component<Props, State> {
 
     save = async () => {
         const { onClose, snackbar } = this.props;
-        const { campaign, isSaving } = this.state;
+        const { campaign, targetPopulation, isSaving } = this.state;
 
-        if (!campaign || isSaving) return;
+        if (!campaign || !targetPopulation || isSaving) return;
 
         this.setState({ isSaving: true });
-        const errors = await getValidationMessages(campaign, ["targetPopulation"]);
-
-        if (!_(errors).isEmpty()) {
-            this.setState({ isSaving: false });
-            snackbar.error(errors.join("\n"));
-            return;
-        }
 
         try {
-            const saveResponse = await campaign.saveTargetPopulation();
-
-            if (saveResponse.status) {
-                snackbar.success(`${i18n.t("Target population set")}: ${campaign.name}`);
-                onClose();
-            } else {
-                this.setState({ isSaving: false });
-                snackbar.error(i18n.t("Error saving target population"));
-            }
+            await this.props.compositionRoot.targetPopulation.save.execute(targetPopulation);
+            snackbar.success(`${i18n.t("Target population set")}: ${campaign.name}`);
+            onClose();
         } catch (err0) {
             const err = err0 as any;
             console.error(err);
-            snackbar.error(err.message || err.toString());
             this.setState({ isSaving: false });
+            const message = i18n.t("Error saving target population") + ": " + (err.message || err);
+            snackbar.error(message);
         }
     };
 
-    onChange = (newCampaign: Campaign) => {
-        this.setState({ campaign: newCampaign, changed: true });
+    onChange = (targetPopulationUpdated: TargetPopulationModel) => {
+        this.setState({ targetPopulation: targetPopulationUpdated, changed: true });
     };
 
     requestClose = () => {
@@ -156,7 +152,7 @@ class TargetPopulationDialog extends React.Component<Props, State> {
 
     public render() {
         const { classes } = this.props;
-        const { campaign, isSaving, confirmClose, areValuesUpdated } = this.state;
+        const { campaign, targetPopulation, isSaving, confirmClose, areValuesUpdated } = this.state;
         const ConfirmationCloseDialog = this.confirmationCloseDialog;
 
         const isReady = campaign && !isSaving;
@@ -195,11 +191,14 @@ class TargetPopulationDialog extends React.Component<Props, State> {
                     </DialogTitle>
 
                     <DialogContent>
-                        {campaign ? (
+                        {targetPopulation ? (
                             <React.Fragment>
                                 {warning && <div className={classes.warning}>{warning}</div>}
                                 <Linkify>{description}</Linkify>
-                                <TargetPopulation campaign={campaign} onChange={this.onChange} />
+                                <TargetPopulation
+                                    targetPopulation={targetPopulation}
+                                    onChange={this.onChange}
+                                />
                             </React.Fragment>
                         ) : (
                             i18n.t("Loading...")

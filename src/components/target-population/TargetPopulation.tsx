@@ -17,13 +17,13 @@ import {
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 import { memoize } from "../../utils/memoize";
-import Campaign from "../../models/campaign";
+
 import { Maybe, OrganisationUnit } from "../../models/db.types";
 import TotalPopulation from "./TotalPopulation";
 import { createMuiThemeOverrides } from "../../utils/styles";
 import PopulationDistribution from "./PopulationDistribution";
 import { getFullOrgUnitName } from "../../models/organisation-units";
-import { groupTargetPopulationByArea } from "../../models/TargetPopulation";
+import { groupTargetPopulationByArea, TargetPopulation } from "../../models/TargetPopulation";
 import i18n from "../../locales";
 
 export interface AgeGroupRow {
@@ -32,8 +32,8 @@ export interface AgeGroupRow {
 }
 
 interface TargetPopulationProps extends WithStyles<typeof styles> {
-    campaign: Campaign;
-    onChange: (campaign: Campaign) => void;
+    targetPopulation: TargetPopulation;
+    onChange: (targetPopulation: TargetPopulation) => void;
 }
 
 interface TargetPopulationState {
@@ -51,13 +51,10 @@ class TargetPopulationComponent extends React.Component<
     };
 
     onTotalPopulationChange = memoize((ouId: string) => (value: number) => {
-        const { campaign, onChange } = this.props;
-        if (!campaign.targetPopulation) return;
+        const { targetPopulation, onChange } = this.props;
 
-        const campaignUpdated = campaign.setTargetPopulation(
-            campaign.targetPopulation.setTotalPopulation(ouId, value)
-        );
-        onChange(campaignUpdated);
+        const targetPopulationUpdated = targetPopulation.setTotalPopulation(ouId, value);
+        onChange(targetPopulationUpdated);
     });
 
     onTotalPopulationToggle = memoize((ouId: string) => () => {
@@ -67,14 +64,11 @@ class TargetPopulationComponent extends React.Component<
 
     onAgeGroupPopulationChange = memoize(
         (orgUnits: OrganisationUnit[]) => (ageGroup: string, value: number) => {
-            const { campaign, onChange } = this.props;
+            const { targetPopulation, onChange } = this.props;
             const ageGroupSelector = { orgUnitIds: orgUnits.map(ou => ou.id), ageGroup };
-            if (!campaign.targetPopulation) return;
 
-            const campaignUpdated = campaign.setTargetPopulation(
-                campaign.targetPopulation.setAgeGroupPopulation(ageGroupSelector, value)
-            );
-            onChange(campaignUpdated);
+            const updated = targetPopulation.setAgeGroupPopulation(ageGroupSelector, value);
+            onChange(updated);
         }
     );
 
@@ -94,9 +88,8 @@ class TargetPopulationComponent extends React.Component<
     }
 
     render() {
-        const { classes, campaign } = this.props;
+        const { classes, targetPopulation } = this.props;
         const { editPopulation } = this.state;
-        const { targetPopulation } = campaign;
 
         if (!targetPopulation) return null;
 

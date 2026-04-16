@@ -1,16 +1,11 @@
 import { OrganisationUnit, Maybe, Ref, Sharing } from "./db.types";
 import _, { Dictionary } from "lodash";
-import moment from "moment";
 
-import { PaginatedObjects, OrganisationUnitPathOnly, Response } from "./db.types";
+import { PaginatedObjects, OrganisationUnitPathOnly } from "./db.types";
 import DbD2 from "./db-d2";
 import { CampaignType, SectionForDisaggregation } from "./AntigensDisaggregation";
 import { MetadataConfig, getDashboardCode, getByIndex, DataSet } from "./config";
 import { AntigenDisaggregationEnabled } from "./AntigensDisaggregation";
-import {
-    TargetPopulation,
-    TargetPopulationData as TargetPopulationData_,
-} from "./TargetPopulation";
 import i18n from "../locales";
 import { TeamsMetadata, getTeamsForCampaign, filterTeamsByNames } from "./Teams";
 import CampaignSharing from "./CampaignSharing";
@@ -18,8 +13,6 @@ import { AntigensDisaggregation } from "./AntigensDisaggregation";
 import CampaignDb from "./CampaignDb";
 
 export type CampaignId = string;
-
-export type TargetPopulationData = TargetPopulationData_;
 
 export interface Antigen {
     id: string;
@@ -40,7 +33,6 @@ export interface Data {
     antigens: Antigen[];
     extraDataSets: DataSet[];
     antigensDisaggregation: AntigensDisaggregation;
-    targetPopulation: Maybe<TargetPopulation>;
     teams: Maybe<number>;
     dashboardId: Maybe<string>;
     sections: SectionForDisaggregation[];
@@ -81,7 +73,6 @@ export default class Campaign {
         teams: this.validateTeams,
         organisationUnits: this.validateOrganisationUnits,
         antigens: this.validateAntigens,
-        targetPopulation: this.validateTargetPopulation,
         antigensDisaggregation: this.validateAntigensDisaggregation,
     };
 
@@ -323,43 +314,6 @@ export default class Campaign {
 
     validateAntigensDisaggregation(): ValidationErrors {
         return this.data.antigensDisaggregation.validate();
-    }
-
-    /* Target population */
-
-    public async saveTargetPopulation(): Promise<Response<string>> {
-        const campaignDb = new CampaignDb(this);
-        return campaignDb.saveTargetPopulation();
-    }
-
-    public get targetPopulation(): Maybe<TargetPopulation> {
-        return this.data.targetPopulation;
-    }
-
-    public setTargetPopulation(targetPopulation: TargetPopulation): Campaign {
-        return this.update({ ...this.data, targetPopulation });
-    }
-
-    public async withTargetPopulation(): Promise<Campaign> {
-        const targetPopulation = this.data.targetPopulation || TargetPopulation.build(this);
-
-        const targetPopulationForCampaign = await targetPopulation.update(
-            this.organisationUnits,
-            this.getEnabledAntigensDisaggregation(),
-            this.startDate ? moment.utc(this.startDate).format("YYYYMMDD") : "TODAY"
-        );
-
-        return this.update({
-            ...this.data,
-            targetPopulation: targetPopulationForCampaign,
-        });
-    }
-
-    validateTargetPopulation(): ValidationErrors {
-        const { targetPopulation } = this.data;
-        return !targetPopulation
-            ? getError("no_target_population_defined")
-            : targetPopulation.validate();
     }
 
     /* Data set */

@@ -220,7 +220,8 @@ function debug(msg: string): void {
 }
 
 function init() {
-    const isBrowser = typeof window !== "undefined" && window === globalThis;
+    const isBrowser =
+        typeof window !== "undefined" && window === globalThis && typeof $ !== "undefined";
     if (!isBrowser) return;
 
     $(document).on("dhis2.de.event.formLoaded", async (_ev, dataSetId) => {
