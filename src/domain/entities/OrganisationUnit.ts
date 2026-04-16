@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { Struct } from "../../models/Struct";
 
-type OrganisationUnitAttrs = {
+export type OrganisationUnitAttrs = {
     id: string;
     displayName: string;
     level: number;

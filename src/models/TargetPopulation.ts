@@ -3,9 +3,9 @@ import moment from "moment";
 
 import DbD2 from "./db-d2";
 import { AntigenConfig, baseConfig, Dose, MetadataConfig } from "./config";
-import { Maybe, DataValue, CategoryOption, DataValueToPost } from "./db.types";
+import { Maybe, DataValue, CategoryOption } from "./db.types";
 import { OrganisationUnitPathOnly, OrganisationUnitLevel } from "./db.types";
-import { OrganisationUnit } from "../domain/entities/OrganisationUnit";
+import { OrganisationUnit, OrganisationUnitAttrs } from "../domain/entities/OrganisationUnit";
 import { AntigenDisaggregationEnabled, isAgeGroupIncluded } from "./AntigensDisaggregation";
 import { sortAgeGroups } from "../utils/age-groups";
 import Campaign from "./campaign";
@@ -171,11 +171,12 @@ export class TargetPopulation {
                 .value()
         );
 
-        const { organisationUnits: ousInHierarchy } = await this.db.getMetadata<{
-            organisationUnits: OrganisationUnit[];
+        const { organisationUnits: ousInHierarchyRaw } = await this.db.getMetadata<{
+            organisationUnits: OrganisationUnitAttrs[];
         }>({
             organisationUnits: { filters: [`id:in:[${ouIds}]`] },
         });
+        const ousInHierarchy = ousInHierarchyRaw.map(ou => OrganisationUnit.create(ou));
 
         const ousInHierarchyById = _.keyBy(ousInHierarchy, ou => ou.id);
         const organisationUnits = _.at(
@@ -405,8 +406,8 @@ export class TargetPopulation {
     private mapDataValue(
         antigen: AntigenConfig,
         dose: Dose,
-        dv: Omit<DataValueToPost, "dataElement">
-    ): DataValueToPost {
+        dv: Omit<DataValue, "dataElement">
+    ): DataValue {
         const { campaign } = this;
         const dataElementCode = baseConfig.dataElementCodeForPopulationByAge;
         const match = assert(

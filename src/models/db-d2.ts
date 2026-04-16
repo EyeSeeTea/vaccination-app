@@ -8,11 +8,9 @@ import {
     MetadataGetParams,
     ModelName,
     MetadataFields,
-    DataValueResponse,
     Response,
     DataValue,
     MetadataOptions,
-    DataValueToPost,
     Ref,
 } from "./db.types";
 import "../utils/lodash-mixins";
@@ -365,49 +363,6 @@ export default class DbD2 {
                 JSON.stringify(err, null, 4)
             );
             return { status: false, error: JSON.stringify(err) };
-        }
-    }
-
-    public async postDataValues(dataValues: DataValue[]): Promise<Response<object>> {
-        const dataValuesToPost: DataValueToPost[] = _(dataValues)
-            .map(dv => {
-                if (!dv.period) return;
-
-                return {
-                    dataSet: dv.dataSet,
-                    completeDate: dv.completeDate,
-                    period: dv.period,
-                    orgUnit: dv.orgUnit,
-                    attributeOptionCombo: dv.attributeOptionCombo,
-                    dataElement: dv.dataElement,
-                    categoryOptionCombo: dv.categoryOptionCombo,
-                    value: dv.value,
-                    comment: dv.comment,
-                };
-            })
-            .compact()
-            .value();
-
-        const dataValuesChunks = _.chunk(dataValuesToPost, 200);
-
-        const responses = await promiseMap(dataValuesChunks, dataValuesChunk => {
-            return this.api.post("dataValueSets", {
-                dataValues: dataValuesChunk,
-            }) as Promise<DataValueResponse>;
-        });
-
-        const errorResponses = responses.filter(response => {
-            if ("httpStatus" in response) {
-                return response.response.status !== "SUCCESS";
-            } else {
-                return response.status !== "SUCCESS";
-            }
-        });
-
-        if (_(errorResponses).isEmpty()) {
-            return { status: true };
-        } else {
-            return { status: false, error: errorResponses };
         }
     }
 

@@ -292,8 +292,7 @@ export interface Dashboard extends Sharing {
 
 export type DataValue = {
     dataSet?: string;
-    completeDate?: string;
-    period?: string;
+    period: string;
     orgUnit: string;
     attributeOptionCombo?: string;
 
@@ -302,36 +301,6 @@ export type DataValue = {
     value: string;
     comment?: string;
 };
-
-export interface DataValueToPost {
-    dataSet?: string;
-    period: string;
-    orgUnit: string;
-    dataElement: string;
-    attributeOptionCombo?: string;
-    categoryOptionCombo?: string;
-    value: string;
-    comment?: string;
-}
-
-export interface DataValueRequest {
-    dataValues: DataValueToPost[];
-}
-
-export type DataValueResponse = DataValuePreV40Response | DataValueNewPostV40Response;
-
-export interface DataValuePreV40Response {
-    responseType: "ImportSummary";
-    status: "SUCCESS" | "ERROR";
-    description: string;
-}
-
-export interface DataValueNewPostV40Response {
-    status: "OK" | "ERROR";
-    httpStatus: "OK" | "ERROR";
-    httpStatusCode: number;
-    response: DataValuePreV40Response;
-}
 
 export type MetadataFields = { [key in ModelName]: ModelFields };
 
