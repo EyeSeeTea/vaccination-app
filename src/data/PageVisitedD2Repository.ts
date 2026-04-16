@@ -1,11 +1,11 @@
 import { PageVisitedRepository } from "../domain/repositories/PageVisitedRepository";
-import { Store } from "@dhis2/d2-ui-core";
+import { Store } from "../utils/Store";
 import { D2Api } from "../types/d2-api";
 import { isTestEnv } from "../utils/dhis2";
 
-const cache = Store.create();
-
 type StoreMapping = Record<string, boolean>;
+
+const cache = Store.create<StoreMapping>();
 
 export class PageVisitedD2Repository implements PageVisitedRepository {
     constructor(
@@ -17,7 +17,7 @@ export class PageVisitedD2Repository implements PageVisitedRepository {
         const { api } = this;
         const namespace = this.options.dataStoreNamespace;
         const storeKey = this.options.dataStoreKey;
-        const state = (cache.getState() || {}) as StoreMapping;
+        const state = cache.getState() || {};
         const fullKey = namespace + "-" + pageKey;
 
         if (isTestEnv()) {
@@ -25,7 +25,6 @@ export class PageVisitedD2Repository implements PageVisitedRepository {
         } else if (state[fullKey]) {
             return { previousValue: true };
         } else {
-            // Refactor to use d2-api userDataStore (+ entity PageVisited, useCase, repo, ...)
             const dataStore = api.userDataStore(namespace);
             const pagesVisited = (await dataStore.get<StoreMapping>(storeKey).getData()) || {};
             const visited = !!pagesVisited[pageKey];
