@@ -22,7 +22,7 @@ class Share extends React.Component<ShareProps, ShareState> {
     };
 
     openMainPage = () => {
-        window.open("http://www.eyeseetea.com/", "_blank");
+        window.open("https://eyeseetea.com", "_blank");
     };
 
     openTwitter = () => {
