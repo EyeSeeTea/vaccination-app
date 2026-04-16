@@ -53,7 +53,7 @@
         "build": "yarn localize && rm -rf build/ && d2-manifest package.json manifest.webapp && vite build && yarn run manifest && cp -r i18n icon.png build",
         "build-webapp": "yarn build && rm -f ${npm_package_name}.zip && cd build && zip -r ../${npm_package_name}-${npm_package_version}.zip *",
         "build-data-entry-content-script": "yarn run-script src/scripts/compile-data-entry-content-script.ts",
-        "test": "jest",
+        "test": "NODE_OPTIONS=--no-deprecation jest",
         "lint": "eslint src cypress",
         "lint:unused": "ts-prune src",
         "prettify": "prettier \"{src,config,cypress}/**/*.{js,jsx,ts,tsx,json,css}\" --write",
