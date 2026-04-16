@@ -3,19 +3,15 @@ import _ from "lodash";
 
 import { D2, D2ApiLegacy, DeleteResponse } from "./d2.types";
 import {
-    CategoryOption,
-    CategoryCombo,
     MetadataResponse,
     ModelFields,
     MetadataGetParams,
     ModelName,
     MetadataFields,
-    DataEntryForm,
     DataValueResponse,
     Response,
     DataValue,
     MetadataOptions,
-    Message,
     DataValueToPost,
     Ref,
 } from "./db.types";
@@ -267,28 +263,6 @@ export default class DbD2 {
         return metadataWithEmptyRecords as T;
     }
 
-    public async getCategoryOptionsByCategoryCode(code: string): Promise<CategoryOption[]> {
-        const { categories } = await this.api.get("/categories", {
-            filter: [`code:in:[${code}]`],
-            fields: ["categoryOptions[id,displayName,code,dataDimension,dataDimensionType]"],
-        });
-
-        if (_(categories).isEmpty()) {
-            return [];
-        } else {
-            return _(categories[0].categoryOptions).sortBy("displayName").value();
-        }
-    }
-
-    public async getCategoryCombosByCode(codes: string[]): Promise<CategoryCombo[]> {
-        const { categoryCombos } = await this.api.get("/categoryCombos", {
-            paging: false,
-            filter: [`code:in:[${codes.join(",")}]`],
-            fields: ["id,code,displayName"],
-        });
-        return categoryCombos;
-    }
-
     public async getCurrentUser(): Promise<User> {
         const res = await this.d2Api.currentUser
             .get({
@@ -392,15 +366,6 @@ export default class DbD2 {
             );
             return { status: false, error: JSON.stringify(err) };
         }
-    }
-
-    public async postForm(dataSetId: string, dataEntryForm: DataEntryForm): Promise<boolean> {
-        await this.api.post(["dataSets", dataSetId, "form"].join("/"), dataEntryForm);
-        return true;
-    }
-
-    public async sendMessage(message: Message): Promise<void> {
-        this.api.post("/messageConversations", message);
     }
 
     public async postDataValues(dataValues: DataValue[]): Promise<Response<object>> {
