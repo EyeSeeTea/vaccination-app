@@ -13,6 +13,23 @@ import { fade } from "material-ui/utils/colorManipulator";
 import Spacing from "material-ui/styles/spacing";
 import getMuiTheme from "material-ui/styles/getMuiTheme";
 
+type MuiStyle = {
+    palette: {
+        primary1Color: string;
+        primary2Color: string;
+        primary3Color: string;
+        accent1Color: string;
+        accent2Color: string;
+        accent3Color: string;
+        accent4Color: string;
+        textColor: string;
+        alternateTextColor: string;
+        canvasColor: string;
+        borderColor: string;
+        disabledColor: string;
+    };
+};
+
 const theme = {
     spacing: Spacing,
     fontFamily: "Roboto, sans-serif",
@@ -31,7 +48,7 @@ const theme = {
     },
 };
 
-function createAppTheme(style) {
+function createAppTheme(style: MuiStyle) {
     return {
         sideBar: {
             backgroundColor: "#F3F3F3",
@@ -56,7 +73,7 @@ function createAppTheme(style) {
     };
 }
 
-const muiTheme = getMuiTheme(theme);
+const muiTheme = getMuiTheme(theme) as unknown as MuiStyle;
 const appTheme = createAppTheme(muiTheme);
 
 export default Object.assign({}, muiTheme, appTheme);

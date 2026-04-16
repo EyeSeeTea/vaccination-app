@@ -1,7 +1,15 @@
 import _ from "lodash";
 import i18n from "@dhis2/d2-i18n";
+import Campaign from "../models/campaign";
 
-const translations = {
+type TranslationNamespace = Record<string, string | number>;
+
+type ValidationError = {
+    key: string;
+    namespace?: TranslationNamespace;
+};
+
+const translations: Record<string, (namespace: TranslationNamespace) => string> = {
     no_organisation_units_selected: () => i18n.t("Select at least one organisation unit"),
     organisation_units_only_of_levels: namespace =>
         i18n.t("Only organisation units of level {{levels}} can be selected", namespace),
@@ -42,17 +50,20 @@ const translations = {
     name_must_be_unique: () => i18n.t("There already exists a campaign with the same name"),
 };
 
-export function translateError(error) {
+export function translateError(error: ValidationError): string {
     const translation = translations[error.key];
 
     if (translation) {
-        return i18n.t(translation(error.namespace));
+        return i18n.t(translation(error.namespace || {}));
     } else {
         return `Missing translation: ${error.key}`;
     }
 }
 
-export async function getValidationMessages(campaign, validationKeys) {
+export async function getValidationMessages(
+    campaign: Campaign,
+    validationKeys: string[]
+): Promise<string[]> {
     if (_(validationKeys).isEmpty()) return [];
 
     const validationObj = await campaign.validate(validationKeys);

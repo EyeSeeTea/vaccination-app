@@ -25,6 +25,7 @@ export const colors = {
     positive: "#3D9305",
     info: "#EAF4FF",
 };
+
 export const palette = {
     common: {
         white: colors.white,
@@ -45,20 +46,18 @@ export const palette = {
         dark: colors.accentPrimaryDark,
         light: colors.accentPrimaryLight,
         lightest: colors.accentPrimaryLightest, // Custom extension, not used by default
-        // contrastText: 'white',
     },
     secondary: {
         main: colors.accentSecondary,
         dark: colors.accentSecondaryDark,
         light: colors.accentSecondaryLight,
         lightest: colors.accentSecondaryLightest, // Custom extension, not used by default
-        // contrastText: 'white',
     },
     error: {
-        main: colors.negative, // This is automatically expanded to main/light/dark/contrastText, what do we use here?
+        main: colors.negative,
     },
     status: {
-        //Custom colors collection, not used by default in MUI
+        // Custom colors collection, not used by default in MUI
         negative: colors.negative,
         warning: colors.warning,
         positive: colors.positive,
@@ -75,11 +74,9 @@ export const palette = {
 };
 
 export const muiTheme = createTheme({
-    colors,
     palette,
     typography: {
         fontFamily: "Roboto, Helvetica, Arial, sans-serif",
-        useNextVariants: true,
     },
     overrides: {
         MuiDivider: {
