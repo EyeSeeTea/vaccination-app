@@ -42,7 +42,6 @@ type State = {
     isSaving: boolean;
     changed: boolean;
     confirmClose: boolean;
-    areValuesUpdated: boolean;
 };
 
 class TargetPopulationDialog extends React.Component<Props, State> {
@@ -52,7 +51,6 @@ class TargetPopulationDialog extends React.Component<Props, State> {
         isSaving: false,
         changed: false,
         confirmClose: false,
-        areValuesUpdated: false,
     };
 
     styles = {
@@ -73,12 +71,8 @@ class TargetPopulationDialog extends React.Component<Props, State> {
             const targetPopulation = await compositionRoot.targetPopulation.getForCampaign.execute(
                 campaign
             );
-            const areValuesUpdated = targetPopulation
-                ? await targetPopulation.areDataValuesUpTodate()
-                : false;
             this.setState({
                 campaign: campaign,
-                areValuesUpdated: areValuesUpdated,
                 targetPopulation: targetPopulation,
             });
         } catch (err0) {
@@ -98,7 +92,10 @@ class TargetPopulationDialog extends React.Component<Props, State> {
         this.setState({ isSaving: true });
 
         try {
-            await this.props.compositionRoot.targetPopulation.save.execute(targetPopulation);
+            await this.props.compositionRoot.targetPopulation.save.execute(
+                targetPopulation,
+                campaign
+            );
             snackbar.success(`${i18n.t("Target population set")}: ${campaign.name}`);
             onClose();
         } catch (err0) {
@@ -152,7 +149,7 @@ class TargetPopulationDialog extends React.Component<Props, State> {
 
     public render() {
         const { classes } = this.props;
-        const { campaign, targetPopulation, isSaving, confirmClose, areValuesUpdated } = this.state;
+        const { campaign, targetPopulation, isSaving, confirmClose } = this.state;
         const ConfirmationCloseDialog = this.confirmationCloseDialog;
 
         const isReady = campaign && !isSaving;
@@ -170,11 +167,12 @@ class TargetPopulationDialog extends React.Component<Props, State> {
                 hyperlink: "https://hmisocba.msf.es/external-static/Denominators_Tool_OCBA.xlsm",
             }
         );
-        const warning = !areValuesUpdated
-            ? i18n.t(
-                  "This is the last available population data. Modify it for your campaign and remember to press button SAVE"
-              )
-            : null;
+        const warning =
+            targetPopulation && !targetPopulation.data.areDataValuesUpTodate
+                ? i18n.t(
+                      "This is the last available population data. Modify it for your campaign and remember to press button SAVE"
+                  )
+                : null;
 
         return (
             <React.Fragment>

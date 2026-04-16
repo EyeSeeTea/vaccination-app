@@ -1,6 +1,5 @@
 import { getConfig } from "./campaign-test-helpers";
 import { getCampaign } from "./getCampaign";
-import path from "path";
 import { getCompositionRoot } from "../../CompositionRoot";
 import { getD2ApiSnapMock, getDbD2SnapMock } from "../../testing/d2-snap-mock";
 
@@ -22,7 +21,8 @@ describe("TargetPopulation", () => {
                 campaign
             );
 
-            // MSF -> OCBA -> DRC_SK -> ZZZ_RUSK_211201_Bikenge, Rougeole_CLOSED -> CDS MBUTU
+            // MSF -> OCBA -> DRC_SK -> ZZZ_RUSK_211201_Bikenge Rougeole_CLOSED [wY8HiLmETeU]
+            // -> CDS MBUTU [BaEwEdzSA6G] -> External Consultations [lrjmTKZJUEx]
             const targetPopulationUpdated = targetPopulation
                 .setTotalPopulation("lrjmTKZJUEx", 1000) //
                 // Malaria
@@ -33,18 +33,27 @@ describe("TargetPopulation", () => {
                 .setAgeGroupPopulation({ orgUnitIds: ["lrjmTKZJUEx"], ageGroup: "8 - 11 m" }, 4)
                 .setAgeGroupPopulation({ orgUnitIds: ["lrjmTKZJUEx"], ageGroup: "15 - 29 y" }, 5);
 
-            const dataValues = await targetPopulationUpdated.getDataValues();
-            expectToMatchSnapshot(dataValues, "target-population-data-values");
+            const ageDistributionByOrgUnit = targetPopulationUpdated.data.ageDistributionByOrgUnit;
+
+            expect(ageDistributionByOrgUnit).toEqual({
+                // Project level
+                wY8HiLmETeU: {
+                    "5 - 11 m": 1,
+                    "8 - 11 m": 4,
+                    "12 - 23 m": 2,
+                    "24 - 35 m": 3,
+                    "15 - 29 y": 5,
+                },
+                // Health service level
+                lrjmTKZJUEx: {
+                    "5 - 11 m": 1,
+                    "8 - 11 m": 4,
+                    "12 - 23 m": 2,
+                    "24 - 35 m": 3,
+                    "15 - 29 y": 5,
+                },
+            });
             expect(mockD2).toBeFulfilled();
         });
     });
 });
-
-type JsonValue = string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
-
-function expectToMatchSnapshot(json: JsonValue, snapshotName: string) {
-    const folder = path.dirname(expect.getState().testPath);
-    const snapshotPath = path.join(folder, "__snapshots__", snapshotName + ".json");
-    const jsonString = JSON.stringify(json, null, 4) + "\n";
-    expect(jsonString).toMatchFile(snapshotPath);
-}

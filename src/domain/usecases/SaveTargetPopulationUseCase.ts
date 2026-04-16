@@ -1,3 +1,4 @@
+import Campaign from "../../models/campaign";
 import { TargetPopulation } from "../../models/TargetPopulation";
 import { TargetPopulationRepository } from "../repositories/TargetPopulationRepository";
 
@@ -8,7 +9,7 @@ export class SaveTargetPopulationUseCase {
         }
     ) {}
 
-    async execute(targetPopulation: TargetPopulation): Promise<void> {
-        return this.repositories.targetPopulationRepository.save(targetPopulation);
+    async execute(targetPopulation: TargetPopulation, campaign: Campaign): Promise<void> {
+        return this.repositories.targetPopulationRepository.save(targetPopulation, campaign);
     }
 }
