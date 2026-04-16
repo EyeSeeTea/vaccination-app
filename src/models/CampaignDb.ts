@@ -27,6 +27,7 @@ import {
 } from "./D2CampaignMetadata";
 import { D2Translation } from "@eyeseetea/d2-api/schemas";
 import i18n from "../locales";
+import { DataInput } from "./periods";
 
 const locales = ["es", "fr"];
 
@@ -41,13 +42,6 @@ because the current time is after the closing date of the data input periods.
 
 Solution: Use a custom attribute to store the data input periods
 */
-
-export type DataInput = {
-    periodStart: string;
-    periodEnd: string;
-    openingDate: string;
-    closingDate: string;
-};
 
 interface PostSaveMetadata {
     visualizations: object[];
