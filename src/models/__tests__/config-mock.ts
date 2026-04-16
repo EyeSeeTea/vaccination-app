@@ -12,7 +12,7 @@ export function co(name: string): CategoryOption {
 
 const metadataConfig: MetadataConfig = {
     ...baseConfig,
-    currentUser: { id: "u1", name: "Current User" },
+    currentUser: { id: "u1", name: "Current User", orgUnitIds: [], userRoleIds: [] },
     userRoles: [],
     organisationUnitLevels: [],
     categoryCombos: [],
