@@ -10,7 +10,7 @@ import {
     MetadataPick,
     PartialPersistedModel,
 } from "../types/d2-api";
-import { CampaignType } from "../models/AntigensDisaggregationLegacy";
+import { CampaignType } from "../models/AntigensDisaggregation";
 import { dataElementsInfo, indicatorsInfo, DataElementInfo } from "../models/D2CampaignMetadata";
 import { cartesianProduct2, cartesianProduct3, powerSet } from "../utils/lodash-mixins";
 import { interpolate } from "../utils/strings";

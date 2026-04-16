@@ -4,13 +4,9 @@ import moment from "moment";
 
 import { PaginatedObjects, OrganisationUnitPathOnly, Response } from "./db.types";
 import DbD2 from "./db-d2";
-import {
-    AntigensDisaggregationLegacy,
-    CampaignType,
-    SectionForDisaggregation,
-} from "./AntigensDisaggregationLegacy";
+import { CampaignType, SectionForDisaggregation } from "./AntigensDisaggregation";
 import { MetadataConfig, getDashboardCode, getByIndex, DataSet } from "./config";
-import { AntigenDisaggregationEnabled } from "./AntigensDisaggregationLegacy";
+import { AntigenDisaggregationEnabled } from "./AntigensDisaggregation";
 import {
     TargetPopulation,
     TargetPopulationData as TargetPopulationData_,
@@ -43,7 +39,7 @@ export interface Data {
     endDate: Date | null;
     antigens: Antigen[];
     extraDataSets: DataSet[];
-    antigensDisaggregation: AntigensDisaggregation | AntigensDisaggregationLegacy;
+    antigensDisaggregation: AntigensDisaggregation;
     targetPopulation: Maybe<TargetPopulation>;
     teams: Maybe<number>;
     dashboardId: Maybe<string>;
@@ -308,13 +304,11 @@ export default class Campaign {
 
     /* Antigens disaggregation */
 
-    public get antigensDisaggregation(): AntigensDisaggregation | AntigensDisaggregationLegacy {
+    public get antigensDisaggregation(): AntigensDisaggregation {
         return this.data.antigensDisaggregation;
     }
 
-    public setAntigensDisaggregation(
-        antigensDisaggregation: AntigensDisaggregation | AntigensDisaggregationLegacy
-    ): Campaign {
+    public setAntigensDisaggregation(antigensDisaggregation: AntigensDisaggregation): Campaign {
         return this.update({ ...this.data, antigensDisaggregation });
     }
 

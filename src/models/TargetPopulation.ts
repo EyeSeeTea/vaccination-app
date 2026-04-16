@@ -5,14 +5,14 @@ import DbD2 from "./db-d2";
 import { AntigenConfig, baseConfig, Dose, MetadataConfig } from "./config";
 import { Maybe, DataValue, CategoryOption, DataValueToPost } from "./db.types";
 import { OrganisationUnit, OrganisationUnitPathOnly, OrganisationUnitLevel } from "./db.types";
-import { AntigenDisaggregationEnabled, isAgeGroupIncluded } from "./AntigensDisaggregationLegacy";
+import { AntigenDisaggregationEnabled, isAgeGroupIncluded } from "./AntigensDisaggregation";
 import { sortAgeGroups } from "../utils/age-groups";
 import Campaign from "./campaign";
 import { getDaysRange } from "../utils/date";
 import { assert } from "../utils/assert";
 import { getDataElements } from "./D2CampaignMetadata";
 
-const fp = require("lodash/fp");
+import fp from "lodash/fp";
 
 const dailyPeriodFormat = "YYYYMMDD";
 

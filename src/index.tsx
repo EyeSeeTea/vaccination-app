@@ -35,8 +35,8 @@ function configI18n(userSettings: { keyUiLocale: string }) {
 }
 
 async function getBaseUrl() {
-    if (process.env.NODE_ENV === "development") {
-        const port = process.env.REACT_APP_PORT || "8081";
+    if (import.meta.env.DEV) {
+        const port = import.meta.env.VITE_PORT || "8081";
         const baseUrl = `http://localhost:${port}/dhis2`;
         console.debug(`[DEV] DHIS2 instance: ${baseUrl}`);
         return baseUrl;
