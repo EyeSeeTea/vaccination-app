@@ -48,7 +48,7 @@ class App extends Component<AppProps, AppState> {
         Object.assign(window, { api, config, db, compositionRoot });
 
         const showFeedbackForCurrentUser = hasCurrentUserRoles(
-            d2,
+            config.currentUser.userRoleIds,
             config.userRoles,
             config.userRoleNames.feedback
         );

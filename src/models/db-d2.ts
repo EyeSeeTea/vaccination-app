@@ -312,13 +312,16 @@ export default class DbD2 {
                     id: true,
                     name: true,
                     dataViewOrganisationUnits: { id: true },
+                    userCredentials: { userRoles: { id: true } },
                 },
             })
             .getData();
 
         return {
-            ...res,
+            id: res.id,
+            name: res.name,
             orgUnitIds: res.dataViewOrganisationUnits.map(ou => ou.id),
+            userRoleIds: res.userCredentials.userRoles.map(r => r.id),
         };
     }
 

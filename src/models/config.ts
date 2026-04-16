@@ -187,6 +187,7 @@ export type User = {
     id: string;
     name: string;
     orgUnitIds: string[];
+    userRoleIds: string[];
 };
 
 function getCategoriesDisaggregation(
