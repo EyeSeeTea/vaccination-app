@@ -1,14 +1,11 @@
 import React from "react";
+import _ from "lodash";
 import i18n from "@dhis2/d2-i18n";
 import { withSnackbar, SnackbarState } from "@eyeseetea/d2-ui-components";
 import ReactDOM from "react-dom";
 import moment from "moment";
 
 import PageHeader from "../shared/PageHeader";
-import {
-    getOrganisationUnitsByDataSetId,
-    getPeriodDatesFromDataSetId,
-} from "../../models/datasets";
 import { LinearProgress } from "@material-ui/core";
 import { withPageVisited } from "../utils/page-visited-app";
 import { D2 } from "../../models/d2.types";
@@ -18,6 +15,7 @@ import { makeStyles } from "../../utils/react";
 import { assert } from "../../utils/assert";
 import { CompositionRoot } from "../../CompositionRoot";
 import { Routes } from "../app/Routes";
+import { getCampaignPeriods } from "../../models/CampaignDb";
 
 type DataEntryOwnProps = {
     d2: D2;
@@ -240,6 +238,20 @@ const iframeStyles = makeStyles({
 
 function on(document: Document, selector: string, cb: (el: Element) => void) {
     document.querySelectorAll(selector).forEach(cb);
+}
+
+async function getOrganisationUnitsByDataSetId(id: string, d2: D2) {
+    const fields = "organisationUnits[id,name]";
+    const dataSet = await d2.models.dataSets.get(id, { fields }).catch(() => undefined);
+    const organisationUnits = dataSet ? dataSet.organisationUnits.toArray() : null;
+    //TODO: Make it so the user can choose the OU
+    return _(organisationUnits).isEmpty() ? undefined : organisationUnits[0].id;
+}
+
+async function getPeriodDatesFromDataSetId(id: string, d2: D2) {
+    const fields = "attributeValues[value, attribute[code]]";
+    const dataSet = await d2.models.dataSets.get(id, { fields }).catch(() => undefined);
+    return dataSet ? getCampaignPeriods(dataSet) : null;
 }
 
 export default withSnackbar(withPageVisited(DataEntry, "data-entry"));
