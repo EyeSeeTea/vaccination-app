@@ -9,7 +9,7 @@ import i18n from "../locales";
 import { assert } from "../utils/assert";
 import { categoriesInDataElement } from "./D2CampaignMetadata";
 
-const fp = require("lodash/fp");
+import fp from "lodash/fp";
 
 export type CampaignType = "preventive" | "reactive";
 
