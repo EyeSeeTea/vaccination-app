@@ -1,4 +1,4 @@
-import _, { Dictionary } from "lodash";
+import _ from "lodash";
 import DbD2 from "./db-d2";
 import {
     dashboardItemsConfig,
@@ -221,10 +221,10 @@ export class Dashboard {
     createDashboardItems(
         campaign: Campaign,
         dashboardCode: string,
-        datasetName: String,
+        datasetName: string,
         startDate: Moment,
         endDate: Moment,
-        dashboardItemsMetadata: Dictionary<any>,
+        dashboardItemsMetadata: any,
         sharing: Sharing
     ): AllDashboardElements {
         const { organisationUnitsWithName, legendMetadata } = dashboardItemsMetadata;
