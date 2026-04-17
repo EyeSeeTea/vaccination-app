@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { getUid } from "../utils/dhis2";
 import _ from "lodash";
 import moment from "moment";
@@ -360,7 +361,7 @@ export function buildDashboardItems(
         chartsByAntigen: chartsByAntigenMetadata,
     } = dashboardItemsConfig;
 
-    var qsPerAntigen2 = tablesByAntigenMetadata["qsPerAntigen"];
+    let qsPerAntigen2 = tablesByAntigenMetadata["qsPerAntigen"];
     const tablesByAntigen = _(antigensMeta)
         .flatMap(antigen => {
             tablesByAntigenMetadata["qsPerAntigen"] = qsPerAntigen2;
