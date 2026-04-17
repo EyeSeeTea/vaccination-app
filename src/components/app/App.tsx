@@ -41,7 +41,6 @@ class App extends Component<AppProps, AppState> {
 
     async componentDidMount() {
         const { d2, api, appConfig } = this.props;
-        const appKey = this.props.appConfig.appKey;
         const db = new DbD2(d2, api);
         const config = await getMetadataConfig(db);
         const compositionRoot = getCompositionRoot({ db, api, config });
@@ -54,11 +53,7 @@ class App extends Component<AppProps, AppState> {
         );
 
         if (appConfig && appConfig.feedback && showFeedbackForCurrentUser) {
-            const feedbackOptions = {
-                ...appConfig.feedback,
-                i18nPath: "feedback-tool/i18n",
-            };
-            window.$.feedbackDhis2(d2, appKey, feedbackOptions);
+            // No feedback tool currently used, keep if we re-enable it in the future
         }
 
         this.setState({ config, db, compositionRoot });
@@ -107,13 +102,6 @@ declare global {
         config: MetadataConfig;
         db: DbD2;
         compositionRoot: CompositionRoot;
-        $: {
-            feedbackDhis2: (
-                d2: D2,
-                appKey: string,
-                feedbackOptions: AppConfig["feedback"] & { i18nPath: string }
-            ) => void;
-        };
     }
 }
 
@@ -136,7 +124,7 @@ type AppConfig = {
             branch: string;
         };
         feedbackOptions: Record<string, unknown>;
-    };
+    } | null;
 };
 
 export default App;
