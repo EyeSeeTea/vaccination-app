@@ -2,7 +2,11 @@ import { getUid } from "../utils/dhis2";
 import _ from "lodash";
 import moment from "moment";
 import i18n from "@dhis2/d2-i18n";
-import { processDisaggregations, ModelDataDimensionItem, D2DataDimensionItem } from "./campaign-d2-visualizations";
+import {
+    processDisaggregations,
+    ModelDataDimensionItem,
+    D2DataDimensionItem,
+} from "./campaign-d2-visualizations";
 import Campaign from "./campaign";
 import { AntigenConfig } from "./config";
 import { Ref } from "./db.types";
@@ -159,19 +163,22 @@ export const dashboardItemsConfig: {
         coverageByCampaign: {
             ...definitions.coverageByDosesAndPeriod,
             area: "campaign",
-            title: (ns: Record<string, string>) => i18n.t("Coverage by Campaign {{- period}} (do not edit this chart)", ns),
+            title: (ns: Record<string, string>) =>
+                i18n.t("Coverage by Campaign {{- period}} (do not edit this chart)", ns),
             appendCode: "Coverage by campaign",
         },
         coverageByArea: {
             ...definitions.coverageByDosesAndPeriod,
             area: "area",
-            title: (ns: Record<string, string>) => i18n.t("Coverage by Area {{- period}} (do not edit this chart)", ns),
+            title: (ns: Record<string, string>) =>
+                i18n.t("Coverage by Area {{- period}} (do not edit this chart)", ns),
             appendCode: "Coverage by area",
         },
         coverageBySite: {
             ...definitions.coverageByDosesAndPeriod,
             area: "site",
-            title: (ns: Record<string, string>) => i18n.t("Coverage by Site {{- period}} (do not edit this chart)", ns),
+            title: (ns: Record<string, string>) =>
+                i18n.t("Coverage by Site {{- period}} (do not edit this chart)", ns),
             appendCode: "Coverage by site",
         },
     },
@@ -188,7 +195,8 @@ export const dashboardItemsConfig: {
             filterDataBy: ["ou"],
             disaggregatedBy: [],
             area: "site",
-            title: (ns: Record<string, string>) => i18n.t("AEFI and AEB indicators {{- period}}", ns),
+            title: (ns: Record<string, string>) =>
+                i18n.t("AEFI and AEB indicators {{- period}}", ns),
             appendCode: "AEFI and AEB indicators", //adverseEvents
             //legendCode: "RVC_LEGEND_ZERO",
         },
@@ -280,7 +288,8 @@ export const dashboardItemsConfig: {
             filterDataBy: ["ou"],
             disaggregatedBy: ["ageGroup", "doses"],
             area: "site",
-            title: (ns: Record<string, string>) => i18n.t("Campaign Coverage by day (do not edit this table)", ns),
+            title: (ns: Record<string, string>) =>
+                i18n.t("Campaign Coverage by day (do not edit this table)", ns),
             appendCode: "Coverage by period", //coverageByPeriod
             showRowSubTotals: false,
             showColumnTotals: false,
@@ -348,7 +357,15 @@ function getCharts(options: {
     itemsMetadata: ItemsMetadata;
     disaggregationMetadata: DisaggregationMetadata;
 }) {
-    const { campaign, charts, antigen, elements, organisationUnits, itemsMetadata, disaggregationMetadata } = options;
+    const {
+        campaign,
+        charts,
+        antigen,
+        elements,
+        organisationUnits,
+        itemsMetadata,
+        disaggregationMetadata,
+    } = options;
     return _(charts)
         .map((chart, key) =>
             chartConstructor2({
@@ -388,7 +405,17 @@ function getTables(options: {
     legendsMetadata: LegendsMetadata;
     doseMetadata?: DoseMetadata;
 }) {
-    const { campaign, tables, antigen, elements, organisationUnits, itemsMetadata, disaggregationMetadata, legendsMetadata, doseMetadata = null } = options;
+    const {
+        campaign,
+        tables,
+        antigen,
+        elements,
+        organisationUnits,
+        itemsMetadata,
+        disaggregationMetadata,
+        legendsMetadata,
+        doseMetadata = null,
+    } = options;
     return _(tables)
         .map((c: ItemConfig, key: string) => {
             const teamMetadata = disaggregationMetadata.teams();
@@ -471,7 +498,9 @@ export function buildDashboardItems(
         .flatMap(antigen => {
             tablesByAntigenMetadata["qsPerAntigen"] = qsPerAntigen2;
             if (antigenNoDiluted(antigen)) {
-                delete (tablesByAntigenMetadata as Record<string, ItemConfig | undefined>)["qsPerAntigen"];
+                delete (tablesByAntigenMetadata as Record<string, ItemConfig | undefined>)[
+                    "qsPerAntigen"
+                ];
             }
 
             return getTables({
@@ -675,7 +704,10 @@ function getDimensions(
 
     const keys = ["categoryDimensions", "columns", "columnDimensions"];
 
-    const allDimensions: Record<string, any>[] = [noDisaggregationDimension, ...disaggregationDimensions];
+    const allDimensions: Record<string, any>[] = [
+        noDisaggregationDimension,
+        ...disaggregationDimensions,
+    ];
 
     const values = keys.map(key => allDimensions.map(o => o[key]));
     return _.zipObject(keys, values);
@@ -718,7 +750,9 @@ const chartConstructor = ({
         .utc(lastPeriod.id)
         .format("DD/MM/YYYY")}`;
 
-    const columns = _.isEmpty(disaggregations) ? allColumns : allColumns.filter((c: any) => c.id !== "dx");
+    const columns = _.isEmpty(disaggregations)
+        ? allColumns
+        : allColumns.filter((c: any) => c.id !== "dx");
 
     const filterDimensions = _.compact([...filterDataBy, _.isEmpty(disaggregations) ? null : "dx"]);
 
@@ -734,7 +768,12 @@ const chartConstructor = ({
 
     return {
         id,
-        name: buildDashboardItemsCode(datasetName, organisationUnitNames, antigen?.name ?? "Global", appendCode),
+        name: buildDashboardItemsCode(
+            datasetName,
+            organisationUnitNames,
+            antigen?.name ?? "Global",
+            appendCode
+        ),
         showData: true,
         userOrganisationUnitChildren: false,
         type,
@@ -875,7 +914,10 @@ const levels = {
     site: 6,
 };
 
-function getOrganisationUnitElements(organisationUnits: OrgUnitForVisualization[], area: AreaType): Ref[] {
+function getOrganisationUnitElements(
+    organisationUnits: OrgUnitForVisualization[],
+    area: AreaType
+): Ref[] {
     const pathRightOffset = pathRightOffsetByType[area] || 0;
 
     return _(organisationUnits)
