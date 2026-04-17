@@ -168,7 +168,7 @@ class TargetPopulationDialog extends React.Component<Props, State> {
             }
         );
         const warning =
-            targetPopulation && !targetPopulation.data.areDataValuesUpTodate
+            targetPopulation && !targetPopulation.data.isPersisted
                 ? i18n.t(
                       "This is the last available population data. Modify it for your campaign and remember to press button SAVE"
                   )

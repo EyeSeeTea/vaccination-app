@@ -31,7 +31,7 @@ export type TargetPopulationData = {
     populationItems: PopulationItems;
     ageGroups: CategoryOption[];
     ageDistributionByOrgUnit: AgeDistributionByOrgUnit;
-    areDataValuesUpTodate: boolean;
+    isPersisted: boolean;
 };
 
 interface AgeDistribution {
@@ -76,7 +76,7 @@ export class TargetPopulation {
             antigensDisaggregation: [],
             ageGroups: [],
             ageDistributionByOrgUnit: {},
-            areDataValuesUpTodate: false,
+            isPersisted: false,
         });
 
         return targetPopulation.update(
