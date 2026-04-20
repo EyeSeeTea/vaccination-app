@@ -287,53 +287,42 @@ export default class DbD2 {
     ): Promise<
         Array<{ id: string; categoryOptionCombos: Array<{ id: string; categoryOptions: Ref[] }> }>
     > {
-        // User identifiable instead of code, as the default category combo has no code
-        const filter = `code:in:[${_.uniq(codes).join(",")}]`;
-
-        const { categoryCombos: categoryCombos1 } = await this.getMetadata<{
+        type CategoryCombosRes = {
             categoryCombos: Array<{
                 id: string;
                 code: string;
                 categoryOptionCombos: Array<{
                     id: string;
-                    categoryOptions: Array<{ id: string }>;
+                    categoryOptions: Array<{
+                        id: string;
+                    }>;
                 }>;
             }>;
-        }>({
+        };
+
+        const categoryCombosFields = {
+            id: true,
+            code: true,
+            categoryOptionCombos: {
+                id: true,
+                categoryOptions: { id: true },
+            },
+        } as const;
+
+        // [Bug in 42.4] we cannot used identifiable:in, get first category combos by code
+
+        const { categoryCombos: categoryCombos1 } = await this.getMetadata<CategoryCombosRes>({
             categoryCombos: {
-                fields: {
-                    id: true,
-                    code: true,
-                    categoryOptionCombos: {
-                        id: true,
-                        categoryOptions: { id: true },
-                    },
-                },
-                filters: [filter],
+                fields: categoryCombosFields,
+                filters: [`code:in:[${_.uniq(codes).join(",")}]`],
             },
         });
 
-        // Temporal, get default
+        // And now get the default category combo, not returned when filtering by code (it has no code)
 
-        const { categoryCombos: categoryCombos2 } = await this.getMetadata<{
-            categoryCombos: Array<{
-                id: string;
-                code: string;
-                categoryOptionCombos: Array<{
-                    id: string;
-                    categoryOptions: Array<{ id: string }>;
-                }>;
-            }>;
-        }>({
+        const { categoryCombos: categoryCombos2 } = await this.getMetadata<CategoryCombosRes>({
             categoryCombos: {
-                fields: {
-                    id: true,
-                    code: true,
-                    categoryOptionCombos: {
-                        id: true,
-                        categoryOptions: { id: true },
-                    },
-                },
+                fields: categoryCombosFields,
                 filters: [`name:eq:default`],
             },
         });
@@ -342,7 +331,6 @@ export default class DbD2 {
 
         const missingCodes = _(codes)
             .difference(categoryCombos.map(cc => cc.code))
-            .remove("default")
             .value();
 
         if (!_(missingCodes).isEmpty()) {
