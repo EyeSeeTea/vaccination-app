@@ -12,6 +12,7 @@ import {
     DataValue,
     MetadataOptions,
     Ref,
+    getId,
 } from "./db.types";
 import "../utils/lodash-mixins";
 import { promiseMap } from "../utils/promises";
@@ -268,7 +269,7 @@ export default class DbD2 {
                     id: true,
                     name: true,
                     dataViewOrganisationUnits: { id: true },
-                    userCredentials: { userRoles: { id: true } },
+                    userRoles: { id: true },
                 },
             })
             .getData();
@@ -277,7 +278,7 @@ export default class DbD2 {
             id: res.id,
             name: res.name,
             orgUnitIds: res.dataViewOrganisationUnits.map(ou => ou.id),
-            userRoleIds: res.userCredentials.userRoles.map(r => r.id),
+            userRoleIds: res.userRoles.map(getId),
         };
     }
 
