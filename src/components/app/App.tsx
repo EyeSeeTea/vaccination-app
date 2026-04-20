@@ -30,6 +30,7 @@ type AppState = {
     config: MetadataConfig | null;
     db: DbD2 | null;
     compositionRoot: CompositionRoot | null;
+    routes: Routes | null;
 };
 
 class App extends Component<AppProps, AppState> {
@@ -37,6 +38,7 @@ class App extends Component<AppProps, AppState> {
         config: null,
         db: null,
         compositionRoot: null,
+        routes: null,
     };
 
     async componentDidMount() {
@@ -56,15 +58,16 @@ class App extends Component<AppProps, AppState> {
             // No feedback tool currently used, keep if we re-enable it in the future
         }
 
-        this.setState({ config, db, compositionRoot });
+        const routes = new Routes(api.baseUrl, config);
+
+        this.setState({ config, db, compositionRoot, routes });
     }
 
     render() {
         const { d2, appConfig, api } = this.props;
-        const { config, db, compositionRoot } = this.state;
+        const { config, db, compositionRoot, routes } = this.state;
         const showShareButton = _(appConfig).get("appearance.showShareButton") || false;
         const showHeader = !isTestEnv();
-        const routes = new Routes(api.baseUrl);
 
         return (
             <React.Fragment>
@@ -75,7 +78,7 @@ class App extends Component<AppProps, AppState> {
 
                             <div id="app" className="content">
                                 <SnackbarProvider>
-                                    {config && db && compositionRoot && (
+                                    {config && db && compositionRoot && routes && (
                                         <Root
                                             d2={d2}
                                             db={db}
