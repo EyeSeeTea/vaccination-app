@@ -691,7 +691,7 @@ export async function getMetadataConfig(db: DbD2): Promise<MetadataConfig> {
         indicators: { fields: { id: true, code: true }, filters: [codeFilter] },
         dataSets: {
             fields: { id: true, name: true, code: true },
-            filters: [`code:in:[${baseConfig.dataSetExtraIdentifiables.join(",")}]`],
+            filters: [`id:in:[${baseConfig.dataSetExtraIdentifiables.join(",")}]`],
         },
         legendSets: { fields: { id: true, code: true }, filters: [codeFilter] },
         organisationUnitLevels: {},
