@@ -86,8 +86,8 @@ export class TargetPopulation {
         );
     }
 
-    updateAreDataValuesUpTodate(value: boolean): TargetPopulation {
-        const newData = { ...this.data, areDataValuesUpTodate: value };
+    updateIsPersisted(value: boolean): TargetPopulation {
+        const newData: TargetPopulationData = { ...this.data, isPersisted: value };
         return new TargetPopulation(this.campaign, newData);
     }
 

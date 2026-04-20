@@ -23,7 +23,7 @@ export class TargetPopulationD2Repository implements TargetPopulationRepository 
     async getForCampaign(campaign: Campaign): Promise<TargetPopulation> {
         const targetPopulation = await TargetPopulation.build(campaign);
         const upTodate = await this.getAreDataValuesUpTodate(targetPopulation, campaign);
-        return targetPopulation.updateAreDataValuesUpTodate(upTodate);
+        return targetPopulation.updateIsPersisted(upTodate);
     }
 
     async save(targetPopulation: TargetPopulation, campaign: Campaign): Promise<void> {
