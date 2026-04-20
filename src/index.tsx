@@ -9,8 +9,8 @@ import _ from "lodash";
 import App from "./components/app/App";
 
 import "./locales";
-import { D2 } from "./models/d2.types";
 import { D2Api } from "./types/d2-api";
+import { D2 } from "./models/d2.types";
 
 config.schemas = ["dataSet", "organisationUnit"];
 

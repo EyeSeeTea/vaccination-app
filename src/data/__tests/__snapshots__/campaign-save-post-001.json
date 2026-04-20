@@ -2116,6 +2116,9 @@
                             "id": "aTam5LICPyx"
                         },
                         {
+                            "id": "o8NsZO1gGOs"
+                        },
+                        {
                             "id": "XLAnjUplWcm"
                         },
                         {
@@ -2706,6 +2709,9 @@
                         },
                         {
                             "id": "Xiwvn9smrDb"
+                        },
+                        {
+                            "id": "pXzxJ0wBvqy"
                         },
                         {
                             "id": "eKBQCdgWksI"
@@ -14677,18 +14683,6 @@
             "status": "OK",
             "typeReports": [
                 {
-                    "klass": "org.hisp.dhis.category.CategoryOption",
-                    "objectReports": [
-                    ],
-                    "stats": {
-                        "created": 0,
-                        "deleted": 0,
-                        "ignored": 0,
-                        "total": 1,
-                        "updated": 1
-                    }
-                },
-                {
                     "klass": "org.hisp.dhis.visualization.Visualization",
                     "objectReports": [
                     ],
@@ -14698,18 +14692,6 @@
                         "ignored": 0,
                         "total": 38,
                         "updated": 38
-                    }
-                },
-                {
-                    "klass": "org.hisp.dhis.dataset.DataSet",
-                    "objectReports": [
-                    ],
-                    "stats": {
-                        "created": 0,
-                        "deleted": 0,
-                        "ignored": 0,
-                        "total": 3,
-                        "updated": 3
                     }
                 },
                 {
@@ -14734,6 +14716,30 @@
                         "ignored": 0,
                         "total": 3,
                         "updated": 3
+                    }
+                },
+                {
+                    "klass": "org.hisp.dhis.dataset.DataSet",
+                    "objectReports": [
+                    ],
+                    "stats": {
+                        "created": 0,
+                        "deleted": 0,
+                        "ignored": 0,
+                        "total": 3,
+                        "updated": 3
+                    }
+                },
+                {
+                    "klass": "org.hisp.dhis.category.CategoryOption",
+                    "objectReports": [
+                    ],
+                    "stats": {
+                        "created": 0,
+                        "deleted": 0,
+                        "ignored": 0,
+                        "total": 1,
+                        "updated": 1
                     }
                 }
             ]

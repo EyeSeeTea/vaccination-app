@@ -25,3 +25,26 @@ declare module "@dhis2/d2-ui-core" {
         [key: string]: unknown;
     }>;
 }
+
+declare module "@dhis2/d2-ui-forms" {
+    import React from "react";
+    import { ReactComponentLike } from "prop-types";
+
+    export const FormBuilder: React.ComponentType<{
+        fields: Array<{
+            name: string;
+            value: unknown;
+            component: ReactComponentLike;
+            props?: Record<string, unknown>;
+            validators?: Array<{ message: string; validator: (value: string) => boolean }>;
+            asyncValidators?: Array<(value: string) => Promise<string | undefined | void>>;
+        }>;
+        onUpdateField: (fieldName: string, newValue: string) => void;
+        style?: React.CSSProperties;
+    }>;
+
+    export const Validators: {
+        isRequired: (value: string) => boolean;
+        isPositiveNumber: (value: number) => boolean;
+    };
+}

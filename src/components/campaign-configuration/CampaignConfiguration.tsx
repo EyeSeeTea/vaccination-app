@@ -83,8 +83,12 @@ class CampaignConfiguration extends React.Component<
         };
     }
 
-    hasCurrentUserRoles(userRoleNames: any) {
-        return hasCurrentUserRoles(this.props.d2, this.props.config.userRoles, userRoleNames);
+    hasCurrentUserRoles(userRoleNames: string[]) {
+        return hasCurrentUserRoles(
+            this.props.config.currentUser.userRoleIds,
+            this.props.config.userRoles,
+            userRoleNames
+        );
     }
 
     roles = this.props.config.userRoleNames;

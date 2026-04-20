@@ -1,4 +1,4 @@
-import { D2Api, MetadataPick } from "@eyeseetea/d2-api/2.36";
+import { D2Api, MetadataPick } from "../types/d2-api";
 import fs from "fs";
 import _ from "lodash";
 import moment from "moment";

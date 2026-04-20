@@ -6,7 +6,6 @@ import { MetadataConfig } from "../models/config";
 import DbD2 from "../models/db-d2";
 import { MetadataPick } from "../types/d2-api";
 import { assert } from "../utils/assert";
-import { getCurrentUserDataViewOrganisationUnits } from "../utils/dhis2";
 
 export class CampaignD2Query implements CampaignQuery {
     constructor(private config: MetadataConfig, private db: DbD2) {}
@@ -87,10 +86,10 @@ export class CampaignD2Query implements CampaignQuery {
 
     // A dataset is accessible by the current user if all its org units are in the user's data view org units
     private isDataSetAccessibleByCurrentUser(dataSet: D2DataSet) {
-        const userOrgUnits = getCurrentUserDataViewOrganisationUnits(this.db.d2);
+        const userOrgUnitIds = this.config.currentUser.orgUnitIds;
 
         return dataSet.organisationUnits.every(dataSetOrgUnit =>
-            _(dataSetOrgUnit.path.split("/")).intersection(userOrgUnits).isNotEmpty()
+            _(dataSetOrgUnit.path.split("/")).intersection(userOrgUnitIds).isNotEmpty()
         );
     }
 
