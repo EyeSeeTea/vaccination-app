@@ -57,7 +57,7 @@ export class CampaignD2Query implements CampaignQuery {
 
             return {
                 ...dataSet,
-                publicSharingAccess: dataSet.sharing.public,
+                publicAccess: dataSet.sharing.public,
                 period: dates
                     ? { start: toStrDate(dates.startDate), end: toStrDate(dates.endDate) }
                     : undefined,

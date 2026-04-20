@@ -98,10 +98,10 @@ class CampaignConfiguration extends React.Component<
     columns: TableColumn<DataSetRow>[] = [
         { name: "displayName", text: i18n.t("Name"), sortable: true },
         {
-            name: "publicSharingAccess",
+            name: "publicAccess",
             text: i18n.t("Public access"),
             sortable: true,
-            getValue: row => getValueForAccess(row.publicSharingAccess),
+            getValue: row => getValueForAccess(row.publicAccess),
         },
         { name: "lastUpdated", text: i18n.t("Last updated"), sortable: true },
     ];

@@ -5,7 +5,7 @@ export type CampaignSummary = {
     displayDescription: string;
     created: string;
     lastUpdated: string;
-    publicSharingAccess: string;
+    publicAccess: string;
     user: { id: string };
     href: string;
     organisationUnits: Array<{ id: string; path: string }>;
