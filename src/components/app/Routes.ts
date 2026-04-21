@@ -4,13 +4,15 @@ import { Maybe } from "../../models/db.types";
 type Url = string;
 
 export class Routes {
-    constructor(private baseUrl: string, private config: MetadataConfig) {}
+    constructor(private baseUrl: string, private _config: MetadataConfig) {}
 
-    getDashboardUrl(options: { id: Maybe<string> }): Url {
-        if (options.id) {
-            return this.getUrl(`/dhis-web-dashboard/index.html#/${options.id}`);
+    getDashboardUrl(options: { dashboardId: Maybe<string> }): Url {
+        const path = `/dhis-web-dashboard/index.html?redirect=false`;
+
+        if (options.dashboardId) {
+            return this.getUrl(`${path}#/${options.dashboardId}`);
         } else {
-            return this.getUrl("/dhis-web-dashboard/index.html");
+            return this.getUrl(path);
         }
     }
 
