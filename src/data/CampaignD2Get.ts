@@ -50,7 +50,6 @@ export class CampaignD2Get {
             endDate: periods ? periods.endDate : null,
             antigens: antigens,
             antigensDisaggregation: antigensDisaggregation,
-            targetPopulation: undefined,
             teams: teamsMetadata.elements.length,
             dashboardId: dashboard ? dashboard.id : undefined,
             extraDataSets: getExtraDataSetsIntersectingWithCampaignOrgUnits(extraDataSets, dataSet),

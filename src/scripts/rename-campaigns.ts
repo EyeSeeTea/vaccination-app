@@ -4,7 +4,7 @@ import { Struct } from "../models/Struct";
 import _ from "lodash";
 import XLSX from "xlsx";
 import { readFileSync } from "fs";
-import { D2Api, MetadataResponse, Ref } from "@eyeseetea/d2-api/2.36";
+import { D2Api, MetadataResponse, Ref } from "../types/d2-api";
 
 /* https://app.clickup.com/t/8696b6qvg
 
