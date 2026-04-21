@@ -123,7 +123,7 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
         const { dataSetId } = options;
 
         if (!dataSetId) {
-            return this.props.routes.getDashboardUrl({ id: undefined });
+            return this.props.routes.getDashboardUrl({ dashboardId: undefined });
         }
 
         const campaign = await compositionRoot.campaigns.get.execute(dataSetId);
@@ -145,7 +145,7 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
         }
 
         if (dashboardId) {
-            return this.props.routes.getDashboardUrl({ id: dashboardId });
+            return this.props.routes.getDashboardUrl({ dashboardId: dashboardId });
         } else {
             const msg = i18n.t("No dashboards associated with this campaign");
             snackbar.error(msg);

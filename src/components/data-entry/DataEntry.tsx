@@ -65,7 +65,7 @@ class DataEntry extends React.Component<DataEntryProps, DataEntryState> {
 
         const campaignId = this.getCampaignId();
         const style = iframeDoc.createElement("style");
-        style.textContent = getIframeCssOverrides({ hasCampaign: !!campaignId });
+        style.textContent = getIframeCssOverrides({ forCampaign: !!campaignId });
         iframeDoc.head.appendChild(style);
     };
 
@@ -144,26 +144,25 @@ Once cells turn into green, all information is saved and you can leave the Data 
 }
 
 function hide(cssSelector: string, options?: { if: boolean }): string {
-    const ifCondition = options?.if ?? true;
-    return ifCondition ? `${cssSelector} { display: none !important; }` : "";
+    const condition = options?.if ?? true;
+    return condition ? `${cssSelector} { display: none !important; }` : "";
 }
 
-function getIframeCssOverrides(options: { hasCampaign: boolean }): string {
+function getIframeCssOverrides(options: { forCampaign: boolean }): string {
+    const sections = {
+        headerBar: "div.app-shell-adapter > div:first-child",
+        dataSetSelector: `[data-test="data-set-selector"]`,
+        tabSectionSelector: `[data-test="section-filter-selector"]`,
+        clearSelectionsButton: `.clear-selections`,
+        optionsSelector: `.additional-contents`,
+    };
+
     return [
-        /* Hide the DHIS2 header bar */
-        hide("div.app-shell-adapter > div:first-child"),
-
-        /* Hide the Section selector (tab selector) */
-        hide(`[data-test="section-filter-selector"]`),
-
-        /* Hide the Options selector (contains Help button) */
-        hide(`.additional-contents`),
-
-        /* Hide the "Clear selections" button (when data set is not shown, it'd then impossible to set) */
-        hide(`.clear-selections`),
-
-        /* Hide the data-set selector when the component targets a specific campaign */
-        hide(`[data-test="data-set-selector"]`, { if: options.hasCampaign }),
+        hide(sections.headerBar),
+        hide(sections.dataSetSelector, { if: options.forCampaign }),
+        hide(sections.tabSectionSelector),
+        hide(sections.clearSelectionsButton),
+        hide(sections.optionsSelector),
     ].join("\n");
 }
 
