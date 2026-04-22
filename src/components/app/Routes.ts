@@ -22,10 +22,11 @@ export class Routes {
         period: Maybe<Date>;
     }): Url {
         /**
-         * Data entry URL for the new Aggregate Data Entry app.
+         * Data entry URL for the new Aggregate Data Entry app plugin.
          *
          * Base URL:
-         *   /dhis-web-aggregate-data-entry/index.html?redirect=false
+         *   /dhis-web-aggregate-data-entry/plugin.html
+         *   (overridable via VITE_DATA_ENTRY_PLUGIN_URL, e.g. http://localhost:3000/plugin.html)
          *
          * Supported query parameters:
          * - dataSetId: Dataset ID
@@ -34,8 +35,12 @@ export class Routes {
          * - attributeOptionComboSelection: "CATEGORYID-OPTIONID"
          */
         const periodId = options.period?.toISOString().split("T")[0]?.replace(/-/g, "");
+        // Allow overriding the plugin URL for development (ie: http://localhost:3000/plugin.html)
+        const pluginBase =
+            import.meta.env.VITE_DATA_ENTRY_PLUGIN_URL ||
+            "/dhis-web-aggregate-data-entry/plugin.html";
 
-        return this.getUrl("/dhis-web-aggregate-data-entry/index.html?redirect=false#/", {
+        return this.getUrl(`${pluginBase}#/`, {
             dataSetId: options.campaignId || "",
             orgUnitId: options.orgUnitId || "",
             periodId: periodId || "",
@@ -46,10 +51,11 @@ export class Routes {
         return this.getUrl("/dhis-web-maintenance/index.html");
     }
 
-    private getUrl(path: string, queryParams?: Record<string, string>): Url {
+    private getUrl(pathOrUrl: string, queryParams?: Record<string, string>): Url {
+        const isAbsoluteUrl = /^https?:\/\//.test(pathOrUrl);
         const cleanBaseUrl = this.baseUrl.replace(/\/+$/, "");
-        const cleanPath = path.replace(/^\/+/, "");
-        const url = `${cleanBaseUrl}/${cleanPath}`;
+        const cleanPath = pathOrUrl.replace(/^\/+/, "");
+        const url = isAbsoluteUrl ? pathOrUrl : `${cleanBaseUrl}/${cleanPath}`;
 
         if (queryParams) {
             const queryString = Object.entries(queryParams)

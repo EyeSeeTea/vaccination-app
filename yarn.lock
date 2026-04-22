@@ -2380,67 +2380,101 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@dhis2/app-runtime@npm:2.11.1":
-  version: 2.11.1
-  resolution: "@dhis2/app-runtime@npm:2.11.1"
+"@dhis2/app-runtime@npm:3.17.0":
+  version: 3.17.0
+  resolution: "@dhis2/app-runtime@npm:3.17.0"
   dependencies:
-    "@dhis2/app-service-alerts": "npm:2.11.1"
-    "@dhis2/app-service-config": "npm:2.11.1"
-    "@dhis2/app-service-data": "npm:2.11.1"
-    "@dhis2/app-service-offline": "npm:2.11.1"
+    "@dhis2/app-service-alerts": "npm:3.17.0"
+    "@dhis2/app-service-config": "npm:3.17.0"
+    "@dhis2/app-service-data": "npm:3.17.0"
+    "@dhis2/app-service-offline": "npm:3.17.0"
+    "@dhis2/app-service-plugin": "npm:3.17.0"
+    "@dhis2/app-service-user": "npm:3.17.0"
+    prop-types: "npm:^15.7.2"
   peerDependencies:
-    prop-types: ^15.7.2
-    react: ^16.8.6
-    react-dom: ^16.8.6
-  checksum: 10c0/b438782dea617d0a89e562e6d55b677ac8f3ab53cf74c2d12450e7ed131ab3ae8881a5083b1b42294bb7b40f9f6d5303443f42d5dbfebcd075026cc110d5134b
+    react: ^16.8.6 || ^18
+    react-dom: ^16.8.6 || ^18
+  checksum: 10c0/e09a5beb5dcfe2f087315eb751e69f7f4ce5d1383996d8e045405e4068d46d03b4e6d67f18cdfa8184626e9d8721922e161242954a2d25b7852a0ad1551ae575
   languageName: node
   linkType: hard
 
-"@dhis2/app-service-alerts@npm:2.11.1":
-  version: 2.11.1
-  resolution: "@dhis2/app-service-alerts@npm:2.11.1"
+"@dhis2/app-service-alerts@npm:3.17.0":
+  version: 3.17.0
+  resolution: "@dhis2/app-service-alerts@npm:3.17.0"
+  dependencies:
+    prop-types: "npm:^15.7.2"
   peerDependencies:
-    prop-types: ^15.7.2
-    react: ^16.8.6
-    react-dom: ^16.8.6
-  checksum: 10c0/ac2f52302a17aa7d0e6923fc8328a12acf814847aa6bc8947217d68a43b777dd877f928067ea8d57fbceb617ec0166a3b12a271b2c211acb9d003a59ef9aeaad
+    react: ^16.8.6 || ^18
+    react-dom: ^16.8.6 || ^18
+  checksum: 10c0/2cb38441208b1c633681a7cf730c5f2f580de6db035cbd0911d556fdec8821b8f3166434233c88d7b71e5115822a60ee378686167ba7bd812c5e6c1934a46201
   languageName: node
   linkType: hard
 
-"@dhis2/app-service-config@npm:2.11.1":
-  version: 2.11.1
-  resolution: "@dhis2/app-service-config@npm:2.11.1"
+"@dhis2/app-service-config@npm:3.17.0":
+  version: 3.17.0
+  resolution: "@dhis2/app-service-config@npm:3.17.0"
+  dependencies:
+    prop-types: "npm:^15.7.2"
   peerDependencies:
-    prop-types: ^15.7.2
-    react: ^16.8.6
-    react-dom: ^16.8.6
-  checksum: 10c0/3a8ef5c4f7dbff6c344089915ce5fed6c2ed8169b7a3c0fef5bf4f1ea6a677820dbb9c46a30660c5d4136a405704bd17fbc14b421f228c14eb71dc1934d51cbd
+    react: ^16.8.6 || ^18
+    react-dom: ^16.8.6 || ^18
+  checksum: 10c0/252feeedcc81395b00c8fade6c1884f5017e64077a8d39dac378a5e4e1c9e771f324c858f2245df01e26f6d39b22a1b6af4df1e6dbda541d3065cf2efef37b42
   languageName: node
   linkType: hard
 
-"@dhis2/app-service-data@npm:2.11.1":
-  version: 2.11.1
-  resolution: "@dhis2/app-service-data@npm:2.11.1"
+"@dhis2/app-service-data@npm:3.17.0":
+  version: 3.17.0
+  resolution: "@dhis2/app-service-data@npm:3.17.0"
+  dependencies:
+    "@tanstack/react-query": "npm:^4.36.1"
+    prop-types: "npm:^15.7.2"
   peerDependencies:
-    "@dhis2/app-service-config": 2.11.1
-    prop-types: ^15.7.2
-    react: ^16.8
-    react-dom: ^16.8
-  checksum: 10c0/5d270f515b91326cdb3036a810ed8de9fc134d5e92ad7ba8c4a58dfc6790e7a0ddbb6f6b57dab96ada440abfafcd7452f9eb3be2b40c0ae7862c42de582af8d5
+    "@dhis2/app-service-config": 3.17.0
+    "@dhis2/data-engine": 3.17.0
+    react: ^16.8.6 || ^18
+    react-dom: ^16.8.6 || ^18
+  checksum: 10c0/915c84682a3b01d398d5f0b7700f4886f15e269f84cec45b90b51d6680307ebd31e29c9f3c310c2143646904770f8106a6cfa26c2cd105d82b336c72d5e037bb
   languageName: node
   linkType: hard
 
-"@dhis2/app-service-offline@npm:2.11.1":
-  version: 2.11.1
-  resolution: "@dhis2/app-service-offline@npm:2.11.1"
+"@dhis2/app-service-offline@npm:3.17.0":
+  version: 3.17.0
+  resolution: "@dhis2/app-service-offline@npm:3.17.0"
   dependencies:
     lodash: "npm:^4.17.21"
+    prop-types: "npm:^15.7.2"
   peerDependencies:
-    "@dhis2/app-service-alerts": 2.11.1
-    prop-types: ^15.7.2
-    react: ^16.8.6
-    react-dom: ^16.8.6
-  checksum: 10c0/09628fa2cb9e634779ef617840d0bc1da50bbbde001864f0ae6f190f03e0c4206ab78a11b8429a393737bc74c74f17b822da7f3883cde8e4388f0bf0f28df0c9
+    "@dhis2/app-service-config": 3.17.0
+    react: ^16.8.6 || ^18
+    react-dom: ^16.8.6 || ^18
+  checksum: 10c0/39742d2022bb37b7e390572bcb434d1366f354a2e12e0f4cc1a3c4898199964abfd1834d1e1e76d0dc1501742f4709fd08f4b173910d6031c1a43c23c8cdbfbc
+  languageName: node
+  linkType: hard
+
+"@dhis2/app-service-plugin@npm:3.17.0":
+  version: 3.17.0
+  resolution: "@dhis2/app-service-plugin@npm:3.17.0"
+  dependencies:
+    post-robot: "npm:^10.0.46"
+    prop-types: "npm:^15.7.2"
+  peerDependencies:
+    "@dhis2/app-service-alerts": 3.17.0
+    "@dhis2/app-service-data": 3.17.0
+    react: ^16.8.6 || ^18
+    react-dom: ^16.8.6 || ^18
+  checksum: 10c0/e367b4d6d63708813b862ec066cb9ce78ceb461da3d956d2131cab66aae14ad79b13956ee24e316aa5e37a5d7dca13d15ab84e3d6bdcb43ed54322e528a5e4d9
+  languageName: node
+  linkType: hard
+
+"@dhis2/app-service-user@npm:3.17.0":
+  version: 3.17.0
+  resolution: "@dhis2/app-service-user@npm:3.17.0"
+  dependencies:
+    prop-types: "npm:^15.7.2"
+  peerDependencies:
+    react: ^16.8.6 || ^18
+    react-dom: ^16.8.6 || ^18
+  checksum: 10c0/0898b5f190a6096f218474475adc2a2f9f15e83a9adad921ba175535bbeee63a5414fe5fd22f0382ab8028dc8ab8276e449ec5c8996f5ff6db44bf5ca7e8c0e5
   languageName: node
   linkType: hard
 
@@ -2557,6 +2591,13 @@ __metadata:
     react: ^16.3.0
     react-dom: ^16.3.0
   checksum: 10c0/213ced29d729e56be5a1ea89ec844f2d11c864a33b7a8b6fc6daa85a6cff6d5b3b81e161341f45f5f4c69d326d936e36eeb7fc9a3afc2f4e35bb5004b0452266
+  languageName: node
+  linkType: hard
+
+"@dhis2/data-engine@npm:3.17.0":
+  version: 3.17.0
+  resolution: "@dhis2/data-engine@npm:3.17.0"
+  checksum: 10c0/e336b50b00a6f92ef8d443000724a591b9205ae9c3562f47471696ae04fee061b1736cbf1b31980324565130dac878c4836e7bd3315499ac21da6fb7b46d0a04
   languageName: node
   linkType: hard
 
@@ -4182,6 +4223,32 @@ __metadata:
   version: 0.7.3
   resolution: "@sinonjs/text-encoding@npm:0.7.3"
   checksum: 10c0/b112d1e97af7f99fbdc63c7dbcd35d6a60764dfec85cfcfff532e55cce8ecd8453f9fa2139e70aea47142c940fd90cd201d19f370b9a0141700d8a6de3116815
+  languageName: node
+  linkType: hard
+
+"@tanstack/query-core@npm:4.44.0":
+  version: 4.44.0
+  resolution: "@tanstack/query-core@npm:4.44.0"
+  checksum: 10c0/6b8967cbe756d105a43f1ce6e11cf3ba52697c8a53d5780fd5cd234cda6dbe22b6e0a8902af8c891fd3c9daadd7f238a9325f5bbd1bcab4abc4e58a80320882e
+  languageName: node
+  linkType: hard
+
+"@tanstack/react-query@npm:^4.36.1":
+  version: 4.44.0
+  resolution: "@tanstack/react-query@npm:4.44.0"
+  dependencies:
+    "@tanstack/query-core": "npm:4.44.0"
+    use-sync-external-store: "npm:^1.6.0"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+    react-native: "*"
+  peerDependenciesMeta:
+    react-dom:
+      optional: true
+    react-native:
+      optional: true
+  checksum: 10c0/42852b4ad6cd1bad1bab5226d30ae5829b3091668e2c0434868309b1dfbc5086f2c2c73bedea2389df18a4725a8a560aca945e597f1c42d91933cb78f294a2fb
   languageName: node
   linkType: hard
 
@@ -5955,6 +6022,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"belter@npm:^1.0.41":
+  version: 1.0.190
+  resolution: "belter@npm:1.0.190"
+  dependencies:
+    cross-domain-safe-weakmap: "npm:^1"
+    cross-domain-utils: "npm:^2"
+    zalgo-promise: "npm:^1"
+  checksum: 10c0/67c236187fc1538dc639e6aab9c81041c2f6c71c33b24f3012c2fa317f95275eb5c354e3b1bf689b7fdbdedd14aa052b2df7366f1236d7bfb78c01a7910a083c
+  languageName: node
+  linkType: hard
+
 "big.js@npm:^5.2.2":
   version: 5.2.2
   resolution: "big.js@npm:5.2.2"
@@ -6969,6 +7047,24 @@ __metadata:
   version: 1.1.1
   resolution: "create-require@npm:1.1.1"
   checksum: 10c0/157cbc59b2430ae9a90034a5f3a1b398b6738bf510f713edc4d4e45e169bc514d3d99dd34d8d01ca7ae7830b5b8b537e46ae8f3c8f932371b0875c0151d7ec91
+  languageName: node
+  linkType: hard
+
+"cross-domain-safe-weakmap@npm:^1, cross-domain-safe-weakmap@npm:^1.0.1":
+  version: 1.0.29
+  resolution: "cross-domain-safe-weakmap@npm:1.0.29"
+  dependencies:
+    cross-domain-utils: "npm:^2.0.0"
+  checksum: 10c0/93ee04f274348eb8c61380b162272114aacacc78b6f6c74f658bc02750cfef839ac2e86fe8e1ac1048c9f94037ba392935c0540e917703c100fae07725e19689
+  languageName: node
+  linkType: hard
+
+"cross-domain-utils@npm:^2, cross-domain-utils@npm:^2.0.0":
+  version: 2.0.38
+  resolution: "cross-domain-utils@npm:2.0.38"
+  dependencies:
+    zalgo-promise: "npm:^1.0.11"
+  checksum: 10c0/26be1e15ea3d29b4e1c39cc818b7d9f459beb98f7c83597dc3a8e0904f4ba923537fe002651b0d6dc932b6885bfe0a34d8d3a71212a89d05d0beca0de1366b56
   languageName: node
   linkType: hard
 
@@ -14036,6 +14132,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"post-robot@npm:^10.0.46":
+  version: 10.0.46
+  resolution: "post-robot@npm:10.0.46"
+  dependencies:
+    belter: "npm:^1.0.41"
+    cross-domain-safe-weakmap: "npm:^1.0.1"
+    cross-domain-utils: "npm:^2.0.0"
+    universal-serialize: "npm:^1.0.4"
+    zalgo-promise: "npm:^1.0.3"
+  checksum: 10c0/2f7a6ecbbba8a1a19df8156f504afadcd3f63c07a932413cd12231ad0a45c42fce4b6484877dc41d021540a90237c17336e98faea151a5aa604e3fc9b0b53a95
+  languageName: node
+  linkType: hard
+
 "postcss@npm:^8.4.43":
   version: 8.5.9
   resolution: "postcss@npm:8.5.9"
@@ -16852,6 +16961,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"universal-serialize@npm:^1.0.4":
+  version: 1.0.10
+  resolution: "universal-serialize@npm:1.0.10"
+  checksum: 10c0/7e63defccc718d2bfc9daae616d21ead1d26d396c90839b309c2ec3335a7c39dc636d2ac4902f5691984eb190e3f1a636f1a05e42c67e0faf5266a81b5778caf
+  languageName: node
+  linkType: hard
+
 "universalify@npm:^0.1.0":
   version: 0.1.2
   resolution: "universalify@npm:0.1.2"
@@ -16933,6 +17049,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"use-sync-external-store@npm:^1.6.0":
+  version: 1.6.0
+  resolution: "use-sync-external-store@npm:1.6.0"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+  checksum: 10c0/35e1179f872a53227bdf8a827f7911da4c37c0f4091c29b76b1e32473d1670ebe7bcd880b808b7549ba9a5605c233350f800ffab963ee4a4ee346ee983b6019b
+  languageName: node
+  linkType: hard
+
 "util-deprecate@npm:^1.0.1, util-deprecate@npm:~1.0.1":
   version: 1.0.2
   resolution: "util-deprecate@npm:1.0.2"
@@ -16980,12 +17105,13 @@ __metadata:
     "@babel/core": "npm:7.14.6"
     "@babel/plugin-proposal-private-property-in-object": "npm:^7.21.11"
     "@babel/preset-typescript": "npm:7.14.5"
-    "@dhis2/app-runtime": "npm:2.11.1"
+    "@dhis2/app-runtime": "npm:3.17.0"
     "@dhis2/d2-i18n": "npm:^1.0.4"
     "@dhis2/d2-i18n-extract": "https://github.com/EyeSeeTea/d2-i18n-extract#add-typescript-extensions"
     "@dhis2/d2-i18n-generate": "npm:^1.0.19"
     "@dhis2/d2-ui-core": "npm:^1.3.5"
     "@dhis2/d2-ui-forms": "npm:^5.1.0"
+    "@dhis2/data-engine": "npm:3.17.0"
     "@dhis2/ui": "npm:6.9.0"
     "@dhis2/ui-widgets": "npm:6.9.0"
     "@eyeseetea/d2-api": "npm:1.21.0-beta.5"
@@ -17836,5 +17962,12 @@ __metadata:
   version: 0.1.0
   resolution: "yocto-queue@npm:0.1.0"
   checksum: 10c0/dceb44c28578b31641e13695d200d34ec4ab3966a5729814d5445b194933c096b7ced71494ce53a0e8820685d1d010df8b2422e5bf2cdea7e469d97ffbea306f
+  languageName: node
+  linkType: hard
+
+"zalgo-promise@npm:^1, zalgo-promise@npm:^1.0.11, zalgo-promise@npm:^1.0.3":
+  version: 1.0.48
+  resolution: "zalgo-promise@npm:1.0.48"
+  checksum: 10c0/b9de0ac816d454e801a62179719df2a27b5731cd1b213bbcdbf5e47c43ec6c42baccbf32ee976026c0420a90f651131e4893e697e4aeeab1b14cc52f4668635e
   languageName: node
   linkType: hard

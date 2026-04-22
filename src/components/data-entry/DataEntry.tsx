@@ -1,4 +1,13 @@
+/**
+ * Render the data entry form to enter values for a campaign.
+ *
+ * We use the Aggregated DHIS2 Data App as plugin and our custom mode "app". So we may pass
+ * the URL with dataSetId, orgUnitId and period as query parameters, but we also pass some
+ * custom props to customize some of the UI elements of the plugin (like the dataset selector,
+ * the tab section selector, etc).
+ */
 import React from "react";
+import { Plugin, PluginProps } from "@dhis2/app-runtime/experimental";
 import i18n from "@dhis2/d2-i18n";
 import { withSnackbar, SnackbarState } from "@eyeseetea/d2-ui-components";
 
@@ -37,8 +46,6 @@ class DataEntry extends React.Component<DataEntryProps, DataEntryState> {
         campaign: undefined,
     };
 
-    private iframeRef = React.createRef<HTMLIFrameElement>();
-
     styles = makeStyles({
         subtitle: { marginBottom: 10, marginLeft: 15 },
     });
@@ -59,16 +66,6 @@ class DataEntry extends React.Component<DataEntryProps, DataEntryState> {
         }
     }
 
-    onIframeLoad = () => {
-        const iframeDoc = this.iframeRef.current?.contentDocument;
-        if (!iframeDoc) return;
-
-        const campaignId = this.getCampaignId();
-        const style = iframeDoc.createElement("style");
-        style.textContent = getIframeCssOverrides({ forCampaign: !!campaignId });
-        iframeDoc.head.appendChild(style);
-    };
-
     getDataEntryUrl = (): Maybe<string> => {
         const campaignId = this.getCampaignId();
         const { campaign } = this.state;
@@ -77,8 +74,8 @@ class DataEntry extends React.Component<DataEntryProps, DataEntryState> {
         if (campaign) {
             return routes.getDataEntryUrl({
                 campaignId: assert(campaign.id, "Campaign ID is required"),
-                orgUnitId: campaign.organisationUnits[0]?.id,
-                period: campaign.startDate ?? undefined,
+                orgUnitId: undefined,
+                period: undefined,
             });
         } else if (!campaignId) {
             return routes.getDataEntryUrl({
@@ -114,10 +111,16 @@ class DataEntry extends React.Component<DataEntryProps, DataEntryState> {
 Once cells turn into green, all information is saved and you can leave the Data Entry Section`
         );
 
+        const titleWithCampaign = [
+            i18n.t("Data Entry"),
+            ": ",
+            this.state.campaign ? this.state.campaign.name : i18n.t("Loading campaign..."),
+        ].join("");
+
         return (
             <>
                 <PageHeader
-                    title={i18n.t("Data Entry")}
+                    title={titleWithCampaign}
                     help={help}
                     onBackClick={this.backCampaignConfiguration}
                     pageVisited={pageVisited}
@@ -127,12 +130,12 @@ Once cells turn into green, all information is saved and you can leave the Data 
 
                 <div>
                     {dataEntryUrl ? (
-                        <iframe
-                            ref={this.iframeRef}
-                            title={i18n.t("Data Entry")}
-                            src={dataEntryUrl}
-                            style={iframeStyles.iframe}
-                            onLoad={this.onIframeLoad}
+                        <Plugin
+                            width="100%"
+                            height="650"
+                            pluginSource={dataEntryUrl}
+                            showAlertsInPlugin={true}
+                            {...dataEntrySpecificProps}
                         />
                     ) : (
                         <LinearProgress />
@@ -143,31 +146,12 @@ Once cells turn into green, all information is saved and you can leave the Data 
     }
 }
 
-function hide(cssSelector: string, options?: { if: boolean }): string {
-    const condition = options?.if ?? true;
-    return condition ? `${cssSelector} { display: none !important; }` : "";
-}
-
-function getIframeCssOverrides(options: { forCampaign: boolean }): string {
-    const sections = {
-        headerBar: "div.app-shell-adapter > div:first-child",
-        dataSetSelector: `[data-test="data-set-selector"]`,
-        tabSectionSelector: `[data-test="section-filter-selector"]`,
-        clearSelectionsButton: `.clear-selections`,
-        optionsSelector: `.additional-contents`,
-    };
-
-    return [
-        hide(sections.headerBar),
-        hide(sections.dataSetSelector, { if: options.forCampaign }),
-        hide(sections.tabSectionSelector),
-        hide(sections.clearSelectionsButton),
-        hide(sections.optionsSelector),
-    ].join("\n");
-}
-
-const iframeStyles = makeStyles({
-    iframe: { width: "100%", height: 1000, border: "none" },
-});
+const dataEntrySpecificProps: PluginProps = {
+    mode: "app",
+    hideDataSetSelector: true,
+    hideTabSectionSelector: true,
+    hideClearSelectionsButton: true,
+    hideFilterField: true,
+};
 
 export default withSnackbar(withPageVisited(DataEntry, "data-entry"));
