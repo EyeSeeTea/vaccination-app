@@ -113,8 +113,7 @@ Once cells turn into green, all information is saved and you can leave the Data 
 
         const titleWithCampaign = [
             i18n.t("Data Entry"),
-            ": ",
-            this.state.campaign ? this.state.campaign.name : i18n.t("Loading campaign..."),
+            this.state.campaign ? ` - ${this.state.campaign.name}` : "",
         ].join("");
 
         return (
