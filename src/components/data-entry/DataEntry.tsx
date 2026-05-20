@@ -118,8 +118,8 @@ class DataEntry extends React.Component<DataEntryProps, DataEntryState> {
         if (campaign) {
             return routes.getDataEntryUrl({
                 campaignId: assert(campaign.id, "Campaign ID is required"),
-                orgUnitId: undefined,
-                period: undefined,
+                orgUnitId: campaign.organisationUnits[0]?.id,
+                period: campaign.startDate || undefined,
             });
         } else if (!campaignId) {
             return routes.getDataEntryUrl({
