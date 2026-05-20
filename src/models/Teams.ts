@@ -74,8 +74,8 @@ export class Teams {
         const allTeams = orderedOldTeams.map((ot, i) => ({
             ...ot,
             name: getTeamName(name, i + 1, teams),
-            startDate: startDate.toISOString(),
-            endDate: endDate.toISOString(),
+            startDate: formatDayDate(startDate),
+            endDate: formatDayDate(endDate),
             organisationUnits,
         }));
 
@@ -116,9 +116,9 @@ export class Teams {
                 name: name,
                 shortName: `Team ${nameOffset + i}_${id}`,
                 sharing: { public: "rwrw----", external: false, users: {}, userGroups: {} },
-                startDate: startDate.clone().startOf("day").utc().toISOString(),
-                // The end date is inclusive for the app, but exclusive for DHIS2, so add one day
-                endDate: endDate.clone().add(1, "day").startOf("day").utc().toISOString(),
+                startDate: formatDayDate(startDate),
+                // The end date is inclusive for both the app and DHIS2
+                endDate: formatDayDate(endDate),
                 dimensionItemType: "CATEGORY_OPTION",
                 categories: [
                     {
@@ -270,4 +270,8 @@ function leftZeroPad(num: number, size: number): string {
 function getTeamName(campaignName: string, teamNumber: number, _teamsCount: number): string {
     const paddedTeamNumber = leftZeroPad(teamNumber, 3);
     return `Team ${paddedTeamNumber} - ${campaignName}`;
+}
+
+function formatDayDate(date: Moment): string {
+    return date.utc().format("YYYY-MM-DD");
 }
