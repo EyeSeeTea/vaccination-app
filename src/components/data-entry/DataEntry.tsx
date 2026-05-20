@@ -39,16 +39,20 @@ type DataEntryProps = DataEntryOwnProps & {
 
 type DataEntryState = {
     campaign: Maybe<Campaign>;
+    restoredUrl: Maybe<string>;
 };
 
 class DataEntry extends React.Component<DataEntryProps, DataEntryState> {
     state: DataEntryState = {
         campaign: undefined,
+        restoredUrl: undefined,
     };
 
     styles = makeStyles({
         subtitle: { marginBottom: 10, marginLeft: 15 },
     });
+
+    private iframeWindow: Window | null = null;
 
     getCampaignId = (): Maybe<string> => {
         return this.props.match.params.id;
@@ -58,6 +62,12 @@ class DataEntry extends React.Component<DataEntryProps, DataEntryState> {
         const campaignId = this.getCampaignId();
         if (!campaignId) return;
 
+        const storedUrl = localStorage.getItem(this.localStorageKey(campaignId));
+        if (storedUrl) {
+            console.debug(`Using stored iframe URL for campaign ${campaignId}: ${storedUrl}`);
+            this.setState({ restoredUrl: storedUrl });
+        }
+
         try {
             const campaign = await this.props.compositionRoot.campaigns.get.execute(campaignId);
             this.setState({ campaign });
@@ -65,6 +75,40 @@ class DataEntry extends React.Component<DataEntryProps, DataEntryState> {
             this.props.snackbar.error(i18n.t("No datasets associated with this campaign"));
         }
     }
+
+    componentWillUnmount() {
+        this.iframeWindow?.removeEventListener("hashchange", this.onIframeHashChange);
+    }
+
+    localStorageKey(campaignId: string): string {
+        return `vaccination-app.data-entry.${campaignId}`;
+    }
+
+    saveIframeUrl = (url: string) => {
+        const campaignId = this.getCampaignId();
+        if (campaignId) {
+            const key = this.localStorageKey(campaignId);
+            const oldValue = localStorage.getItem(key);
+            if (oldValue !== url) {
+                console.debug(`Saving iframe URL for campaign ${campaignId}: ${url}`);
+                localStorage.setItem(key, url);
+            }
+        }
+    };
+
+    onIframeLoad: React.ReactEventHandler<HTMLIFrameElement> = event => {
+        const win = event.currentTarget.contentWindow;
+        if (!win) return;
+
+        this.iframeWindow?.removeEventListener("hashchange", this.onIframeHashChange);
+        this.iframeWindow = win;
+        win.addEventListener("hashchange", this.onIframeHashChange);
+        this.saveIframeUrl(win.location.href);
+    };
+
+    onIframeHashChange = () => {
+        if (this.iframeWindow) this.saveIframeUrl(this.iframeWindow.location.href);
+    };
 
     getDataEntryUrl = (): Maybe<string> => {
         const campaignId = this.getCampaignId();
@@ -100,7 +144,7 @@ class DataEntry extends React.Component<DataEntryProps, DataEntryState> {
 
     render() {
         const { pageVisited } = this.props;
-        const dataEntryUrl = this.getDataEntryUrl();
+        const dataEntryUrl = this.state.restoredUrl || this.getDataEntryUrl();
 
         const help =
             i18n.t(`Select a) site where vaccination was performed, b) Reactive vaccination data set available at site level c) date of vaccination d) team that performed vaccination.
@@ -134,6 +178,7 @@ Once cells turn into green, all information is saved and you can leave the Data 
                             height="650"
                             pluginSource={dataEntryUrl}
                             showAlertsInPlugin={true}
+                            onLoad={this.onIframeLoad}
                             {...dataEntrySpecificProps}
                         />
                     ) : (
