@@ -160,6 +160,13 @@ Once cells turn into green, all information is saved and you can leave the Data 
             this.state.campaign ? ` - ${this.state.campaign.name}` : "",
         ].join("");
 
+        const { campaign } = this.state;
+
+        const dataEntryProps: PluginProps = {
+            ...dataEntryBaseProps,
+            hideDataSetSelector: Boolean(campaign),
+        };
+
         return (
             <>
                 <PageHeader
@@ -179,7 +186,7 @@ Once cells turn into green, all information is saved and you can leave the Data 
                             pluginSource={dataEntryUrl}
                             showAlertsInPlugin={true}
                             onLoad={this.onIframeLoad}
-                            {...dataEntrySpecificProps}
+                            {...dataEntryProps}
                         />
                     ) : (
                         <LinearProgress />
@@ -190,7 +197,7 @@ Once cells turn into green, all information is saved and you can leave the Data 
     }
 }
 
-const dataEntrySpecificProps: PluginProps = {
+const dataEntryBaseProps: PluginProps = {
     mode: "app",
     hideDataSetSelector: true,
     hideTabSectionSelector: true,
