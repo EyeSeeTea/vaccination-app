@@ -27,6 +27,7 @@ declare module "@dhis2/app-runtime/experimental" {
         hideTabSectionSelector?: boolean;
         hideClearSelectionsButton?: boolean;
         hideFilterField?: boolean;
+        hideUnassignedOrgUnits?: boolean;
     };
 
     export const Plugin: (props: PluginProps) => JSX.Element;

@@ -222,6 +222,7 @@ const dataEntryBaseProps: PluginProps = {
     hideTabSectionSelector: true,
     hideClearSelectionsButton: true,
     hideFilterField: true,
+    hideUnassignedOrgUnits: false,
 };
 
 export default withSnackbar(withPageVisited(DataEntry, "data-entry"));
