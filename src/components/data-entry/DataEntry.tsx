@@ -7,6 +7,7 @@
  * the tab section selector, etc).
  */
 import React from "react";
+import _ from "lodash";
 import { Plugin, PluginProps } from "@dhis2/app-runtime/experimental";
 import i18n from "@dhis2/d2-i18n";
 import { withSnackbar, SnackbarState } from "@eyeseetea/d2-ui-components";
@@ -20,6 +21,7 @@ import { assert } from "../../utils/assert";
 import { CompositionRoot } from "../../CompositionRoot";
 import { Routes } from "../app/Routes";
 import Campaign from "../../models/campaign";
+import { OrganisationUnit } from "../../domain/entities/OrganisationUnit";
 
 type DataEntryOwnProps = {
     compositionRoot: CompositionRoot;
@@ -39,6 +41,7 @@ type DataEntryProps = DataEntryOwnProps & {
 
 type DataEntryState = {
     campaign: Maybe<Campaign>;
+    organisationUnits: Maybe<OrganisationUnit[]>;
     restoredUrl: Maybe<string>;
 };
 
@@ -46,6 +49,7 @@ class DataEntry extends React.Component<DataEntryProps, DataEntryState> {
     state: DataEntryState = {
         campaign: undefined,
         restoredUrl: undefined,
+        organisationUnits: undefined,
     };
 
     styles = makeStyles({
@@ -59,6 +63,7 @@ class DataEntry extends React.Component<DataEntryProps, DataEntryState> {
     };
 
     async componentDidMount() {
+        const { snackbar, compositionRoot } = this.props;
         const campaignId = this.getCampaignId();
         if (!campaignId) return;
 
@@ -69,10 +74,24 @@ class DataEntry extends React.Component<DataEntryProps, DataEntryState> {
         }
 
         try {
-            const campaign = await this.props.compositionRoot.campaigns.get.execute(campaignId);
-            this.setState({ campaign });
-        } catch (error) {
-            this.props.snackbar.error(i18n.t("No datasets associated with this campaign"));
+            const campaign = await compositionRoot.campaigns.get.execute(campaignId);
+            const orgUnitIdsForCampaign = campaign.data.organisationUnits.map(ou => ou.id);
+            // Get campaign org units entities (which include ancestors) so we can order them
+            // and select the first org unit with the same logic they are rendered in the selector.
+            const campaignOrgUnits = await compositionRoot.organisationUnits.get.execute(
+                orgUnitIdsForCampaign
+            );
+            const organisationUnitsSorted = _.sortBy(campaignOrgUnits, ou =>
+                ou.getFullOrgUnitName()
+            );
+
+            this.setState({
+                campaign: campaign,
+                organisationUnits: organisationUnitsSorted,
+            });
+        } catch (err) {
+            const message = err instanceof Error ? err.message : String(err);
+            snackbar.error(message);
         }
     }
 
@@ -112,13 +131,13 @@ class DataEntry extends React.Component<DataEntryProps, DataEntryState> {
 
     getDataEntryUrl = (): Maybe<string> => {
         const campaignId = this.getCampaignId();
-        const { campaign } = this.state;
+        const { campaign, organisationUnits } = this.state;
         const { routes } = this.props;
 
         if (campaign) {
             return routes.getDataEntryUrl({
                 campaignId: assert(campaign.id, "Campaign ID is required"),
-                orgUnitId: campaign.organisationUnits[0]?.id,
+                orgUnitId: organisationUnits?.[0]?.id,
                 period: campaign.startDate || undefined,
             });
         } else if (!campaignId) {
@@ -155,12 +174,12 @@ class DataEntry extends React.Component<DataEntryProps, DataEntryState> {
 Once cells turn into green, all information is saved and you can leave the Data Entry Section`
         );
 
+        const { campaign } = this.state;
+
         const titleWithCampaign = [
             i18n.t("Data Entry"),
-            this.state.campaign ? ` - ${this.state.campaign.name}` : "",
+            campaign ? ` - ${campaign.name}` : "",
         ].join("");
-
-        const { campaign } = this.state;
 
         const dataEntryProps: PluginProps = {
             ...dataEntryBaseProps,
