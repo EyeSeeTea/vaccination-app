@@ -1,6 +1,7 @@
--- Number of datavalue changes (lastupdated > created) per project, service, and month.
--- A change is any datavalue row whose last update timestamp is later than its creation,
--- which may indicate error correction or retrospective editing.
+-- Number of datavalue changes per project, service, and month.
+-- A change is any datavalue row whose last update timestamp is more than 5 minutes after
+-- its creation, which may indicate error correction or retrospective editing.
+-- The 5-minute window excludes system-level noise (DHIS2 touching lastupdated during import).
 --
 -- Scope: OU level 6 only, non-deleted datavalues.
 -- DE exclusions: add names to the IN () list as needed.
@@ -14,7 +15,7 @@ SELECT
     TO_CHAR(dv.lastupdated, 'MM/YYYY') AS month_year,
     COUNT(*) FILTER (
         WHERE
-            dv.lastupdated>dv.created
+            dv.lastupdated > dv.created + INTERVAL '5 minutes'
     ) AS num_changes,
     COUNT(*) AS total_datavalues
 FROM

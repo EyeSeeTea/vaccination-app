@@ -1,6 +1,7 @@
 -- Average delay (in days) between creation and last update of changed datavalues,
 -- per project, service, and month of modification.
--- Restricted to datavalues where lastupdated > created (i.e. actually modified).
+-- Restricted to datavalues where lastupdated > created + 5 minutes (i.e. actually modified).
+-- The 5-minute window excludes system-level noise (DHIS2 touching lastupdated during import).
 -- A high average delay suggests late error correction rather than early detection.
 --
 -- Scope: OU level 6 only, non-deleted datavalues.
@@ -30,7 +31,7 @@ FROM
     JOIN organisationunit ou4 ON ou4.uid=split_part(ou6.path, '/', 5)
 WHERE
     dv.deleted=FALSE
-    AND dv.lastupdated>dv.created
+    AND dv.lastupdated > dv.created + INTERVAL '5 minutes'
     -- AND ou6.path LIKE '%/J1tZadFU6MO/%'  -- uncomment to filter by OU (any level)
     AND dv.dataelementid NOT IN (
         SELECT
