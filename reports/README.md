@@ -64,17 +64,18 @@ indicate growing data collection maturity.
 
 ---
 
-## 4. Number of accounts doing data entry
+## 4. Accounts doing data entry
 
 **File:** `data_entry_accounts_by_project_service_month.sql`
-**Output:** `output/data_entry_accounts_by_project_service_month.csv` — 191,302 rows — ~137 s
+**Output:** `output/data_entry_accounts_by_project_service_month.csv` — 238,497 rows — ~137 s
 
-**Goal:** Count the number of distinct accounts (`storedby`) that entered data per
-project, service, and calendar month of entry. Helps identify whether data entry is a
-shared responsibility across multiple users or concentrated in a single account.
+**Goal:** List the distinct accounts (`storedby`) that entered data per project,
+service, and calendar month of entry — one row per account. Helps identify whether
+data entry is a shared responsibility across multiple users or concentrated in a
+single account, and allows analysing distinct accounts across different services.
 
-**Columns:** `project_name`, `project_id`, `service_name`, `service_id`, `month_year`,
-`num_accounts`
+**Columns:** `account`, `project_name`, `project_id`, `service_name`, `service_id`,
+`month_year`
 
 **Notes:**
 
