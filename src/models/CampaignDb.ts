@@ -93,9 +93,17 @@ export default class CampaignDb {
         }
     }
 
-    public async save(options: { sectionsOnly?: boolean } = {}): Promise<Response<string>> {
+    public async saveSections(): Promise<Response<string>> {
         const { campaign } = this;
-        const { sectionsOnly } = options;
+        const { db } = campaign;
+        const metadataCoc = await campaign.antigensDisaggregation.getCocMetadata(db);
+        const dataSetId = campaign.id || getUid("dataSet", campaign.name);
+        const sections = await this.getSections(dataSetId, metadataCoc);
+        return this.campaign.db.postMetadata({ sections: sections });
+    }
+
+    public async save(): Promise<Response<string>> {
+        const { campaign } = this;
         const { db, config: metadataConfig } = campaign;
         const dataSetId = campaign.id || getUid("dataSet", campaign.name);
         console.debug(`Saving campaign with dataSetId=${dataSetId}`);
@@ -180,10 +188,6 @@ export default class CampaignDb {
             sections: sections.map(section => ({ id: section.id })),
             ...sharing,
         };
-
-        if (sectionsOnly) {
-            return this.campaign.db.postMetadata({ sections: sections });
-        }
 
         const extraDataSets = await this.getExtraDataSets();
 
