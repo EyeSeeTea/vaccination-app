@@ -28,6 +28,10 @@ export class CampaignD2Repository implements CampaignRepository {
         return new CampaignDb(campaign).save();
     }
 
+    async saveDisaggregations(campaign: Campaign): Promise<Response<string>> {
+        return new CampaignDb(campaign).save({ sectionsOnly: true });
+    }
+
     async delete(campaignIds: CampaignId[]): Promise<DeleteResponse> {
         try {
             return await this.delete_(campaignIds);

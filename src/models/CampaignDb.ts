@@ -93,8 +93,9 @@ export default class CampaignDb {
         }
     }
 
-    public async save(): Promise<Response<string>> {
+    public async save(options: { sectionsOnly?: boolean } = {}): Promise<Response<string>> {
         const { campaign } = this;
+        const { sectionsOnly } = options;
         const { db, config: metadataConfig } = campaign;
         const dataSetId = campaign.id || getUid("dataSet", campaign.name);
         console.debug(`Saving campaign with dataSetId=${dataSetId}`);
@@ -179,6 +180,10 @@ export default class CampaignDb {
             sections: sections.map(section => ({ id: section.id })),
             ...sharing,
         };
+
+        if (sectionsOnly) {
+            return this.campaign.db.postMetadata({ sections: sections });
+        }
 
         const extraDataSets = await this.getExtraDataSets();
 
