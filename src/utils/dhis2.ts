@@ -1,32 +1,7 @@
 import md5 from "md5";
-import { D2 } from "../models/d2.types";
-
-function getCurrentUserSymbol(d2: D2, symbolName: string, defaultValue: unknown) {
-    const { currentUser } = d2;
-    const symbol = Object.getOwnPropertySymbols(currentUser).find(
-        symbol => symbol.toString() === `Symbol(${symbolName})`
-    );
-
-    const value = symbol ? (currentUser as any)[symbol] : undefined;
-
-    if (!value) {
-        console.error(`Cannot get symbol for current user: ${symbolName}`);
-        return defaultValue;
-    } else {
-        return value;
-    }
-}
-
-export function getCurrentUserRoles(d2: D2) {
-    return getCurrentUserSymbol(d2, "userRoles", []);
-}
-
-export function getCurrentUserDataViewOrganisationUnits(d2: D2) {
-    return getCurrentUserSymbol(d2, "dataViewOrganisationUnits", []);
-}
 
 export function isTestEnv() {
-    return !!process.env.REACT_APP_CYPRESS;
+    return !!process.env.CYPRESS_E2E;
 }
 
 // DHIS2 UID :: /^[a-zA-Z][a-zA-Z0-9]{10}$/

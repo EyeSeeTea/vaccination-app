@@ -3,22 +3,14 @@ import _ from "lodash";
 
 import { D2, D2ApiLegacy, DeleteResponse } from "./d2.types";
 import {
-    OrganisationUnit,
-    PaginatedObjects,
-    CategoryOption,
-    CategoryCombo,
     MetadataResponse,
     ModelFields,
     MetadataGetParams,
     ModelName,
     MetadataFields,
-    DataEntryForm,
-    DataValueResponse,
     Response,
     DataValue,
     MetadataOptions,
-    Message,
-    DataValueToPost,
     Ref,
 } from "./db.types";
 import "../utils/lodash-mixins";
@@ -67,14 +59,14 @@ function toDbParams(metadataParams: MetadataGetParams): _.Dictionary<string> {
         .value();
 }
 
-export interface AnalyticsRequest {
+interface AnalyticsRequest {
     dimension: string[];
     filter?: string[];
     skipMeta?: boolean;
     skipRounding?: boolean;
 }
 
-export interface AnalyticsResponse {
+interface AnalyticsResponse {
     headers: Array<{
         name: "dx" | "dy";
         column: "Data";
@@ -90,7 +82,7 @@ export interface AnalyticsResponse {
 }
 
 // https://docs.dhis2.org/2.30/en/developer/html/dhis2_developer_manual_full.html#webapi_reading_data_values
-export interface GetDataValuesParams {
+interface GetDataValuesParams {
     dataSet?: string[];
     dataElement?: string[];
     dataElementGroup?: string[];
@@ -269,44 +261,24 @@ export default class DbD2 {
         return metadataWithEmptyRecords as T;
     }
 
-    public async getOrganisationUnitsFromIds(
-        ids: string[],
-        options: { pageSize?: number }
-    ): Promise<PaginatedObjects<OrganisationUnit>> {
-        const { pager, organisationUnits } = await this.api.get("/organisationUnits", {
-            paging: true,
-            pageSize: options.pageSize || 10,
-            filter: [`id:in:[${_(ids).take(options.pageSize).join(",")}]`],
-            fields: ["id", "displayName", "path", "level", "ancestors[id,displayName,path,level]"],
-        });
-        const newPager = { ...pager, total: ids.length };
-        return { pager: newPager, objects: organisationUnits };
-    }
-
-    public async getCategoryOptionsByCategoryCode(code: string): Promise<CategoryOption[]> {
-        const { categories } = await this.api.get("/categories", {
-            filter: [`code:in:[${code}]`],
-            fields: ["categoryOptions[id,displayName,code,dataDimension,dataDimensionType]"],
-        });
-
-        if (_(categories).isEmpty()) {
-            return [];
-        } else {
-            return _(categories[0].categoryOptions).sortBy("displayName").value();
-        }
-    }
-
-    public async getCategoryCombosByCode(codes: string[]): Promise<CategoryCombo[]> {
-        const { categoryCombos } = await this.api.get("/categoryCombos", {
-            paging: false,
-            filter: [`code:in:[${codes.join(",")}]`],
-            fields: ["id,code,displayName"],
-        });
-        return categoryCombos;
-    }
-
     public async getCurrentUser(): Promise<User> {
-        return this.api.get<User>("/me", { paging: false, fields: ["id", "name"] });
+        const res = await this.d2Api.currentUser
+            .get({
+                fields: {
+                    id: true,
+                    name: true,
+                    dataViewOrganisationUnits: { id: true },
+                    userCredentials: { userRoles: { id: true } },
+                },
+            })
+            .getData();
+
+        return {
+            id: res.id,
+            name: res.name,
+            orgUnitIds: res.dataViewOrganisationUnits.map(ou => ou.id),
+            userRoleIds: res.userCredentials.userRoles.map(r => r.id),
+        };
     }
 
     public async getCocsByCategoryComboCode(
@@ -352,10 +324,23 @@ export default class DbD2 {
         return categoryCombos;
     }
 
-    public async postMetadata<Metadata extends object>(
+    public async postMetadata<Metadata extends Record<string, object[]>>(
         metadata: Metadata,
         options: MetadataOptions = {}
     ): Promise<ApiResponse<MetadataResponse>> {
+        const emptyMetadata = _(metadata).values().every(_.isEmpty);
+
+        if (emptyMetadata) {
+            return {
+                status: true,
+                value: {
+                    status: "OK",
+                    stats: { total: 0, created: 0, updated: 0, deleted: 0, ignored: 0 },
+                    typeReports: [],
+                },
+            };
+        }
+
         const queryString = _(options).isEmpty()
             ? ""
             : "?" +
@@ -364,7 +349,7 @@ export default class DbD2 {
                   .join("&");
         try {
             console.debug(
-                `POST /metadata${queryString}: ${(
+                `POST /metadata${queryString}: ${JSON.stringify(_.mapValues(metadata, _.size))} ${(
                     JSON.stringify(metadata, null, 4).length / 1024
                 ).toFixed(0)} KB`
             );
@@ -391,58 +376,6 @@ export default class DbD2 {
                 JSON.stringify(err, null, 4)
             );
             return { status: false, error: JSON.stringify(err) };
-        }
-    }
-
-    public async postForm(dataSetId: string, dataEntryForm: DataEntryForm): Promise<boolean> {
-        await this.api.post(["dataSets", dataSetId, "form"].join("/"), dataEntryForm);
-        return true;
-    }
-
-    public async sendMessage(message: Message): Promise<void> {
-        this.api.post("/messageConversations", message);
-    }
-
-    public async postDataValues(dataValues: DataValue[]): Promise<Response<object>> {
-        const dataValuesToPost: DataValueToPost[] = _(dataValues)
-            .map(dv => {
-                if (!dv.period) return;
-
-                return {
-                    dataSet: dv.dataSet,
-                    completeDate: dv.completeDate,
-                    period: dv.period,
-                    orgUnit: dv.orgUnit,
-                    attributeOptionCombo: dv.attributeOptionCombo,
-                    dataElement: dv.dataElement,
-                    categoryOptionCombo: dv.categoryOptionCombo,
-                    value: dv.value,
-                    comment: dv.comment,
-                };
-            })
-            .compact()
-            .value();
-
-        const dataValuesChunks = _.chunk(dataValuesToPost, 200);
-
-        const responses = await promiseMap(dataValuesChunks, dataValuesChunk => {
-            return this.api.post("dataValueSets", {
-                dataValues: dataValuesChunk,
-            }) as Promise<DataValueResponse>;
-        });
-
-        const errorResponses = responses.filter(response => {
-            if ("httpStatus" in response) {
-                return response.response.status !== "SUCCESS";
-            } else {
-                return response.status !== "SUCCESS";
-            }
-        });
-
-        if (_(errorResponses).isEmpty()) {
-            return { status: true };
-        } else {
-            return { status: false, error: errorResponses };
         }
     }
 

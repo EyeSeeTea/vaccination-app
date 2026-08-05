@@ -62,6 +62,12 @@ export function getD2ApiSnapMock(name: string): SnapshotMock<D2Api> {
                 (api, args) => api.metadata.post(...args).getData()
             ),
         },
+        currentUser: {
+            get: getD2ApiResponseMock<D2Api["currentUser"]["get"]>(
+                `${name}-currentUser-get`,
+                (api, args) => api.currentUser.get(...args).getData()
+            ),
+        },
         maintenance: {
             categoryOptionComboSingleUpdate: getD2ApiResponseMock<
                 D2Api["maintenance"]["categoryOptionComboSingleUpdate"]
@@ -121,7 +127,10 @@ expect.extend({
 function getRealD2Api(): D2Api {
     const baseUrl = process.env.DHIS2_BASE_URL;
     const auth = process.env.DHIS2_AUTH;
-    if (!baseUrl || !auth) throw new Error("DHIS2_BASE_URL or DHIS2_AUTH not set");
+    if (!baseUrl || !auth)
+        throw new Error(
+            "Some snapshots are missing or not matching. Set DHIS2_BASE_URL + DHIS2_AUTH to update snapshots"
+        );
 
     const [username, password] = auth.split(":");
 

@@ -5,7 +5,6 @@ import { withStyles } from "@material-ui/core/styles";
 import { createStyles, WithStyles, Theme } from "@material-ui/core";
 import { MuiThemeProvider } from "@material-ui/core";
 
-import { D2 } from "../../../models/d2.types";
 import Campaign, { Antigen } from "../../../models/campaign";
 import { memoize } from "../../../utils/memoize";
 import { createMuiThemeOverrides } from "../../../utils/styles";
@@ -18,14 +17,13 @@ import "./DisaggregationStep.css";
 import i18n from "../../../locales";
 import SimpleCheckbox from "../../forms/SimpleCheckBox";
 import { DataSet } from "../../../models/config";
-import { CampaignType } from "../../../models/AntigensDisaggregationLegacy";
+import { CampaignType } from "../../../models/AntigensDisaggregation";
 
-const { Sidebar } = require("@dhis2/d2-ui-core"); // Untyped
+import { Sidebar } from "@dhis2/d2-ui-core"; // Untyped
 
 type Path = (number | string)[];
 
-interface DisaggregationStepProps extends WithStyles<typeof styles> {
-    d2: D2;
+export interface DisaggregationStepProps {
     campaign: Campaign;
     onChange: (campaign: Campaign) => void;
 }
@@ -36,7 +34,12 @@ interface DisaggregationStepState {
     currentTab: Tab;
 }
 
-class DisaggregationStep extends React.Component<DisaggregationStepProps, DisaggregationStepState> {
+type DisaggregationStepPropsWithStyles = DisaggregationStepProps & WithStyles<typeof styles>;
+
+class DisaggregationStep extends React.Component<
+    DisaggregationStepPropsWithStyles,
+    DisaggregationStepState
+> {
     firstAntigen = this.props.campaign.antigens[0];
 
     state: DisaggregationStepState = {

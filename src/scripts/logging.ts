@@ -15,15 +15,15 @@ export function setupLogs(options: SetupLoggingOptions) {
     function tee(stream: NodeJS.WriteStream, prefix?: () => string) {
         const originalWrite = stream.write.bind(stream);
 
-        const fn = (chunk: string, encoding: string, cb: Function) => {
-            if (prefix) {
-                logStream.write(prefix());
-            }
+        stream.write = (
+            chunk: string | Uint8Array,
+            encodingOrCb?: BufferEncoding | ((err?: Error | null) => void),
+            cb?: (err?: Error | null) => void
+        ): boolean => {
+            if (prefix) logStream.write(prefix());
             logStream.write(chunk);
-            return originalWrite(chunk, encoding, cb);
+            return originalWrite(chunk, encodingOrCb as BufferEncoding, cb);
         };
-
-        stream.write = fn as typeof stream.write;
     }
 
     const ts = () => `[${new Date().toISOString()}] `;
