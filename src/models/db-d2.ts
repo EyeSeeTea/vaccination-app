@@ -324,10 +324,23 @@ export default class DbD2 {
         return categoryCombos;
     }
 
-    public async postMetadata<Metadata extends object>(
+    public async postMetadata<Metadata extends Record<string, object[]>>(
         metadata: Metadata,
         options: MetadataOptions = {}
     ): Promise<ApiResponse<MetadataResponse>> {
+        const emptyMetadata = _(metadata).values().every(_.isEmpty);
+
+        if (emptyMetadata) {
+            return {
+                status: true,
+                value: {
+                    status: "OK",
+                    stats: { total: 0, created: 0, updated: 0, deleted: 0, ignored: 0 },
+                    typeReports: [],
+                },
+            };
+        }
+
         const queryString = _(options).isEmpty()
             ? ""
             : "?" +
@@ -336,7 +349,7 @@ export default class DbD2 {
                   .join("&");
         try {
             console.debug(
-                `POST /metadata${queryString}: ${(
+                `POST /metadata${queryString}: ${JSON.stringify(_.mapValues(metadata, _.size))} ${(
                     JSON.stringify(metadata, null, 4).length / 1024
                 ).toFixed(0)} KB`
             );

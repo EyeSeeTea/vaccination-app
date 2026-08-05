@@ -150,13 +150,13 @@ export interface NamedRef extends Ref {
     name: string;
 }
 
-export interface Metadata {
+export type Metadata = {
     dataSets?: Array<DataSet>;
     dataEntryForms?: Array<DataEntryForm>;
     sections?: Array<Section>;
     visualizations?: Array<Dictionary<any>>;
     dashboards?: Array<Dictionary<any>>;
-}
+};
 
 export interface MetadataOptions {
     importStrategy?: "CREATE_AND_UPDATE" | "CREATE" | "UPDATE" | "DELETE";
@@ -274,7 +274,7 @@ export interface Message extends MessageDestination {
 }
 
 export interface MetadataResponse {
-    importParams: ImportParams;
+    importParams?: ImportParams;
     status: "OK" | "ERROR";
     stats: Stats;
     typeReports: TypeReport[];

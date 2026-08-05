@@ -93,6 +93,15 @@ export default class CampaignDb {
         }
     }
 
+    public async saveSections(): Promise<Response<string>> {
+        const { campaign } = this;
+        const { db } = campaign;
+        const metadataCoc = await campaign.antigensDisaggregation.getCocMetadata(db);
+        const dataSetId = campaign.id || getUid("dataSet", campaign.name);
+        const sections = await this.getSections(dataSetId, metadataCoc);
+        return this.campaign.db.postMetadata({ sections: sections });
+    }
+
     public async save(): Promise<Response<string>> {
         const { campaign } = this;
         const { db, config: metadataConfig } = campaign;
