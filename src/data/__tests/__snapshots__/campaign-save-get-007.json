@@ -3,7 +3,7 @@
         "/metadata",
         {
             "translate": true,
-            "userGroups:fields": "id,name,users[id,displayName,userCredentials[userRoles[id,name]]]",
+            "userGroups:fields": "id,name,users[id,displayName,userRoles[id,name]]",
             "userGroups:filter": "name:in:[Cell 3]"
         }
     ],

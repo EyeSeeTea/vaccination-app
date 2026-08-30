@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { HeaderBar } from "@dhis2/ui";
 import { MuiThemeProvider } from "@material-ui/core/styles";
 // @ts-ignore
 import OldMuiThemeProvider from "material-ui/styles/MuiThemeProvider";
@@ -14,11 +13,11 @@ import Share from "../share/Share";
 import DbD2 from "../../models/db-d2";
 import { getMetadataConfig, MetadataConfig } from "../../models/config";
 import { hasCurrentUserRoles } from "../../utils/permissions";
-import { isTestEnv } from "../../utils/dhis2";
 import { CompositionRoot, getCompositionRoot } from "../../CompositionRoot";
 import { D2Api } from "../../types/d2-api";
 import { D2 } from "../../models/d2.types";
 import { Routes } from "./Routes";
+import { HeaderBar } from "./HeaderBar";
 
 type AppProps = {
     d2: D2;
@@ -30,6 +29,7 @@ type AppState = {
     config: MetadataConfig | null;
     db: DbD2 | null;
     compositionRoot: CompositionRoot | null;
+    routes: Routes | null;
 };
 
 class App extends Component<AppProps, AppState> {
@@ -37,6 +37,7 @@ class App extends Component<AppProps, AppState> {
         config: null,
         db: null,
         compositionRoot: null,
+        routes: null,
     };
 
     async componentDidMount() {
@@ -56,26 +57,26 @@ class App extends Component<AppProps, AppState> {
             // No feedback tool currently used, keep if we re-enable it in the future
         }
 
-        this.setState({ config, db, compositionRoot });
+        const routes = new Routes(api.baseUrl, config);
+
+        this.setState({ config, db, compositionRoot, routes });
     }
 
     render() {
         const { d2, appConfig, api } = this.props;
-        const { config, db, compositionRoot } = this.state;
+        const { config, db, compositionRoot, routes } = this.state;
         const showShareButton = _(appConfig).get("appearance.showShareButton") || false;
-        const showHeader = !isTestEnv();
-        const routes = new Routes(api.baseUrl);
 
         return (
             <React.Fragment>
                 <MuiThemeProvider theme={muiTheme}>
                     <OldMuiThemeProvider muiTheme={muiThemeLegacy}>
                         <LoadingProvider>
-                            {showHeader && <HeaderBar appName="" email="aa@a.com" />}
+                            <HeaderBar appName="vaccination-app" />
 
                             <div id="app" className="content">
                                 <SnackbarProvider>
-                                    {config && db && compositionRoot && (
+                                    {config && db && compositionRoot && routes && (
                                         <Root
                                             d2={d2}
                                             db={db}

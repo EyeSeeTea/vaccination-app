@@ -78,7 +78,13 @@ async function main() {
         }).then(res => res.json());
 
         ReactDOM.render(
-            <Provider config={{ baseUrl, apiVersion: 30 }}>
+            <Provider
+                config={{ baseUrl, apiVersion: 42 }}
+                plugin={false}
+                parentAlertsAdd={undefined}
+                showAlertsInPlugin={true}
+                userInfo={undefined}
+            >
                 <HashRouter>
                     <App d2={d2} appConfig={appConfig} api={api} />
                 </HashRouter>

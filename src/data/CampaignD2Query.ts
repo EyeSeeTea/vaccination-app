@@ -57,6 +57,7 @@ export class CampaignD2Query implements CampaignQuery {
 
             return {
                 ...dataSet,
+                publicAccess: dataSet.sharing.public,
                 period: dates
                     ? { start: toStrDate(dates.startDate), end: toStrDate(dates.endDate) }
                     : undefined,
@@ -108,7 +109,7 @@ const dataSetFields = {
     displayDescription: true,
     created: true,
     lastUpdated: true,
-    publicAccess: true,
+    sharing: { public: true },
     user: { id: true },
     href: true,
     organisationUnits: { id: true, path: true },

@@ -12,6 +12,7 @@ import {
     DataValue,
     MetadataOptions,
     Ref,
+    getId,
 } from "./db.types";
 import "../utils/lodash-mixins";
 import { promiseMap } from "../utils/promises";
@@ -173,7 +174,7 @@ export const metadataFields: MetadataFields = {
         id: true,
         name: true,
         description: true,
-        publicAccess: true,
+        sharing: { public: true },
         periodType: true,
         categoryCombo: ref,
         dataElementDecoration: true,
@@ -268,7 +269,7 @@ export default class DbD2 {
                     id: true,
                     name: true,
                     dataViewOrganisationUnits: { id: true },
-                    userCredentials: { userRoles: { id: true } },
+                    userRoles: { id: true },
                 },
             })
             .getData();
@@ -277,7 +278,7 @@ export default class DbD2 {
             id: res.id,
             name: res.name,
             orgUnitIds: res.dataViewOrganisationUnits.map(ou => ou.id),
-            userRoleIds: res.userCredentials.userRoles.map(r => r.id),
+            userRoleIds: res.userRoles.map(getId),
         };
     }
 
@@ -286,35 +287,50 @@ export default class DbD2 {
     ): Promise<
         Array<{ id: string; categoryOptionCombos: Array<{ id: string; categoryOptions: Ref[] }> }>
     > {
-        // User identifiable instead of code, as the default category combo has no code
-        const filter = `identifiable:in:[${_.uniq(codes).join(",")}]`;
-
-        const { categoryCombos } = await this.getMetadata<{
+        type CategoryCombosRes = {
             categoryCombos: Array<{
                 id: string;
                 code: string;
                 categoryOptionCombos: Array<{
                     id: string;
-                    categoryOptions: Array<{ id: string }>;
+                    categoryOptions: Array<{
+                        id: string;
+                    }>;
                 }>;
             }>;
-        }>({
+        };
+
+        const categoryCombosFields = {
+            id: true,
+            code: true,
+            categoryOptionCombos: {
+                id: true,
+                categoryOptions: { id: true },
+            },
+        } as const;
+
+        // [Bug in 42.4] we cannot used identifiable:in, get first category combos by code
+
+        const { categoryCombos: categoryCombos1 } = await this.getMetadata<CategoryCombosRes>({
             categoryCombos: {
-                fields: {
-                    id: true,
-                    code: true,
-                    categoryOptionCombos: {
-                        id: true,
-                        categoryOptions: { id: true },
-                    },
-                },
-                filters: [filter],
+                fields: categoryCombosFields,
+                filters: [`code:in:[${_.uniq(codes).join(",")}]`],
             },
         });
 
+        // And now get the default category combo, not returned when filtering by code (it has no code)
+
+        const { categoryCombos: categoryCombos2 } = await this.getMetadata<CategoryCombosRes>({
+            categoryCombos: {
+                fields: categoryCombosFields,
+                filters: [`name:eq:default`],
+            },
+        });
+
+        const categoryCombos = _.concat(categoryCombos1, categoryCombos2);
+
         const missingCodes = _(codes)
             .difference(categoryCombos.map(cc => cc.code))
-            .remove("default")
             .value();
 
         if (!_(missingCodes).isEmpty()) {
