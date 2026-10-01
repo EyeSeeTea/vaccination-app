@@ -92,13 +92,7 @@ export function stabilizeD2MetadataResponse(d2Response: D2MetadataResponse): D2M
             ? {
                   users: metadata.users.map(user => ({
                       ...user,
-                      userCredentials: {
-                          ...user.userCredentials,
-                          userRoles: _.sortBy(
-                              user.userCredentials.userRoles,
-                              userRole => userRole.id
-                          ),
-                      },
+                      userRoles: _.sortBy(user.userRoles, userRole => userRole.id),
                   })),
               }
             : {}),

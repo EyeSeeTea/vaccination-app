@@ -3,7 +3,7 @@
         "/metadata",
         {
             "translate": true,
-            "userGroups:fields": "id,name,users[id,displayName,userCredentials[userRoles[id,name]]]",
+            "userGroups:fields": "id,name,users[id,displayName,userRoles[id,name]]",
             "userGroups:filter": "name:in:[Vaccination Referents,HMIS Officers]"
         }
     ],
@@ -173,6 +173,13 @@
                         "id": "BpDuF87wgn5",
                         "name": "User 8844",
                         "username": "user_1041778844"
+                    },
+                    {
+                        "code": null,
+                        "displayName": "User 8677",
+                        "id": "U49a1sBDPMv",
+                        "name": "User 8677",
+                        "username": "user_329148677"
                     },
                     {
                         "code": null,

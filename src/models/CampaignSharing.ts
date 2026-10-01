@@ -1,19 +1,24 @@
 import _ from "lodash";
 
-import { OrganisationUnitGroupSet, Access, Sharing } from "./db.types";
+import { OrganisationUnitGroupSet, Sharing } from "./db.types";
 import Campaign from "./campaign";
 import DbD2 from "./db-d2";
 import { promiseMap } from "../utils/promises";
 import { userRoles } from "./config";
 
 /*
-    Return sharing object {publicAccess, externalAccess, userAccesses, userGroupAccesses} for
-    campaign objects.
+    Return sharing object (public, external, user, user groups) accesses for campaign objects.
 */
 
+type Access = {
+    id: string;
+    access: string;
+    displayName?: string;
+};
+
 export interface UserAndGroupAccesses {
-    userAccesses?: Access[];
-    userGroupAccesses?: Access[];
+    users?: Access[];
+    userGroups?: Access[];
 }
 
 type Permission = "none" | "view" | "edit";
@@ -58,18 +63,16 @@ export type SharingFilter =
 interface User {
     id: string;
     displayName: string;
-    userCredentials?: {
-        userRoles: Array<{
-            id: string;
-            name: string;
-        }>;
-    };
+    userRoles: Array<{
+        id: string;
+        name: string;
+    }>;
 }
 
 const userFields = {
     id: true,
     displayName: true,
-    userCredentials: { userRoles: { id: true, name: true } },
+    userRoles: { id: true, name: true },
 };
 
 interface UserGroup {
@@ -172,10 +175,10 @@ export default class CampaignSharing {
         });
 
         return {
-            publicAccess: getAccessValue(sharingDefinition.publicPermission),
-            externalAccess: false,
-            userAccesses: getAccesses(userAccessesList, "userAccesses"),
-            userGroupAccesses: getAccesses(userAccessesList, "userGroupAccesses"),
+            public: getAccessValue(sharingDefinition.publicPermission),
+            external: false,
+            users: _.keyBy(getAccesses(userAccessesList, "users"), obj => obj.id),
+            userGroups: _.keyBy(getAccesses(userAccessesList, "userGroups"), obj => obj.id),
         };
     }
 
@@ -192,7 +195,7 @@ export default class CampaignSharing {
         const { currentUser } = this.campaign.config;
 
         return {
-            userAccesses: [
+            users: [
                 {
                     id: currentUser.id,
                     access: getAccessValue(filter.permission),
@@ -223,7 +226,7 @@ export default class CampaignSharing {
             }))
             .value();
 
-        return { userGroupAccesses };
+        return { userGroups: userGroupAccesses };
     }
 
     private async getUsersByOrgUnitsAccesses(
@@ -238,9 +241,9 @@ export default class CampaignSharing {
             },
         });
 
-        const userAccesses = getUserAccessesFilteredByRoles(usersWithCampaignOrgUnits, filter);
-
-        return { userAccesses };
+        return {
+            users: getUserAccessesFilteredByRoles(usersWithCampaignOrgUnits, filter),
+        };
     }
 
     private async getUsersByOrgUnitsInGroupSetAccesses(
@@ -280,7 +283,7 @@ export default class CampaignSharing {
         const usersInGroups = _.flatMap(userGroups, userGroup => userGroup.users);
         const userAccesses = getUserAccessesFilteredByRoles(usersInGroups, filter);
 
-        return { userAccesses };
+        return { users: userAccesses };
     }
 }
 
@@ -306,9 +309,9 @@ function getAccesses<K extends keyof UserAndGroupAccesses>(
 function getUserAccessesFilteredByRoles(
     users: User[],
     sharing: { userRoles: Array<string[]>; permission: ObjectPermission }
-) {
+): Access[] {
     const userMatchesUserRoles = (user: User) => {
-        const userRoles = user.userCredentials ? user.userCredentials.userRoles : [];
+        const userRoles = user.userRoles || [];
         const userRoleNames = userRoles.map(userRole => userRole.name);
         return sharing.userRoles.every(
             expectedUserRoles => _.intersection(userRoleNames, expectedUserRoles).length > 0

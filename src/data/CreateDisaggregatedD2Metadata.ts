@@ -249,7 +249,7 @@ export class CreateDisaggregatedD2Metadata {
             .post(payload)
             .getData()
             .catch(err => {
-                console.error("Error saving metadata:", JSON.stringify(err, null, 4));
+                console.error("Error saving metadata:", err.response?.data);
                 throw err;
             });
 

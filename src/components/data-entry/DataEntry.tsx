@@ -1,27 +1,31 @@
+/**
+ * Render the data entry form to enter values for a campaign.
+ *
+ * We use the Aggregated DHIS2 Data App as plugin and our custom mode "app". So we may pass
+ * the URL with dataSetId, orgUnitId and period as query parameters, but we also pass some
+ * custom props to customize some of the UI elements of the plugin (like the dataset selector,
+ * the tab section selector, etc).
+ */
 import React from "react";
 import _ from "lodash";
+import { Plugin, PluginProps } from "@dhis2/app-runtime/experimental";
 import i18n from "@dhis2/d2-i18n";
 import { withSnackbar, SnackbarState } from "@eyeseetea/d2-ui-components";
-import ReactDOM from "react-dom";
-import moment from "moment";
 
 import PageHeader from "../shared/PageHeader";
 import { LinearProgress } from "@material-ui/core";
 import { withPageVisited } from "../utils/page-visited-app";
-import { D2 } from "../../models/d2.types";
-import { MetadataConfig } from "../../models/config";
 import { Maybe } from "../../models/db.types";
 import { makeStyles } from "../../utils/react";
 import { assert } from "../../utils/assert";
 import { CompositionRoot } from "../../CompositionRoot";
 import { Routes } from "../app/Routes";
-import { getCampaignPeriods } from "../../models/CampaignDb";
+import Campaign from "../../models/campaign";
+import { OrganisationUnit } from "../../domain/entities/OrganisationUnit";
 
 type DataEntryOwnProps = {
-    d2: D2;
     compositionRoot: CompositionRoot;
     routes: Routes;
-    config: MetadataConfig;
     pageVisited: Maybe<boolean>;
 };
 
@@ -36,157 +40,121 @@ type DataEntryProps = DataEntryOwnProps & {
 };
 
 type DataEntryState = {
-    isDataEntryIdValid: boolean;
+    campaign: Maybe<Campaign>;
+    organisationUnits: Maybe<OrganisationUnit[]>;
+    restoredUrl: Maybe<string>;
 };
 
 class DataEntry extends React.Component<DataEntryProps, DataEntryState> {
     state: DataEntryState = {
-        isDataEntryIdValid: false,
+        campaign: undefined,
+        restoredUrl: undefined,
+        organisationUnits: undefined,
     };
 
     styles = makeStyles({
         subtitle: { marginBottom: 10, marginLeft: 15 },
     });
 
-    async componentDidMount() {
-        const {
-            d2,
-            match: { params },
-        } = this.props;
-        const dataSetId = params.id;
-        const organisationUnits = dataSetId
-            ? await getOrganisationUnitsByDataSetId(dataSetId, d2)
-            : null;
+    private iframeWindow: Window | null = null;
 
-        if (!dataSetId || (dataSetId && organisationUnits)) {
-            this.setState({ isDataEntryIdValid: true }, () => {
-                // eslint-disable-next-line react/no-find-dom-node
-                const iframe = ReactDOM.findDOMNode(this.refs.iframe) as HTMLIFrameElement;
-                iframe.addEventListener(
-                    "load",
-                    this.setDatasetParameters.bind(this, iframe, dataSetId, organisationUnits, d2)
-                );
+    getCampaignId = (): Maybe<string> => {
+        return this.props.match.params.id;
+    };
+
+    async componentDidMount() {
+        const { snackbar, compositionRoot } = this.props;
+        const campaignId = this.getCampaignId();
+        if (!campaignId) return;
+
+        const storedUrl = localStorage.getItem(this.localStorageKey(campaignId));
+        if (storedUrl) {
+            console.debug(`Using stored iframe URL for campaign ${campaignId}: ${storedUrl}`);
+            this.setState({ restoredUrl: storedUrl });
+        }
+
+        try {
+            const campaign = await compositionRoot.campaigns.get.execute(campaignId);
+            const orgUnitIdsForCampaign = campaign.data.organisationUnits.map(ou => ou.id);
+            // Get campaign org units entities (which include ancestors) so we can order them
+            // and select the first org unit with the same logic they are rendered in the selector.
+            const campaignOrgUnits = await compositionRoot.organisationUnits.get.execute(
+                orgUnitIdsForCampaign
+            );
+            const organisationUnitsSorted = _.sortBy(campaignOrgUnits, ou =>
+                ou.getFullOrgUnitName()
+            );
+
+            this.setState({
+                campaign: campaign,
+                organisationUnits: organisationUnitsSorted,
+            });
+        } catch (err) {
+            const message = err instanceof Error ? err.message : String(err);
+            snackbar.error(message);
+        }
+    }
+
+    componentWillUnmount() {
+        this.iframeWindow?.removeEventListener("hashchange", this.onIframeHashChange);
+    }
+
+    localStorageKey(campaignId: string): string {
+        return `vaccination-app.data-entry.${campaignId}`;
+    }
+
+    saveIframeUrl = (url: string) => {
+        const campaignId = this.getCampaignId();
+        if (campaignId) {
+            const key = this.localStorageKey(campaignId);
+            const oldValue = localStorage.getItem(key);
+            if (oldValue !== url) {
+                console.debug(`Saving iframe URL for campaign ${campaignId}: ${url}`);
+                localStorage.setItem(key, url);
+            }
+        }
+    };
+
+    onIframeLoad: React.ReactEventHandler<HTMLIFrameElement> = event => {
+        const win = event.currentTarget.contentWindow;
+        if (!win) return;
+
+        this.iframeWindow?.removeEventListener("hashchange", this.onIframeHashChange);
+        this.iframeWindow = win;
+        win.addEventListener("hashchange", this.onIframeHashChange);
+        this.saveIframeUrl(win.location.href);
+    };
+
+    onIframeHashChange = () => {
+        if (this.iframeWindow) this.saveIframeUrl(this.iframeWindow.location.href);
+    };
+
+    getDataEntryUrl = (): Maybe<string> => {
+        const campaignId = this.getCampaignId();
+        const { campaign, organisationUnits } = this.state;
+        const { routes } = this.props;
+
+        if (campaign) {
+            return routes.getDataEntryUrl({
+                campaignId: assert(campaign.id, "Campaign ID is required"),
+                orgUnitId: organisationUnits?.[0]?.id,
+                period: campaign.startDate || undefined,
+            });
+        } else if (!campaignId) {
+            return routes.getDataEntryUrl({
+                campaignId: undefined,
+                orgUnitId: undefined,
+                period: undefined,
             });
         } else {
-            this.props.snackbar.error(i18n.t("No datasets associated with this campaign"));
+            return undefined;
         }
-    }
-
-    waitforOUSelection(element: Element) {
-        return new Promise<void>(resolve => {
-            const check = () => {
-                if (element.childNodes.length > 0) {
-                    resolve();
-                } else {
-                    setTimeout(check, 500);
-                }
-            };
-
-            check();
-        });
-    }
-
-    styleFrame(iframeDocument: Document) {
-        iframeDocument.querySelector("#header")?.remove();
-        const leftBar = iframeDocument.querySelector("#leftBar") as HTMLElement | null;
-        if (leftBar) leftBar.style.top = "-10px";
-        const body = iframeDocument.querySelector("body");
-        if (body) body.style.marginTop = "-55px";
-        iframeDocument.querySelector("#moduleHeader")?.remove();
-
-        on(iframeDocument, "#currentSelection", el => el.remove());
-        on(iframeDocument, "#completenessDiv #validateButton", el => el.remove());
-        on(iframeDocument, "#completenessDiv .separator", el => el.remove());
-
-        on(iframeDocument, "#completenessDiv", div => {
-            (div as HTMLElement).style.display = "inline-block";
-            (div as HTMLElement).style.paddingRight = "20px";
-            (div as HTMLElement).style.width = "auto";
-        });
-    }
-
-    async setDatasetParameters(
-        iframe: HTMLIFrameElement,
-        dataSetId: string | undefined,
-        organisationUnits: string[] | null,
-        d2: D2
-    ) {
-        if (!iframe.contentWindow) return;
-        const iframeDocument = iframe.contentWindow.document;
-        this.styleFrame(iframeDocument);
-
-        if (organisationUnits) {
-            // Select OU in the tree
-            const iframeSelection = (iframe.contentWindow as unknown as Record<string, unknown>)
-                .selection as { select: (ous: string[]) => void };
-            iframeSelection.select(organisationUnits);
-
-            // Wait for OU to be selected and select the dataset
-            const selectedDataSet = iframeDocument.querySelector("#selectedDataSetId");
-            if (!selectedDataSet) return;
-            await this.waitforOUSelection(selectedDataSet);
-            const option = iframeDocument.querySelector(
-                `#selectedDataSetId [value="${dataSetId}"]`
-            ) as HTMLOptionElement;
-            option.selected = true;
-
-            if (iframe.contentWindow)
-                (
-                    iframe.contentWindow as unknown as Record<string, unknown> & {
-                        dataSetSelected: () => void;
-                    }
-                ).dataSetSelected();
-
-            // Remove non-valid periods
-            const periodDates = await getPeriodDatesFromDataSetId(assert(dataSetId), d2);
-            if (!periodDates) return;
-            const removeNonValidPeriods = () => {
-                const selectDataSet = iframeDocument.querySelector(
-                    "#selectedDataSetId"
-                ) as HTMLSelectElement;
-                const selectedDataSetId = selectDataSet.selectedOptions[0]?.value;
-                if (selectedDataSetId === dataSetId) {
-                    const selectPeriod = iframeDocument.querySelector(
-                        "#selectedPeriodId"
-                    ) as HTMLSelectElement;
-                    const optionPeriods = Array.from(
-                        selectPeriod.childNodes
-                    ) as HTMLOptionElement[];
-                    const formatStr = "YYYYMMDD";
-                    const start = periodDates.startDate
-                        ? moment.utc(periodDates.startDate).format(formatStr)
-                        : null;
-                    const end = periodDates.endDate
-                        ? moment.utc(periodDates.endDate).format(formatStr)
-                        : null;
-
-                    if (start && end) {
-                        optionPeriods.forEach(option => {
-                            const optionDate = option.value;
-
-                            if (optionDate && !(optionDate >= start && optionDate <= end)) {
-                                selectPeriod.removeChild(option);
-                            }
-                        });
-                    }
-                }
-            };
-            removeNonValidPeriods();
-            iframeDocument
-                .querySelectorAll("#selectedDataSetId, #prevButton, #nextButton")
-                .forEach(element => {
-                    element.addEventListener("click", () => {
-                        removeNonValidPeriods();
-                    });
-                });
-        }
-    }
+    };
 
     backCampaignConfiguration = () => {
-        const {
-            match: { params },
-        } = this.props;
-        if (params.id) {
+        const campaignId = this.getCampaignId();
+
+        if (campaignId) {
             this.props.history.push("/campaign-configuration");
         } else {
             this.props.history.push("/");
@@ -194,9 +162,9 @@ class DataEntry extends React.Component<DataEntryProps, DataEntryState> {
     };
 
     render() {
-        const { isDataEntryIdValid } = this.state;
         const { pageVisited } = this.props;
-        const dataEntryUrl = this.props.routes.getDataEntryUrl();
+        const dataEntryUrl = this.state.restoredUrl || this.getDataEntryUrl();
+
         const help =
             i18n.t(`Select a) site where vaccination was performed, b) Reactive vaccination data set available at site level c) date of vaccination d) team that performed vaccination.
 
@@ -206,52 +174,55 @@ class DataEntry extends React.Component<DataEntryProps, DataEntryState> {
 Once cells turn into green, all information is saved and you can leave the Data Entry Section`
         );
 
+        const { campaign } = this.state;
+
+        const titleWithCampaign = [
+            i18n.t("Data Entry"),
+            campaign ? ` - ${campaign.name}` : "",
+        ].join("");
+
+        const dataEntryProps: PluginProps = {
+            ...dataEntryBaseProps,
+            hideDataSetSelector: Boolean(campaign),
+        };
+
         return (
-            <React.Fragment>
+            <>
                 <PageHeader
-                    title={i18n.t("Data Entry")}
+                    title={titleWithCampaign}
                     help={help}
                     onBackClick={this.backCampaignConfiguration}
                     pageVisited={pageVisited}
                 />
+
                 <div style={this.styles.subtitle}>{subtitle}</div>
+
                 <div>
-                    {isDataEntryIdValid ? (
-                        <iframe
-                            ref="iframe"
-                            title={i18n.t("Data Entry")}
-                            src={dataEntryUrl}
-                            style={iframeStyles.iframe}
+                    {dataEntryUrl ? (
+                        <Plugin
+                            width="100%"
+                            height="650"
+                            pluginSource={dataEntryUrl}
+                            showAlertsInPlugin={true}
+                            onLoad={this.onIframeLoad}
+                            {...dataEntryProps}
                         />
                     ) : (
                         <LinearProgress />
                     )}
                 </div>
-            </React.Fragment>
+            </>
         );
     }
 }
 
-const iframeStyles = makeStyles({
-    iframe: { width: "100%", height: 1000 },
-});
-
-function on(document: Document, selector: string, cb: (el: Element) => void) {
-    document.querySelectorAll(selector).forEach(cb);
-}
-
-async function getOrganisationUnitsByDataSetId(id: string, d2: D2) {
-    const fields = "organisationUnits[id,name]";
-    const dataSet = await d2.models.dataSets.get(id, { fields }).catch(() => undefined);
-    const organisationUnits = dataSet ? dataSet.organisationUnits.toArray() : null;
-    //TODO: Make it so the user can choose the OU
-    return _(organisationUnits).isEmpty() ? undefined : organisationUnits[0].id;
-}
-
-async function getPeriodDatesFromDataSetId(id: string, d2: D2) {
-    const fields = "attributeValues[value, attribute[code]]";
-    const dataSet = await d2.models.dataSets.get(id, { fields }).catch(() => undefined);
-    return dataSet ? getCampaignPeriods(dataSet) : null;
-}
+const dataEntryBaseProps: PluginProps = {
+    mode: "app",
+    hideDataSetSelector: true,
+    hideTabSectionSelector: true,
+    hideClearSelectionsButton: true,
+    hideFilterField: true,
+    hideUnassignedOrgUnits: false,
+};
 
 export default withSnackbar(withPageVisited(DataEntry, "data-entry"));

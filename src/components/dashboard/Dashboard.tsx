@@ -6,7 +6,6 @@ import {
     SnackbarState,
     LoadingState,
 } from "@eyeseetea/d2-ui-components";
-import ReactDOM from "react-dom";
 
 import PageHeader from "../shared/PageHeader";
 import { LinearProgress } from "@material-ui/core";
@@ -17,6 +16,7 @@ import DbD2 from "../../models/db-d2";
 import { Maybe } from "../../models/db.types";
 import { makeStyles } from "../../utils/react";
 import { Routes } from "../app/Routes";
+import Campaign from "../../models/campaign";
 
 type DashboardOwnProps = {
     config: MetadataConfig;
@@ -40,34 +40,28 @@ type DashboardProps = DashboardOwnProps & {
 type DashboardState = {
     iFrameSrc: string;
     isGenerating: boolean;
+    campaign: Maybe<Campaign>;
 };
 
 class Dashboard extends React.Component<DashboardProps, DashboardState> {
     state: DashboardState = {
         iFrameSrc: "",
         isGenerating: false,
+        campaign: undefined,
     };
+
+    private iframeRef = React.createRef<HTMLIFrameElement>();
 
     async componentDidMount() {
         const { match, snackbar, loading } = this.props;
-        const dataSetId = match.params.id;
+        const campaignId = match.params.id;
 
         try {
-            const dashboardURL = await this.getDashboardURL({ dataSetId: dataSetId });
-            if (!dashboardURL) return;
-
-            this.setState({ iFrameSrc: dashboardURL }, () => {
-                const { iFrameSrc } = this.state;
-
-                if (iFrameSrc) {
-                    // eslint-disable-next-line react/no-find-dom-node
-                    const iframe = ReactDOM.findDOMNode(this.refs.iframe) as HTMLIFrameElement;
-                    iframe.addEventListener(
-                        "load",
-                        this.setDashboardStyling.bind(this, iframe, dataSetId)
-                    );
-                }
-            });
+            const campaign = campaignId
+                ? await this.props.compositionRoot.campaigns.get.execute(campaignId)
+                : undefined;
+            const dashboardURL = await this.getDashboardURL({ campaign: campaign });
+            if (dashboardURL) this.setState({ iFrameSrc: dashboardURL, campaign: campaign });
         } catch (err) {
             loading.hide();
             const message = err instanceof Error ? err.message : String(err);
@@ -76,57 +70,34 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
         }
     }
 
-    waitforElementToLoad(iframeDocument: Document, selector: string) {
-        return new Promise<void>(resolve => {
-            const check = () => {
-                if (iframeDocument.querySelector(selector)) {
-                    resolve();
-                } else {
-                    setTimeout(check, 100);
-                }
-            };
+    onIframeLoad = () => {
+        const iframeDoc = this.iframeRef.current?.contentDocument;
+        if (!iframeDoc) return;
 
-            check();
-        });
-    }
+        const campaignId = this.props.match.params.id;
+        const style = iframeDoc.createElement("style");
 
-    async setDashboardStyling(iframe: HTMLIFrameElement, dataSetId: Maybe<string>) {
-        if (!iframe.contentWindow) return;
-        const iframeDocument = iframe.contentWindow.document;
-        await this.waitforElementToLoad(iframeDocument, "[data-test='title-bar']");
-        remove(iframeDocument, "header");
-
-        if (dataSetId) {
-            remove(iframeDocument, "[data-test='dashboards-bar']");
-            remove(iframeDocument, "[data-test='title-bar'] > div > div > span");
-            remove(iframeDocument, "[data-test='title-bar'] > div > div > div");
-
-            iframeDocument.querySelectorAll("a").forEach(link => {
-                link.setAttribute("target", "_blank");
-            });
-        }
-    }
+        style.textContent = getIframeCssOverrides({ forCampaign: !!campaignId });
+        iframeDoc.head.appendChild(style);
+    };
 
     backCampaignConfiguration = () => {
-        const {
-            match: { params },
-        } = this.props;
-        if (params.id) {
+        const campaignId = this.props.match.params.id;
+
+        if (campaignId) {
             this.props.history.push("/campaign-configuration");
         } else {
             this.props.history.push("/");
         }
     };
 
-    async getDashboardURL(options: { dataSetId: Maybe<string> }): Promise<Maybe<string>> {
-        const { snackbar, loading, compositionRoot } = this.props;
-        const { dataSetId } = options;
+    async getDashboardURL(options: { campaign: Maybe<Campaign> }): Promise<Maybe<string>> {
+        const { snackbar, loading } = this.props;
+        const { campaign } = options;
 
-        if (!dataSetId) {
-            return this.props.routes.getDashboardUrl({ id: undefined });
+        if (!campaign) {
+            return this.props.routes.getDashboardUrl({ dashboardId: undefined });
         }
-
-        const campaign = await compositionRoot.campaigns.get.execute(dataSetId);
 
         let dashboardId: Maybe<string>;
         if (campaign.dashboardId) {
@@ -145,7 +116,7 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
         }
 
         if (dashboardId) {
-            return this.props.routes.getDashboardUrl({ id: dashboardId });
+            return this.props.routes.getDashboardUrl({ dashboardId: dashboardId });
         } else {
             const msg = i18n.t("No dashboards associated with this campaign");
             snackbar.error(msg);
@@ -153,16 +124,20 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
     }
 
     render() {
-        const { iFrameSrc, isGenerating } = this.state;
+        const { campaign, iFrameSrc, isGenerating } = this.state;
         const { pageVisited } = this.props;
         const help = i18n.t(
             "Please click on the grey arrow next to the chart/table title if you want to modify the layout."
         );
+        const titleWithCampaignName = [
+            i18n.t("Dashboard"),
+            campaign ? ` - ${campaign.name}` : "",
+        ].join("");
 
         return (
             <React.Fragment>
                 <PageHeader
-                    title={i18n.t("Dashboard")}
+                    title={titleWithCampaignName}
                     onBackClick={this.backCampaignConfiguration}
                     help={help}
                     pageVisited={pageVisited}
@@ -170,10 +145,11 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
                 <div>
                     {iFrameSrc ? (
                         <iframe
-                            ref="iframe"
+                            ref={this.iframeRef}
                             title={i18n.t("Dashboard")}
                             src={iFrameSrc}
                             style={iframeStyles.iframe}
+                            onLoad={this.onIframeLoad}
                         />
                     ) : (
                         !isGenerating && <LinearProgress />
@@ -188,9 +164,23 @@ const iframeStyles = makeStyles({
     iframe: { width: "100%", height: "calc(100vh - 140px)" },
 });
 
-function remove(document: Document, selector: string) {
-    const el = document.querySelector(selector);
-    if (el) el.remove();
+function hide(cssSelector: string, options?: { if: boolean }): string {
+    const condition = options?.if ?? true;
+    return condition ? `${cssSelector} { display: none !important; }` : "";
+}
+
+function getIframeCssOverrides(options: { forCampaign: boolean }): string {
+    const sections = {
+        header: "header",
+        dashboardsBar: `[class*='creationNavigationBlock']`,
+    };
+
+    return [
+        hide(sections.header),
+        hide(sections.dashboardsBar, { if: options.forCampaign }),
+        // Since we hide the dashboardsBar, we need to add some margin to the top bar
+        `[class*='_container_'] { margin-top: 5px; margin-bottom: 5px; }`,
+    ].join("\n");
 }
 
 export default withLoading(withSnackbar(withPageVisited(Dashboard, "dashboard")));
