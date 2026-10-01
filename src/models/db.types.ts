@@ -186,8 +186,9 @@ export interface Section {
     translations?: D2Translation[];
 }
 
-export interface DataSet extends Sharing {
+export interface DataSet {
     id: string;
+    sharing: Sharing;
     name: string;
     shortName: string;
     description: string;
@@ -288,8 +289,9 @@ export interface MetadataResponse {
     typeReports: TypeReport[];
 }
 
-export interface Dashboard extends Sharing {
+export interface Dashboard {
     id: string;
+    sharing: Sharing;
     dashboardItems: Array<{
         id: string;
         chart: { id: string };

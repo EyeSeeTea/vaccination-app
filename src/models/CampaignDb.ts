@@ -177,7 +177,7 @@ export default class CampaignDb {
             ],
             dataEntryForm: null,
             sections: sections.map(section => ({ id: section.id })),
-            ...sharing,
+            sharing,
         };
 
         const extraDataSets = await this.getExtraDataSets();
