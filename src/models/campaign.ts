@@ -96,7 +96,7 @@ export default class Campaign {
         const antigens: Antigen[] = [];
         const organisationUnits: OrganisationUnit[] = [];
 
-        const initialData = {
+        const initialData: Data = {
             id: undefined,
             name: "",
             description: "",
@@ -105,11 +105,7 @@ export default class Campaign {
             endDate: null,
             antigens: antigens,
             antigensDisaggregation: AntigensDisaggregation.build(config, antigens, {}, []),
-            targetPopulation: undefined,
             teams: undefined,
-            teamsMetadata: {
-                elements: [],
-            },
             dashboardId: undefined,
             extraDataSets: [],
             sections: [],

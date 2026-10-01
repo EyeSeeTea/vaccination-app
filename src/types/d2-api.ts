@@ -1,4 +1,4 @@
-export { D2Api } from "@eyeseetea/d2-api/2.40";
+export { D2Api } from "@eyeseetea/d2-api/2.42";
 
 export type {
     D2CategoryCombo,
@@ -19,4 +19,4 @@ export type {
     PartialPersistedModel,
     Ref,
     SelectedPick,
-} from "@eyeseetea/d2-api/2.40";
+} from "@eyeseetea/d2-api/2.42";

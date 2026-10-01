@@ -210,7 +210,7 @@ export class Dashboard {
             name: `${datasetName}`,
             code: dashboardCode,
             dashboardItems: items,
-            ...sharing,
+            sharing,
         };
 
         const visualizations = _.concat(charts, reportTables);
@@ -320,6 +320,6 @@ function getAgeGroupIds(
 function addSharing(sharing: Sharing, objects: object[]): object[] {
     return objects.map(object => ({
         ...object,
-        ...sharing,
+        sharing,
     }));
 }

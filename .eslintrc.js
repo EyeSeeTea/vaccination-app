@@ -61,6 +61,7 @@ module.exports = {
         "no-mixed-spaces-and-tabs": "off",
         "react-hooks/rules-of-hooks": "warn",
         "react-hooks/exhaustive-deps": "warn",
+        "react/no-unknown-property": ["error", { ignore: ["jsx", "global"] }],
         "no-restricted-globals": [
             "error",
             "closed",
