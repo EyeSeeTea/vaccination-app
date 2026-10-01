@@ -303,32 +303,34 @@
                             }
                         }
                     ],
-                    "external": false,
                     "id": "CMuMMetawqW",
                     "name": "0Campaign Test",
-                    "public": "--------",
-                    "userGroups": {
-                        "AnQDBhyc5R1": {
-                            "access": "rw------",
-                            "displayName": "Vaccination Referents",
-                            "id": "AnQDBhyc5R1"
+                    "sharing": {
+                        "external": false,
+                        "public": "--------",
+                        "userGroups": {
+                            "AnQDBhyc5R1": {
+                                "access": "rw------",
+                                "displayName": "Vaccination Referents",
+                                "id": "AnQDBhyc5R1"
+                            },
+                            "TeNDx28ih4i": {
+                                "access": "rw------",
+                                "displayName": "HMIS Officers",
+                                "id": "TeNDx28ih4i"
+                            }
                         },
-                        "TeNDx28ih4i": {
-                            "access": "rw------",
-                            "displayName": "HMIS Officers",
-                            "id": "TeNDx28ih4i"
-                        }
-                    },
-                    "users": {
-                        "ouyVQFYUVbH": {
-                            "access": "rw------",
-                            "displayName": "pentaho pentaho",
-                            "id": "ouyVQFYUVbH"
-                        },
-                        "yHSEQsKSpYH": {
-                            "access": "rw------",
-                            "displayName": "User 4472",
-                            "id": "yHSEQsKSpYH"
+                        "users": {
+                            "ouyVQFYUVbH": {
+                                "access": "rw------",
+                                "displayName": "pentaho pentaho",
+                                "id": "ouyVQFYUVbH"
+                            },
+                            "yHSEQsKSpYH": {
+                                "access": "rw------",
+                                "displayName": "User 4472",
+                                "id": "yHSEQsKSpYH"
+                            }
                         }
                     }
                 }
@@ -520,7 +522,6 @@
                     ],
                     "description": "Campaign Test description",
                     "expiryDays": 0,
-                    "external": false,
                     "formType": "CUSTOM",
                     "id": "CgW2JWldLHu",
                     "name": "0Campaign Test",
@@ -531,7 +532,6 @@
                         }
                     ],
                     "periodType": "Daily",
-                    "public": "rwrw----",
                     "renderAsTabs": true,
                     "sections": [
                         {
@@ -544,12 +544,16 @@
                             "id": "iszkxHh9x5r"
                         }
                     ],
-                    "shortName": "0Campaign Test",
-                    "timelyDays": 0,
-                    "userGroups": {
+                    "sharing": {
+                        "external": false,
+                        "public": "rwrw----",
+                        "userGroups": {
+                        },
+                        "users": {
+                        }
                     },
-                    "users": {
-                    }
+                    "shortName": "0Campaign Test",
+                    "timelyDays": 0
                 },
                 {
                     "attributeValues": [
@@ -5102,7 +5106,6 @@
                     "digitGroupSeparator": "SPACE",
                     "displayDensity": "NORMAL",
                     "displayName": "0Campaign Test - External Consultations - Japanese Encephalitis - Coverage by campaign",
-                    "external": false,
                     "favorite": false,
                     "favorites": [
                     ],
@@ -5157,7 +5160,6 @@
                     ],
                     "programIndicatorDimensions": [
                     ],
-                    "public": "--------",
                     "regression": false,
                     "regressionType": "NONE",
                     "relativePeriods": {
@@ -5222,9 +5224,30 @@
                     },
                     "sharing": {
                         "external": false,
+                        "public": "--------",
                         "userGroups": {
+                            "AnQDBhyc5R1": {
+                                "access": "rw------",
+                                "displayName": "Vaccination Referents",
+                                "id": "AnQDBhyc5R1"
+                            },
+                            "TeNDx28ih4i": {
+                                "access": "rw------",
+                                "displayName": "HMIS Officers",
+                                "id": "TeNDx28ih4i"
+                            }
                         },
                         "users": {
+                            "ouyVQFYUVbH": {
+                                "access": "rw------",
+                                "displayName": "pentaho pentaho",
+                                "id": "ouyVQFYUVbH"
+                            },
+                            "yHSEQsKSpYH": {
+                                "access": "rw------",
+                                "displayName": "User 4472",
+                                "id": "yHSEQsKSpYH"
+                            }
                         }
                     },
                     "showData": true,
@@ -5255,33 +5278,9 @@
                         }
                     ],
                     "type": "COLUMN",
-                    "userGroups": {
-                        "AnQDBhyc5R1": {
-                            "access": "rw------",
-                            "displayName": "Vaccination Referents",
-                            "id": "AnQDBhyc5R1"
-                        },
-                        "TeNDx28ih4i": {
-                            "access": "rw------",
-                            "displayName": "HMIS Officers",
-                            "id": "TeNDx28ih4i"
-                        }
-                    },
                     "userOrganisationUnit": false,
                     "userOrganisationUnitChildren": false,
-                    "userOrganisationUnitGrandChildren": false,
-                    "users": {
-                        "ouyVQFYUVbH": {
-                            "access": "rw------",
-                            "displayName": "pentaho pentaho",
-                            "id": "ouyVQFYUVbH"
-                        },
-                        "yHSEQsKSpYH": {
-                            "access": "rw------",
-                            "displayName": "User 4472",
-                            "id": "yHSEQsKSpYH"
-                        }
-                    }
+                    "userOrganisationUnitGrandChildren": false
                 },
                 {
                     "aggregationType": "DEFAULT",
@@ -5336,7 +5335,6 @@
                     "digitGroupSeparator": "SPACE",
                     "displayDensity": "NORMAL",
                     "displayName": "0Campaign Test - External Consultations - Japanese Encephalitis - Coverage by area",
-                    "external": false,
                     "favorite": false,
                     "favorites": [
                     ],
@@ -5391,7 +5389,6 @@
                     ],
                     "programIndicatorDimensions": [
                     ],
-                    "public": "--------",
                     "regression": false,
                     "regressionType": "NONE",
                     "relativePeriods": {
@@ -5456,9 +5453,30 @@
                     },
                     "sharing": {
                         "external": false,
+                        "public": "--------",
                         "userGroups": {
+                            "AnQDBhyc5R1": {
+                                "access": "rw------",
+                                "displayName": "Vaccination Referents",
+                                "id": "AnQDBhyc5R1"
+                            },
+                            "TeNDx28ih4i": {
+                                "access": "rw------",
+                                "displayName": "HMIS Officers",
+                                "id": "TeNDx28ih4i"
+                            }
                         },
                         "users": {
+                            "ouyVQFYUVbH": {
+                                "access": "rw------",
+                                "displayName": "pentaho pentaho",
+                                "id": "ouyVQFYUVbH"
+                            },
+                            "yHSEQsKSpYH": {
+                                "access": "rw------",
+                                "displayName": "User 4472",
+                                "id": "yHSEQsKSpYH"
+                            }
                         }
                     },
                     "showData": true,
@@ -5489,33 +5507,9 @@
                         }
                     ],
                     "type": "COLUMN",
-                    "userGroups": {
-                        "AnQDBhyc5R1": {
-                            "access": "rw------",
-                            "displayName": "Vaccination Referents",
-                            "id": "AnQDBhyc5R1"
-                        },
-                        "TeNDx28ih4i": {
-                            "access": "rw------",
-                            "displayName": "HMIS Officers",
-                            "id": "TeNDx28ih4i"
-                        }
-                    },
                     "userOrganisationUnit": false,
                     "userOrganisationUnitChildren": false,
-                    "userOrganisationUnitGrandChildren": false,
-                    "users": {
-                        "ouyVQFYUVbH": {
-                            "access": "rw------",
-                            "displayName": "pentaho pentaho",
-                            "id": "ouyVQFYUVbH"
-                        },
-                        "yHSEQsKSpYH": {
-                            "access": "rw------",
-                            "displayName": "User 4472",
-                            "id": "yHSEQsKSpYH"
-                        }
-                    }
+                    "userOrganisationUnitGrandChildren": false
                 },
                 {
                     "aggregationType": "DEFAULT",
@@ -5570,7 +5564,6 @@
                     "digitGroupSeparator": "SPACE",
                     "displayDensity": "NORMAL",
                     "displayName": "0Campaign Test - External Consultations - Japanese Encephalitis - Coverage by site",
-                    "external": false,
                     "favorite": false,
                     "favorites": [
                     ],
@@ -5625,7 +5618,6 @@
                     ],
                     "programIndicatorDimensions": [
                     ],
-                    "public": "--------",
                     "regression": false,
                     "regressionType": "NONE",
                     "relativePeriods": {
@@ -5690,9 +5682,30 @@
                     },
                     "sharing": {
                         "external": false,
+                        "public": "--------",
                         "userGroups": {
+                            "AnQDBhyc5R1": {
+                                "access": "rw------",
+                                "displayName": "Vaccination Referents",
+                                "id": "AnQDBhyc5R1"
+                            },
+                            "TeNDx28ih4i": {
+                                "access": "rw------",
+                                "displayName": "HMIS Officers",
+                                "id": "TeNDx28ih4i"
+                            }
                         },
                         "users": {
+                            "ouyVQFYUVbH": {
+                                "access": "rw------",
+                                "displayName": "pentaho pentaho",
+                                "id": "ouyVQFYUVbH"
+                            },
+                            "yHSEQsKSpYH": {
+                                "access": "rw------",
+                                "displayName": "User 4472",
+                                "id": "yHSEQsKSpYH"
+                            }
                         }
                     },
                     "showData": true,
@@ -5723,33 +5736,9 @@
                         }
                     ],
                     "type": "COLUMN",
-                    "userGroups": {
-                        "AnQDBhyc5R1": {
-                            "access": "rw------",
-                            "displayName": "Vaccination Referents",
-                            "id": "AnQDBhyc5R1"
-                        },
-                        "TeNDx28ih4i": {
-                            "access": "rw------",
-                            "displayName": "HMIS Officers",
-                            "id": "TeNDx28ih4i"
-                        }
-                    },
                     "userOrganisationUnit": false,
                     "userOrganisationUnitChildren": false,
-                    "userOrganisationUnitGrandChildren": false,
-                    "users": {
-                        "ouyVQFYUVbH": {
-                            "access": "rw------",
-                            "displayName": "pentaho pentaho",
-                            "id": "ouyVQFYUVbH"
-                        },
-                        "yHSEQsKSpYH": {
-                            "access": "rw------",
-                            "displayName": "User 4472",
-                            "id": "yHSEQsKSpYH"
-                        }
-                    }
+                    "userOrganisationUnitGrandChildren": false
                 },
                 {
                     "aggregationType": "DEFAULT",
@@ -5822,7 +5811,6 @@
                     "digitGroupSeparator": "SPACE",
                     "displayDensity": "NORMAL",
                     "displayName": "0Campaign Test - External Consultations - Malaria - Coverage by campaign",
-                    "external": false,
                     "favorite": false,
                     "favorites": [
                     ],
@@ -5877,7 +5865,6 @@
                     ],
                     "programIndicatorDimensions": [
                     ],
-                    "public": "--------",
                     "regression": false,
                     "regressionType": "NONE",
                     "relativePeriods": {
@@ -5942,9 +5929,30 @@
                     },
                     "sharing": {
                         "external": false,
+                        "public": "--------",
                         "userGroups": {
+                            "AnQDBhyc5R1": {
+                                "access": "rw------",
+                                "displayName": "Vaccination Referents",
+                                "id": "AnQDBhyc5R1"
+                            },
+                            "TeNDx28ih4i": {
+                                "access": "rw------",
+                                "displayName": "HMIS Officers",
+                                "id": "TeNDx28ih4i"
+                            }
                         },
                         "users": {
+                            "ouyVQFYUVbH": {
+                                "access": "rw------",
+                                "displayName": "pentaho pentaho",
+                                "id": "ouyVQFYUVbH"
+                            },
+                            "yHSEQsKSpYH": {
+                                "access": "rw------",
+                                "displayName": "User 4472",
+                                "id": "yHSEQsKSpYH"
+                            }
                         }
                     },
                     "showData": true,
@@ -5975,33 +5983,9 @@
                         }
                     ],
                     "type": "COLUMN",
-                    "userGroups": {
-                        "AnQDBhyc5R1": {
-                            "access": "rw------",
-                            "displayName": "Vaccination Referents",
-                            "id": "AnQDBhyc5R1"
-                        },
-                        "TeNDx28ih4i": {
-                            "access": "rw------",
-                            "displayName": "HMIS Officers",
-                            "id": "TeNDx28ih4i"
-                        }
-                    },
                     "userOrganisationUnit": false,
                     "userOrganisationUnitChildren": false,
-                    "userOrganisationUnitGrandChildren": false,
-                    "users": {
-                        "ouyVQFYUVbH": {
-                            "access": "rw------",
-                            "displayName": "pentaho pentaho",
-                            "id": "ouyVQFYUVbH"
-                        },
-                        "yHSEQsKSpYH": {
-                            "access": "rw------",
-                            "displayName": "User 4472",
-                            "id": "yHSEQsKSpYH"
-                        }
-                    }
+                    "userOrganisationUnitGrandChildren": false
                 },
                 {
                     "aggregationType": "DEFAULT",
@@ -6074,7 +6058,6 @@
                     "digitGroupSeparator": "SPACE",
                     "displayDensity": "NORMAL",
                     "displayName": "0Campaign Test - External Consultations - Malaria - Coverage by area",
-                    "external": false,
                     "favorite": false,
                     "favorites": [
                     ],
@@ -6129,7 +6112,6 @@
                     ],
                     "programIndicatorDimensions": [
                     ],
-                    "public": "--------",
                     "regression": false,
                     "regressionType": "NONE",
                     "relativePeriods": {
@@ -6194,9 +6176,30 @@
                     },
                     "sharing": {
                         "external": false,
+                        "public": "--------",
                         "userGroups": {
+                            "AnQDBhyc5R1": {
+                                "access": "rw------",
+                                "displayName": "Vaccination Referents",
+                                "id": "AnQDBhyc5R1"
+                            },
+                            "TeNDx28ih4i": {
+                                "access": "rw------",
+                                "displayName": "HMIS Officers",
+                                "id": "TeNDx28ih4i"
+                            }
                         },
                         "users": {
+                            "ouyVQFYUVbH": {
+                                "access": "rw------",
+                                "displayName": "pentaho pentaho",
+                                "id": "ouyVQFYUVbH"
+                            },
+                            "yHSEQsKSpYH": {
+                                "access": "rw------",
+                                "displayName": "User 4472",
+                                "id": "yHSEQsKSpYH"
+                            }
                         }
                     },
                     "showData": true,
@@ -6227,33 +6230,9 @@
                         }
                     ],
                     "type": "COLUMN",
-                    "userGroups": {
-                        "AnQDBhyc5R1": {
-                            "access": "rw------",
-                            "displayName": "Vaccination Referents",
-                            "id": "AnQDBhyc5R1"
-                        },
-                        "TeNDx28ih4i": {
-                            "access": "rw------",
-                            "displayName": "HMIS Officers",
-                            "id": "TeNDx28ih4i"
-                        }
-                    },
                     "userOrganisationUnit": false,
                     "userOrganisationUnitChildren": false,
-                    "userOrganisationUnitGrandChildren": false,
-                    "users": {
-                        "ouyVQFYUVbH": {
-                            "access": "rw------",
-                            "displayName": "pentaho pentaho",
-                            "id": "ouyVQFYUVbH"
-                        },
-                        "yHSEQsKSpYH": {
-                            "access": "rw------",
-                            "displayName": "User 4472",
-                            "id": "yHSEQsKSpYH"
-                        }
-                    }
+                    "userOrganisationUnitGrandChildren": false
                 },
                 {
                     "aggregationType": "DEFAULT",
@@ -6326,7 +6305,6 @@
                     "digitGroupSeparator": "SPACE",
                     "displayDensity": "NORMAL",
                     "displayName": "0Campaign Test - External Consultations - Malaria - Coverage by site",
-                    "external": false,
                     "favorite": false,
                     "favorites": [
                     ],
@@ -6381,7 +6359,6 @@
                     ],
                     "programIndicatorDimensions": [
                     ],
-                    "public": "--------",
                     "regression": false,
                     "regressionType": "NONE",
                     "relativePeriods": {
@@ -6446,9 +6423,30 @@
                     },
                     "sharing": {
                         "external": false,
+                        "public": "--------",
                         "userGroups": {
+                            "AnQDBhyc5R1": {
+                                "access": "rw------",
+                                "displayName": "Vaccination Referents",
+                                "id": "AnQDBhyc5R1"
+                            },
+                            "TeNDx28ih4i": {
+                                "access": "rw------",
+                                "displayName": "HMIS Officers",
+                                "id": "TeNDx28ih4i"
+                            }
                         },
                         "users": {
+                            "ouyVQFYUVbH": {
+                                "access": "rw------",
+                                "displayName": "pentaho pentaho",
+                                "id": "ouyVQFYUVbH"
+                            },
+                            "yHSEQsKSpYH": {
+                                "access": "rw------",
+                                "displayName": "User 4472",
+                                "id": "yHSEQsKSpYH"
+                            }
                         }
                     },
                     "showData": true,
@@ -6479,33 +6477,9 @@
                         }
                     ],
                     "type": "COLUMN",
-                    "userGroups": {
-                        "AnQDBhyc5R1": {
-                            "access": "rw------",
-                            "displayName": "Vaccination Referents",
-                            "id": "AnQDBhyc5R1"
-                        },
-                        "TeNDx28ih4i": {
-                            "access": "rw------",
-                            "displayName": "HMIS Officers",
-                            "id": "TeNDx28ih4i"
-                        }
-                    },
                     "userOrganisationUnit": false,
                     "userOrganisationUnitChildren": false,
-                    "userOrganisationUnitGrandChildren": false,
-                    "users": {
-                        "ouyVQFYUVbH": {
-                            "access": "rw------",
-                            "displayName": "pentaho pentaho",
-                            "id": "ouyVQFYUVbH"
-                        },
-                        "yHSEQsKSpYH": {
-                            "access": "rw------",
-                            "displayName": "User 4472",
-                            "id": "yHSEQsKSpYH"
-                        }
-                    }
+                    "userOrganisationUnitGrandChildren": false
                 },
                 {
                     "aggregationType": "DEFAULT",
@@ -6554,7 +6528,6 @@
                     "digitGroupSeparator": "NONE",
                     "displayDensity": "NORMAL",
                     "displayName": "0Campaign Test - External Consultations - Global - Global quality indicators",
-                    "external": false,
                     "favorite": false,
                     "favorites": [
                     ],
@@ -6611,7 +6584,6 @@
                     ],
                     "programIndicatorDimensions": [
                     ],
-                    "public": "--------",
                     "regression": false,
                     "relativePeriods": {
                         "biMonthsThisYear": false,
@@ -6675,9 +6647,30 @@
                     },
                     "sharing": {
                         "external": false,
+                        "public": "--------",
                         "userGroups": {
+                            "AnQDBhyc5R1": {
+                                "access": "rw------",
+                                "displayName": "Vaccination Referents",
+                                "id": "AnQDBhyc5R1"
+                            },
+                            "TeNDx28ih4i": {
+                                "access": "rw------",
+                                "displayName": "HMIS Officers",
+                                "id": "TeNDx28ih4i"
+                            }
                         },
                         "users": {
+                            "ouyVQFYUVbH": {
+                                "access": "rw------",
+                                "displayName": "pentaho pentaho",
+                                "id": "ouyVQFYUVbH"
+                            },
+                            "yHSEQsKSpYH": {
+                                "access": "rw------",
+                                "displayName": "User 4472",
+                                "id": "yHSEQsKSpYH"
+                            }
                         }
                     },
                     "showData": false,
@@ -6708,33 +6701,9 @@
                         }
                     ],
                     "type": "PIVOT_TABLE",
-                    "userGroups": {
-                        "AnQDBhyc5R1": {
-                            "access": "rw------",
-                            "displayName": "Vaccination Referents",
-                            "id": "AnQDBhyc5R1"
-                        },
-                        "TeNDx28ih4i": {
-                            "access": "rw------",
-                            "displayName": "HMIS Officers",
-                            "id": "TeNDx28ih4i"
-                        }
-                    },
                     "userOrganisationUnit": false,
                     "userOrganisationUnitChildren": false,
                     "userOrganisationUnitGrandChildren": false,
-                    "users": {
-                        "ouyVQFYUVbH": {
-                            "access": "rw------",
-                            "displayName": "pentaho pentaho",
-                            "id": "ouyVQFYUVbH"
-                        },
-                        "yHSEQsKSpYH": {
-                            "access": "rw------",
-                            "displayName": "User 4472",
-                            "id": "yHSEQsKSpYH"
-                        }
-                    },
                     "yearlySeries": [
                     ]
                 },
@@ -6785,7 +6754,6 @@
                     "digitGroupSeparator": "NONE",
                     "displayDensity": "NORMAL",
                     "displayName": "0Campaign Test - External Consultations - Global - AEFI and AEB indicators",
-                    "external": false,
                     "favorite": false,
                     "favorites": [
                     ],
@@ -6842,7 +6810,6 @@
                     ],
                     "programIndicatorDimensions": [
                     ],
-                    "public": "--------",
                     "regression": false,
                     "relativePeriods": {
                         "biMonthsThisYear": false,
@@ -6906,9 +6873,30 @@
                     },
                     "sharing": {
                         "external": false,
+                        "public": "--------",
                         "userGroups": {
+                            "AnQDBhyc5R1": {
+                                "access": "rw------",
+                                "displayName": "Vaccination Referents",
+                                "id": "AnQDBhyc5R1"
+                            },
+                            "TeNDx28ih4i": {
+                                "access": "rw------",
+                                "displayName": "HMIS Officers",
+                                "id": "TeNDx28ih4i"
+                            }
                         },
                         "users": {
+                            "ouyVQFYUVbH": {
+                                "access": "rw------",
+                                "displayName": "pentaho pentaho",
+                                "id": "ouyVQFYUVbH"
+                            },
+                            "yHSEQsKSpYH": {
+                                "access": "rw------",
+                                "displayName": "User 4472",
+                                "id": "yHSEQsKSpYH"
+                            }
                         }
                     },
                     "showData": false,
@@ -6939,33 +6927,9 @@
                         }
                     ],
                     "type": "PIVOT_TABLE",
-                    "userGroups": {
-                        "AnQDBhyc5R1": {
-                            "access": "rw------",
-                            "displayName": "Vaccination Referents",
-                            "id": "AnQDBhyc5R1"
-                        },
-                        "TeNDx28ih4i": {
-                            "access": "rw------",
-                            "displayName": "HMIS Officers",
-                            "id": "TeNDx28ih4i"
-                        }
-                    },
                     "userOrganisationUnit": false,
                     "userOrganisationUnitChildren": false,
                     "userOrganisationUnitGrandChildren": false,
-                    "users": {
-                        "ouyVQFYUVbH": {
-                            "access": "rw------",
-                            "displayName": "pentaho pentaho",
-                            "id": "ouyVQFYUVbH"
-                        },
-                        "yHSEQsKSpYH": {
-                            "access": "rw------",
-                            "displayName": "User 4472",
-                            "id": "yHSEQsKSpYH"
-                        }
-                    },
                     "yearlySeries": [
                     ]
                 },
@@ -7049,7 +7013,6 @@
                     "digitGroupSeparator": "NONE",
                     "displayDensity": "NORMAL",
                     "displayName": "0Campaign Test - External Consultations - Japanese Encephalitis - Dose 1 - Coverage by area and dose",
-                    "external": false,
                     "favorite": false,
                     "favorites": [
                     ],
@@ -7106,7 +7069,6 @@
                     ],
                     "programIndicatorDimensions": [
                     ],
-                    "public": "--------",
                     "regression": false,
                     "relativePeriods": {
                         "biMonthsThisYear": false,
@@ -7170,9 +7132,30 @@
                     },
                     "sharing": {
                         "external": false,
+                        "public": "--------",
                         "userGroups": {
+                            "AnQDBhyc5R1": {
+                                "access": "rw------",
+                                "displayName": "Vaccination Referents",
+                                "id": "AnQDBhyc5R1"
+                            },
+                            "TeNDx28ih4i": {
+                                "access": "rw------",
+                                "displayName": "HMIS Officers",
+                                "id": "TeNDx28ih4i"
+                            }
                         },
                         "users": {
+                            "ouyVQFYUVbH": {
+                                "access": "rw------",
+                                "displayName": "pentaho pentaho",
+                                "id": "ouyVQFYUVbH"
+                            },
+                            "yHSEQsKSpYH": {
+                                "access": "rw------",
+                                "displayName": "User 4472",
+                                "id": "yHSEQsKSpYH"
+                            }
                         }
                     },
                     "showData": false,
@@ -7203,33 +7186,9 @@
                         }
                     ],
                     "type": "PIVOT_TABLE",
-                    "userGroups": {
-                        "AnQDBhyc5R1": {
-                            "access": "rw------",
-                            "displayName": "Vaccination Referents",
-                            "id": "AnQDBhyc5R1"
-                        },
-                        "TeNDx28ih4i": {
-                            "access": "rw------",
-                            "displayName": "HMIS Officers",
-                            "id": "TeNDx28ih4i"
-                        }
-                    },
                     "userOrganisationUnit": false,
                     "userOrganisationUnitChildren": false,
                     "userOrganisationUnitGrandChildren": false,
-                    "users": {
-                        "ouyVQFYUVbH": {
-                            "access": "rw------",
-                            "displayName": "pentaho pentaho",
-                            "id": "ouyVQFYUVbH"
-                        },
-                        "yHSEQsKSpYH": {
-                            "access": "rw------",
-                            "displayName": "User 4472",
-                            "id": "yHSEQsKSpYH"
-                        }
-                    },
                     "yearlySeries": [
                     ]
                 },
@@ -7313,7 +7272,6 @@
                     "digitGroupSeparator": "NONE",
                     "displayDensity": "NORMAL",
                     "displayName": "0Campaign Test - External Consultations - Japanese Encephalitis - Dose 1 - Coverage by campaign and dose",
-                    "external": false,
                     "favorite": false,
                     "favorites": [
                     ],
@@ -7370,7 +7328,6 @@
                     ],
                     "programIndicatorDimensions": [
                     ],
-                    "public": "--------",
                     "regression": false,
                     "relativePeriods": {
                         "biMonthsThisYear": false,
@@ -7434,9 +7391,30 @@
                     },
                     "sharing": {
                         "external": false,
+                        "public": "--------",
                         "userGroups": {
+                            "AnQDBhyc5R1": {
+                                "access": "rw------",
+                                "displayName": "Vaccination Referents",
+                                "id": "AnQDBhyc5R1"
+                            },
+                            "TeNDx28ih4i": {
+                                "access": "rw------",
+                                "displayName": "HMIS Officers",
+                                "id": "TeNDx28ih4i"
+                            }
                         },
                         "users": {
+                            "ouyVQFYUVbH": {
+                                "access": "rw------",
+                                "displayName": "pentaho pentaho",
+                                "id": "ouyVQFYUVbH"
+                            },
+                            "yHSEQsKSpYH": {
+                                "access": "rw------",
+                                "displayName": "User 4472",
+                                "id": "yHSEQsKSpYH"
+                            }
                         }
                     },
                     "showData": false,
@@ -7467,33 +7445,9 @@
                         }
                     ],
                     "type": "PIVOT_TABLE",
-                    "userGroups": {
-                        "AnQDBhyc5R1": {
-                            "access": "rw------",
-                            "displayName": "Vaccination Referents",
-                            "id": "AnQDBhyc5R1"
-                        },
-                        "TeNDx28ih4i": {
-                            "access": "rw------",
-                            "displayName": "HMIS Officers",
-                            "id": "TeNDx28ih4i"
-                        }
-                    },
                     "userOrganisationUnit": false,
                     "userOrganisationUnitChildren": false,
                     "userOrganisationUnitGrandChildren": false,
-                    "users": {
-                        "ouyVQFYUVbH": {
-                            "access": "rw------",
-                            "displayName": "pentaho pentaho",
-                            "id": "ouyVQFYUVbH"
-                        },
-                        "yHSEQsKSpYH": {
-                            "access": "rw------",
-                            "displayName": "User 4472",
-                            "id": "yHSEQsKSpYH"
-                        }
-                    },
                     "yearlySeries": [
                     ]
                 },
@@ -7577,7 +7531,6 @@
                     "digitGroupSeparator": "NONE",
                     "displayDensity": "NORMAL",
                     "displayName": "0Campaign Test - External Consultations - Japanese Encephalitis - Dose 2 - Coverage by area and dose",
-                    "external": false,
                     "favorite": false,
                     "favorites": [
                     ],
@@ -7634,7 +7587,6 @@
                     ],
                     "programIndicatorDimensions": [
                     ],
-                    "public": "--------",
                     "regression": false,
                     "relativePeriods": {
                         "biMonthsThisYear": false,
@@ -7698,9 +7650,30 @@
                     },
                     "sharing": {
                         "external": false,
+                        "public": "--------",
                         "userGroups": {
+                            "AnQDBhyc5R1": {
+                                "access": "rw------",
+                                "displayName": "Vaccination Referents",
+                                "id": "AnQDBhyc5R1"
+                            },
+                            "TeNDx28ih4i": {
+                                "access": "rw------",
+                                "displayName": "HMIS Officers",
+                                "id": "TeNDx28ih4i"
+                            }
                         },
                         "users": {
+                            "ouyVQFYUVbH": {
+                                "access": "rw------",
+                                "displayName": "pentaho pentaho",
+                                "id": "ouyVQFYUVbH"
+                            },
+                            "yHSEQsKSpYH": {
+                                "access": "rw------",
+                                "displayName": "User 4472",
+                                "id": "yHSEQsKSpYH"
+                            }
                         }
                     },
                     "showData": false,
@@ -7731,33 +7704,9 @@
                         }
                     ],
                     "type": "PIVOT_TABLE",
-                    "userGroups": {
-                        "AnQDBhyc5R1": {
-                            "access": "rw------",
-                            "displayName": "Vaccination Referents",
-                            "id": "AnQDBhyc5R1"
-                        },
-                        "TeNDx28ih4i": {
-                            "access": "rw------",
-                            "displayName": "HMIS Officers",
-                            "id": "TeNDx28ih4i"
-                        }
-                    },
                     "userOrganisationUnit": false,
                     "userOrganisationUnitChildren": false,
                     "userOrganisationUnitGrandChildren": false,
-                    "users": {
-                        "ouyVQFYUVbH": {
-                            "access": "rw------",
-                            "displayName": "pentaho pentaho",
-                            "id": "ouyVQFYUVbH"
-                        },
-                        "yHSEQsKSpYH": {
-                            "access": "rw------",
-                            "displayName": "User 4472",
-                            "id": "yHSEQsKSpYH"
-                        }
-                    },
                     "yearlySeries": [
                     ]
                 },
@@ -7841,7 +7790,6 @@
                     "digitGroupSeparator": "NONE",
                     "displayDensity": "NORMAL",
                     "displayName": "0Campaign Test - External Consultations - Japanese Encephalitis - Dose 2 - Coverage by campaign and dose",
-                    "external": false,
                     "favorite": false,
                     "favorites": [
                     ],
@@ -7898,7 +7846,6 @@
                     ],
                     "programIndicatorDimensions": [
                     ],
-                    "public": "--------",
                     "regression": false,
                     "relativePeriods": {
                         "biMonthsThisYear": false,
@@ -7962,9 +7909,30 @@
                     },
                     "sharing": {
                         "external": false,
+                        "public": "--------",
                         "userGroups": {
+                            "AnQDBhyc5R1": {
+                                "access": "rw------",
+                                "displayName": "Vaccination Referents",
+                                "id": "AnQDBhyc5R1"
+                            },
+                            "TeNDx28ih4i": {
+                                "access": "rw------",
+                                "displayName": "HMIS Officers",
+                                "id": "TeNDx28ih4i"
+                            }
                         },
                         "users": {
+                            "ouyVQFYUVbH": {
+                                "access": "rw------",
+                                "displayName": "pentaho pentaho",
+                                "id": "ouyVQFYUVbH"
+                            },
+                            "yHSEQsKSpYH": {
+                                "access": "rw------",
+                                "displayName": "User 4472",
+                                "id": "yHSEQsKSpYH"
+                            }
                         }
                     },
                     "showData": false,
@@ -7995,33 +7963,9 @@
                         }
                     ],
                     "type": "PIVOT_TABLE",
-                    "userGroups": {
-                        "AnQDBhyc5R1": {
-                            "access": "rw------",
-                            "displayName": "Vaccination Referents",
-                            "id": "AnQDBhyc5R1"
-                        },
-                        "TeNDx28ih4i": {
-                            "access": "rw------",
-                            "displayName": "HMIS Officers",
-                            "id": "TeNDx28ih4i"
-                        }
-                    },
                     "userOrganisationUnit": false,
                     "userOrganisationUnitChildren": false,
                     "userOrganisationUnitGrandChildren": false,
-                    "users": {
-                        "ouyVQFYUVbH": {
-                            "access": "rw------",
-                            "displayName": "pentaho pentaho",
-                            "id": "ouyVQFYUVbH"
-                        },
-                        "yHSEQsKSpYH": {
-                            "access": "rw------",
-                            "displayName": "User 4472",
-                            "id": "yHSEQsKSpYH"
-                        }
-                    },
                     "yearlySeries": [
                     ]
                 },
@@ -8105,7 +8049,6 @@
                     "digitGroupSeparator": "NONE",
                     "displayDensity": "NORMAL",
                     "displayName": "0Campaign Test - External Consultations - Malaria - Dose 1 - Coverage by area and dose",
-                    "external": false,
                     "favorite": false,
                     "favorites": [
                     ],
@@ -8162,7 +8105,6 @@
                     ],
                     "programIndicatorDimensions": [
                     ],
-                    "public": "--------",
                     "regression": false,
                     "relativePeriods": {
                         "biMonthsThisYear": false,
@@ -8226,9 +8168,30 @@
                     },
                     "sharing": {
                         "external": false,
+                        "public": "--------",
                         "userGroups": {
+                            "AnQDBhyc5R1": {
+                                "access": "rw------",
+                                "displayName": "Vaccination Referents",
+                                "id": "AnQDBhyc5R1"
+                            },
+                            "TeNDx28ih4i": {
+                                "access": "rw------",
+                                "displayName": "HMIS Officers",
+                                "id": "TeNDx28ih4i"
+                            }
                         },
                         "users": {
+                            "ouyVQFYUVbH": {
+                                "access": "rw------",
+                                "displayName": "pentaho pentaho",
+                                "id": "ouyVQFYUVbH"
+                            },
+                            "yHSEQsKSpYH": {
+                                "access": "rw------",
+                                "displayName": "User 4472",
+                                "id": "yHSEQsKSpYH"
+                            }
                         }
                     },
                     "showData": false,
@@ -8259,33 +8222,9 @@
                         }
                     ],
                     "type": "PIVOT_TABLE",
-                    "userGroups": {
-                        "AnQDBhyc5R1": {
-                            "access": "rw------",
-                            "displayName": "Vaccination Referents",
-                            "id": "AnQDBhyc5R1"
-                        },
-                        "TeNDx28ih4i": {
-                            "access": "rw------",
-                            "displayName": "HMIS Officers",
-                            "id": "TeNDx28ih4i"
-                        }
-                    },
                     "userOrganisationUnit": false,
                     "userOrganisationUnitChildren": false,
                     "userOrganisationUnitGrandChildren": false,
-                    "users": {
-                        "ouyVQFYUVbH": {
-                            "access": "rw------",
-                            "displayName": "pentaho pentaho",
-                            "id": "ouyVQFYUVbH"
-                        },
-                        "yHSEQsKSpYH": {
-                            "access": "rw------",
-                            "displayName": "User 4472",
-                            "id": "yHSEQsKSpYH"
-                        }
-                    },
                     "yearlySeries": [
                     ]
                 },
@@ -8369,7 +8308,6 @@
                     "digitGroupSeparator": "NONE",
                     "displayDensity": "NORMAL",
                     "displayName": "0Campaign Test - External Consultations - Malaria - Dose 1 - Coverage by campaign and dose",
-                    "external": false,
                     "favorite": false,
                     "favorites": [
                     ],
@@ -8426,7 +8364,6 @@
                     ],
                     "programIndicatorDimensions": [
                     ],
-                    "public": "--------",
                     "regression": false,
                     "relativePeriods": {
                         "biMonthsThisYear": false,
@@ -8490,9 +8427,30 @@
                     },
                     "sharing": {
                         "external": false,
+                        "public": "--------",
                         "userGroups": {
+                            "AnQDBhyc5R1": {
+                                "access": "rw------",
+                                "displayName": "Vaccination Referents",
+                                "id": "AnQDBhyc5R1"
+                            },
+                            "TeNDx28ih4i": {
+                                "access": "rw------",
+                                "displayName": "HMIS Officers",
+                                "id": "TeNDx28ih4i"
+                            }
                         },
                         "users": {
+                            "ouyVQFYUVbH": {
+                                "access": "rw------",
+                                "displayName": "pentaho pentaho",
+                                "id": "ouyVQFYUVbH"
+                            },
+                            "yHSEQsKSpYH": {
+                                "access": "rw------",
+                                "displayName": "User 4472",
+                                "id": "yHSEQsKSpYH"
+                            }
                         }
                     },
                     "showData": false,
@@ -8523,33 +8481,9 @@
                         }
                     ],
                     "type": "PIVOT_TABLE",
-                    "userGroups": {
-                        "AnQDBhyc5R1": {
-                            "access": "rw------",
-                            "displayName": "Vaccination Referents",
-                            "id": "AnQDBhyc5R1"
-                        },
-                        "TeNDx28ih4i": {
-                            "access": "rw------",
-                            "displayName": "HMIS Officers",
-                            "id": "TeNDx28ih4i"
-                        }
-                    },
                     "userOrganisationUnit": false,
                     "userOrganisationUnitChildren": false,
                     "userOrganisationUnitGrandChildren": false,
-                    "users": {
-                        "ouyVQFYUVbH": {
-                            "access": "rw------",
-                            "displayName": "pentaho pentaho",
-                            "id": "ouyVQFYUVbH"
-                        },
-                        "yHSEQsKSpYH": {
-                            "access": "rw------",
-                            "displayName": "User 4472",
-                            "id": "yHSEQsKSpYH"
-                        }
-                    },
                     "yearlySeries": [
                     ]
                 },
@@ -8633,7 +8567,6 @@
                     "digitGroupSeparator": "NONE",
                     "displayDensity": "NORMAL",
                     "displayName": "0Campaign Test - External Consultations - Malaria - Dose 2 - Coverage by area and dose",
-                    "external": false,
                     "favorite": false,
                     "favorites": [
                     ],
@@ -8690,7 +8623,6 @@
                     ],
                     "programIndicatorDimensions": [
                     ],
-                    "public": "--------",
                     "regression": false,
                     "relativePeriods": {
                         "biMonthsThisYear": false,
@@ -8754,9 +8686,30 @@
                     },
                     "sharing": {
                         "external": false,
+                        "public": "--------",
                         "userGroups": {
+                            "AnQDBhyc5R1": {
+                                "access": "rw------",
+                                "displayName": "Vaccination Referents",
+                                "id": "AnQDBhyc5R1"
+                            },
+                            "TeNDx28ih4i": {
+                                "access": "rw------",
+                                "displayName": "HMIS Officers",
+                                "id": "TeNDx28ih4i"
+                            }
                         },
                         "users": {
+                            "ouyVQFYUVbH": {
+                                "access": "rw------",
+                                "displayName": "pentaho pentaho",
+                                "id": "ouyVQFYUVbH"
+                            },
+                            "yHSEQsKSpYH": {
+                                "access": "rw------",
+                                "displayName": "User 4472",
+                                "id": "yHSEQsKSpYH"
+                            }
                         }
                     },
                     "showData": false,
@@ -8787,33 +8740,9 @@
                         }
                     ],
                     "type": "PIVOT_TABLE",
-                    "userGroups": {
-                        "AnQDBhyc5R1": {
-                            "access": "rw------",
-                            "displayName": "Vaccination Referents",
-                            "id": "AnQDBhyc5R1"
-                        },
-                        "TeNDx28ih4i": {
-                            "access": "rw------",
-                            "displayName": "HMIS Officers",
-                            "id": "TeNDx28ih4i"
-                        }
-                    },
                     "userOrganisationUnit": false,
                     "userOrganisationUnitChildren": false,
                     "userOrganisationUnitGrandChildren": false,
-                    "users": {
-                        "ouyVQFYUVbH": {
-                            "access": "rw------",
-                            "displayName": "pentaho pentaho",
-                            "id": "ouyVQFYUVbH"
-                        },
-                        "yHSEQsKSpYH": {
-                            "access": "rw------",
-                            "displayName": "User 4472",
-                            "id": "yHSEQsKSpYH"
-                        }
-                    },
                     "yearlySeries": [
                     ]
                 },
@@ -8897,7 +8826,6 @@
                     "digitGroupSeparator": "NONE",
                     "displayDensity": "NORMAL",
                     "displayName": "0Campaign Test - External Consultations - Malaria - Dose 2 - Coverage by campaign and dose",
-                    "external": false,
                     "favorite": false,
                     "favorites": [
                     ],
@@ -8954,7 +8882,6 @@
                     ],
                     "programIndicatorDimensions": [
                     ],
-                    "public": "--------",
                     "regression": false,
                     "relativePeriods": {
                         "biMonthsThisYear": false,
@@ -9018,9 +8945,30 @@
                     },
                     "sharing": {
                         "external": false,
+                        "public": "--------",
                         "userGroups": {
+                            "AnQDBhyc5R1": {
+                                "access": "rw------",
+                                "displayName": "Vaccination Referents",
+                                "id": "AnQDBhyc5R1"
+                            },
+                            "TeNDx28ih4i": {
+                                "access": "rw------",
+                                "displayName": "HMIS Officers",
+                                "id": "TeNDx28ih4i"
+                            }
                         },
                         "users": {
+                            "ouyVQFYUVbH": {
+                                "access": "rw------",
+                                "displayName": "pentaho pentaho",
+                                "id": "ouyVQFYUVbH"
+                            },
+                            "yHSEQsKSpYH": {
+                                "access": "rw------",
+                                "displayName": "User 4472",
+                                "id": "yHSEQsKSpYH"
+                            }
                         }
                     },
                     "showData": false,
@@ -9051,33 +8999,9 @@
                         }
                     ],
                     "type": "PIVOT_TABLE",
-                    "userGroups": {
-                        "AnQDBhyc5R1": {
-                            "access": "rw------",
-                            "displayName": "Vaccination Referents",
-                            "id": "AnQDBhyc5R1"
-                        },
-                        "TeNDx28ih4i": {
-                            "access": "rw------",
-                            "displayName": "HMIS Officers",
-                            "id": "TeNDx28ih4i"
-                        }
-                    },
                     "userOrganisationUnit": false,
                     "userOrganisationUnitChildren": false,
                     "userOrganisationUnitGrandChildren": false,
-                    "users": {
-                        "ouyVQFYUVbH": {
-                            "access": "rw------",
-                            "displayName": "pentaho pentaho",
-                            "id": "ouyVQFYUVbH"
-                        },
-                        "yHSEQsKSpYH": {
-                            "access": "rw------",
-                            "displayName": "User 4472",
-                            "id": "yHSEQsKSpYH"
-                        }
-                    },
                     "yearlySeries": [
                     ]
                 },
@@ -9161,7 +9085,6 @@
                     "digitGroupSeparator": "NONE",
                     "displayDensity": "NORMAL",
                     "displayName": "0Campaign Test - External Consultations - Malaria - Dose 3 - Coverage by area and dose",
-                    "external": false,
                     "favorite": false,
                     "favorites": [
                     ],
@@ -9218,7 +9141,6 @@
                     ],
                     "programIndicatorDimensions": [
                     ],
-                    "public": "--------",
                     "regression": false,
                     "relativePeriods": {
                         "biMonthsThisYear": false,
@@ -9282,9 +9204,30 @@
                     },
                     "sharing": {
                         "external": false,
+                        "public": "--------",
                         "userGroups": {
+                            "AnQDBhyc5R1": {
+                                "access": "rw------",
+                                "displayName": "Vaccination Referents",
+                                "id": "AnQDBhyc5R1"
+                            },
+                            "TeNDx28ih4i": {
+                                "access": "rw------",
+                                "displayName": "HMIS Officers",
+                                "id": "TeNDx28ih4i"
+                            }
                         },
                         "users": {
+                            "ouyVQFYUVbH": {
+                                "access": "rw------",
+                                "displayName": "pentaho pentaho",
+                                "id": "ouyVQFYUVbH"
+                            },
+                            "yHSEQsKSpYH": {
+                                "access": "rw------",
+                                "displayName": "User 4472",
+                                "id": "yHSEQsKSpYH"
+                            }
                         }
                     },
                     "showData": false,
@@ -9315,33 +9258,9 @@
                         }
                     ],
                     "type": "PIVOT_TABLE",
-                    "userGroups": {
-                        "AnQDBhyc5R1": {
-                            "access": "rw------",
-                            "displayName": "Vaccination Referents",
-                            "id": "AnQDBhyc5R1"
-                        },
-                        "TeNDx28ih4i": {
-                            "access": "rw------",
-                            "displayName": "HMIS Officers",
-                            "id": "TeNDx28ih4i"
-                        }
-                    },
                     "userOrganisationUnit": false,
                     "userOrganisationUnitChildren": false,
                     "userOrganisationUnitGrandChildren": false,
-                    "users": {
-                        "ouyVQFYUVbH": {
-                            "access": "rw------",
-                            "displayName": "pentaho pentaho",
-                            "id": "ouyVQFYUVbH"
-                        },
-                        "yHSEQsKSpYH": {
-                            "access": "rw------",
-                            "displayName": "User 4472",
-                            "id": "yHSEQsKSpYH"
-                        }
-                    },
                     "yearlySeries": [
                     ]
                 },
@@ -9425,7 +9344,6 @@
                     "digitGroupSeparator": "NONE",
                     "displayDensity": "NORMAL",
                     "displayName": "0Campaign Test - External Consultations - Malaria - Dose 3 - Coverage by campaign and dose",
-                    "external": false,
                     "favorite": false,
                     "favorites": [
                     ],
@@ -9482,7 +9400,6 @@
                     ],
                     "programIndicatorDimensions": [
                     ],
-                    "public": "--------",
                     "regression": false,
                     "relativePeriods": {
                         "biMonthsThisYear": false,
@@ -9546,9 +9463,30 @@
                     },
                     "sharing": {
                         "external": false,
+                        "public": "--------",
                         "userGroups": {
+                            "AnQDBhyc5R1": {
+                                "access": "rw------",
+                                "displayName": "Vaccination Referents",
+                                "id": "AnQDBhyc5R1"
+                            },
+                            "TeNDx28ih4i": {
+                                "access": "rw------",
+                                "displayName": "HMIS Officers",
+                                "id": "TeNDx28ih4i"
+                            }
                         },
                         "users": {
+                            "ouyVQFYUVbH": {
+                                "access": "rw------",
+                                "displayName": "pentaho pentaho",
+                                "id": "ouyVQFYUVbH"
+                            },
+                            "yHSEQsKSpYH": {
+                                "access": "rw------",
+                                "displayName": "User 4472",
+                                "id": "yHSEQsKSpYH"
+                            }
                         }
                     },
                     "showData": false,
@@ -9579,33 +9517,9 @@
                         }
                     ],
                     "type": "PIVOT_TABLE",
-                    "userGroups": {
-                        "AnQDBhyc5R1": {
-                            "access": "rw------",
-                            "displayName": "Vaccination Referents",
-                            "id": "AnQDBhyc5R1"
-                        },
-                        "TeNDx28ih4i": {
-                            "access": "rw------",
-                            "displayName": "HMIS Officers",
-                            "id": "TeNDx28ih4i"
-                        }
-                    },
                     "userOrganisationUnit": false,
                     "userOrganisationUnitChildren": false,
                     "userOrganisationUnitGrandChildren": false,
-                    "users": {
-                        "ouyVQFYUVbH": {
-                            "access": "rw------",
-                            "displayName": "pentaho pentaho",
-                            "id": "ouyVQFYUVbH"
-                        },
-                        "yHSEQsKSpYH": {
-                            "access": "rw------",
-                            "displayName": "User 4472",
-                            "id": "yHSEQsKSpYH"
-                        }
-                    },
                     "yearlySeries": [
                     ]
                 },
@@ -9689,7 +9603,6 @@
                     "digitGroupSeparator": "NONE",
                     "displayDensity": "NORMAL",
                     "displayName": "0Campaign Test - External Consultations - Malaria - Dose 4 - Coverage by area and dose",
-                    "external": false,
                     "favorite": false,
                     "favorites": [
                     ],
@@ -9746,7 +9659,6 @@
                     ],
                     "programIndicatorDimensions": [
                     ],
-                    "public": "--------",
                     "regression": false,
                     "relativePeriods": {
                         "biMonthsThisYear": false,
@@ -9810,9 +9722,30 @@
                     },
                     "sharing": {
                         "external": false,
+                        "public": "--------",
                         "userGroups": {
+                            "AnQDBhyc5R1": {
+                                "access": "rw------",
+                                "displayName": "Vaccination Referents",
+                                "id": "AnQDBhyc5R1"
+                            },
+                            "TeNDx28ih4i": {
+                                "access": "rw------",
+                                "displayName": "HMIS Officers",
+                                "id": "TeNDx28ih4i"
+                            }
                         },
                         "users": {
+                            "ouyVQFYUVbH": {
+                                "access": "rw------",
+                                "displayName": "pentaho pentaho",
+                                "id": "ouyVQFYUVbH"
+                            },
+                            "yHSEQsKSpYH": {
+                                "access": "rw------",
+                                "displayName": "User 4472",
+                                "id": "yHSEQsKSpYH"
+                            }
                         }
                     },
                     "showData": false,
@@ -9843,33 +9776,9 @@
                         }
                     ],
                     "type": "PIVOT_TABLE",
-                    "userGroups": {
-                        "AnQDBhyc5R1": {
-                            "access": "rw------",
-                            "displayName": "Vaccination Referents",
-                            "id": "AnQDBhyc5R1"
-                        },
-                        "TeNDx28ih4i": {
-                            "access": "rw------",
-                            "displayName": "HMIS Officers",
-                            "id": "TeNDx28ih4i"
-                        }
-                    },
                     "userOrganisationUnit": false,
                     "userOrganisationUnitChildren": false,
                     "userOrganisationUnitGrandChildren": false,
-                    "users": {
-                        "ouyVQFYUVbH": {
-                            "access": "rw------",
-                            "displayName": "pentaho pentaho",
-                            "id": "ouyVQFYUVbH"
-                        },
-                        "yHSEQsKSpYH": {
-                            "access": "rw------",
-                            "displayName": "User 4472",
-                            "id": "yHSEQsKSpYH"
-                        }
-                    },
                     "yearlySeries": [
                     ]
                 },
@@ -9953,7 +9862,6 @@
                     "digitGroupSeparator": "NONE",
                     "displayDensity": "NORMAL",
                     "displayName": "0Campaign Test - External Consultations - Malaria - Dose 4 - Coverage by campaign and dose",
-                    "external": false,
                     "favorite": false,
                     "favorites": [
                     ],
@@ -10010,7 +9918,6 @@
                     ],
                     "programIndicatorDimensions": [
                     ],
-                    "public": "--------",
                     "regression": false,
                     "relativePeriods": {
                         "biMonthsThisYear": false,
@@ -10074,9 +9981,30 @@
                     },
                     "sharing": {
                         "external": false,
+                        "public": "--------",
                         "userGroups": {
+                            "AnQDBhyc5R1": {
+                                "access": "rw------",
+                                "displayName": "Vaccination Referents",
+                                "id": "AnQDBhyc5R1"
+                            },
+                            "TeNDx28ih4i": {
+                                "access": "rw------",
+                                "displayName": "HMIS Officers",
+                                "id": "TeNDx28ih4i"
+                            }
                         },
                         "users": {
+                            "ouyVQFYUVbH": {
+                                "access": "rw------",
+                                "displayName": "pentaho pentaho",
+                                "id": "ouyVQFYUVbH"
+                            },
+                            "yHSEQsKSpYH": {
+                                "access": "rw------",
+                                "displayName": "User 4472",
+                                "id": "yHSEQsKSpYH"
+                            }
                         }
                     },
                     "showData": false,
@@ -10107,33 +10035,9 @@
                         }
                     ],
                     "type": "PIVOT_TABLE",
-                    "userGroups": {
-                        "AnQDBhyc5R1": {
-                            "access": "rw------",
-                            "displayName": "Vaccination Referents",
-                            "id": "AnQDBhyc5R1"
-                        },
-                        "TeNDx28ih4i": {
-                            "access": "rw------",
-                            "displayName": "HMIS Officers",
-                            "id": "TeNDx28ih4i"
-                        }
-                    },
                     "userOrganisationUnit": false,
                     "userOrganisationUnitChildren": false,
                     "userOrganisationUnitGrandChildren": false,
-                    "users": {
-                        "ouyVQFYUVbH": {
-                            "access": "rw------",
-                            "displayName": "pentaho pentaho",
-                            "id": "ouyVQFYUVbH"
-                        },
-                        "yHSEQsKSpYH": {
-                            "access": "rw------",
-                            "displayName": "User 4472",
-                            "id": "yHSEQsKSpYH"
-                        }
-                    },
                     "yearlySeries": [
                     ]
                 },
@@ -10212,7 +10116,6 @@
                     "digitGroupSeparator": "NONE",
                     "displayDensity": "NORMAL",
                     "displayName": "0Campaign Test - External Consultations - Malaria - Dose 5 - Coverage by area and dose",
-                    "external": false,
                     "favorite": false,
                     "favorites": [
                     ],
@@ -10269,7 +10172,6 @@
                     ],
                     "programIndicatorDimensions": [
                     ],
-                    "public": "--------",
                     "regression": false,
                     "relativePeriods": {
                         "biMonthsThisYear": false,
@@ -10333,9 +10235,30 @@
                     },
                     "sharing": {
                         "external": false,
+                        "public": "--------",
                         "userGroups": {
+                            "AnQDBhyc5R1": {
+                                "access": "rw------",
+                                "displayName": "Vaccination Referents",
+                                "id": "AnQDBhyc5R1"
+                            },
+                            "TeNDx28ih4i": {
+                                "access": "rw------",
+                                "displayName": "HMIS Officers",
+                                "id": "TeNDx28ih4i"
+                            }
                         },
                         "users": {
+                            "ouyVQFYUVbH": {
+                                "access": "rw------",
+                                "displayName": "pentaho pentaho",
+                                "id": "ouyVQFYUVbH"
+                            },
+                            "yHSEQsKSpYH": {
+                                "access": "rw------",
+                                "displayName": "User 4472",
+                                "id": "yHSEQsKSpYH"
+                            }
                         }
                     },
                     "showData": false,
@@ -10366,33 +10289,9 @@
                         }
                     ],
                     "type": "PIVOT_TABLE",
-                    "userGroups": {
-                        "AnQDBhyc5R1": {
-                            "access": "rw------",
-                            "displayName": "Vaccination Referents",
-                            "id": "AnQDBhyc5R1"
-                        },
-                        "TeNDx28ih4i": {
-                            "access": "rw------",
-                            "displayName": "HMIS Officers",
-                            "id": "TeNDx28ih4i"
-                        }
-                    },
                     "userOrganisationUnit": false,
                     "userOrganisationUnitChildren": false,
                     "userOrganisationUnitGrandChildren": false,
-                    "users": {
-                        "ouyVQFYUVbH": {
-                            "access": "rw------",
-                            "displayName": "pentaho pentaho",
-                            "id": "ouyVQFYUVbH"
-                        },
-                        "yHSEQsKSpYH": {
-                            "access": "rw------",
-                            "displayName": "User 4472",
-                            "id": "yHSEQsKSpYH"
-                        }
-                    },
                     "yearlySeries": [
                     ]
                 },
@@ -10471,7 +10370,6 @@
                     "digitGroupSeparator": "NONE",
                     "displayDensity": "NORMAL",
                     "displayName": "0Campaign Test - External Consultations - Malaria - Dose 5 - Coverage by campaign and dose",
-                    "external": false,
                     "favorite": false,
                     "favorites": [
                     ],
@@ -10528,7 +10426,6 @@
                     ],
                     "programIndicatorDimensions": [
                     ],
-                    "public": "--------",
                     "regression": false,
                     "relativePeriods": {
                         "biMonthsThisYear": false,
@@ -10592,9 +10489,30 @@
                     },
                     "sharing": {
                         "external": false,
+                        "public": "--------",
                         "userGroups": {
+                            "AnQDBhyc5R1": {
+                                "access": "rw------",
+                                "displayName": "Vaccination Referents",
+                                "id": "AnQDBhyc5R1"
+                            },
+                            "TeNDx28ih4i": {
+                                "access": "rw------",
+                                "displayName": "HMIS Officers",
+                                "id": "TeNDx28ih4i"
+                            }
                         },
                         "users": {
+                            "ouyVQFYUVbH": {
+                                "access": "rw------",
+                                "displayName": "pentaho pentaho",
+                                "id": "ouyVQFYUVbH"
+                            },
+                            "yHSEQsKSpYH": {
+                                "access": "rw------",
+                                "displayName": "User 4472",
+                                "id": "yHSEQsKSpYH"
+                            }
                         }
                     },
                     "showData": false,
@@ -10625,33 +10543,9 @@
                         }
                     ],
                     "type": "PIVOT_TABLE",
-                    "userGroups": {
-                        "AnQDBhyc5R1": {
-                            "access": "rw------",
-                            "displayName": "Vaccination Referents",
-                            "id": "AnQDBhyc5R1"
-                        },
-                        "TeNDx28ih4i": {
-                            "access": "rw------",
-                            "displayName": "HMIS Officers",
-                            "id": "TeNDx28ih4i"
-                        }
-                    },
                     "userOrganisationUnit": false,
                     "userOrganisationUnitChildren": false,
                     "userOrganisationUnitGrandChildren": false,
-                    "users": {
-                        "ouyVQFYUVbH": {
-                            "access": "rw------",
-                            "displayName": "pentaho pentaho",
-                            "id": "ouyVQFYUVbH"
-                        },
-                        "yHSEQsKSpYH": {
-                            "access": "rw------",
-                            "displayName": "User 4472",
-                            "id": "yHSEQsKSpYH"
-                        }
-                    },
                     "yearlySeries": [
                     ]
                 },
@@ -10720,7 +10614,6 @@
                     "digitGroupSeparator": "NONE",
                     "displayDensity": "NORMAL",
                     "displayName": "0Campaign Test - External Consultations - Japanese Encephalitis - Coverage by area total",
-                    "external": false,
                     "favorite": false,
                     "favorites": [
                     ],
@@ -10777,7 +10670,6 @@
                     ],
                     "programIndicatorDimensions": [
                     ],
-                    "public": "--------",
                     "regression": false,
                     "relativePeriods": {
                         "biMonthsThisYear": false,
@@ -10841,9 +10733,30 @@
                     },
                     "sharing": {
                         "external": false,
+                        "public": "--------",
                         "userGroups": {
+                            "AnQDBhyc5R1": {
+                                "access": "rw------",
+                                "displayName": "Vaccination Referents",
+                                "id": "AnQDBhyc5R1"
+                            },
+                            "TeNDx28ih4i": {
+                                "access": "rw------",
+                                "displayName": "HMIS Officers",
+                                "id": "TeNDx28ih4i"
+                            }
                         },
                         "users": {
+                            "ouyVQFYUVbH": {
+                                "access": "rw------",
+                                "displayName": "pentaho pentaho",
+                                "id": "ouyVQFYUVbH"
+                            },
+                            "yHSEQsKSpYH": {
+                                "access": "rw------",
+                                "displayName": "User 4472",
+                                "id": "yHSEQsKSpYH"
+                            }
                         }
                     },
                     "showData": false,
@@ -10874,33 +10787,9 @@
                         }
                     ],
                     "type": "PIVOT_TABLE",
-                    "userGroups": {
-                        "AnQDBhyc5R1": {
-                            "access": "rw------",
-                            "displayName": "Vaccination Referents",
-                            "id": "AnQDBhyc5R1"
-                        },
-                        "TeNDx28ih4i": {
-                            "access": "rw------",
-                            "displayName": "HMIS Officers",
-                            "id": "TeNDx28ih4i"
-                        }
-                    },
                     "userOrganisationUnit": false,
                     "userOrganisationUnitChildren": false,
                     "userOrganisationUnitGrandChildren": false,
-                    "users": {
-                        "ouyVQFYUVbH": {
-                            "access": "rw------",
-                            "displayName": "pentaho pentaho",
-                            "id": "ouyVQFYUVbH"
-                        },
-                        "yHSEQsKSpYH": {
-                            "access": "rw------",
-                            "displayName": "User 4472",
-                            "id": "yHSEQsKSpYH"
-                        }
-                    },
                     "yearlySeries": [
                     ]
                 },
@@ -10969,7 +10858,6 @@
                     "digitGroupSeparator": "NONE",
                     "displayDensity": "NORMAL",
                     "displayName": "0Campaign Test - External Consultations - Japanese Encephalitis - Coverage by campaign total",
-                    "external": false,
                     "favorite": false,
                     "favorites": [
                     ],
@@ -11026,7 +10914,6 @@
                     ],
                     "programIndicatorDimensions": [
                     ],
-                    "public": "--------",
                     "regression": false,
                     "relativePeriods": {
                         "biMonthsThisYear": false,
@@ -11090,9 +10977,30 @@
                     },
                     "sharing": {
                         "external": false,
+                        "public": "--------",
                         "userGroups": {
+                            "AnQDBhyc5R1": {
+                                "access": "rw------",
+                                "displayName": "Vaccination Referents",
+                                "id": "AnQDBhyc5R1"
+                            },
+                            "TeNDx28ih4i": {
+                                "access": "rw------",
+                                "displayName": "HMIS Officers",
+                                "id": "TeNDx28ih4i"
+                            }
                         },
                         "users": {
+                            "ouyVQFYUVbH": {
+                                "access": "rw------",
+                                "displayName": "pentaho pentaho",
+                                "id": "ouyVQFYUVbH"
+                            },
+                            "yHSEQsKSpYH": {
+                                "access": "rw------",
+                                "displayName": "User 4472",
+                                "id": "yHSEQsKSpYH"
+                            }
                         }
                     },
                     "showData": false,
@@ -11123,33 +11031,9 @@
                         }
                     ],
                     "type": "PIVOT_TABLE",
-                    "userGroups": {
-                        "AnQDBhyc5R1": {
-                            "access": "rw------",
-                            "displayName": "Vaccination Referents",
-                            "id": "AnQDBhyc5R1"
-                        },
-                        "TeNDx28ih4i": {
-                            "access": "rw------",
-                            "displayName": "HMIS Officers",
-                            "id": "TeNDx28ih4i"
-                        }
-                    },
                     "userOrganisationUnit": false,
                     "userOrganisationUnitChildren": false,
                     "userOrganisationUnitGrandChildren": false,
-                    "users": {
-                        "ouyVQFYUVbH": {
-                            "access": "rw------",
-                            "displayName": "pentaho pentaho",
-                            "id": "ouyVQFYUVbH"
-                        },
-                        "yHSEQsKSpYH": {
-                            "access": "rw------",
-                            "displayName": "User 4472",
-                            "id": "yHSEQsKSpYH"
-                        }
-                    },
                     "yearlySeries": [
                     ]
                 },
@@ -11216,7 +11100,6 @@
                     "digitGroupSeparator": "NONE",
                     "displayDensity": "NORMAL",
                     "displayName": "0Campaign Test - External Consultations - Japanese Encephalitis - Quality indicators",
-                    "external": false,
                     "favorite": false,
                     "favorites": [
                     ],
@@ -11273,7 +11156,6 @@
                     ],
                     "programIndicatorDimensions": [
                     ],
-                    "public": "--------",
                     "regression": false,
                     "relativePeriods": {
                         "biMonthsThisYear": false,
@@ -11341,9 +11223,30 @@
                     },
                     "sharing": {
                         "external": false,
+                        "public": "--------",
                         "userGroups": {
+                            "AnQDBhyc5R1": {
+                                "access": "rw------",
+                                "displayName": "Vaccination Referents",
+                                "id": "AnQDBhyc5R1"
+                            },
+                            "TeNDx28ih4i": {
+                                "access": "rw------",
+                                "displayName": "HMIS Officers",
+                                "id": "TeNDx28ih4i"
+                            }
                         },
                         "users": {
+                            "ouyVQFYUVbH": {
+                                "access": "rw------",
+                                "displayName": "pentaho pentaho",
+                                "id": "ouyVQFYUVbH"
+                            },
+                            "yHSEQsKSpYH": {
+                                "access": "rw------",
+                                "displayName": "User 4472",
+                                "id": "yHSEQsKSpYH"
+                            }
                         }
                     },
                     "showData": false,
@@ -11374,33 +11277,9 @@
                         }
                     ],
                     "type": "PIVOT_TABLE",
-                    "userGroups": {
-                        "AnQDBhyc5R1": {
-                            "access": "rw------",
-                            "displayName": "Vaccination Referents",
-                            "id": "AnQDBhyc5R1"
-                        },
-                        "TeNDx28ih4i": {
-                            "access": "rw------",
-                            "displayName": "HMIS Officers",
-                            "id": "TeNDx28ih4i"
-                        }
-                    },
                     "userOrganisationUnit": false,
                     "userOrganisationUnitChildren": false,
                     "userOrganisationUnitGrandChildren": false,
-                    "users": {
-                        "ouyVQFYUVbH": {
-                            "access": "rw------",
-                            "displayName": "pentaho pentaho",
-                            "id": "ouyVQFYUVbH"
-                        },
-                        "yHSEQsKSpYH": {
-                            "access": "rw------",
-                            "displayName": "User 4472",
-                            "id": "yHSEQsKSpYH"
-                        }
-                    },
                     "yearlySeries": [
                     ]
                 },
@@ -11463,7 +11342,6 @@
                     "digitGroupSeparator": "NONE",
                     "displayDensity": "NORMAL",
                     "displayName": "0Campaign Test - External Consultations - Japanese Encephalitis - Vaccines per area",
-                    "external": false,
                     "favorite": false,
                     "favorites": [
                     ],
@@ -11520,7 +11398,6 @@
                     ],
                     "programIndicatorDimensions": [
                     ],
-                    "public": "--------",
                     "regression": false,
                     "relativePeriods": {
                         "biMonthsThisYear": false,
@@ -11584,9 +11461,30 @@
                     },
                     "sharing": {
                         "external": false,
+                        "public": "--------",
                         "userGroups": {
+                            "AnQDBhyc5R1": {
+                                "access": "rw------",
+                                "displayName": "Vaccination Referents",
+                                "id": "AnQDBhyc5R1"
+                            },
+                            "TeNDx28ih4i": {
+                                "access": "rw------",
+                                "displayName": "HMIS Officers",
+                                "id": "TeNDx28ih4i"
+                            }
                         },
                         "users": {
+                            "ouyVQFYUVbH": {
+                                "access": "rw------",
+                                "displayName": "pentaho pentaho",
+                                "id": "ouyVQFYUVbH"
+                            },
+                            "yHSEQsKSpYH": {
+                                "access": "rw------",
+                                "displayName": "User 4472",
+                                "id": "yHSEQsKSpYH"
+                            }
                         }
                     },
                     "showData": false,
@@ -11617,33 +11515,9 @@
                         }
                     ],
                     "type": "PIVOT_TABLE",
-                    "userGroups": {
-                        "AnQDBhyc5R1": {
-                            "access": "rw------",
-                            "displayName": "Vaccination Referents",
-                            "id": "AnQDBhyc5R1"
-                        },
-                        "TeNDx28ih4i": {
-                            "access": "rw------",
-                            "displayName": "HMIS Officers",
-                            "id": "TeNDx28ih4i"
-                        }
-                    },
                     "userOrganisationUnit": false,
                     "userOrganisationUnitChildren": false,
                     "userOrganisationUnitGrandChildren": false,
-                    "users": {
-                        "ouyVQFYUVbH": {
-                            "access": "rw------",
-                            "displayName": "pentaho pentaho",
-                            "id": "ouyVQFYUVbH"
-                        },
-                        "yHSEQsKSpYH": {
-                            "access": "rw------",
-                            "displayName": "User 4472",
-                            "id": "yHSEQsKSpYH"
-                        }
-                    },
                     "yearlySeries": [
                     ]
                 },
@@ -11706,7 +11580,6 @@
                     "digitGroupSeparator": "NONE",
                     "displayDensity": "NORMAL",
                     "displayName": "0Campaign Test - External Consultations - Japanese Encephalitis - Vaccines per campaign",
-                    "external": false,
                     "favorite": false,
                     "favorites": [
                     ],
@@ -11763,7 +11636,6 @@
                     ],
                     "programIndicatorDimensions": [
                     ],
-                    "public": "--------",
                     "regression": false,
                     "relativePeriods": {
                         "biMonthsThisYear": false,
@@ -11827,9 +11699,30 @@
                     },
                     "sharing": {
                         "external": false,
+                        "public": "--------",
                         "userGroups": {
+                            "AnQDBhyc5R1": {
+                                "access": "rw------",
+                                "displayName": "Vaccination Referents",
+                                "id": "AnQDBhyc5R1"
+                            },
+                            "TeNDx28ih4i": {
+                                "access": "rw------",
+                                "displayName": "HMIS Officers",
+                                "id": "TeNDx28ih4i"
+                            }
                         },
                         "users": {
+                            "ouyVQFYUVbH": {
+                                "access": "rw------",
+                                "displayName": "pentaho pentaho",
+                                "id": "ouyVQFYUVbH"
+                            },
+                            "yHSEQsKSpYH": {
+                                "access": "rw------",
+                                "displayName": "User 4472",
+                                "id": "yHSEQsKSpYH"
+                            }
                         }
                     },
                     "showData": false,
@@ -11860,33 +11753,9 @@
                         }
                     ],
                     "type": "PIVOT_TABLE",
-                    "userGroups": {
-                        "AnQDBhyc5R1": {
-                            "access": "rw------",
-                            "displayName": "Vaccination Referents",
-                            "id": "AnQDBhyc5R1"
-                        },
-                        "TeNDx28ih4i": {
-                            "access": "rw------",
-                            "displayName": "HMIS Officers",
-                            "id": "TeNDx28ih4i"
-                        }
-                    },
                     "userOrganisationUnit": false,
                     "userOrganisationUnitChildren": false,
                     "userOrganisationUnitGrandChildren": false,
-                    "users": {
-                        "ouyVQFYUVbH": {
-                            "access": "rw------",
-                            "displayName": "pentaho pentaho",
-                            "id": "ouyVQFYUVbH"
-                        },
-                        "yHSEQsKSpYH": {
-                            "access": "rw------",
-                            "displayName": "User 4472",
-                            "id": "yHSEQsKSpYH"
-                        }
-                    },
                     "yearlySeries": [
                     ]
                 },
@@ -11959,7 +11828,6 @@
                     "digitGroupSeparator": "NONE",
                     "displayDensity": "NORMAL",
                     "displayName": "0Campaign Test - External Consultations - Japanese Encephalitis - Vaccines per date and team",
-                    "external": false,
                     "favorite": false,
                     "favorites": [
                     ],
@@ -12016,7 +11884,6 @@
                     ],
                     "programIndicatorDimensions": [
                     ],
-                    "public": "--------",
                     "regression": false,
                     "relativePeriods": {
                         "biMonthsThisYear": false,
@@ -12084,9 +11951,30 @@
                     },
                     "sharing": {
                         "external": false,
+                        "public": "--------",
                         "userGroups": {
+                            "AnQDBhyc5R1": {
+                                "access": "rw------",
+                                "displayName": "Vaccination Referents",
+                                "id": "AnQDBhyc5R1"
+                            },
+                            "TeNDx28ih4i": {
+                                "access": "rw------",
+                                "displayName": "HMIS Officers",
+                                "id": "TeNDx28ih4i"
+                            }
                         },
                         "users": {
+                            "ouyVQFYUVbH": {
+                                "access": "rw------",
+                                "displayName": "pentaho pentaho",
+                                "id": "ouyVQFYUVbH"
+                            },
+                            "yHSEQsKSpYH": {
+                                "access": "rw------",
+                                "displayName": "User 4472",
+                                "id": "yHSEQsKSpYH"
+                            }
                         }
                     },
                     "showData": false,
@@ -12117,33 +12005,9 @@
                         }
                     ],
                     "type": "PIVOT_TABLE",
-                    "userGroups": {
-                        "AnQDBhyc5R1": {
-                            "access": "rw------",
-                            "displayName": "Vaccination Referents",
-                            "id": "AnQDBhyc5R1"
-                        },
-                        "TeNDx28ih4i": {
-                            "access": "rw------",
-                            "displayName": "HMIS Officers",
-                            "id": "TeNDx28ih4i"
-                        }
-                    },
                     "userOrganisationUnit": false,
                     "userOrganisationUnitChildren": false,
                     "userOrganisationUnitGrandChildren": false,
-                    "users": {
-                        "ouyVQFYUVbH": {
-                            "access": "rw------",
-                            "displayName": "pentaho pentaho",
-                            "id": "ouyVQFYUVbH"
-                        },
-                        "yHSEQsKSpYH": {
-                            "access": "rw------",
-                            "displayName": "User 4472",
-                            "id": "yHSEQsKSpYH"
-                        }
-                    },
                     "yearlySeries": [
                     ]
                 },
@@ -12229,7 +12093,6 @@
                     "digitGroupSeparator": "NONE",
                     "displayDensity": "NORMAL",
                     "displayName": "0Campaign Test - External Consultations - Japanese Encephalitis - Coverage by age range and dose",
-                    "external": false,
                     "favorite": false,
                     "favorites": [
                     ],
@@ -12290,7 +12153,6 @@
                     ],
                     "programIndicatorDimensions": [
                     ],
-                    "public": "--------",
                     "regression": false,
                     "relativePeriods": {
                         "biMonthsThisYear": false,
@@ -12350,9 +12212,30 @@
                     },
                     "sharing": {
                         "external": false,
+                        "public": "--------",
                         "userGroups": {
+                            "AnQDBhyc5R1": {
+                                "access": "rw------",
+                                "displayName": "Vaccination Referents",
+                                "id": "AnQDBhyc5R1"
+                            },
+                            "TeNDx28ih4i": {
+                                "access": "rw------",
+                                "displayName": "HMIS Officers",
+                                "id": "TeNDx28ih4i"
+                            }
                         },
                         "users": {
+                            "ouyVQFYUVbH": {
+                                "access": "rw------",
+                                "displayName": "pentaho pentaho",
+                                "id": "ouyVQFYUVbH"
+                            },
+                            "yHSEQsKSpYH": {
+                                "access": "rw------",
+                                "displayName": "User 4472",
+                                "id": "yHSEQsKSpYH"
+                            }
                         }
                     },
                     "showData": false,
@@ -12383,33 +12266,9 @@
                         }
                     ],
                     "type": "PIVOT_TABLE",
-                    "userGroups": {
-                        "AnQDBhyc5R1": {
-                            "access": "rw------",
-                            "displayName": "Vaccination Referents",
-                            "id": "AnQDBhyc5R1"
-                        },
-                        "TeNDx28ih4i": {
-                            "access": "rw------",
-                            "displayName": "HMIS Officers",
-                            "id": "TeNDx28ih4i"
-                        }
-                    },
                     "userOrganisationUnit": false,
                     "userOrganisationUnitChildren": false,
                     "userOrganisationUnitGrandChildren": false,
-                    "users": {
-                        "ouyVQFYUVbH": {
-                            "access": "rw------",
-                            "displayName": "pentaho pentaho",
-                            "id": "ouyVQFYUVbH"
-                        },
-                        "yHSEQsKSpYH": {
-                            "access": "rw------",
-                            "displayName": "User 4472",
-                            "id": "yHSEQsKSpYH"
-                        }
-                    },
                     "yearlySeries": [
                     ]
                 },
@@ -12508,7 +12367,6 @@
                     "digitGroupSeparator": "NONE",
                     "displayDensity": "NORMAL",
                     "displayName": "0Campaign Test - External Consultations - Malaria - Coverage by area total",
-                    "external": false,
                     "favorite": false,
                     "favorites": [
                     ],
@@ -12565,7 +12423,6 @@
                     ],
                     "programIndicatorDimensions": [
                     ],
-                    "public": "--------",
                     "regression": false,
                     "relativePeriods": {
                         "biMonthsThisYear": false,
@@ -12629,9 +12486,30 @@
                     },
                     "sharing": {
                         "external": false,
+                        "public": "--------",
                         "userGroups": {
+                            "AnQDBhyc5R1": {
+                                "access": "rw------",
+                                "displayName": "Vaccination Referents",
+                                "id": "AnQDBhyc5R1"
+                            },
+                            "TeNDx28ih4i": {
+                                "access": "rw------",
+                                "displayName": "HMIS Officers",
+                                "id": "TeNDx28ih4i"
+                            }
                         },
                         "users": {
+                            "ouyVQFYUVbH": {
+                                "access": "rw------",
+                                "displayName": "pentaho pentaho",
+                                "id": "ouyVQFYUVbH"
+                            },
+                            "yHSEQsKSpYH": {
+                                "access": "rw------",
+                                "displayName": "User 4472",
+                                "id": "yHSEQsKSpYH"
+                            }
                         }
                     },
                     "showData": false,
@@ -12662,33 +12540,9 @@
                         }
                     ],
                     "type": "PIVOT_TABLE",
-                    "userGroups": {
-                        "AnQDBhyc5R1": {
-                            "access": "rw------",
-                            "displayName": "Vaccination Referents",
-                            "id": "AnQDBhyc5R1"
-                        },
-                        "TeNDx28ih4i": {
-                            "access": "rw------",
-                            "displayName": "HMIS Officers",
-                            "id": "TeNDx28ih4i"
-                        }
-                    },
                     "userOrganisationUnit": false,
                     "userOrganisationUnitChildren": false,
                     "userOrganisationUnitGrandChildren": false,
-                    "users": {
-                        "ouyVQFYUVbH": {
-                            "access": "rw------",
-                            "displayName": "pentaho pentaho",
-                            "id": "ouyVQFYUVbH"
-                        },
-                        "yHSEQsKSpYH": {
-                            "access": "rw------",
-                            "displayName": "User 4472",
-                            "id": "yHSEQsKSpYH"
-                        }
-                    },
                     "yearlySeries": [
                     ]
                 },
@@ -12787,7 +12641,6 @@
                     "digitGroupSeparator": "NONE",
                     "displayDensity": "NORMAL",
                     "displayName": "0Campaign Test - External Consultations - Malaria - Coverage by campaign total",
-                    "external": false,
                     "favorite": false,
                     "favorites": [
                     ],
@@ -12844,7 +12697,6 @@
                     ],
                     "programIndicatorDimensions": [
                     ],
-                    "public": "--------",
                     "regression": false,
                     "relativePeriods": {
                         "biMonthsThisYear": false,
@@ -12908,9 +12760,30 @@
                     },
                     "sharing": {
                         "external": false,
+                        "public": "--------",
                         "userGroups": {
+                            "AnQDBhyc5R1": {
+                                "access": "rw------",
+                                "displayName": "Vaccination Referents",
+                                "id": "AnQDBhyc5R1"
+                            },
+                            "TeNDx28ih4i": {
+                                "access": "rw------",
+                                "displayName": "HMIS Officers",
+                                "id": "TeNDx28ih4i"
+                            }
                         },
                         "users": {
+                            "ouyVQFYUVbH": {
+                                "access": "rw------",
+                                "displayName": "pentaho pentaho",
+                                "id": "ouyVQFYUVbH"
+                            },
+                            "yHSEQsKSpYH": {
+                                "access": "rw------",
+                                "displayName": "User 4472",
+                                "id": "yHSEQsKSpYH"
+                            }
                         }
                     },
                     "showData": false,
@@ -12941,33 +12814,9 @@
                         }
                     ],
                     "type": "PIVOT_TABLE",
-                    "userGroups": {
-                        "AnQDBhyc5R1": {
-                            "access": "rw------",
-                            "displayName": "Vaccination Referents",
-                            "id": "AnQDBhyc5R1"
-                        },
-                        "TeNDx28ih4i": {
-                            "access": "rw------",
-                            "displayName": "HMIS Officers",
-                            "id": "TeNDx28ih4i"
-                        }
-                    },
                     "userOrganisationUnit": false,
                     "userOrganisationUnitChildren": false,
                     "userOrganisationUnitGrandChildren": false,
-                    "users": {
-                        "ouyVQFYUVbH": {
-                            "access": "rw------",
-                            "displayName": "pentaho pentaho",
-                            "id": "ouyVQFYUVbH"
-                        },
-                        "yHSEQsKSpYH": {
-                            "access": "rw------",
-                            "displayName": "User 4472",
-                            "id": "yHSEQsKSpYH"
-                        }
-                    },
                     "yearlySeries": [
                     ]
                 },
@@ -13034,7 +12883,6 @@
                     "digitGroupSeparator": "NONE",
                     "displayDensity": "NORMAL",
                     "displayName": "0Campaign Test - External Consultations - Malaria - Quality indicators",
-                    "external": false,
                     "favorite": false,
                     "favorites": [
                     ],
@@ -13091,7 +12939,6 @@
                     ],
                     "programIndicatorDimensions": [
                     ],
-                    "public": "--------",
                     "regression": false,
                     "relativePeriods": {
                         "biMonthsThisYear": false,
@@ -13159,9 +13006,30 @@
                     },
                     "sharing": {
                         "external": false,
+                        "public": "--------",
                         "userGroups": {
+                            "AnQDBhyc5R1": {
+                                "access": "rw------",
+                                "displayName": "Vaccination Referents",
+                                "id": "AnQDBhyc5R1"
+                            },
+                            "TeNDx28ih4i": {
+                                "access": "rw------",
+                                "displayName": "HMIS Officers",
+                                "id": "TeNDx28ih4i"
+                            }
                         },
                         "users": {
+                            "ouyVQFYUVbH": {
+                                "access": "rw------",
+                                "displayName": "pentaho pentaho",
+                                "id": "ouyVQFYUVbH"
+                            },
+                            "yHSEQsKSpYH": {
+                                "access": "rw------",
+                                "displayName": "User 4472",
+                                "id": "yHSEQsKSpYH"
+                            }
                         }
                     },
                     "showData": false,
@@ -13192,33 +13060,9 @@
                         }
                     ],
                     "type": "PIVOT_TABLE",
-                    "userGroups": {
-                        "AnQDBhyc5R1": {
-                            "access": "rw------",
-                            "displayName": "Vaccination Referents",
-                            "id": "AnQDBhyc5R1"
-                        },
-                        "TeNDx28ih4i": {
-                            "access": "rw------",
-                            "displayName": "HMIS Officers",
-                            "id": "TeNDx28ih4i"
-                        }
-                    },
                     "userOrganisationUnit": false,
                     "userOrganisationUnitChildren": false,
                     "userOrganisationUnitGrandChildren": false,
-                    "users": {
-                        "ouyVQFYUVbH": {
-                            "access": "rw------",
-                            "displayName": "pentaho pentaho",
-                            "id": "ouyVQFYUVbH"
-                        },
-                        "yHSEQsKSpYH": {
-                            "access": "rw------",
-                            "displayName": "User 4472",
-                            "id": "yHSEQsKSpYH"
-                        }
-                    },
                     "yearlySeries": [
                     ]
                 },
@@ -13281,7 +13125,6 @@
                     "digitGroupSeparator": "NONE",
                     "displayDensity": "NORMAL",
                     "displayName": "0Campaign Test - External Consultations - Malaria - Vaccines per area",
-                    "external": false,
                     "favorite": false,
                     "favorites": [
                     ],
@@ -13338,7 +13181,6 @@
                     ],
                     "programIndicatorDimensions": [
                     ],
-                    "public": "--------",
                     "regression": false,
                     "relativePeriods": {
                         "biMonthsThisYear": false,
@@ -13402,9 +13244,30 @@
                     },
                     "sharing": {
                         "external": false,
+                        "public": "--------",
                         "userGroups": {
+                            "AnQDBhyc5R1": {
+                                "access": "rw------",
+                                "displayName": "Vaccination Referents",
+                                "id": "AnQDBhyc5R1"
+                            },
+                            "TeNDx28ih4i": {
+                                "access": "rw------",
+                                "displayName": "HMIS Officers",
+                                "id": "TeNDx28ih4i"
+                            }
                         },
                         "users": {
+                            "ouyVQFYUVbH": {
+                                "access": "rw------",
+                                "displayName": "pentaho pentaho",
+                                "id": "ouyVQFYUVbH"
+                            },
+                            "yHSEQsKSpYH": {
+                                "access": "rw------",
+                                "displayName": "User 4472",
+                                "id": "yHSEQsKSpYH"
+                            }
                         }
                     },
                     "showData": false,
@@ -13435,33 +13298,9 @@
                         }
                     ],
                     "type": "PIVOT_TABLE",
-                    "userGroups": {
-                        "AnQDBhyc5R1": {
-                            "access": "rw------",
-                            "displayName": "Vaccination Referents",
-                            "id": "AnQDBhyc5R1"
-                        },
-                        "TeNDx28ih4i": {
-                            "access": "rw------",
-                            "displayName": "HMIS Officers",
-                            "id": "TeNDx28ih4i"
-                        }
-                    },
                     "userOrganisationUnit": false,
                     "userOrganisationUnitChildren": false,
                     "userOrganisationUnitGrandChildren": false,
-                    "users": {
-                        "ouyVQFYUVbH": {
-                            "access": "rw------",
-                            "displayName": "pentaho pentaho",
-                            "id": "ouyVQFYUVbH"
-                        },
-                        "yHSEQsKSpYH": {
-                            "access": "rw------",
-                            "displayName": "User 4472",
-                            "id": "yHSEQsKSpYH"
-                        }
-                    },
                     "yearlySeries": [
                     ]
                 },
@@ -13524,7 +13363,6 @@
                     "digitGroupSeparator": "NONE",
                     "displayDensity": "NORMAL",
                     "displayName": "0Campaign Test - External Consultations - Malaria - Vaccines per campaign",
-                    "external": false,
                     "favorite": false,
                     "favorites": [
                     ],
@@ -13581,7 +13419,6 @@
                     ],
                     "programIndicatorDimensions": [
                     ],
-                    "public": "--------",
                     "regression": false,
                     "relativePeriods": {
                         "biMonthsThisYear": false,
@@ -13645,9 +13482,30 @@
                     },
                     "sharing": {
                         "external": false,
+                        "public": "--------",
                         "userGroups": {
+                            "AnQDBhyc5R1": {
+                                "access": "rw------",
+                                "displayName": "Vaccination Referents",
+                                "id": "AnQDBhyc5R1"
+                            },
+                            "TeNDx28ih4i": {
+                                "access": "rw------",
+                                "displayName": "HMIS Officers",
+                                "id": "TeNDx28ih4i"
+                            }
                         },
                         "users": {
+                            "ouyVQFYUVbH": {
+                                "access": "rw------",
+                                "displayName": "pentaho pentaho",
+                                "id": "ouyVQFYUVbH"
+                            },
+                            "yHSEQsKSpYH": {
+                                "access": "rw------",
+                                "displayName": "User 4472",
+                                "id": "yHSEQsKSpYH"
+                            }
                         }
                     },
                     "showData": false,
@@ -13678,33 +13536,9 @@
                         }
                     ],
                     "type": "PIVOT_TABLE",
-                    "userGroups": {
-                        "AnQDBhyc5R1": {
-                            "access": "rw------",
-                            "displayName": "Vaccination Referents",
-                            "id": "AnQDBhyc5R1"
-                        },
-                        "TeNDx28ih4i": {
-                            "access": "rw------",
-                            "displayName": "HMIS Officers",
-                            "id": "TeNDx28ih4i"
-                        }
-                    },
                     "userOrganisationUnit": false,
                     "userOrganisationUnitChildren": false,
                     "userOrganisationUnitGrandChildren": false,
-                    "users": {
-                        "ouyVQFYUVbH": {
-                            "access": "rw------",
-                            "displayName": "pentaho pentaho",
-                            "id": "ouyVQFYUVbH"
-                        },
-                        "yHSEQsKSpYH": {
-                            "access": "rw------",
-                            "displayName": "User 4472",
-                            "id": "yHSEQsKSpYH"
-                        }
-                    },
                     "yearlySeries": [
                     ]
                 },
@@ -13777,7 +13611,6 @@
                     "digitGroupSeparator": "NONE",
                     "displayDensity": "NORMAL",
                     "displayName": "0Campaign Test - External Consultations - Malaria - Vaccines per date and team",
-                    "external": false,
                     "favorite": false,
                     "favorites": [
                     ],
@@ -13834,7 +13667,6 @@
                     ],
                     "programIndicatorDimensions": [
                     ],
-                    "public": "--------",
                     "regression": false,
                     "relativePeriods": {
                         "biMonthsThisYear": false,
@@ -13902,9 +13734,30 @@
                     },
                     "sharing": {
                         "external": false,
+                        "public": "--------",
                         "userGroups": {
+                            "AnQDBhyc5R1": {
+                                "access": "rw------",
+                                "displayName": "Vaccination Referents",
+                                "id": "AnQDBhyc5R1"
+                            },
+                            "TeNDx28ih4i": {
+                                "access": "rw------",
+                                "displayName": "HMIS Officers",
+                                "id": "TeNDx28ih4i"
+                            }
                         },
                         "users": {
+                            "ouyVQFYUVbH": {
+                                "access": "rw------",
+                                "displayName": "pentaho pentaho",
+                                "id": "ouyVQFYUVbH"
+                            },
+                            "yHSEQsKSpYH": {
+                                "access": "rw------",
+                                "displayName": "User 4472",
+                                "id": "yHSEQsKSpYH"
+                            }
                         }
                     },
                     "showData": false,
@@ -13935,33 +13788,9 @@
                         }
                     ],
                     "type": "PIVOT_TABLE",
-                    "userGroups": {
-                        "AnQDBhyc5R1": {
-                            "access": "rw------",
-                            "displayName": "Vaccination Referents",
-                            "id": "AnQDBhyc5R1"
-                        },
-                        "TeNDx28ih4i": {
-                            "access": "rw------",
-                            "displayName": "HMIS Officers",
-                            "id": "TeNDx28ih4i"
-                        }
-                    },
                     "userOrganisationUnit": false,
                     "userOrganisationUnitChildren": false,
                     "userOrganisationUnitGrandChildren": false,
-                    "users": {
-                        "ouyVQFYUVbH": {
-                            "access": "rw------",
-                            "displayName": "pentaho pentaho",
-                            "id": "ouyVQFYUVbH"
-                        },
-                        "yHSEQsKSpYH": {
-                            "access": "rw------",
-                            "displayName": "User 4472",
-                            "id": "yHSEQsKSpYH"
-                        }
-                    },
                     "yearlySeries": [
                     ]
                 },
@@ -14080,7 +13909,6 @@
                     "digitGroupSeparator": "NONE",
                     "displayDensity": "NORMAL",
                     "displayName": "0Campaign Test - External Consultations - Malaria - Coverage by age range and dose",
-                    "external": false,
                     "favorite": false,
                     "favorites": [
                     ],
@@ -14141,7 +13969,6 @@
                     ],
                     "programIndicatorDimensions": [
                     ],
-                    "public": "--------",
                     "regression": false,
                     "relativePeriods": {
                         "biMonthsThisYear": false,
@@ -14201,9 +14028,30 @@
                     },
                     "sharing": {
                         "external": false,
+                        "public": "--------",
                         "userGroups": {
+                            "AnQDBhyc5R1": {
+                                "access": "rw------",
+                                "displayName": "Vaccination Referents",
+                                "id": "AnQDBhyc5R1"
+                            },
+                            "TeNDx28ih4i": {
+                                "access": "rw------",
+                                "displayName": "HMIS Officers",
+                                "id": "TeNDx28ih4i"
+                            }
                         },
                         "users": {
+                            "ouyVQFYUVbH": {
+                                "access": "rw------",
+                                "displayName": "pentaho pentaho",
+                                "id": "ouyVQFYUVbH"
+                            },
+                            "yHSEQsKSpYH": {
+                                "access": "rw------",
+                                "displayName": "User 4472",
+                                "id": "yHSEQsKSpYH"
+                            }
                         }
                     },
                     "showData": false,
@@ -14234,33 +14082,9 @@
                         }
                     ],
                     "type": "PIVOT_TABLE",
-                    "userGroups": {
-                        "AnQDBhyc5R1": {
-                            "access": "rw------",
-                            "displayName": "Vaccination Referents",
-                            "id": "AnQDBhyc5R1"
-                        },
-                        "TeNDx28ih4i": {
-                            "access": "rw------",
-                            "displayName": "HMIS Officers",
-                            "id": "TeNDx28ih4i"
-                        }
-                    },
                     "userOrganisationUnit": false,
                     "userOrganisationUnitChildren": false,
                     "userOrganisationUnitGrandChildren": false,
-                    "users": {
-                        "ouyVQFYUVbH": {
-                            "access": "rw------",
-                            "displayName": "pentaho pentaho",
-                            "id": "ouyVQFYUVbH"
-                        },
-                        "yHSEQsKSpYH": {
-                            "access": "rw------",
-                            "displayName": "User 4472",
-                            "id": "yHSEQsKSpYH"
-                        }
-                    },
                     "yearlySeries": [
                     ]
                 },
@@ -14346,7 +14170,6 @@
                     "digitGroupSeparator": "NONE",
                     "displayDensity": "NORMAL",
                     "displayName": "0Campaign Test - External Consultations - Japanese Encephalitis - Coverage by period",
-                    "external": false,
                     "favorite": false,
                     "favorites": [
                     ],
@@ -14403,7 +14226,6 @@
                     ],
                     "programIndicatorDimensions": [
                     ],
-                    "public": "--------",
                     "regression": false,
                     "relativePeriods": {
                         "biMonthsThisYear": false,
@@ -14467,9 +14289,30 @@
                     },
                     "sharing": {
                         "external": false,
+                        "public": "--------",
                         "userGroups": {
+                            "AnQDBhyc5R1": {
+                                "access": "rw------",
+                                "displayName": "Vaccination Referents",
+                                "id": "AnQDBhyc5R1"
+                            },
+                            "TeNDx28ih4i": {
+                                "access": "rw------",
+                                "displayName": "HMIS Officers",
+                                "id": "TeNDx28ih4i"
+                            }
                         },
                         "users": {
+                            "ouyVQFYUVbH": {
+                                "access": "rw------",
+                                "displayName": "pentaho pentaho",
+                                "id": "ouyVQFYUVbH"
+                            },
+                            "yHSEQsKSpYH": {
+                                "access": "rw------",
+                                "displayName": "User 4472",
+                                "id": "yHSEQsKSpYH"
+                            }
                         }
                     },
                     "showData": false,
@@ -14500,33 +14343,9 @@
                         }
                     ],
                     "type": "PIVOT_TABLE",
-                    "userGroups": {
-                        "AnQDBhyc5R1": {
-                            "access": "rw------",
-                            "displayName": "Vaccination Referents",
-                            "id": "AnQDBhyc5R1"
-                        },
-                        "TeNDx28ih4i": {
-                            "access": "rw------",
-                            "displayName": "HMIS Officers",
-                            "id": "TeNDx28ih4i"
-                        }
-                    },
                     "userOrganisationUnit": false,
                     "userOrganisationUnitChildren": false,
                     "userOrganisationUnitGrandChildren": false,
-                    "users": {
-                        "ouyVQFYUVbH": {
-                            "access": "rw------",
-                            "displayName": "pentaho pentaho",
-                            "id": "ouyVQFYUVbH"
-                        },
-                        "yHSEQsKSpYH": {
-                            "access": "rw------",
-                            "displayName": "User 4472",
-                            "id": "yHSEQsKSpYH"
-                        }
-                    },
                     "yearlySeries": [
                     ]
                 },
@@ -14645,7 +14464,6 @@
                     "digitGroupSeparator": "NONE",
                     "displayDensity": "NORMAL",
                     "displayName": "0Campaign Test - External Consultations - Malaria - Coverage by period",
-                    "external": false,
                     "favorite": false,
                     "favorites": [
                     ],
@@ -14702,7 +14520,6 @@
                     ],
                     "programIndicatorDimensions": [
                     ],
-                    "public": "--------",
                     "regression": false,
                     "relativePeriods": {
                         "biMonthsThisYear": false,
@@ -14766,9 +14583,30 @@
                     },
                     "sharing": {
                         "external": false,
+                        "public": "--------",
                         "userGroups": {
+                            "AnQDBhyc5R1": {
+                                "access": "rw------",
+                                "displayName": "Vaccination Referents",
+                                "id": "AnQDBhyc5R1"
+                            },
+                            "TeNDx28ih4i": {
+                                "access": "rw------",
+                                "displayName": "HMIS Officers",
+                                "id": "TeNDx28ih4i"
+                            }
                         },
                         "users": {
+                            "ouyVQFYUVbH": {
+                                "access": "rw------",
+                                "displayName": "pentaho pentaho",
+                                "id": "ouyVQFYUVbH"
+                            },
+                            "yHSEQsKSpYH": {
+                                "access": "rw------",
+                                "displayName": "User 4472",
+                                "id": "yHSEQsKSpYH"
+                            }
                         }
                     },
                     "showData": false,
@@ -14799,33 +14637,9 @@
                         }
                     ],
                     "type": "PIVOT_TABLE",
-                    "userGroups": {
-                        "AnQDBhyc5R1": {
-                            "access": "rw------",
-                            "displayName": "Vaccination Referents",
-                            "id": "AnQDBhyc5R1"
-                        },
-                        "TeNDx28ih4i": {
-                            "access": "rw------",
-                            "displayName": "HMIS Officers",
-                            "id": "TeNDx28ih4i"
-                        }
-                    },
                     "userOrganisationUnit": false,
                     "userOrganisationUnitChildren": false,
                     "userOrganisationUnitGrandChildren": false,
-                    "users": {
-                        "ouyVQFYUVbH": {
-                            "access": "rw------",
-                            "displayName": "pentaho pentaho",
-                            "id": "ouyVQFYUVbH"
-                        },
-                        "yHSEQsKSpYH": {
-                            "access": "rw------",
-                            "displayName": "User 4472",
-                            "id": "yHSEQsKSpYH"
-                        }
-                    },
                     "yearlySeries": [
                     ]
                 }
