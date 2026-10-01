@@ -186,6 +186,8 @@ export type DataSet = { id: string; name: string; code: string };
 export type User = {
     id: string;
     name: string;
+    orgUnitIds: string[];
+    userRoleIds: string[];
 };
 
 function getCategoriesDisaggregation(

@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2026-03-24T10:31:57.009Z\n"
-"PO-Revision-Date: 2026-03-24T10:31:57.009Z\n"
+"POT-Creation-Date: 2026-04-15T09:09:55.993Z\n"
+"PO-Revision-Date: 2026-04-15T09:09:55.993Z\n"
 
 msgid "Campaigns"
 msgstr ""
@@ -308,12 +308,6 @@ msgid "Campaign created"
 msgstr ""
 
 msgid "Error saving campaign"
-msgstr ""
-
-msgid "[None]"
-msgstr ""
-
-msgid "[{{total}}] {{names}} and {{othersCount}} other(s)"
 msgstr ""
 
 msgid "doses"

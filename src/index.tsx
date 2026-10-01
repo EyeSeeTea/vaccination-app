@@ -9,7 +9,7 @@ import _ from "lodash";
 import App from "./components/app/App";
 
 import "./locales";
-import { D2Api } from "@eyeseetea/d2-api/2.36";
+import { D2Api } from "./types/d2-api";
 import { D2 } from "./models/d2.types";
 
 config.schemas = ["dataSet", "organisationUnit"];
@@ -35,8 +35,8 @@ function configI18n(userSettings: { keyUiLocale: string }) {
 }
 
 async function getBaseUrl() {
-    if (process.env.NODE_ENV === "development") {
-        const port = process.env.REACT_APP_PORT || "8081";
+    if (import.meta.env.DEV) {
+        const port = import.meta.env.VITE_PORT || "8081";
         const baseUrl = `http://localhost:${port}/dhis2`;
         console.debug(`[DEV] DHIS2 instance: ${baseUrl}`);
         return baseUrl;

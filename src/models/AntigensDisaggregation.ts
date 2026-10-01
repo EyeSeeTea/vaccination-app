@@ -27,7 +27,7 @@ import {
 import { getAntigenCodeFromSection } from "../data/CampaignD2Get";
 import { zipShortest } from "../utils/lodash-mixins";
 
-const fp = require("lodash/fp");
+import fp from "lodash/fp";
 
 export type CampaignType = "preventive" | "reactive";
 

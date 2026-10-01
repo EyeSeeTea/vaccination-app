@@ -2,19 +2,15 @@ import _ from "lodash";
 import moment from "moment";
 
 import DbD2 from "./db-d2";
-import { AntigenConfig, baseConfig, Dose, MetadataConfig } from "./config";
-import { Maybe, DataValue, CategoryOption, DataValueToPost } from "./db.types";
-import { OrganisationUnit, OrganisationUnitPathOnly, OrganisationUnitLevel } from "./db.types";
-import { AntigenDisaggregationEnabled, isAgeGroupIncluded } from "./AntigensDisaggregationLegacy";
+import { MetadataConfig } from "./config";
+import { Maybe, CategoryOption } from "./db.types";
+import { OrganisationUnitPathOnly, OrganisationUnitLevel } from "./db.types";
+import { OrganisationUnit, OrganisationUnitAttrs } from "../domain/entities/OrganisationUnit";
+import { AntigenDisaggregationEnabled } from "./AntigensDisaggregation";
 import { sortAgeGroups } from "../utils/age-groups";
 import Campaign from "./campaign";
-import { getDaysRange } from "../utils/date";
-import { assert } from "../utils/assert";
-import { getDataElements } from "./D2CampaignMetadata";
 
-const fp = require("lodash/fp");
-
-const dailyPeriodFormat = "YYYYMMDD";
+import fp from "lodash/fp";
 
 const levelsConfig = {
     areaLevel: 4,
@@ -35,6 +31,7 @@ export type TargetPopulationData = {
     populationItems: PopulationItems;
     ageGroups: CategoryOption[];
     ageDistributionByOrgUnit: AgeDistributionByOrgUnit;
+    isPersisted: boolean;
 };
 
 interface AgeDistribution {
@@ -72,14 +69,26 @@ export class TargetPopulation {
         this.config = campaign.config;
     }
 
-    static build(campaign: Campaign): TargetPopulation {
-        return new TargetPopulation(campaign, {
+    static build(campaign: Campaign): Promise<TargetPopulation> {
+        const targetPopulation = new TargetPopulation(campaign, {
             organisationUnitLevels: campaign.config.organisationUnitLevels,
             populationItems: {},
             antigensDisaggregation: [],
             ageGroups: [],
             ageDistributionByOrgUnit: {},
+            isPersisted: false,
         });
+
+        return targetPopulation.update(
+            campaign.organisationUnits,
+            campaign.getEnabledAntigensDisaggregation(),
+            campaign.startDate ? moment.utc(campaign.startDate).format("YYYYMMDD") : "TODAY"
+        );
+    }
+
+    updateIsPersisted(value: boolean): TargetPopulation {
+        const newData: TargetPopulationData = { ...this.data, isPersisted: value };
+        return new TargetPopulation(this.campaign, newData);
     }
 
     get antigensDisaggregation() {
@@ -164,11 +173,12 @@ export class TargetPopulation {
                 .value()
         );
 
-        const { organisationUnits: ousInHierarchy } = await this.db.getMetadata<{
-            organisationUnits: OrganisationUnit[];
+        const { organisationUnits: ousInHierarchyRaw } = await this.db.getMetadata<{
+            organisationUnits: OrganisationUnitAttrs[];
         }>({
             organisationUnits: { filters: [`id:in:[${ouIds}]`] },
         });
+        const ousInHierarchy = ousInHierarchyRaw.map(ou => OrganisationUnit.create(ou));
 
         const ousInHierarchyById = _.keyBy(ousInHierarchy, ou => ou.id);
         const organisationUnits = _.at(
@@ -240,182 +250,6 @@ export class TargetPopulation {
 
     public get ageDistributionByOrgUnit(): AgeDistributionByOrgUnit {
         return this.data.ageDistributionByOrgUnit;
-    }
-
-    public async areDataValuesUpTodate(): Promise<boolean> {
-        const { config, campaign } = this;
-        if (!campaign.id) return false;
-
-        let expectedDataValues: DataValue[];
-        try {
-            // getDataValues() will only succeed if all required fields are present
-            expectedDataValues = await this.getDataValues();
-        } catch {
-            return false;
-        }
-
-        if (expectedDataValues.length === 0) return true;
-
-        const dataElementIds = _(expectedDataValues)
-            .map(dv => dv.dataElement)
-            .uniq()
-            .value();
-
-        const campaignOrgUnitIds = new Set(campaign.organisationUnits.map(ou => ou.id));
-
-        const actualDataValues = await this.db.getDataValues({
-            dataElement: dataElementIds,
-            orgUnit: Array.from(campaignOrgUnitIds),
-            startDate: campaign.startDate || undefined,
-            endDate: campaign.endDate || undefined,
-        });
-
-        const getKey = (dataValue: DataValue) =>
-            [
-                dataValue.dataElement,
-                dataValue.period,
-                dataValue.orgUnit,
-                dataValue.categoryOptionCombo || config.defaults.categoryOptionCombo.id,
-                dataValue.value,
-            ].join(".");
-
-        const actualKeys = new Set(actualDataValues.map(getKey));
-
-        // Check that all expected data values for the campaign orgunits are present in actual data values
-        return _(expectedDataValues)
-            .filter(dv => campaignOrgUnitIds.has(dv.orgUnit))
-            .every(expectedDv => actualKeys.has(getKey(expectedDv)));
-    }
-
-    public async getDataValues(): Promise<DataValue[]> {
-        const { config, campaign } = this;
-        const { antigensDisaggregation } = this.data;
-        const cocMetadata = await this.campaign.antigensDisaggregation.getCocMetadata(this.db);
-        const startPeriod = moment.utc(campaign.startDate || new Date()).format(dailyPeriodFormat);
-        const periods = getDaysRange(
-            moment.utc(campaign.startDate || undefined),
-            moment.utc(campaign.endDate || undefined)
-        ).map(day => day.format(dailyPeriodFormat));
-
-        const dataValues = _.flatMap(this.data.populationItems, targetPopulationItem => {
-            const orgUnitId = targetPopulationItem.organisationUnit.id;
-            const totalPopulation = get(
-                targetPopulationItem.populationTotal.value,
-                "No value for total population"
-            );
-            const newValue = targetPopulationItem.populationTotal.value;
-            const totalPopulationDataValues = _.isUndefined(newValue)
-                ? []
-                : [
-                      {
-                          period: startPeriod,
-                          orgUnit: targetPopulationItem.populationTotal.organisationUnit.id,
-                          dataElement: config.population.totalPopulationDataElement.id,
-                          value: newValue.toString(),
-                      },
-                  ];
-
-            const finalDistribution = this.getFinalDistribution(targetPopulationItem);
-
-            const populationByAgeDataValues = _.flatMap(antigensDisaggregation, ad => {
-                const antigen = assert(config.antigens.find(a => a.id === ad.antigen.id));
-                const ageGroupsForAntigen = _(antigen.ageGroups)
-                    .flatten()
-                    .flatten()
-                    .uniqBy(ageGroup => ageGroup.id)
-                    .value();
-                const antigenDisaggregation = antigensDisaggregation.find(
-                    disaggregation => disaggregation.antigen.id === antigen.id
-                );
-                return _.flatMap(ageGroupsForAntigen, ageGroup => {
-                    // We must include the doses disaggregated as some antigens
-                    // (ie. Malaria) have different age groups per dose.
-                    return _.flatMap(antigen.doses, dose => {
-                        const disaggregation = [ageGroup];
-
-                        const ageGroupInPopulation =
-                            antigenDisaggregation &&
-                            isAgeGroupIncluded(ageGroup, antigenDisaggregation, dose);
-
-                        let populationForAgeRange: number;
-                        if (ageGroupInPopulation) {
-                            const percentageForAgeRange = get(
-                                _(finalDistribution).getOrFail(ageGroup.displayName),
-                                `Value for age range not found: ${ageGroup}`
-                            );
-                            populationForAgeRange = (totalPopulation * percentageForAgeRange) / 100;
-                        } else {
-                            populationForAgeRange = 0;
-                        }
-
-                        return periods.map(period => {
-                            return this.mapDataValue(antigen, dose, {
-                                period: period,
-                                orgUnit: orgUnitId,
-                                categoryOptionCombo: cocMetadata.getByOptions(disaggregation),
-                                value: populationForAgeRange.toFixed(2),
-                            });
-                        });
-                    });
-                });
-            });
-
-            const { ageGroups, ageDistributionByOrgUnit } = this.data;
-            const ageDistributionDataValues = _.flatMap(
-                targetPopulationItem.populationDistributions,
-                populationDistribution => {
-                    return _(ageGroups)
-                        .map(ageGroup => {
-                            const ouId = populationDistribution.organisationUnit.id;
-                            const value =
-                                _(ageDistributionByOrgUnit).getOrFail(ouId)[ageGroup.displayName];
-
-                            return value
-                                ? {
-                                      period: startPeriod,
-                                      orgUnit: ouId,
-                                      dataElement: config.population.ageDistributionDataElement.id,
-                                      categoryOptionCombo: cocMetadata.getByOptions([ageGroup]),
-                                      value: value.toString(),
-                                  }
-                                : null;
-                        })
-                        .compact()
-                        .value();
-                }
-            );
-
-            return _.concat(
-                totalPopulationDataValues,
-                ageDistributionDataValues,
-                populationByAgeDataValues
-            );
-        });
-
-        return dataValues;
-    }
-
-    private mapDataValue(
-        antigen: AntigenConfig,
-        dose: Dose,
-        dv: Omit<DataValueToPost, "dataElement">
-    ): DataValueToPost {
-        const { campaign } = this;
-        const dataElementCode = baseConfig.dataElementCodeForPopulationByAge;
-        const match = assert(
-            campaign
-                .getEnabledAntigensDisaggregation()
-                .find(enabled => enabled.antigen.id === antigen.id)
-        );
-
-        const dataElements = getDataElements(this.campaign, match, dataElementCode, dose);
-
-        const d2DataElement = assert(
-            dataElements[0],
-            `No data element found for antigen: ${antigen.name}`
-        );
-
-        return { ...dv, dataElement: d2DataElement.id };
     }
 
     private async getTotalPopulation(
@@ -591,14 +425,6 @@ export class TargetPopulation {
             ])
             .fromPairs()
             .value();
-    }
-}
-
-function get<T>(value: Maybe<T>, errorMsg: string): T {
-    if (_.isUndefined(value)) {
-        throw new Error(errorMsg);
-    } else {
-        return value;
     }
 }
 

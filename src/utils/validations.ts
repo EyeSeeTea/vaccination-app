@@ -1,0 +1,72 @@
+import _ from "lodash";
+import i18n from "@dhis2/d2-i18n";
+import Campaign from "../models/campaign";
+
+type TranslationNamespace = Record<string, string | number>;
+
+type ValidationError = {
+    key: string;
+    namespace?: TranslationNamespace;
+};
+
+const translations: Record<string, (namespace: TranslationNamespace) => string> = {
+    no_organisation_units_selected: () => i18n.t("Select at least one organisation unit"),
+    organisation_units_only_of_levels: namespace =>
+        i18n.t("Only organisation units of level {{levels}} can be selected", namespace),
+
+    cannot_be_blank: namespace => i18n.t("Field {{field}} cannot be blank", namespace),
+    cannot_be_blank_if_other_set: namespace =>
+        i18n.t("Field {{field}} cannot be blank if field {{other}} is set", namespace),
+    too_long: namespace => i18n.t("Field {{field}} cannot longer than {{n}} chars", namespace),
+
+    no_antigens_selected: () => i18n.t("Select at least one antigen"),
+
+    select_at_least_one_option_for_category: () =>
+        i18n.t("You must select at least one category option"),
+    antigen_has_no_selected_type: namespace =>
+        i18n.t("You must select the type for antigen {{antigen}}", namespace),
+
+    no_target_population_defined: () => i18n.t("No target population defined"),
+    total_population_invalid: namespace =>
+        i18n.t(
+            "Org unit {{organisationUnit}} has an invalid total population value -> {{value}}",
+            namespace
+        ),
+
+    age_groups_population_invalid: namespace =>
+        i18n.t(
+            "Org unit {{organisationUnit}} has invalid distribution values for age ranges -> {{ageGroups}}",
+            namespace
+        ),
+
+    age_groups_population_for_antigen_invalid: namespace =>
+        i18n.t(
+            "Org unit {{organisationUnit}} has an invalid total value for antigen {{antigen}} ({{ageGroups}}) -> {{- value}}",
+            namespace
+        ),
+    must_be_bigger_than_zero: () => i18n.t("Number of teams must be positive"),
+    must_be_smaller_than: namespace =>
+        i18n.t("Number of teams must smaller than {{value}}", namespace),
+    name_must_be_unique: () => i18n.t("There already exists a campaign with the same name"),
+};
+
+export function translateError(error: ValidationError): string {
+    const translation = translations[error.key];
+
+    if (translation) {
+        return i18n.t(translation(error.namespace || {}));
+    } else {
+        return `Missing translation: ${error.key}`;
+    }
+}
+
+export async function getValidationMessages(
+    campaign: Campaign,
+    validationKeys: string[]
+): Promise<string[]> {
+    if (_(validationKeys).isEmpty()) return [];
+
+    const validationObj = await campaign.validate(validationKeys);
+
+    return _(validationObj).at(validationKeys).flatten().compact().map(translateError).value();
+}

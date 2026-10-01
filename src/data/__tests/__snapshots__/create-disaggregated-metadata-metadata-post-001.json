@@ -41009,69 +41009,64 @@
         }
     ],
     "returnValue": {
-        "httpStatus": "OK",
-        "httpStatusCode": 200,
-        "response": {
-            "responseType": "ImportReport",
-            "stats": {
-                "created": 0,
-                "deleted": 0,
-                "ignored": 0,
-                "total": 535,
-                "updated": 535
-            },
-            "status": "OK",
-            "typeReports": [
-                {
-                    "klass": "org.hisp.dhis.indicator.Indicator",
-                    "objectReports": [
-                    ],
-                    "stats": {
-                        "created": 0,
-                        "deleted": 0,
-                        "ignored": 0,
-                        "total": 211,
-                        "updated": 211
-                    }
-                },
-                {
-                    "klass": "org.hisp.dhis.dataelement.DataElement",
-                    "objectReports": [
-                    ],
-                    "stats": {
-                        "created": 0,
-                        "deleted": 0,
-                        "ignored": 0,
-                        "total": 245,
-                        "updated": 245
-                    }
-                },
-                {
-                    "klass": "org.hisp.dhis.validation.ValidationRule",
-                    "objectReports": [
-                    ],
-                    "stats": {
-                        "created": 0,
-                        "deleted": 0,
-                        "ignored": 0,
-                        "total": 70,
-                        "updated": 70
-                    }
-                },
-                {
-                    "klass": "org.hisp.dhis.category.CategoryCombo",
-                    "objectReports": [
-                    ],
-                    "stats": {
-                        "created": 0,
-                        "deleted": 0,
-                        "ignored": 0,
-                        "total": 9,
-                        "updated": 9
-                    }
-                }
-            ]
+        "responseType": "ImportReport",
+        "stats": {
+            "created": 0,
+            "deleted": 0,
+            "ignored": 0,
+            "total": 535,
+            "updated": 535
         },
-        "status": "OK"
+        "status": "OK",
+        "typeReports": [
+            {
+                "klass": "org.hisp.dhis.category.CategoryCombo",
+                "objectReports": [
+                ],
+                "stats": {
+                    "created": 0,
+                    "deleted": 0,
+                    "ignored": 0,
+                    "total": 9,
+                    "updated": 9
+                }
+            },
+            {
+                "klass": "org.hisp.dhis.indicator.Indicator",
+                "objectReports": [
+                ],
+                "stats": {
+                    "created": 0,
+                    "deleted": 0,
+                    "ignored": 0,
+                    "total": 211,
+                    "updated": 211
+                }
+            },
+            {
+                "klass": "org.hisp.dhis.validation.ValidationRule",
+                "objectReports": [
+                ],
+                "stats": {
+                    "created": 0,
+                    "deleted": 0,
+                    "ignored": 0,
+                    "total": 70,
+                    "updated": 70
+                }
+            },
+            {
+                "klass": "org.hisp.dhis.dataelement.DataElement",
+                "objectReports": [
+                ],
+                "stats": {
+                    "created": 0,
+                    "deleted": 0,
+                    "ignored": 0,
+                    "total": 245,
+                    "updated": 245
+                }
+            }
+        ]
     }
 }

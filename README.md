@@ -43,8 +43,26 @@ Run unit tests:
 $ yarn test
 ```
 
-Some of the unit tests use snapshot testing, where real calls to the DHIS2 instance are used to generate snapshots. When developing, if you need to create or update snapshots, you’ll need to provide additional parameters so the tests can access the DHIS2 instance:
+Some tests replay snapshots recorded from real DHIS2 API calls. To create or update those snapshots, point the tests to a live instance:
 
 ```shell
 $ DHIS2_BASE_URL=http://localhost:8080 DHIS2_AUTH=user:password yarn test --watch
 ```
+
+## Scripts
+
+Maintenance scripts live in `src/scripts` and are run with `yarn run-script`. Check also [src/scripts/README.md](src/scripts/README.md).
+
+### Update campaign disaggregations
+
+Regenerates the sections (disaggregations) of existing campaigns. Only the sections are posted, the data set, teams and dashboards are left untouched.
+
+```shell
+$ yarn run-script src/scripts/update-campaign-disaggregations.ts \
+    --url "http://localhost:8097" --auth "$MSF_ADMIN_AUTH" \
+    --log-file=update-campaign-disaggregations.log --all-campaigns
+```
+
+Pass `--campaign-id ID` (repeatable) instead of `--all-campaigns` to update only some campaigns.
+
+A typical use case: an age group is added to an antigen, so its category combo gets new category option combos. Existing campaigns keep their old sections, and the new age group shows up in their data entry forms even though it was not part of the campaign. Running the script rebuilds the sections, adding the new age group to the greyed fields of the campaigns that don't use it, so it no longer appears on their data entry.

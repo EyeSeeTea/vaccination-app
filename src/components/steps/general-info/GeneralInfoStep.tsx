@@ -12,11 +12,9 @@ import { Validators } from "@dhis2/d2-ui-forms";
 
 import { DatePicker } from "@eyeseetea/d2-ui-components";
 import { translateError } from "../../../utils/validations";
-import { D2 } from "../../../models/d2.types";
 import Campaign from "../../../models/campaign";
 
-type GeneralInfoStepProps = {
-    d2: D2;
+export type GeneralInfoStepProps = {
     campaign: Campaign;
     onChange: (campaign: Campaign) => void;
 };

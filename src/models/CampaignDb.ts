@@ -11,7 +11,7 @@ import {
     CocMetadata,
     AntigenDisaggregationEnabledDataElement,
     AntigenDisaggregationEnabledDataElementCategory,
-} from "./AntigensDisaggregationLegacy";
+} from "./AntigensDisaggregation";
 import { Dashboard, DashboardMetadata } from "./Dashboard";
 import { Teams, CategoryOptionTeam } from "./Teams";
 import { getDashboardCode, getByIndex, baseConfig, MetadataConfig } from "./config";
@@ -27,6 +27,7 @@ import {
 } from "./D2CampaignMetadata";
 import { D2Translation } from "@eyeseetea/d2-api/schemas";
 import i18n from "../locales";
+import { DataInput } from "./periods";
 
 const locales = ["es", "fr"];
 
@@ -41,13 +42,6 @@ because the current time is after the closing date of the data input periods.
 
 Solution: Use a custom attribute to store the data input periods
 */
-
-export type DataInput = {
-    periodStart: string;
-    periodEnd: string;
-    openingDate: string;
-    closingDate: string;
-};
 
 interface PostSaveMetadata {
     visualizations: object[];
@@ -97,6 +91,15 @@ export default class CampaignDb {
         } else {
             return dashboard.id;
         }
+    }
+
+    public async saveSections(): Promise<Response<string>> {
+        const { campaign } = this;
+        const { db } = campaign;
+        const metadataCoc = await campaign.antigensDisaggregation.getCocMetadata(db);
+        const dataSetId = campaign.id || getUid("dataSet", campaign.name);
+        const sections = await this.getSections(dataSetId, metadataCoc);
+        return this.campaign.db.postMetadata({ sections: sections });
     }
 
     public async save(): Promise<Response<string>> {
@@ -227,27 +230,6 @@ export default class CampaignDb {
                     .value(),
             };
         });
-    }
-
-    public async saveTargetPopulation(): Promise<Response<string>> {
-        const { campaign } = this;
-        const { targetPopulation } = this.campaign;
-
-        if (!targetPopulation) {
-            return { status: false, error: "There is no target population in campaign" };
-        } else {
-            const dataValues = await targetPopulation.getDataValues();
-            const populationResult = await campaign.db.postDataValues(dataValues);
-
-            if (!populationResult.status) {
-                return {
-                    status: false,
-                    error: JSON.stringify(populationResult.error, null, 2),
-                };
-            } else {
-                return { status: true };
-            }
-        }
     }
 
     private async postSave(

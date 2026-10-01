@@ -1,7 +1,9 @@
 module.exports = {
     collectCoverageFrom: ["src/**/*.js"],
     testPathIgnorePatterns: ["/node_modules/", "/cypress"],
-    transformIgnorePatterns: ["/node_modules/(?!@eyeseetea/d2-ui-components)"],
+    transformIgnorePatterns: [
+        "/node_modules/(?!@eyeseetea/d2-ui-components|@eyeseetea/d2-api|axios)",
+    ],
     setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
     modulePaths: ["src"],
     moduleDirectories: ["node_modules"],
@@ -16,12 +18,6 @@ module.exports = {
     },
     testRegex: "((\\.|/)(test|spec))\\.(jsx?|tsx?)$",
     moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
-    globals: {
-        window: true,
-        document: true,
-        navigator: true,
-        Element: true,
-    },
     roots: ["src"],
     testTimeout: 30000,
 };

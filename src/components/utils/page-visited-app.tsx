@@ -4,5 +4,5 @@ export function withPageVisited<T extends PageVisitedProps>(
     Component: React.ComponentType<T>,
     key: string
 ) {
-    return withPageVisitedOriginal(Component, "vaccination-app", key);
+    return withPageVisitedOriginal(Component, key);
 }

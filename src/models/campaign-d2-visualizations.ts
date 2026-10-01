@@ -134,10 +134,10 @@ type D2VisualizationOverride = {
     disaggregations: Array<{ categoryId: string }>;
 };
 
-type ModelDataDimensionItem =
+export type ModelDataDimensionItem =
     | { dataElement: { id: Id; code: string }; dataDimensionItemType: "DATA_ELEMENT" }
     | { indicator: { id: Id; code: string }; dataDimensionItemType: "INDICATOR" };
 
-type D2DataDimensionItem =
+export type D2DataDimensionItem =
     | { dataElement: { id: Id }; dataDimensionItemType: "DATA_ELEMENT" }
     | { indicator: { id: Id }; dataDimensionItemType: "INDICATOR" };

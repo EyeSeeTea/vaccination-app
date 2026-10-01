@@ -18,6 +18,7 @@ import { isTestEnv } from "../../utils/dhis2";
 import { CompositionRoot, getCompositionRoot } from "../../CompositionRoot";
 import { D2Api } from "../../types/d2-api";
 import { D2 } from "../../models/d2.types";
+import { Routes } from "./Routes";
 
 type AppProps = {
     d2: D2;
@@ -40,24 +41,19 @@ class App extends Component<AppProps, AppState> {
 
     async componentDidMount() {
         const { d2, api, appConfig } = this.props;
-        const appKey = this.props.appConfig.appKey;
         const db = new DbD2(d2, api);
         const config = await getMetadataConfig(db);
         const compositionRoot = getCompositionRoot({ db, api, config });
-        Object.assign(window, { config, db, compositionRoot });
+        Object.assign(window, { api, config, db, compositionRoot });
 
         const showFeedbackForCurrentUser = hasCurrentUserRoles(
-            d2,
+            config.currentUser.userRoleIds,
             config.userRoles,
             config.userRoleNames.feedback
         );
 
         if (appConfig && appConfig.feedback && showFeedbackForCurrentUser) {
-            const feedbackOptions = {
-                ...appConfig.feedback,
-                i18nPath: "feedback-tool/i18n",
-            };
-            window.$.feedbackDhis2(d2, appKey, feedbackOptions);
+            // No feedback tool currently used, keep if we re-enable it in the future
         }
 
         this.setState({ config, db, compositionRoot });
@@ -68,6 +64,7 @@ class App extends Component<AppProps, AppState> {
         const { config, db, compositionRoot } = this.state;
         const showShareButton = _(appConfig).get("appearance.showShareButton") || false;
         const showHeader = !isTestEnv();
+        const routes = new Routes(api.baseUrl);
 
         return (
             <React.Fragment>
@@ -84,6 +81,7 @@ class App extends Component<AppProps, AppState> {
                                             db={db}
                                             config={config}
                                             api={api}
+                                            routes={routes}
                                             compositionRoot={compositionRoot}
                                         />
                                     )}
@@ -104,13 +102,6 @@ declare global {
         config: MetadataConfig;
         db: DbD2;
         compositionRoot: CompositionRoot;
-        $: {
-            feedbackDhis2: (
-                d2: D2,
-                appKey: string,
-                feedbackOptions: AppConfig["feedback"] & { i18nPath: string }
-            ) => void;
-        };
     }
 }
 
@@ -133,7 +124,7 @@ type AppConfig = {
             branch: string;
         };
         feedbackOptions: Record<string, unknown>;
-    };
+    } | null;
 };
 
 export default App;
