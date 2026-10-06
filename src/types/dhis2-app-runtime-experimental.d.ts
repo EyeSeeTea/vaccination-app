@@ -28,6 +28,8 @@ declare module "@dhis2/app-runtime/experimental" {
         hideClearSelectionsButton?: boolean;
         hideFilterField?: boolean;
         hideUnassignedOrgUnits?: boolean;
+        /** Restrict the data set selector to these IDs. Undefined: no restriction. */
+        visibleDataSetIds?: string[];
     };
 
     export const Plugin: (props: PluginProps) => JSX.Element;

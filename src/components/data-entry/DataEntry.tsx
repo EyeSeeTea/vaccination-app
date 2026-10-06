@@ -183,7 +183,7 @@ Once cells turn into green, all information is saved and you can leave the Data 
 
         const dataEntryProps: PluginProps = {
             ...dataEntryBaseProps,
-            hideDataSetSelector: Boolean(campaign),
+            visibleDataSetIds: campaign ? getCampaignDataSetIds(campaign) : undefined,
         };
 
         return (
@@ -216,9 +216,16 @@ Once cells turn into green, all information is saved and you can leave the Data 
     }
 }
 
+function getCampaignDataSetIds(campaign: Campaign): string[] {
+    return _(campaign.id)
+        .concat(campaign.extraDataSets.map(dataSet => dataSet.id))
+        .compact()
+        .value();
+}
+
 const dataEntryBaseProps: PluginProps = {
     mode: "app",
-    hideDataSetSelector: true,
+    hideDataSetSelector: false,
     hideTabSectionSelector: true,
     hideClearSelectionsButton: true,
     hideFilterField: true,
