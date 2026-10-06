@@ -3276,9 +3276,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eyeseetea/d2-api@npm:1.21.0-beta.5":
-  version: 1.21.0-beta.5
-  resolution: "@eyeseetea/d2-api@npm:1.21.0-beta.5"
+"@eyeseetea/d2-api@npm:42.22.0-beta.2":
+  version: 42.22.0-beta.2
+  resolution: "@eyeseetea/d2-api@npm:42.22.0-beta.2"
   dependencies:
     abort-controller: "npm:3.0.0"
     axios: "npm:1.6.4"
@@ -3289,7 +3289,7 @@ __metadata:
     iconv-lite: "npm:0.6.2"
     lodash: "npm:4.17.21"
     qs: "npm:6.9.7"
-  checksum: 10c0/7971ada998af8d8212993ca28ba87e24189c6646728d1c05c7fcc05c4c6434f0b65df7f953cdacd64efec5472a3c420e8f5951999d9aa4ba1ab6fac703beb21f
+  checksum: 10c0/6c41b2dab2d23c8858f54ce4d9997a6fe59931761514456a8b4f0ce5d0f73ca4d77dc83f43536469d3a55ff7fcd813cb5337f070d5b44335123a5d42d21e6a7e
   languageName: node
   linkType: hard
 
@@ -17114,7 +17114,7 @@ __metadata:
     "@dhis2/data-engine": "npm:3.17.0"
     "@dhis2/ui": "npm:6.9.0"
     "@dhis2/ui-widgets": "npm:6.9.0"
-    "@eyeseetea/d2-api": "npm:1.21.0-beta.5"
+    "@eyeseetea/d2-api": "npm:42.22.0-beta.2"
     "@eyeseetea/d2-ui-components": "npm:^2.8.0"
     "@material-ui/core": "npm:4.12.4"
     "@material-ui/icons": "npm:4.11.3"
