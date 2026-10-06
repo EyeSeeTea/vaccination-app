@@ -248,6 +248,7 @@ const dataEntryBaseProps: PluginProps = {
     hideClearSelectionsButton: true,
     hideFilterField: true,
     hideUnassignedOrgUnits: false,
+    periodsOrder: "asc",
 };
 
 export default withSnackbar(withPageVisited(DataEntry, "data-entry"));

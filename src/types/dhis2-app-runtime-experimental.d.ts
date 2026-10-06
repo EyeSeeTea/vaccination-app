@@ -34,6 +34,8 @@ declare module "@dhis2/app-runtime/experimental" {
         visibleCategoryOptionIds?: string[];
         /** Restrict the period selector to these IDs. Undefined: no restriction. */
         visiblePeriodIds?: string[];
+        /** Order of the periods in the period selector. Default: "desc". */
+        periodsOrder?: "asc" | "desc";
     };
 
     export const Plugin: (props: PluginProps) => JSX.Element;
