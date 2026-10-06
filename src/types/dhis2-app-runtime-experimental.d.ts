@@ -32,6 +32,8 @@ declare module "@dhis2/app-runtime/experimental" {
         visibleDataSetIds?: string[];
         /** Restrict attribute category options (i.e. teams) to these IDs. Undefined: no restriction. */
         visibleCategoryOptionIds?: string[];
+        /** Restrict the period selector to these IDs. Undefined: no restriction. */
+        visiblePeriodIds?: string[];
     };
 
     export const Plugin: (props: PluginProps) => JSX.Element;

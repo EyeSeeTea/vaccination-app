@@ -8,6 +8,7 @@
  */
 import React from "react";
 import _ from "lodash";
+import moment from "moment";
 import { Plugin, PluginProps } from "@dhis2/app-runtime/experimental";
 import i18n from "@dhis2/d2-i18n";
 import { withSnackbar, SnackbarState } from "@eyeseetea/d2-ui-components";
@@ -22,6 +23,7 @@ import { CompositionRoot } from "../../CompositionRoot";
 import { Routes } from "../app/Routes";
 import Campaign from "../../models/campaign";
 import { OrganisationUnit } from "../../domain/entities/OrganisationUnit";
+import { getDaysRange } from "../../utils/date";
 
 type DataEntryOwnProps = {
     compositionRoot: CompositionRoot;
@@ -189,6 +191,7 @@ Once cells turn into green, all information is saved and you can leave the Data 
             ...dataEntryBaseProps,
             visibleDataSetIds: campaign ? getCampaignDataSetIds(campaign) : undefined,
             visibleCategoryOptionIds: teamIds,
+            visiblePeriodIds: campaign ? getCampaignPeriodIds(campaign) : undefined,
         };
 
         return (
@@ -226,6 +229,16 @@ function getCampaignDataSetIds(campaign: Campaign): string[] {
         .concat(campaign.extraDataSets.map(dataSet => dataSet.id))
         .compact()
         .value();
+}
+
+// Daily periods (YYYYMMDD) between the campaign start and end dates (undefined if not set)
+function getCampaignPeriodIds(campaign: Campaign): Maybe<string[]> {
+    const { startDate, endDate } = campaign;
+    if (!startDate || !endDate) return undefined;
+
+    return getDaysRange(moment.utc(startDate), moment.utc(endDate)).map(day =>
+        day.format("YYYYMMDD")
+    );
 }
 
 const dataEntryBaseProps: PluginProps = {
