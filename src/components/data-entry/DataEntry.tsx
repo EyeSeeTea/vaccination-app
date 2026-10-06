@@ -41,6 +41,7 @@ type DataEntryProps = DataEntryOwnProps & {
 
 type DataEntryState = {
     campaign: Maybe<Campaign>;
+    teamIds: Maybe<string[]>;
     organisationUnits: Maybe<OrganisationUnit[]>;
     restoredUrl: Maybe<string>;
 };
@@ -48,6 +49,7 @@ type DataEntryState = {
 class DataEntry extends React.Component<DataEntryProps, DataEntryState> {
     state: DataEntryState = {
         campaign: undefined,
+        teamIds: undefined,
         restoredUrl: undefined,
         organisationUnits: undefined,
     };
@@ -84,9 +86,11 @@ class DataEntry extends React.Component<DataEntryProps, DataEntryState> {
             const organisationUnitsSorted = _.sortBy(campaignOrgUnits, ou =>
                 ou.getFullOrgUnitName()
             );
+            const teamsMetadata = await campaign.teamsMetadata();
 
             this.setState({
                 campaign: campaign,
+                teamIds: teamsMetadata.elements.map(team => team.id),
                 organisationUnits: organisationUnitsSorted,
             });
         } catch (err) {
@@ -174,7 +178,7 @@ class DataEntry extends React.Component<DataEntryProps, DataEntryState> {
 Once cells turn into green, all information is saved and you can leave the Data Entry Section`
         );
 
-        const { campaign } = this.state;
+        const { campaign, teamIds } = this.state;
 
         const titleWithCampaign = [
             i18n.t("Data Entry"),
@@ -184,6 +188,7 @@ Once cells turn into green, all information is saved and you can leave the Data 
         const dataEntryProps: PluginProps = {
             ...dataEntryBaseProps,
             visibleDataSetIds: campaign ? getCampaignDataSetIds(campaign) : undefined,
+            visibleCategoryOptionIds: teamIds,
         };
 
         return (

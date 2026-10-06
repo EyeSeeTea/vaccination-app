@@ -30,6 +30,8 @@ declare module "@dhis2/app-runtime/experimental" {
         hideUnassignedOrgUnits?: boolean;
         /** Restrict the data set selector to these IDs. Undefined: no restriction. */
         visibleDataSetIds?: string[];
+        /** Restrict attribute category options (i.e. teams) to these IDs. Undefined: no restriction. */
+        visibleCategoryOptionIds?: string[];
     };
 
     export const Plugin: (props: PluginProps) => JSX.Element;
