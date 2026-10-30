@@ -28,6 +28,14 @@ declare module "@dhis2/app-runtime/experimental" {
         hideClearSelectionsButton?: boolean;
         hideFilterField?: boolean;
         hideUnassignedOrgUnits?: boolean;
+        /** Restrict the data set selector to these IDs. Undefined: no restriction. */
+        visibleDataSetIds?: string[];
+        /** Restrict attribute category options (i.e. teams) to these IDs. Undefined: no restriction. */
+        visibleCategoryOptionIds?: string[];
+        /** Restrict the period selector to these IDs. Undefined: no restriction. */
+        visiblePeriodIds?: string[];
+        /** Order of the periods in the period selector. Default: "desc". */
+        periodsOrder?: "asc" | "desc";
     };
 
     export const Plugin: (props: PluginProps) => JSX.Element;

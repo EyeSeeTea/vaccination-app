@@ -8,6 +8,7 @@
  */
 import React from "react";
 import _ from "lodash";
+import moment from "moment";
 import { Plugin, PluginProps } from "@dhis2/app-runtime/experimental";
 import i18n from "@dhis2/d2-i18n";
 import { withSnackbar, SnackbarState } from "@eyeseetea/d2-ui-components";
@@ -22,6 +23,7 @@ import { CompositionRoot } from "../../CompositionRoot";
 import { Routes } from "../app/Routes";
 import Campaign from "../../models/campaign";
 import { OrganisationUnit } from "../../domain/entities/OrganisationUnit";
+import { getDaysRange } from "../../utils/date";
 
 type DataEntryOwnProps = {
     compositionRoot: CompositionRoot;
@@ -41,6 +43,7 @@ type DataEntryProps = DataEntryOwnProps & {
 
 type DataEntryState = {
     campaign: Maybe<Campaign>;
+    teamIds: Maybe<string[]>;
     organisationUnits: Maybe<OrganisationUnit[]>;
     restoredUrl: Maybe<string>;
 };
@@ -48,6 +51,7 @@ type DataEntryState = {
 class DataEntry extends React.Component<DataEntryProps, DataEntryState> {
     state: DataEntryState = {
         campaign: undefined,
+        teamIds: undefined,
         restoredUrl: undefined,
         organisationUnits: undefined,
     };
@@ -84,9 +88,11 @@ class DataEntry extends React.Component<DataEntryProps, DataEntryState> {
             const organisationUnitsSorted = _.sortBy(campaignOrgUnits, ou =>
                 ou.getFullOrgUnitName()
             );
+            const teamsMetadata = await campaign.teamsMetadata();
 
             this.setState({
                 campaign: campaign,
+                teamIds: teamsMetadata.elements.map(team => team.id),
                 organisationUnits: organisationUnitsSorted,
             });
         } catch (err) {
@@ -174,7 +180,7 @@ class DataEntry extends React.Component<DataEntryProps, DataEntryState> {
 Once cells turn into green, all information is saved and you can leave the Data Entry Section`
         );
 
-        const { campaign } = this.state;
+        const { campaign, teamIds } = this.state;
 
         const titleWithCampaign = [
             i18n.t("Data Entry"),
@@ -183,7 +189,9 @@ Once cells turn into green, all information is saved and you can leave the Data 
 
         const dataEntryProps: PluginProps = {
             ...dataEntryBaseProps,
-            hideDataSetSelector: Boolean(campaign),
+            visibleDataSetIds: campaign ? getCampaignDataSetIds(campaign) : undefined,
+            visibleCategoryOptionIds: teamIds,
+            visiblePeriodIds: campaign ? getCampaignPeriodIds(campaign) : undefined,
         };
 
         return (
@@ -216,13 +224,31 @@ Once cells turn into green, all information is saved and you can leave the Data 
     }
 }
 
+function getCampaignDataSetIds(campaign: Campaign): string[] {
+    return _(campaign.id)
+        .concat(campaign.extraDataSets.map(dataSet => dataSet.id))
+        .compact()
+        .value();
+}
+
+// Daily periods (YYYYMMDD) between the campaign start and end dates (undefined if not set)
+function getCampaignPeriodIds(campaign: Campaign): Maybe<string[]> {
+    const { startDate, endDate } = campaign;
+    if (!startDate || !endDate) return undefined;
+
+    return getDaysRange(moment.utc(startDate), moment.utc(endDate)).map(day =>
+        day.format("YYYYMMDD")
+    );
+}
+
 const dataEntryBaseProps: PluginProps = {
     mode: "app",
-    hideDataSetSelector: true,
+    hideDataSetSelector: false,
     hideTabSectionSelector: true,
     hideClearSelectionsButton: true,
     hideFilterField: true,
     hideUnassignedOrgUnits: false,
+    periodsOrder: "asc",
 };
 
 export default withSnackbar(withPageVisited(DataEntry, "data-entry"));
